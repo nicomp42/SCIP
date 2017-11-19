@@ -1,6 +1,7 @@
 /*
  * Bill Nicholson
  * nicholdw@ucmail.uc.edu
+ * 11/19/2017 Migrating to GitHub
  */
 package edu.UC.PhD.CodeProject.nicholdw;
 
