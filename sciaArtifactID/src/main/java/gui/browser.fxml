@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="apBrowserWindow" fx:id="apBrowserWindow" prefHeight="833.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.BrowserController">
+   <padding>
+      <Insets bottom="5.0" right="5.0" top="5.0" />
+   </padding>
+   <children>
+      <MenuBar fx:id="mbrBrowserMenu" prefHeight="31.0" prefWidth="183.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+	            <MenuItem fx:id="mnuFileExit" mnemonicParsing="false" onAction="#mnuFileExit_OnAction" text="Exit">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem fx:id="mnuHelpAbout" mnemonicParsing="false" onAction="#mnuHelpAbout_OnClick" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+	<Button fx:id="btnBrowse" layoutX="919.0" layoutY="794.0" mnemonicParsing="false" onAction="#btnBrowse_OnClick" text="Browse" />
+	<WebView fx:id="wbNeo4j" layoutX="14.0" layoutY="31.0" prefHeight="756.0" prefWidth="960.0" />
+      <Label fx:id="lblStatus" layoutX="14.0" layoutY="786.0" />
+   </children>
+</AnchorPane>

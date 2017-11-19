@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="apProcessAQuery" fx:id="apProcessAQuery" prefHeight="850.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessQueryController">
+   <padding>
+      <Insets bottom="5.0" right="5.0" top="5.0" />
+   </padding>
+   <children>
+      <MenuBar fx:id="mbrMainMenu" layoutX="5.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+	            <MenuItem id="mnuFileExit" fx:id="mnuFileExit" mnemonicParsing="false" onAction="#mnuFileExit_OnAction" text="Exit">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+               <items>
+                  <MenuItem fx:id="mnuEditOpenBrowserWindow" mnemonicParsing="false" onAction="#mnuEditOpenBrowserWindow_OnAction" text="Open Browser Window" />
+                  <Menu mnemonicParsing="false" text="Test Cases">
+                    <items>
+                        <MenuItem fx:id="mnuEditTestCasesTestCasesqSimpleTableQuery" mnemonicParsing="false" onAction="#mnuEditTestCasesTestCasesqSimpleTableQuery_OnClick" text="qSimpleTable" />
+                        <MenuItem fx:id="mnuEditTestCasesTestCaseq01" mnemonicParsing="false" onAction="#mnuEditTestCasesTestCaseq01_OnAction" text="q01" />
+                        <MenuItem fx:id="mnuEditTestCasesTestCasesqNestedQuery" mnemonicParsing="false" onAction="#mnuEditTestCasesTestCasesqNestedQuery_OnClick" text="qNestedQuery" />
+                    </items>
+                  </Menu>
+               </items></Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TabPane fx:id="tpnQueryProcessing" layoutX="10.0" layoutY="30.0" prefHeight="543.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="30.0">
+        <tabs>
+            <Tab fx:id="tabProcessAQuery" text="Process a Query">
+              <content>
+                <AnchorPane fx:id="apnProcessAQuery" minHeight="0.0" minWidth="0.0" prefHeight="755.0" prefWidth="968.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="23.0" text="Database Hostname" />
+                        <TextField id="txtPqHostName" fx:id="txtPqHostName" layoutX="189.0" layoutY="19.0" prefHeight="25.0" prefWidth="249.0" text="localhost" />
+                        <Label layoutX="14.0" layoutY="48.0" text="Login Name" />
+                        <Label layoutX="15.0" layoutY="73.0" text="Password" />
+                        <TextField id="txtPqLoginName" fx:id="txtPqLoginName" layoutX="189.0" layoutY="44.0" text="root" />
+                        <TextField id="txtPqPassword" fx:id="txtPqPassword" layoutX="189.0" layoutY="69.0" text="Danger42" />
+                        <Button id="btnLoadPqSchemaNames" fx:id="btnLoadPqSchemaNames" layoutX="189.0" layoutY="104.0" mnemonicParsing="false" onAction="#btnLoadPqSchemaNames_OnClick" text="Load from Host" textFill="OLIVE" />
+                        <Label fx:id="lblQueryToProcess" layoutX="14.0" layoutY="147.0" text="Query to Process" />
+                        <TextField id="txtPqSchemaName" fx:id="txtPqQueryName" layoutX="189.0" layoutY="143.0" prefHeight="25.0" prefWidth="257.0" AnchorPane.leftAnchor="189.0" />
+    	                <Label fx:id="lblContentsOfDatabaseHost" layoutX="738.0" layoutY="11.0" prefHeight="17.0" prefWidth="173.0" text="Contents of Database Host" />
+	                    <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnSavePqSchemaArtifactsToCSVFiles" layoutX="452.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnSavePqSchemaArtifactsToCSVFiles_OnClick" text="Save Artifacts to CSV Files" />
+                        <Button id="btnLoadPqSQueries" fx:id="btnProcessQuery" layoutX="452.0" layoutY="143.0" mnemonicParsing="false" onAction="#btnProcessQuery_OnClick" text="Process Query" textFill="TEAL" />
+    	                <TreeView id="tvSchemasAndQueries" fx:id="tvSchemasAndQueries" layoutX="738.0" layoutY="29.0" onMouseClicked="#tvSchemasAndQueries_OnClicked" prefHeight="659.0" prefWidth="228.0" />
+
+                        <Label fx:id="lblAttributesReferencedInTheQuery" layoutX="15.0" layoutY="236.0" text="Attributes referenced in the query (double-click for provenance)">
+                           <tooltip>
+                              <Tooltip text="Double-click an attribute for provenance">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Tooltip>
+                           </tooltip></Label>
+                        <ListView id="lvPqAttributes" fx:id="lvPqAttributes" layoutX="15.0" layoutY="261.0" onMouseClicked="#lvPqAttributes_OnClick" prefHeight="200.0" prefWidth="693.0">  <effect>  <DropShadow /> </effect>
+                           <tooltip>
+                              <Tooltip text="Double-click an attribute for provenance">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Tooltip>
+                           </tooltip></ListView>
+
+                        <Label fx:id="lblTablesReferencedInTheQuery" layoutX="15.0" layoutY="465.0" text="Tables/queries referenced in the query" />
+                        <ListView id="lvPqTables" fx:id="lvPqTables" layoutX="15.0" layoutY="486.0" prefHeight="200.0" prefWidth="338.0"> <effect> <DropShadow />  </effect></ListView>
+
+	                    <Label fx:id="lblSchemasReferencedInTheQuery" layoutX="370.0" layoutY="465.0" text="Schemas referenced in the query" />
+	                    <ListView id="lvPqSchemas" fx:id="lvPqSchemas" layoutX="370.0" layoutY="486.0" prefHeight="200.0" prefWidth="338.0">  <effect> <DropShadow /> </effect></ListView>
+
+                        <TextArea fx:id="txaSQL" layoutX="15.0" layoutY="697.0" onMouseClicked="#txaSQL_OnClick" prefHeight="59.0" prefWidth="950.0" />
+                        <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnExportCSVFilesToNeo4j" layoutX="452.0" layoutY="210.0" mnemonicParsing="false" onAction="#btnExportCSVFilesToNeo4j_OnClick" text="Export CSV Files to Neo4j" />
+                        <Label fx:id="lblCSVFolder" layoutX="14.0" layoutY="177.0" prefHeight="25.0" prefWidth="167.0" text="Destination Folder for CSV Files" />
+                        <TextArea fx:id="txaCSVFolder" layoutX="188.0" layoutY="177.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the the import folder of the current Neo4j DB." />
+                        <Button fx:id="btnBrowseForCSVFolder" layoutX="612.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

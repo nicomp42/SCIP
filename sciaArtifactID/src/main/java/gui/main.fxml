@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="apMainWindow" fx:id="apMainWindow" prefHeight="833.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+   <padding>
+      <Insets bottom="5.0" right="5.0" top="5.0" />
+   </padding>
+   <children>
+      <MenuBar fx:id="mbrMainMenu" prefHeight="31.0" prefWidth="183.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+				<MenuItem fx:id="mnuFileNewProject" mnemonicParsing="false" onAction="#mnuFileNew_OnAction" text="New Project">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="mnuFileOpenProject" mnemonicParsing="false" onAction="#mnuFileOpenProject_OnAction" text="Open Project">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="mnuFileSaveProject" mnemonicParsing="false" onAction="#mnuFileSaveProject_OnAction" text="Save Project">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+	            <MenuItem fx:id="mnuFileConfig" mnemonicParsing="false" onAction="#mnuFileConfig_OnAction" text="Config">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+	            <MenuItem fx:id="mnuFileExit" mnemonicParsing="false" onAction="#mnuFileExit_OnAction" text="Exit">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+	            <MenuItem fx:id="mnuEditDebug" mnemonicParsing="false" onAction="#mnuEditDebug_OnAction" text="Debug Window">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                </MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Tools">
+            <items>
+	            <MenuItem fx:id="mnuEditClearNeo4jDB" mnemonicParsing="false" onAction="#mnuEditClearNeo4jDB_OnAction" text="Clear the current Neo4j DB">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                </MenuItem>
+              <MenuItem fx:id="mnuToolsGenerateSchemaTopology" mnemonicParsing="false" onAction="#mnuToolsGenerateSchemaTopology_OnClick" text="Generate Schema Topology">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                </MenuItem>
+	            <MenuItem fx:id="mnuOpenBrowserWindow" mnemonicParsing="false" onAction="#mnuEditOpenBrowserWindow_OnAction" text="Open Browser Window">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="B" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                </MenuItem>
+	            <MenuItem fx:id="mnuProcessAQuery" mnemonicParsing="false" onAction="#mnuEditProcessAQuery_OnAction" text="Process A Query">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                </MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem fx:id="mnuHelpAbout" mnemonicParsing="false" onAction="#mnuHelpAbout_OnClick" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TabPane fx:id="tpnProject" layoutY="26.0" prefHeight="543.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="26.0">
+        <tabs>
+          <Tab fx:id="tabProject" text="Project">
+            <content>
+              <AnchorPane minHeight="514.0" minWidth="747.0" prefHeight="573.0" prefWidth="784.0">
+                     <children>
+                        <TextField id="txtProjectName" fx:id="txtProjectName" layoutX="195.0" layoutY="22.0" prefHeight="25.0" prefWidth="324.0" />
+                        <TextField id="txtProjectHomeDirectory" fx:id="txtProjectHomeDirectory" layoutX="195.0" layoutY="54.0" prefHeight="25.0" prefWidth="325.0" />
+                        <TextArea id="txtProjectComment" fx:id="txtProjectComment" layoutX="195.0" layoutY="87.0" prefHeight="173.0" prefWidth="399.0" />
+                        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="769.0" layoutY="14.0" opacity="0.68" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../images/file000361086275.jpg" />
+                           </image>
+                           <effect>
+                              <Bloom />
+                           </effect>
+                        </ImageView>
+                        <Label layoutX="44.0" layoutY="58.0" text="Project Home Directory" />
+                        <Label layoutX="44.0" layoutY="87.0" text="Project Comments" />
+                        <Label layoutX="44.0" layoutY="26.0" text="Project Name" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="tabOperationalSchema" text="Operational Schema">
+            <content>
+              <AnchorPane minHeight="514.0" minWidth="747.0" prefHeight="514.0" prefWidth="726.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="23.0" text="Database Hostname" />
+                        <TextField id="txtOperationalHostName" fx:id="txtOperationalHostName" layoutX="166.0" layoutY="19.0" prefHeight="25.0" prefWidth="249.0" text="localhost" />
+                        <Label layoutX="492.0" layoutY="19.0" text="Schema Names on file" />
+                        <Label layoutX="14.0" layoutY="48.0" text="Login Name" />
+                        <Label layoutX="15.0" layoutY="73.0" text="Password" />
+                        <TextField id="txtOperationalLoginName" fx:id="txtOperationalLoginName" layoutX="166.0" layoutY="44.0" text="root" />
+                        <TextField id="txtOperationalPassword" fx:id="txtOperationalPassword" layoutX="166.0" layoutY="69.0" text="Danger42" />
+                        <Button id="btnLoadOperationalSchemaNames" fx:id="btnLoadOperationalSchemaNames" layoutX="166.0" layoutY="104.0" mnemonicParsing="false" onAction="#btnLoadOperationalSchemaNames_OnClick" text="Load Schema Names" textFill="OLIVE" />
+                        <TextField id="txtOperationalSchemaName" fx:id="txtOperationalSchemaName" layoutX="166.0" layoutY="143.0" />
+                        <ListView id="lvOperationalSchemaNames" fx:id="lvOperationalSchemaNames" layoutX="626.0" layoutY="19.0" onMouseClicked="#lvOperationalSchemaNames_OnClicked" prefHeight="187.0" prefWidth="249.0" />
+                        <Button id="btnLoadOperationalSchemaArtifacts" fx:id="btnLoadOperationalSchemaArtifacts" layoutX="331.0" layoutY="143.0" mnemonicParsing="false" onAction="#btnLoadOperationalSchemaArtifacts_OnClick" text="Load Artifacts from Selected Schema" textFill="TEAL" />
+                        <ListView id="lvOperationalTables" fx:id="lvOperationalTables" layoutX="15.0" layoutY="263.0" prefHeight="200.0" prefWidth="338.0" />
+                        <Label layoutX="15.0" layoutY="246.0" text="Tables" />
+                        <ListView id="lvOperationalAttributes" fx:id="lvOperationalAttributes" layoutX="369.0" layoutY="263.0" prefHeight="200.0" prefWidth="358.0" />
+                        <Label layoutX="369.0" layoutY="246.0" text="Attributes" />
+                        <ListView id="lvOperationalForeignKeys" fx:id="lvOperationalForeignKeys" layoutX="368.0" layoutY="503.0" prefHeight="179.0" prefWidth="360.0" />
+                        <Label layoutX="368.0" layoutY="480.0" text="Foreign Keys" />
+                        <Button id="btnSaveOperationalSchemaArtifactsToCSVFiles" fx:id="btnSaveOperationalSchemaArtifactsToCSVFiles" layoutX="331.0" layoutY="181.0" mnemonicParsing="false" onAction="#btnSaveOperationalSchemaArtifactsToCSVFiles_OnClick" text="Save Artifacts to CSV Files" />
+                        <Label layoutX="14.0" layoutY="147.0" text="Schema" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab fx:id="tabPentahoETL" text="Pentaho ETL">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="18.0" text="Pentaho ETL Directory (XML Format)" />
+                        <Button id="PentahoProjectDirectory" fx:id="PentahoProjectDirectory" layoutX="697.0" layoutY="35.0" mnemonicParsing="false" onAction="#btnPentahoProjectDirectory_OnClick" text="..." />
+                        <ListView id="lvETLLayer" fx:id="lvETLLayer" layoutX="214.0" layoutY="85.0" prefHeight="87.0" prefWidth="200.0" visible="false" />
+                        <CheckBox fx:id="cbAllETLLayers" layoutX="214.0" layoutY="180.0" mnemonicParsing="false" text="All ETL Layers" visible="false" />
+                        <Button id="btnSavePentahoArtifactsToCSVFiles" fx:id="btnSavePentahoArtifactsToCSVFiles" layoutX="214.0" layoutY="215.0" mnemonicParsing="false" onAction="#btnSavePentahoArtifactsToCSVFiles_OnClick" text="Save Artifacts to CSV Files" />
+                        <TextArea id="txaPentahoProjectDirectory" fx:id="txaPentahoProjectDirectory" layoutX="214.0" layoutY="18.0" prefHeight="58.0" prefWidth="474.0" wrapText="true" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tabDWSchema" text="DW Schema">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="23.0" text="Database Hostname" />
+                        <TextField id="txtDwhHostName" fx:id="txtDwhHostName" layoutX="166.0" layoutY="19.0" prefHeight="25.0" prefWidth="249.0" text="localhost" />
+                        <Label layoutX="492.0" layoutY="19.0" text="Schema Names on file" />
+                        <Label layoutX="14.0" layoutY="48.0" text="Login Name" />
+                        <Label layoutX="15.0" layoutY="73.0" text="Password" />
+                        <TextField id="txtDwhLoginName" fx:id="txtDwhLoginName" layoutX="166.0" layoutY="44.0" text="root" />
+                        <TextField id="txtDwhPassword" fx:id="txtDwhPassword" layoutX="166.0" layoutY="69.0" text="Danger42" />
+                        <Button id="btnLoadDwhSchemaNames" fx:id="btnLoadDwhSchemaNames" layoutX="166.0" layoutY="104.0" mnemonicParsing="false" onAction="#btnLoadDwhSchemaNames_OnClick" text="Load Schema Names" textFill="OLIVE" />
+                        <TextField id="txtDwhSchemaName" fx:id="txtDwhSchemaName" layoutX="166.0" layoutY="143.0" />
+                        <ListView id="lvDwhSchemaNames" fx:id="lvDwhSchemaNames" layoutX="626.0" layoutY="19.0" onMouseClicked="#lvDwhSchemaNames_OnClicked" prefHeight="187.0" prefWidth="249.0" />
+                        <Button id="btnLoadDwhSchemaArtifacts" fx:id="btnLoadDwhSchemaArtifacts" layoutX="331.0" layoutY="143.0" mnemonicParsing="false" onAction="#btnLoadDwhSchemaArtifacts_OnClick" text="Load Artifacts from Selected Schema" textFill="TEAL" />
+                        <ListView id="lvDwhTables" fx:id="lvDwhTables" layoutX="15.0" layoutY="263.0" prefHeight="200.0" prefWidth="338.0" />
+                        <Label layoutX="15.0" layoutY="246.0" text="Tables" />
+                        <ListView id="lvDwhAttributes" fx:id="lvDwhAttributes" layoutX="369.0" layoutY="263.0" prefHeight="200.0" prefWidth="358.0" />
+                        <Label layoutX="369.0" layoutY="246.0" text="Attributes" />
+                        <ListView id="lvDwhForeignKeys" fx:id="lvDwhForeignKeys" layoutX="368.0" layoutY="503.0" prefHeight="179.0" prefWidth="360.0" />
+                        <Label layoutX="368.0" layoutY="480.0" text="Foreign Keys" />
+                        <Button id="btnSaveDwhSchemaArtifactsToCSVFiles" fx:id="btnSaveDwhSchemaArtifactsToCSVFiles" layoutX="331.0" layoutY="181.0" mnemonicParsing="false" onAction="#btnSaveDwhSchemaArtifactsToCSVFiles_OnClick" text="Save Artifacts to CSV Files" />
+                        <Label layoutX="14.0" layoutY="147.0" text="Schema" />
+                        <ListView id="lvDwhQuerys" fx:id="lvDwhQuerys" layoutX="15.0" layoutY="503.0" prefHeight="178.0" prefWidth="338.0" />
+                        <Label layoutX="15.0" layoutY="480.0" text="Querys" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="tabNeo4j" text="Neo4j">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="20.0" layoutY="18.0" text="Database Name" />
+                        <Label layoutX="20.0" layoutY="51.0" text="Database Path" visible="false" />
+                        <TextField id="txtNeo4jDBName" fx:id="txtNeo4jDBName" layoutX="114.0" layoutY="14.0" prefHeight="25.0" prefWidth="224.0" promptText="Database Name" text="Test" />
+                        <Button id="btnCreateGraphDB" fx:id="btnCreateGraphDB" layoutX="348.0" layoutY="14.0" mnemonicParsing="false" onAction="#btnCreateGraphDB_OnClick" text="Create Graph DB" />
+                        <Label layoutX="10.0" layoutY="469.0" text="Neo4j Config File" />
+                        <TextField id="txtUserHome" fx:id="txtNeo4jConfigFile" editable="false" layoutX="114.0" layoutY="465.0" prefHeight="25.0" prefWidth="630.0" />
+                        <Pane layoutX="114.0" layoutY="51.0" prefHeight="200.0" prefWidth="363.0" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-style: solid;">
+                           <children>
+                              <Label fx:id="lblNeo4jWarning" layoutX="179.0" layoutY="131.0" text="(Neo4j service must be started...)" />
+                              <Button id="btnImportFromCSVFiles" fx:id="btnImportFromCSVFiles" layoutX="38.0" layoutY="127.0" mnemonicParsing="false" onAction="#btnImportFromCSVFiles_OnClick" text="Import From CSV Files" />
+                              <CheckBox fx:id="cbOperationalSchemaCSVFiles" layoutX="38.0" layoutY="34.0" mnemonicParsing="false" onAction="#cbCSVFiles_OnAction" text="Operational Schema CSV Files" />
+                              <CheckBox fx:id="cbETLCSVFiles" layoutX="38.0" layoutY="64.0" mnemonicParsing="false" onAction="#cbCSVFiles_OnAction" text="ETL CSV Files" />
+                              <CheckBox fx:id="cbDWCSVFiles" layoutX="38.0" layoutY="93.0" mnemonicParsing="false" onAction="#cbCSVFiles_OnAction" text="DW CSV Files" />
+                              <Label layoutX="38.0" layoutY="6.0" text="Components that can be imported" />
+                           </children></Pane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

@@ -1,0 +1,53 @@
+package edu.UC.PhD.CodeProject.nicholdw.query;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class QueryAttributes implements Iterable<QueryAttribute> {
+
+	private ArrayList<QueryAttribute> queryAttributes;
+
+	/**
+	 * Constructor
+	 */
+	public QueryAttributes() {
+		queryAttributes = new ArrayList<QueryAttribute>();
+	}
+	/**
+	 * Retrieve the list of QueryAttributes in this QueryAttribute List
+	 * @return A reference to the queryAttribute list in the current object.
+	 */
+	public ArrayList<QueryAttribute> getAttributes (){return queryAttributes;}
+	public QueryAttribute getQueryAttribute(int i) {return queryAttributes.get(i);}
+
+	public void addAttribute(QueryAttribute queryAttribute) {
+		// Don't allow duplicates in the attribute collection
+		boolean matchFound = false;
+		for (QueryAttribute qa : queryAttributes) {
+			if (qa.getAttributeName().trim().toLowerCase().equals(queryAttribute.getAttributeName().trim().toLowerCase()) &&
+				qa.getSchemaName().trim().toLowerCase().equals(queryAttribute.getSchemaName().trim().toLowerCase()) &&
+				qa.getTableName().trim().toLowerCase().equals(queryAttribute.getTableName().trim().toLowerCase())) {
+				// We found a match. If the alias doesn't already exist, add that to the matching Query Attribute. Otherwise we're done.
+				for (AliasNameClass aliasName: queryAttribute.getAliasNames()) {
+					if (!qa.getAliasNames().contains(aliasName)) {
+						qa.addAliasName(aliasName);
+						break;
+					}
+				}
+				matchFound = true;
+				break;
+			}
+		}
+		if (!matchFound) {
+			queryAttributes.add(queryAttribute);
+		}
+	}
+	public void clear() {queryAttributes.clear();}
+	@Override
+	public Iterator<QueryAttribute> iterator() {
+		Iterator<QueryAttribute> myIterator = queryAttributes.iterator();
+        return myIterator;
+    }
+	public String toString() {return queryAttributes.size() + " attributes";}
+	public int size() { return queryAttributes.size();}
+}

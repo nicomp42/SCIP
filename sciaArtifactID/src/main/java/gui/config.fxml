@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.input.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="apConfig" fx:id="apConfig" prefHeight="438.0" prefWidth="489.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ConfigController">
+   <padding>
+      <Insets bottom="5.0" right="5.0" top="5.0" />
+   </padding>
+   <children>
+      <MenuBar fx:id="mbrMainMenu" layoutY="1.0" visible="false">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+				<MenuItem fx:id="mnuFileSave" mnemonicParsing="false" text="Save">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+	            <MenuItem fx:id="mnuFileExit" mnemonicParsing="false" onAction="#mnuFileExit_OnAction" text="Exit">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TextField id="txtNeo4jDefaultUser" fx:id="txtNeo4jDefaultUser" layoutX="196.0" layoutY="37.0" prefHeight="25.0" prefWidth="174.0" />
+      <TextField id="txtNeo4jDefaultPassword" fx:id="txtNeo4jDefaultPassword" layoutX="196.0" layoutY="64.0" prefHeight="25.0" prefWidth="174.0" />
+      <Label layoutX="22.0" layoutY="37.0" text="Neo4j Default User" />
+      <Label layoutX="22.0" layoutY="68.0" text="Neo4j Default Password" />
+      <Button fx:id="btnSave" layoutX="435.0" layoutY="399.0" mnemonicParsing="false" onAction="#btnSave_OnClick" text="Save" />
+      <TextField fx:id="txtNeo4jTableToAttributeRelationName" layoutX="196.0" layoutY="91.0" prefHeight="25.0" prefWidth="174.0" />
+      <TextField fx:id="txtNeo4jQueryToTableRelationName" layoutX="196.0" layoutY="118.0" prefHeight="25.0" prefWidth="174.0" />
+      <Label layoutX="22.0" layoutY="95.0" text="Neo4j Table to Attribute Label" />
+      <Label layoutX="22.0" layoutY="122.0" text="Neo4j Query To Table Label" />
+      <TextField fx:id="txtMySQLDefaultLoginName" layoutX="196.0" layoutY="211.0" prefHeight="25.0" prefWidth="174.0" />
+      <TextField fx:id="txtMySQLDefaultPassword" layoutX="196.0" layoutY="238.0" prefHeight="25.0" prefWidth="174.0" />
+      <Label layoutX="22.0" layoutY="215.0" text="mySQL Default User Name" />
+      <Label layoutX="22.0" layoutY="242.0" text="mySQL Default Password" />
+      <TextField fx:id="txtMySQLDefaultHostname" layoutX="196.0" layoutY="266.0" prefHeight="25.0" prefWidth="174.0" />
+      <Label layoutX="22.0" layoutY="270.0" text="mySQL Default Hostname" />
+      <CheckBox fx:id="cbUseTestData" layoutX="197.0" layoutY="359.0" mnemonicParsing="false" text="Use test queries (be careful!)" />
+      <TextArea fx:id="txaCSVFolder" layoutX="196.0" layoutY="145.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the import folder of the default Neo4j DB." />
+      <Button fx:id="btnBrowseForCSVFolder" layoutX="454.0" layoutY="160.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
+      <Label fx:id="lblCSVFolder" layoutX="19.0" layoutY="148.0" prefHeight="42.0" prefWidth="167.0" text="Default Destination Folder for CSV Files" wrapText="true" />
+      <TextArea fx:id="txaGrassURL" layoutX="196.0" layoutY="298.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the URL of the GRASS file" />
+      <Label fx:id="lblGrassURL" layoutX="19.0" layoutY="301.0" prefHeight="42.0" prefWidth="167.0" text="URL for GRASS file (Style sheet)" wrapText="true" />
+      <CheckBox fx:id="cbSupressOutputToConsole" layoutX="197.0" layoutY="382.0" mnemonicParsing="false" text="Supress all output to the console" />
+   </children>
+</AnchorPane>
