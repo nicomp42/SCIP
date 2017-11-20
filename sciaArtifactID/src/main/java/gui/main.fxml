@@ -10,12 +10,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="apMainWindow" fx:id="apMainWindow" prefHeight="833.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="apMainWindow" fx:id="apMainWindow" prefHeight="833.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <padding>
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
    <children>
-      <MenuBar fx:id="mbrMainMenu" prefHeight="31.0" prefWidth="183.0">
+      <MenuBar fx:id="mbrMainMenu" prefHeight="32.0" prefWidth="290.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -87,9 +87,9 @@
             <content>
               <AnchorPane minHeight="514.0" minWidth="747.0" prefHeight="573.0" prefWidth="784.0">
                      <children>
-                        <TextField id="txtProjectName" fx:id="txtProjectName" layoutX="195.0" layoutY="22.0" prefHeight="25.0" prefWidth="324.0" />
-                        <TextField id="txtProjectHomeDirectory" fx:id="txtProjectHomeDirectory" layoutX="195.0" layoutY="54.0" prefHeight="25.0" prefWidth="325.0" />
-                        <TextArea id="txtProjectComment" fx:id="txtProjectComment" layoutX="195.0" layoutY="87.0" prefHeight="173.0" prefWidth="399.0" />
+                        <TextField id="txtProjectName" fx:id="txtProjectName" layoutX="213.0" layoutY="22.0" prefHeight="25.0" prefWidth="324.0" />
+                        <TextField id="txtProjectHomeDirectory" fx:id="txtProjectHomeDirectory" layoutX="213.0" layoutY="54.0" prefHeight="25.0" prefWidth="325.0" />
+                        <TextArea id="txtProjectComment" fx:id="txtProjectComment" layoutX="213.0" layoutY="87.0" prefHeight="173.0" prefWidth="399.0" />
                         <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="769.0" layoutY="14.0" opacity="0.68" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../../../../images/file000361086275.jpg" />
