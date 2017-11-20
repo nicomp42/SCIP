@@ -53,7 +53,7 @@ public class Config implements Serializable {
 	private final int mySQLDefaultPort = 3306;
 	private final Boolean UseCaseSensitiveAttributeComparison = false;
 	private final Boolean UseCaseSensitiveAliasNameComparison = false;
-	private final String applicationTitle = "Swiss Army Schema Change Impact Analysis Tool";		//"Schema Change Impact Analysis");
+	private final String applicationTitle = "SCIPPER : Schema Change Impact Project";		//"Schema Change Impact Analysis");
 	private final String[] ETLLayers = {"ids-dwh", "op-ids"};
 	private final String neo4jFilesPath_Relative = "neo4j";
 	private final String attributeNamePrefix = "Attribute";
