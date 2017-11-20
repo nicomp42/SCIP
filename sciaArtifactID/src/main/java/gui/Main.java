@@ -396,7 +396,9 @@ public class Main extends Application {
 			graphDB = Neo4jUtils.createDB(graphDBFilePath, false);
 			registerShutdownHook(graphDB);
 			// Make the import folder where we will put the .csv files. Neo4j requires that folder and it doesn't get created when the DB is created.
-			try {new File(Utils.formatPath(graphDBFilePath) + "import").mkdirs();} catch (Exception ex) {}
+			try {new File(Utils.formatPath(graphDBFilePath) + "import").mkdirs();} catch (Exception ex) {
+				Log.logError("Main.createNewGraphDB(): Making folder for import folder: " + ex.getLocalizedMessage());
+			}
 
 			//Neo4jUtils.ExecActionQuery("Change Password");		// TODO fix
 		} catch (Exception ex) {
