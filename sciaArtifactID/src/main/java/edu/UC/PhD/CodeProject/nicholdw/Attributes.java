@@ -1,3 +1,6 @@
+/*
+ * Table/query attributes
+ */
 package edu.UC.PhD.CodeProject.nicholdw;
 
 import java.util.ArrayList;
@@ -16,7 +19,7 @@ public class Attributes implements Iterable<Attribute> {
 
 	/**
 	 * Retrieve the list of attributes in this Attribute List
-	 * @return A reference to the attribute list in the current object. 
+	 * @return A reference to the attribute list in the current object.
 	 */
 	public ArrayList<Attribute> getAttributes ()
 	{
@@ -34,7 +37,7 @@ public class Attributes implements Iterable<Attribute> {
 	@Override
 	public Iterator<Attribute> iterator() {
 		Iterator<Attribute> myIterator = attributes.iterator();
-        return myIterator; 
+        return myIterator;
     }
 	/***
 	 * Add a foreign key to the attribute
@@ -44,7 +47,7 @@ public class Attributes implements Iterable<Attribute> {
 	 * @param referencedAttributeName
 	 */
 	public void addForeignKeyRef(String attributeName, String referencedTableName, String foreignKeyName, String referencedAttributeName) {
-		// find the attribute in the AttributeList 
+		// find the attribute in the AttributeList
 		int i = 0;
 		boolean found = false;
 		for (Attribute attribute : attributes) {
@@ -59,7 +62,7 @@ public class Attributes implements Iterable<Attribute> {
 		}
 	}
 	public int size() {return attributes.size();}
-	
+
 	/**
 	 * Search the list of attributes by attribute name
 	 * @param attributeName The attribute name to search for
@@ -76,7 +79,7 @@ public class Attributes implements Iterable<Attribute> {
 		return tmp;
 	}
 	/**
-	 * Build a list of the attribute names in the Attributes object 
+	 * Build a list of the attribute names in the Attributes object
 	 * @return The list of attribute names, comma delimited.
 	 */
 	public String toString() {
