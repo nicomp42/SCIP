@@ -1,6 +1,7 @@
 /*
  * Bill Nicholson
  * nicholdw@ucmail.uc.edu
+ * Changed some default file paths to SCIP from temp
  */
 package edu.UC.PhD.CodeProject.nicholdw;
 
@@ -65,7 +66,7 @@ public class Config implements Serializable {
 	private String Neo4jTableToAttributeRelationName = "comprises";
 	private String Neo4jQueryToTableRelationName = "contains";
 	private Boolean useTestData = true;
-	private String initialDirectory = "c:/Temp/Test/";	// TODO generalize this
+	private String initialDirectory = "c:/SCIP/Test/";	// TODO generalize this
 	private String neo4jDBDefaultUser = "neo4j";
 	private String neo4jDBDefaultPassword = "Danger42";
 	private SchemaChangeImpactProject currentSchemaChangeImpactProject = new SchemaChangeImpactProject();		// null;
@@ -77,7 +78,7 @@ public class Config implements Serializable {
     private boolean debug = true;
 	private Boolean supressOutputToConsole = false;
 	private String informationSchemaName = "information_schema";
-	private String neo4jDefaultImportFilePath = "C:/Temp/Test/Test/Neo4jTest/import/";
+	private String neo4jDefaultImportFilePath = "C:/SCIP/Test/Test/Neo4jTest/import/";
 	private String neo4jSuffix = "Neo4j_";
 	private String grassStyleSheetURL = "https://raw.githubusercontent.com/nicomp42/scipGrass/master/grass.css";
 	private ArrayList<Browser> browsers;
