@@ -1,7 +1,8 @@
 /*
  * Bill Nicholson
  * nicholdw@ucmail.uc.edu
- * Changed some default file paths to SCIP from temp
+ * Changed some default file paths to SCIP from temp. 
+ * 
  */
 package edu.UC.PhD.CodeProject.nicholdw;
 
