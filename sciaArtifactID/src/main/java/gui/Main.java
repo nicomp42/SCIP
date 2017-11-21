@@ -86,6 +86,7 @@ public class Main extends Application {
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout, mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology;
 	@FXML private WebView wbNeo4j;
+	@FXML private ImageView imgNeo4jReminder;
 	@FXML void lvOperationalSchemaNames_OnClicked(MouseEvent event) {txtOperationalSchemaName.setText(lvOperationalSchemaNames.getSelectionModel().getSelectedItem());}
 	@FXML void mnuHelpAbout_OnClick(ActionEvent event) {openAboutWindow();}
 	@FXML void lvDwhSchemaNames_OnClicked(MouseEvent event) {txtDwhSchemaName.setText(lvDwhSchemaNames.getSelectionModel().getSelectedItem());}
@@ -121,9 +122,11 @@ public class Main extends Application {
 			cbDWCSVFiles.isSelected()) {
 			btnImportFromCSVFiles.setVisible(true);
 			lblNeo4jWarning.setVisible(true);
+			imgNeo4jReminder.setVisible(true);
 		} else {
 			btnImportFromCSVFiles.setVisible(false);
 			lblNeo4jWarning.setVisible(false);
+			imgNeo4jReminder.setVisible(false);
 		}
 	}
 	@FXML

@@ -187,13 +187,18 @@
                         <TextField id="txtUserHome" fx:id="txtNeo4jConfigFile" editable="false" layoutX="114.0" layoutY="465.0" prefHeight="25.0" prefWidth="630.0" />
                         <Pane layoutX="114.0" layoutY="51.0" prefHeight="200.0" prefWidth="363.0" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-style: solid;">
                            <children>
-                              <Label fx:id="lblNeo4jWarning" layoutX="179.0" layoutY="131.0" text="(Neo4j service must be started...)" />
+                              <Label fx:id="lblNeo4jWarning" layoutX="175.0" layoutY="124.0" prefHeight="32.0" prefWidth="180.0" text="(Your Neo4j DB must be started...)" />
                               <Button id="btnImportFromCSVFiles" fx:id="btnImportFromCSVFiles" layoutX="38.0" layoutY="127.0" mnemonicParsing="false" onAction="#btnImportFromCSVFiles_OnClick" text="Import From CSV Files" />
                               <CheckBox fx:id="cbOperationalSchemaCSVFiles" layoutX="38.0" layoutY="34.0" mnemonicParsing="false" onAction="#cbCSVFiles_OnAction" text="Operational Schema CSV Files" />
                               <CheckBox fx:id="cbETLCSVFiles" layoutX="38.0" layoutY="64.0" mnemonicParsing="false" onAction="#cbCSVFiles_OnAction" text="ETL CSV Files" />
                               <CheckBox fx:id="cbDWCSVFiles" layoutX="38.0" layoutY="93.0" mnemonicParsing="false" onAction="#cbCSVFiles_OnAction" text="DW CSV Files" />
                               <Label layoutX="38.0" layoutY="6.0" text="Components that can be imported" />
                            </children></Pane>
+                        <ImageView id="imgNeo4jReminder" fx:id="imgNeo4jReminder" fitHeight="150.0" fitWidth="200.0" layoutX="503.0" layoutY="176.0" pickOnBounds="true" preserveRatio="true" rotate="-4.0">
+                           <image>
+                              <Image url="@../../../../images/Neo4jVisualReminder.PNG" />
+                           </image>
+                        </ImageView>
                      </children>
                   </AnchorPane>
               </content>
