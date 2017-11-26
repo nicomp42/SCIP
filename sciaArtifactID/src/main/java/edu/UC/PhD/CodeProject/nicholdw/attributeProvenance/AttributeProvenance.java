@@ -46,16 +46,27 @@ public class AttributeProvenance {
 	 * Execute the queries needed to import the CSV files into the current Neo4j DB
 	 * @param filePath The path with no filename at the end. We will add the file name
 	 */
-	public static void executeCypherQueries(String filePath) {
-		Neo4jUtils.setNeo4jConnectionParameters("neo4j", "Danger42");		// TODO generalize this
-		// Run the queries that add the constraints
-		QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenance.cypherQueriesStep1, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
+	public static boolean executeCypherQueries(String filePath) {
+		boolean status = true;	// Hope for the best
+		try {
+			Log.logProgress("AttributeProvenance.executeCypherQueries(" + filePath  + ")");
+	//		Neo4jUtils.setNeo4jConnectionParameters("neo4j", "Danger42");		// TODO generalize this
+			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+			// Run the queries that add the constraints
+			QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenance.cypherQueriesStep1, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
 
-		String fileName = Utils.formatPath(Utils.cleanPath(filePath)) + Config.getConfig().getNeo4jSuffix() + attributeProvenanceFileSuffix + Config.getConfig().getCSVFileExtension();
-		ProcessCSVFileByLine(fileName);
+			String fileName = Utils.formatPath(Utils.cleanPath(filePath)) + Config.getConfig().getNeo4jSuffix() + attributeProvenanceFileSuffix + Config.getConfig().getCSVFileExtension();
+			ProcessCSVFileByLine(fileName);
 
-		// Run the queries that build the relationships
-		QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenance.cypherQueriesStep2, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
+			// Run the queries that build the relationships
+			QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenance.cypherQueriesStep2, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
+			Log.logProgress("AttributeProvenance.executeCypherQueries(" + filePath  + ") Done");
+		} catch (Exception ex) {
+			Log.logError("AttributeProvenance.executeCypherQueries(" + filePath  + ")", ex );
+			status = false;
+		} finally {
+		}
+		return status;
 	}
 	private static void writeAttributeProvenanceCSVFile(String fileName, QueryDefinition qd, QueryTables queryTables, AttributeParts attributeParts) {
 		try {
