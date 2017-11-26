@@ -37,10 +37,10 @@ public class AttributeProvenance {
 	private static final String attributeProvenanceFileSuffix = "AttributeProvenance";
 	private static final String provenanceRealationName = "Provenance";
 
-	public static void exportCSVFiles(AttributeParts attributeParts, QueryDefinition qd, String filePath) {
+	public static boolean exportCSVFiles(AttributeParts attributeParts, QueryDefinition qd, String filePath) {
 		String fileName = Utils.formatPath(Utils.cleanPath(filePath)) + Config.getConfig().getNeo4jSuffix() + attributeProvenanceFileSuffix + Config.getConfig().getCSVFileExtension();
 		QueryTables queryTables = QueryDefinition.buildProvenance(qd, attributeParts.schemaName, attributeParts.tableName, attributeParts.attributeName);
-		writeAttributeProvenanceCSVFile(fileName, qd, queryTables, attributeParts);
+		return writeAttributeProvenanceCSVFile(fileName, qd, queryTables, attributeParts);
 	}
 	/**
 	 * Execute the queries needed to import the CSV files into the current Neo4j DB
@@ -69,7 +69,8 @@ public class AttributeProvenance {
 		}
 		return status;
 	}
-	private static void writeAttributeProvenanceCSVFile(String fileName, QueryDefinition qd, QueryTables queryTables, AttributeParts attributeParts) {
+	private static boolean writeAttributeProvenanceCSVFile(String fileName, QueryDefinition qd, QueryTables queryTables, AttributeParts attributeParts) {
+		boolean status = true;	// Hope for the best
 		try {
 			String previousKey = "";
 			boolean fileExists = false;
@@ -136,7 +137,9 @@ public class AttributeProvenance {
 			writer.close();
 		} catch (IOException e) {
 			Log.logError("QueryDefinitionFileProcessing.writeAttributeProvenanceCSVFile(): " + e.getLocalizedMessage());
+			status = false;
 		}
+		return status;
 	}
 	/**
 	 * The chained call to apoc.load.csv/apoc.create.node will completely fail if one constraint is violated on a node creation.
