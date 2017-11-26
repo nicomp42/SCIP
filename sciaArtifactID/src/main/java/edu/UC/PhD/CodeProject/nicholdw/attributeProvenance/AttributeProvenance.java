@@ -45,6 +45,7 @@ public class AttributeProvenance {
 	/**
 	 * Execute the queries needed to import the CSV files into the current Neo4j DB
 	 * @param filePath The path with no filename at the end. We will add the file name
+	 * @return True if no errors happened. false otherwise
 	 */
 	public static boolean executeCypherQueries(String filePath) {
 		boolean status = true;	// Hope for the best
