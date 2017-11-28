@@ -47,7 +47,7 @@ public class SchemaTopology {
 
 		SchemaTopology schemaTopology = new SchemaTopology(schemaTopologyConfig, "localhost", "root", "Danger42", "schematopologytest", null);
 		try {
-			SchemaTopologyResults schemaTopologyResults = new SchemaTopologyResults();
+			//SchemaTopologyResults schemaTopologyResults = new SchemaTopologyResults();
 			schemaTopology.generateGraph();
 		} catch (Exception e) {
 			Log.logError("SchemaTopology.main(): " + e.getLocalizedMessage());
