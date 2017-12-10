@@ -32,7 +32,7 @@ public class MySQL {
 	        		                                 userName,
 	        		                                 password);
 	    } catch (Exception ex) {
-	    	Log.logError("mySQL.connectToDatabase(" + databaseName + ", " + userName + ", " + password + ") : " + ex.getLocalizedMessage(), ex);
+	    	Log.logError("mySQL.connectToDatabase(" + hostName + ", " + databaseName + ", " + userName + ", " + password + ") : " + ex.getLocalizedMessage(), ex);
 //	    	System.out.println("mySQL.Connection() : " + ex.getLocalizedMessage());
 	    }
 	  return connection;

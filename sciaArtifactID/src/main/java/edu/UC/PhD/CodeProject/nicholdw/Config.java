@@ -74,7 +74,7 @@ public class Config implements Serializable {
     private DebugController debugController = null;
     private String mySQLDefaultLoginName = "root";
     private String mySQLDefaultPassword = "Danger42";
-    private String mySQLDefaultDatabaseName = "Acme";		// ToDo: We probably don't need this
+    private String mySQLDefaultDatabaseName = "World";		// ToDo: We probably don't need this
     private String mySQLDefaultHostname = "localhost";
     private boolean debug = true;
 	private Boolean supressOutputToConsole = false;
