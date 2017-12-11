@@ -1,7 +1,7 @@
 /*
  * Bill Nicholson
  * nicholdw@ucmail.uc.edu
- * 
+ * This is a cool class.
  */
 package edu.UC.PhD.CodeProject.nicholdw;
 
