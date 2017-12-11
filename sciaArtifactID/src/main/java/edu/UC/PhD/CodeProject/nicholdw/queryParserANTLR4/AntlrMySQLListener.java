@@ -694,7 +694,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitXuidStringId(MySqlParser.XuidStringIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitXuidStringId()");}
 	@Override public void enterAuthPlugin(MySqlParser.AuthPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAuthPlugin()");}
 	@Override public void exitAuthPlugin(MySqlParser.AuthPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAuthPlugin()");}
-	@Override public void enterUid(MySqlParser.UidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUid()");}
+	@Override public void enterUid(MySqlParser.UidContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterUid()");}
 	@Override public void exitUid(MySqlParser.UidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUid()");}
 	@Override public void enterSimpleId(MySqlParser.SimpleIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleId()");}
 	@Override public void exitSimpleId(MySqlParser.SimpleIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleId()");}
@@ -735,41 +736,41 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterUidList(MySqlParser.UidListContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUidList()");}
 	@Override public void exitUidList(MySqlParser.UidListContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUidList()");}
 	@Override public void enterTables(MySqlParser.TablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTables()");}
-	@Override public void exitTables(MySqlParser.TablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterExpressions(MySqlParser.ExpressionsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitExpressions(MySqlParser.ExpressionsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterConstants(MySqlParser.ConstantsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitConstants(MySqlParser.ConstantsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterSimpleStrings(MySqlParser.SimpleStringsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitSimpleStrings(MySqlParser.SimpleStringsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterUserVariables(MySqlParser.UserVariablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitUserVariables(MySqlParser.UserVariablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterDefaultValue(MySqlParser.DefaultValueContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitDefaultValue(MySqlParser.DefaultValueContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterExpressionOrDefault(MySqlParser.ExpressionOrDefaultContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitExpressionOrDefault(MySqlParser.ExpressionOrDefaultContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterIfExists(MySqlParser.IfExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitIfExists(MySqlParser.IfExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterIfNotExists(MySqlParser.IfNotExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitIfNotExists(MySqlParser.IfNotExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterSimpleFunctionCall(MySqlParser.SimpleFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitSimpleFunctionCall(MySqlParser.SimpleFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void enterDataTypeFunctionCall(MySqlParser.DataTypeFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
-	@Override public void exitDataTypeFunctionCall(MySqlParser.DataTypeFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitTables(MySqlParser.TablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTables()");}
+	@Override public void enterIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIndexColumnNames()");}
+	@Override public void exitIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIndexColumnNames()");}
+	@Override public void enterExpressions(MySqlParser.ExpressionsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterExpressions()");}
+	@Override public void exitExpressions(MySqlParser.ExpressionsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitExpressions()");}
+	@Override public void enterExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterExpressionsWithDefaults()");}
+	@Override public void exitExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitExpressionsWithDefaults()");}
+	@Override public void enterConstants(MySqlParser.ConstantsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterConstants()");}
+	@Override public void exitConstants(MySqlParser.ConstantsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitConstants()");}
+	@Override public void enterSimpleStrings(MySqlParser.SimpleStringsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleStrings()");}
+	@Override public void exitSimpleStrings(MySqlParser.SimpleStringsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleStrings()");}
+	@Override public void enterUserVariables(MySqlParser.UserVariablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUserVariables()");}
+	@Override public void exitUserVariables(MySqlParser.UserVariablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUserVariables()");}
+	@Override public void enterDefaultValue(MySqlParser.DefaultValueContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDefaultValue()");}
+	@Override public void exitDefaultValue(MySqlParser.DefaultValueContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDefaultValue()");}
+	@Override public void enterExpressionOrDefault(MySqlParser.ExpressionOrDefaultContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterExpressionOrDefault()");}
+	@Override public void exitExpressionOrDefault(MySqlParser.ExpressionOrDefaultContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitExpressionOrDefault()");}
+	@Override public void enterIfExists(MySqlParser.IfExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIfExists()");}
+	@Override public void exitIfExists(MySqlParser.IfExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIfExists()");}
+	@Override public void enterIfNotExists(MySqlParser.IfNotExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIfNotExists()");}
+	@Override public void exitIfNotExists(MySqlParser.IfNotExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIfNotExists()");}
+	@Override public void enterSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSpecificFunctionCall()");}
+	@Override public void exitSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSpecificFunctionCall()");}
+	@Override public void enterAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAggregateFunctionCall()");}
+	@Override public void exitAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAggregateFunctionCall()");}
+	@Override public void enterScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterScalarFunctionCall()");}
+	@Override public void exitScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitScalarFunctionCall()");}
+	@Override public void enterUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUdfFunctionCall()");}
+	@Override public void exitUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUdfFunctionCall()");}
+	@Override public void enterPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPasswordFunctionCall()");}
+	@Override public void exitPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPasswordFunctionCall()");}
+	@Override public void enterSimpleFunctionCall(MySqlParser.SimpleFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleFunctionCall()");}
+	@Override public void exitSimpleFunctionCall(MySqlParser.SimpleFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleFunctionCall()");}
+	@Override public void enterDataTypeFunctionCall(MySqlParser.DataTypeFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDataTypeFunctionCall()");}
+	@Override public void exitDataTypeFunctionCall(MySqlParser.DataTypeFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDataTypeFunctionCall()");}
 	@Override public void enterValuesFunctionCall(MySqlParser.ValuesFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterValuesFunctionCall()");}
 	@Override public void exitValuesFunctionCall(MySqlParser.ValuesFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitValuesFunctionCall()");}
 	@Override public void enterCaseFunctionCall(MySqlParser.CaseFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCaseFunctionCall()");}
