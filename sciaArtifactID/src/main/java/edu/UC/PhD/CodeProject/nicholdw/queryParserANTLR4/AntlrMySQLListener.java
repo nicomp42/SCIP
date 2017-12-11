@@ -36,67 +36,67 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		queryClause = new QueryClauseUnknown();
 	}
 	@Override public void enterRoot(MySqlParser.RootContext ctx) {
-		System.out.println("AntlrMySQLListener.enterRoot()");
+		Log.logQueryParseProgress("AntlrMySQLListener.enterRoot()");
 	}
 	@Override public void exitRoot(MySqlParser.RootContext ctx) {
-		System.out.println("AntlrMySQLListener.exitRoot()");
+		Log.logQueryParseProgress("AntlrMySQLListener.exitRoot()");
 	}
 	@Override public void enterSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
-		Log.logProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText());
 
 	}
 
 	@Override public void exitSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
-		Log.logProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText());
 	}
 
 	@Override public void enterSelectElements(MySqlParser.SelectElementsContext ctx) {
-		Log.logProgress("AntlrMySQLListener.enterSelectElements: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectElements: " + ctx.getText());
 	}
 
 	@Override public void exitSelectElements(MySqlParser.SelectElementsContext ctx) {
-		Log.logProgress("AntlrMySQLListener.exitSelectElements: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectElements: " + ctx.getText());
 	}
 
 	@Override public void enterSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
-		Log.logProgress("AntlrMySQLListener.enterSelectStarElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectStarElement: " + ctx.getText());
 	}
 
 	@Override public void exitSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
-		Log.logProgress("AntlrMySQLListener.exitSelectStarElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectStarElement: " + ctx.getText());
 	}
 	@Override public void enterSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
-		Log.logProgress("AntlrMySQLListener.enterSelectColumnElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectColumnElement: " + ctx.getText());
 	}
 	@Override public void exitSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
-		Log.logProgress("AntlrMySQLListener.exitSelectColumnElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectColumnElement: " + ctx.getText());
 	}
 
 	@Override public void enterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
-		Log.logProgress("AntlrMySQLListener.enterSelectFunctionElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectFunctionElement: " + ctx.getText());
 	}
 	@Override public void exitSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
-		Log.logProgress("AntlrMySQLListener.exitSelectFunctionElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectFunctionElement: " + ctx.getText());
 	}
 	@Override public void enterSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
-		Log.logProgress("AntlrMySQLListener.enterSelectExpressionElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectExpressionElement: " + ctx.getText());
 	}
 	@Override public void exitSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
-		Log.logProgress("AntlrMySQLListener.exitSelectExpressionElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectExpressionElement: " + ctx.getText());
 	}
 
 	@Override public void enterSelectIntoVariables(MySqlParser.SelectIntoVariablesContext ctx) {
-		Log.logProgress("AntlrMySQLListener.enterSelectIntoVariables: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoVariables: " + ctx.getText());
 	}
 	@Override public void exitSelectIntoVariables(MySqlParser.SelectIntoVariablesContext ctx) {
-		Log.logProgress("AntlrMySQLListener.exitSelectIntoVariables: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoVariables: " + ctx.getText());
 
 	}
 
 
 	@Override
 	public void exitRight_element(@NotNull MySqlParser.Right_elementContext ctx) {
-		Log.logProgress("exitRight_element(): " + ctx.getText() + ": ctx.getText() = " + ctx.getText());
+		Log.logQueryParseProgress("exitRight_element(): " + ctx.getText() + ": ctx.getText() = " + ctx.getText());
 		try {
 			visit(ctx);
 		} catch (Exception ex) {
@@ -105,7 +105,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 
 	public void exitLeft_element(@NotNull MySqlParser.Left_elementContext ctx) {
-		Log.logProgress("exitLeft_element(): " + ctx.getText() + ": ctx.getText() = " + ctx.getText());
+		Log.logQueryParseProgress("exitLeft_element(): " + ctx.getText() + ": ctx.getText() = " + ctx.getText());
 		try {
 			visit(ctx);
 		} catch (Exception ex) {
@@ -116,7 +116,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	private boolean checkForAttribute(ParseTree pt) {
 		boolean isAttribute = false;
 		String attribute = pt.getText();
-		Log.logProgress("Terminal Node: " + attribute);
+		Log.logQueryParseProgress("Terminal Node: " + attribute);
 		if (QueryParser.isAttribute(attribute)) {
 			// It's an attribute. Add it to the list of attributes in the current query definition
 			isAttribute = true;
@@ -183,12 +183,12 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override
 	public void enterWhere_clause(MySqlParser.Where_clauseContext ctx) {
 		queryClause = new QueryClauseWhere();
-		Log.logProgress("enterWhere_clause()"); // : " + ctx.getText() + ":
+		Log.logQueryParseProgress("enterWhere_clause()"); // : " + ctx.getText() + ":
 													// ctx.getText() = " +
 													// ctx.getText());
 	}
 	public void exitWhere_clause(MySqlParser.Where_clauseContext ctx) {
-		Log.logProgress("exitWhere_clause()"); // :
+		Log.logQueryParseProgress("exitWhere_clause()"); // :
 													// ctx.expression().getText()
 													// = " +
 													// ctx.expression().getText());
@@ -198,23 +198,23 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override
 	public void enterColumn_name(MySqlParser.Column_nameContext ctx) {
-		Log.logProgress("enterColumn_name(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
+		Log.logQueryParseProgress("enterColumn_name(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
 		columnNameParts.init();
 	}
 	@Override
 	public void enterColumn_name_alias(MySqlParser.Column_name_aliasContext ctx) {
-		Log.logProgress("enterColumn_name_alias(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
+		Log.logQueryParseProgress("enterColumn_name_alias(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
 	}
 	@Override
 	public void exitColumn_name_alias(MySqlParser.Column_name_aliasContext ctx) {
-		Log.logProgress("exitColumn_name_alias(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
+		Log.logQueryParseProgress("exitColumn_name_alias(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
 		columnNameParts.aliasName = ctx.getText(); // There will be nothing but
 													// the terminal node when we
 													// are in this context
 	}
 	@Override
 	public void exitColumn_name(MySqlParser.Column_nameContext ctx) {
-		Log.logProgress("exitColumn_name(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
+		Log.logQueryParseProgress("exitColumn_name(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
 		parseColumnName(ctx.ID()); // ctx.getText());
 		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(columnNameParts.schemaName,
 				                                                             columnNameParts.tableName,
@@ -240,7 +240,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			columnNameParts.schemaName = parts.get(0).toString();
 			break;
 		default:
-			Log.logProgress("parseColumnName(List<TerminalNode>): not the right number of parts: " + parts.size() + " ("
+			Log.logQueryParseProgress("parseColumnName(List<TerminalNode>): not the right number of parts: " + parts.size() + " ("
 					+ parts.toString() + ")");
 		}
 	}
@@ -256,13 +256,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			columnNameParts.schemaName = parts.get(0).toString();
 			break;
 		default:
-			Log.logProgress("parseTableName(List<TerminalNode>): not the right number of parts: " + parts.size() + " ("
+			Log.logQueryParseProgress("parseTableName(List<TerminalNode>): not the right number of parts: " + parts.size() + " ("
 					+ parts.toString() + ")");
 		}
 	}
 	public void exitTable_name(MySqlParser.Table_nameContext ctx) {
 		// TODO our grammar doesn't handle appended schema names on tables, we need to add that logic when we get new grammar.
-		Log.logProgress("exitTable_name: " + ctx.getText());
+		Log.logQueryParseProgress("exitTable_name: " + ctx.getText());
 		tableNameParts.tableName = ctx.getText();
 		currentQueryTable = new QueryTable(tableNameParts.schemaName, tableNameParts.tableName, tableNameParts.aliasName, queryClause);	// There won't be an alias, yet.
 		queryDefinition.getQueryTables().addQueryTable(currentQueryTable);
@@ -271,15 +271,15 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 
 	}
 	public void enterTable_alias(Table_aliasContext ctx) {
-		Log.logProgress("enterTable_alias: " + ctx.getText());
+		Log.logQueryParseProgress("enterTable_alias: " + ctx.getText());
 	}
 	public void exitTable_alias(Table_aliasContext ctx) {
-		Log.logProgress("exitTable_alias: " + ctx.getText());
+		Log.logQueryParseProgress("exitTable_alias: " + ctx.getText());
 		currentQueryTable.setAliasName(ctx.getText());	// There'd better be a table! See the exitTable_name() method
 	}
 	private void printTerminalNodes(List<TerminalNode> tns) {
 		for (TerminalNode tn : tns) {
-			Log.logProgress(tn.toString());
+			Log.logQueryParseProgress(tn.toString());
 		}
 	}
 	class ColumnNameParts {
@@ -306,589 +306,588 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			aliasName = "";
 		}
 	}
-	@Override public void enterSelectIntoDumpFile(MySqlParser.SelectIntoDumpFileContext ctx) { }
-	@Override public void exitSelectIntoDumpFile(MySqlParser.SelectIntoDumpFileContext ctx) { }
-	@Override public void enterSelectIntoTextFile(MySqlParser.SelectIntoTextFileContext ctx) { }
-	@Override public void exitSelectIntoTextFile(MySqlParser.SelectIntoTextFileContext ctx) { }
-	@Override public void enterSelectFieldsInto(MySqlParser.SelectFieldsIntoContext ctx) { }
-	@Override public void exitSelectFieldsInto(MySqlParser.SelectFieldsIntoContext ctx) { }
-	@Override public void enterSelectLinesInto(MySqlParser.SelectLinesIntoContext ctx) { }
-	@Override public void exitSelectLinesInto(MySqlParser.SelectLinesIntoContext ctx) { }
-	@Override public void enterFromClause(MySqlParser.FromClauseContext ctx) { }
-	@Override public void exitFromClause(MySqlParser.FromClauseContext ctx) { }
-	@Override public void enterGroupByItem(MySqlParser.GroupByItemContext ctx) { }
-	@Override public void exitGroupByItem(MySqlParser.GroupByItemContext ctx) { }
-	@Override public void enterLimitClause(MySqlParser.LimitClauseContext ctx) { }
-	@Override public void exitLimitClause(MySqlParser.LimitClauseContext ctx) { }
-	@Override public void enterStartTransaction(MySqlParser.StartTransactionContext ctx) { }
-	@Override public void exitStartTransaction(MySqlParser.StartTransactionContext ctx) { }
-	@Override public void enterBeginWork(MySqlParser.BeginWorkContext ctx) { }
-	@Override public void exitBeginWork(MySqlParser.BeginWorkContext ctx) { }
-	@Override public void enterCommitWork(MySqlParser.CommitWorkContext ctx) { }
-	@Override public void exitCommitWork(MySqlParser.CommitWorkContext ctx) { }
-	@Override public void enterRollbackWork(MySqlParser.RollbackWorkContext ctx) { }
-	@Override public void exitRollbackWork(MySqlParser.RollbackWorkContext ctx) { }
-	@Override public void enterSavepointStatement(MySqlParser.SavepointStatementContext ctx) { }
-	@Override public void exitSavepointStatement(MySqlParser.SavepointStatementContext ctx) { }
-	@Override public void enterRollbackStatement(MySqlParser.RollbackStatementContext ctx) { }
-	@Override public void exitRollbackStatement(MySqlParser.RollbackStatementContext ctx) { }
-	@Override public void enterReleaseStatement(MySqlParser.ReleaseStatementContext ctx) { }
-	@Override public void exitReleaseStatement(MySqlParser.ReleaseStatementContext ctx) { }
-	@Override public void enterLockTables(MySqlParser.LockTablesContext ctx) { }
-	@Override public void exitLockTables(MySqlParser.LockTablesContext ctx) { }
-	@Override public void enterUnlockTables(MySqlParser.UnlockTablesContext ctx) { }
-	@Override public void exitUnlockTables(MySqlParser.UnlockTablesContext ctx) { }
-	@Override public void enterSetAutocommitStatement(MySqlParser.SetAutocommitStatementContext ctx) { }
-	@Override public void exitSetAutocommitStatement(MySqlParser.SetAutocommitStatementContext ctx) { }
-	@Override public void enterSetTransactionStatement(MySqlParser.SetTransactionStatementContext ctx) { }
-	@Override public void exitSetTransactionStatement(MySqlParser.SetTransactionStatementContext ctx) { }
-	@Override public void enterTransactionMode(MySqlParser.TransactionModeContext ctx) { }
-	@Override public void exitTransactionMode(MySqlParser.TransactionModeContext ctx) { }
-	@Override public void enterLockTableElement(MySqlParser.LockTableElementContext ctx) { }
-	@Override public void exitLockTableElement(MySqlParser.LockTableElementContext ctx) { }
-	@Override public void enterLockAction(MySqlParser.LockActionContext ctx) { }
-	@Override public void exitLockAction(MySqlParser.LockActionContext ctx) { }
-	@Override public void enterTransactionOption(MySqlParser.TransactionOptionContext ctx) { }
-	@Override public void exitTransactionOption(MySqlParser.TransactionOptionContext ctx) { }
-	@Override public void enterTransactionLevel(MySqlParser.TransactionLevelContext ctx) { }
-	@Override public void exitTransactionLevel(MySqlParser.TransactionLevelContext ctx) { }
-	@Override public void enterChangeMaster(MySqlParser.ChangeMasterContext ctx) { }
-	@Override public void exitChangeMaster(MySqlParser.ChangeMasterContext ctx) { }
-	@Override public void enterChangeReplicationFilter(MySqlParser.ChangeReplicationFilterContext ctx) { }
-	@Override public void exitChangeReplicationFilter(MySqlParser.ChangeReplicationFilterContext ctx) { }
-	@Override public void enterPurgeBinaryLogs(MySqlParser.PurgeBinaryLogsContext ctx) { }
-	@Override public void exitPurgeBinaryLogs(MySqlParser.PurgeBinaryLogsContext ctx) { }
-	@Override public void enterResetMaster(MySqlParser.ResetMasterContext ctx) { }
-	@Override public void exitResetMaster(MySqlParser.ResetMasterContext ctx) { }
-	@Override public void enterResetSlave(MySqlParser.ResetSlaveContext ctx) { }
-	@Override public void exitResetSlave(MySqlParser.ResetSlaveContext ctx) { }
-	@Override public void enterStartSlave(MySqlParser.StartSlaveContext ctx) { }
-	@Override public void exitStartSlave(MySqlParser.StartSlaveContext ctx) { }
-	@Override public void enterStopSlave(MySqlParser.StopSlaveContext ctx) { }
-	@Override public void exitStopSlave(MySqlParser.StopSlaveContext ctx) { }
-	@Override public void enterStartGroupReplication(MySqlParser.StartGroupReplicationContext ctx) { }
-	@Override public void exitStartGroupReplication(MySqlParser.StartGroupReplicationContext ctx) { }
-	@Override public void enterStopGroupReplication(MySqlParser.StopGroupReplicationContext ctx) { }
-	@Override public void exitStopGroupReplication(MySqlParser.StopGroupReplicationContext ctx) { }
-	@Override public void enterMasterStringOption(MySqlParser.MasterStringOptionContext ctx) { }
-	@Override public void exitMasterStringOption(MySqlParser.MasterStringOptionContext ctx) { }
-	@Override public void enterMasterDecimalOption(MySqlParser.MasterDecimalOptionContext ctx) { }
-	@Override public void exitMasterDecimalOption(MySqlParser.MasterDecimalOptionContext ctx) { }
-	@Override public void enterMasterBoolOption(MySqlParser.MasterBoolOptionContext ctx) { }
-	@Override public void exitMasterBoolOption(MySqlParser.MasterBoolOptionContext ctx) { }
-	@Override public void enterMasterRealOption(MySqlParser.MasterRealOptionContext ctx) { }
-	@Override public void exitMasterRealOption(MySqlParser.MasterRealOptionContext ctx) { }
-	@Override public void enterMasterUidListOption(MySqlParser.MasterUidListOptionContext ctx) { }
-	@Override public void exitMasterUidListOption(MySqlParser.MasterUidListOptionContext ctx) { }
-	@Override public void enterStringMasterOption(MySqlParser.StringMasterOptionContext ctx) { }
-	@Override public void exitStringMasterOption(MySqlParser.StringMasterOptionContext ctx) { }
-	@Override public void enterDecimalMasterOption(MySqlParser.DecimalMasterOptionContext ctx) { }
-	@Override public void exitDecimalMasterOption(MySqlParser.DecimalMasterOptionContext ctx) { }
-	@Override public void enterBoolMasterOption(MySqlParser.BoolMasterOptionContext ctx) { }
-	@Override public void exitBoolMasterOption(MySqlParser.BoolMasterOptionContext ctx) { }
-	@Override public void enterChannelOption(MySqlParser.ChannelOptionContext ctx) { }
-	@Override public void exitChannelOption(MySqlParser.ChannelOptionContext ctx) { }
-	@Override public void enterDoDbReplication(MySqlParser.DoDbReplicationContext ctx) { }
-	@Override public void exitDoDbReplication(MySqlParser.DoDbReplicationContext ctx) { }
-	@Override public void enterIgnoreDbReplication(MySqlParser.IgnoreDbReplicationContext ctx) { }
-	@Override public void exitIgnoreDbReplication(MySqlParser.IgnoreDbReplicationContext ctx) { }
-	@Override public void enterDoTableReplication(MySqlParser.DoTableReplicationContext ctx) { }
-	@Override public void exitDoTableReplication(MySqlParser.DoTableReplicationContext ctx) { }
-	@Override public void enterIgnoreTableReplication(MySqlParser.IgnoreTableReplicationContext ctx) { }
-	@Override public void exitIgnoreTableReplication(MySqlParser.IgnoreTableReplicationContext ctx) { }
-	@Override public void enterWildDoTableReplication(MySqlParser.WildDoTableReplicationContext ctx) { }
-	@Override public void exitWildDoTableReplication(MySqlParser.WildDoTableReplicationContext ctx) { }
-	@Override public void enterWildIgnoreTableReplication(MySqlParser.WildIgnoreTableReplicationContext ctx) { }
-	@Override public void exitWildIgnoreTableReplication(MySqlParser.WildIgnoreTableReplicationContext ctx) { }
-	@Override public void enterRewriteDbReplication(MySqlParser.RewriteDbReplicationContext ctx) { }
-	@Override public void exitRewriteDbReplication(MySqlParser.RewriteDbReplicationContext ctx) { }
-	@Override public void enterTablePair(MySqlParser.TablePairContext ctx) { }
-	@Override public void exitTablePair(MySqlParser.TablePairContext ctx) { }
-	@Override public void enterThreadType(MySqlParser.ThreadTypeContext ctx) { }
-	@Override public void exitThreadType(MySqlParser.ThreadTypeContext ctx) { }
-	@Override public void enterGtidsUntilOption(MySqlParser.GtidsUntilOptionContext ctx) { }
-	@Override public void exitGtidsUntilOption(MySqlParser.GtidsUntilOptionContext ctx) { }
-	@Override public void enterMasterLogUntilOption(MySqlParser.MasterLogUntilOptionContext ctx) { }
-	@Override public void exitMasterLogUntilOption(MySqlParser.MasterLogUntilOptionContext ctx) { }
-	@Override public void enterRelayLogUntilOption(MySqlParser.RelayLogUntilOptionContext ctx) { }
-	@Override public void exitRelayLogUntilOption(MySqlParser.RelayLogUntilOptionContext ctx) { }
-	@Override public void enterSqlGapsUntilOption(MySqlParser.SqlGapsUntilOptionContext ctx) { }
-	@Override public void exitSqlGapsUntilOption(MySqlParser.SqlGapsUntilOptionContext ctx) { }
-	@Override public void enterUserConnectionOption(MySqlParser.UserConnectionOptionContext ctx) { }
-	@Override public void exitUserConnectionOption(MySqlParser.UserConnectionOptionContext ctx) { }
-	@Override public void enterPasswordConnectionOption(MySqlParser.PasswordConnectionOptionContext ctx) { }
-	@Override public void exitPasswordConnectionOption(MySqlParser.PasswordConnectionOptionContext ctx) { }
-	@Override public void enterDefaultAuthConnectionOption(MySqlParser.DefaultAuthConnectionOptionContext ctx) { }
-	@Override public void exitDefaultAuthConnectionOption(MySqlParser.DefaultAuthConnectionOptionContext ctx) { }
-	@Override public void enterPluginDirConnectionOption(MySqlParser.PluginDirConnectionOptionContext ctx) { }
-	@Override public void exitPluginDirConnectionOption(MySqlParser.PluginDirConnectionOptionContext ctx) { }
-	@Override public void enterGtuidSet(MySqlParser.GtuidSetContext ctx) { }
-	@Override public void exitGtuidSet(MySqlParser.GtuidSetContext ctx) { }
-	@Override public void enterXaStartTransaction(MySqlParser.XaStartTransactionContext ctx) { }
-	@Override public void exitXaStartTransaction(MySqlParser.XaStartTransactionContext ctx) { }
-	@Override public void enterXaEndTransaction(MySqlParser.XaEndTransactionContext ctx) { }
-	@Override public void exitXaEndTransaction(MySqlParser.XaEndTransactionContext ctx) { }
-	@Override public void enterXaPrepareStatement(MySqlParser.XaPrepareStatementContext ctx) { }
-	@Override public void exitXaPrepareStatement(MySqlParser.XaPrepareStatementContext ctx) { }
-	@Override public void enterXaCommitWork(MySqlParser.XaCommitWorkContext ctx) { }
-	@Override public void exitXaCommitWork(MySqlParser.XaCommitWorkContext ctx) { }
-	@Override public void enterXaRollbackWork(MySqlParser.XaRollbackWorkContext ctx) { }
-	@Override public void exitXaRollbackWork(MySqlParser.XaRollbackWorkContext ctx) { }
-	@Override public void enterXaRecoverWork(MySqlParser.XaRecoverWorkContext ctx) { }
-	@Override public void exitXaRecoverWork(MySqlParser.XaRecoverWorkContext ctx) { }
-	@Override public void enterPrepareStatement(MySqlParser.PrepareStatementContext ctx) { }
-	@Override public void exitPrepareStatement(MySqlParser.PrepareStatementContext ctx) { }
-	@Override public void enterExecuteStatement(MySqlParser.ExecuteStatementContext ctx) { }
-	@Override public void exitExecuteStatement(MySqlParser.ExecuteStatementContext ctx) { }
-	@Override public void enterDeallocatePrepare(MySqlParser.DeallocatePrepareContext ctx) { }
-	@Override public void exitDeallocatePrepare(MySqlParser.DeallocatePrepareContext ctx) { }
-	@Override public void enterRoutineBody(MySqlParser.RoutineBodyContext ctx) { }
-	@Override public void exitRoutineBody(MySqlParser.RoutineBodyContext ctx) { }
-	@Override public void enterBlockStatement(MySqlParser.BlockStatementContext ctx) { }
-	@Override public void exitBlockStatement(MySqlParser.BlockStatementContext ctx) { }
-	@Override public void enterCaseStatement(MySqlParser.CaseStatementContext ctx) { }
-	@Override public void exitCaseStatement(MySqlParser.CaseStatementContext ctx) { }
-	@Override public void enterIfStatement(MySqlParser.IfStatementContext ctx) { }
-	@Override public void exitIfStatement(MySqlParser.IfStatementContext ctx) { }
-	@Override public void enterIterateStatement(MySqlParser.IterateStatementContext ctx) { }
-	@Override public void exitIterateStatement(MySqlParser.IterateStatementContext ctx) { }
-	@Override public void enterLeaveStatement(MySqlParser.LeaveStatementContext ctx) { }
-	@Override public void exitLeaveStatement(MySqlParser.LeaveStatementContext ctx) { }
-	@Override public void enterLoopStatement(MySqlParser.LoopStatementContext ctx) { }
-	@Override public void exitLoopStatement(MySqlParser.LoopStatementContext ctx) { }
-	@Override public void enterRepeatStatement(MySqlParser.RepeatStatementContext ctx) { }
-	@Override public void exitRepeatStatement(MySqlParser.RepeatStatementContext ctx) { }
-	@Override public void enterReturnStatement(MySqlParser.ReturnStatementContext ctx) { }
-	@Override public void exitReturnStatement(MySqlParser.ReturnStatementContext ctx) { }
-	@Override public void enterWhileStatement(MySqlParser.WhileStatementContext ctx) { }
-	@Override public void exitWhileStatement(MySqlParser.WhileStatementContext ctx) { }
-	@Override public void enterCloseCursor(MySqlParser.CloseCursorContext ctx) { }
-	@Override public void exitCloseCursor(MySqlParser.CloseCursorContext ctx) { }
-	@Override public void enterFetchCursor(MySqlParser.FetchCursorContext ctx) { }
-	@Override public void exitFetchCursor(MySqlParser.FetchCursorContext ctx) { }
-	@Override public void enterOpenCursor(MySqlParser.OpenCursorContext ctx) { }
-	@Override public void exitOpenCursor(MySqlParser.OpenCursorContext ctx) { }
-	@Override public void enterDeclareVariable(MySqlParser.DeclareVariableContext ctx) { }
-	@Override public void exitDeclareVariable(MySqlParser.DeclareVariableContext ctx) { }
-	@Override public void enterDeclareCondition(MySqlParser.DeclareConditionContext ctx) { }
-	@Override public void exitDeclareCondition(MySqlParser.DeclareConditionContext ctx) { }
-	@Override public void enterDeclareCursor(MySqlParser.DeclareCursorContext ctx) { }
-	@Override public void exitDeclareCursor(MySqlParser.DeclareCursorContext ctx) { }
-	@Override public void enterDeclareHandler(MySqlParser.DeclareHandlerContext ctx) { }
-	@Override public void exitDeclareHandler(MySqlParser.DeclareHandlerContext ctx) { }
-	@Override public void enterHandlerConditionCode(MySqlParser.HandlerConditionCodeContext ctx) { }
-	@Override public void exitHandlerConditionCode(MySqlParser.HandlerConditionCodeContext ctx) { }
-	@Override public void enterHandlerConditionState(MySqlParser.HandlerConditionStateContext ctx) { }
-	@Override public void exitHandlerConditionState(MySqlParser.HandlerConditionStateContext ctx) { }
-	@Override public void enterHandlerConditionName(MySqlParser.HandlerConditionNameContext ctx) { }
-	@Override public void exitHandlerConditionName(MySqlParser.HandlerConditionNameContext ctx) { }
-	@Override public void enterHandlerConditionWarning(MySqlParser.HandlerConditionWarningContext ctx) { }
-	@Override public void exitHandlerConditionWarning(MySqlParser.HandlerConditionWarningContext ctx) { }
-	@Override public void enterHandlerConditionNotfound(MySqlParser.HandlerConditionNotfoundContext ctx) { }
-	@Override public void exitHandlerConditionNotfound(MySqlParser.HandlerConditionNotfoundContext ctx) { }
-	@Override public void enterHandlerConditionException(MySqlParser.HandlerConditionExceptionContext ctx) { }
-	@Override public void exitHandlerConditionException(MySqlParser.HandlerConditionExceptionContext ctx) { }
-	@Override public void enterProcedureSqlStatement(MySqlParser.ProcedureSqlStatementContext ctx) { }
-	@Override public void exitProcedureSqlStatement(MySqlParser.ProcedureSqlStatementContext ctx) { }
-	@Override public void enterCaseAlternative(MySqlParser.CaseAlternativeContext ctx) { }
-	@Override public void exitCaseAlternative(MySqlParser.CaseAlternativeContext ctx) { }
-	@Override public void enterElifAlternative(MySqlParser.ElifAlternativeContext ctx) { }
-	@Override public void exitElifAlternative(MySqlParser.ElifAlternativeContext ctx) { }
-	@Override public void enterAlterUserMysqlV56(MySqlParser.AlterUserMysqlV56Context ctx) { }
-	@Override public void exitAlterUserMysqlV56(MySqlParser.AlterUserMysqlV56Context ctx) { }
-	@Override public void enterAlterUserMysqlV57(MySqlParser.AlterUserMysqlV57Context ctx) { }
-	@Override public void exitAlterUserMysqlV57(MySqlParser.AlterUserMysqlV57Context ctx) { }
-	@Override public void enterCreateUserMysqlV56(MySqlParser.CreateUserMysqlV56Context ctx) { }
-	@Override public void exitCreateUserMysqlV56(MySqlParser.CreateUserMysqlV56Context ctx) { }
-	@Override public void enterCreateUserMysqlV57(MySqlParser.CreateUserMysqlV57Context ctx) { }
-	@Override public void exitCreateUserMysqlV57(MySqlParser.CreateUserMysqlV57Context ctx) { }
-	@Override public void enterDropUser(MySqlParser.DropUserContext ctx) { }
-	@Override public void exitDropUser(MySqlParser.DropUserContext ctx) { }
-	@Override public void enterGrantStatement(MySqlParser.GrantStatementContext ctx) { }
-	@Override public void exitGrantStatement(MySqlParser.GrantStatementContext ctx) { }
-	@Override public void enterGrantProxy(MySqlParser.GrantProxyContext ctx) { }
-	@Override public void exitGrantProxy(MySqlParser.GrantProxyContext ctx) { }
-	@Override public void enterRenameUser(MySqlParser.RenameUserContext ctx) { }
-	@Override public void exitRenameUser(MySqlParser.RenameUserContext ctx) { }
-	@Override public void enterDetailRevoke(MySqlParser.DetailRevokeContext ctx) { }
-	@Override public void exitDetailRevoke(MySqlParser.DetailRevokeContext ctx) { }
-	@Override public void enterShortRevoke(MySqlParser.ShortRevokeContext ctx) { }
-	@Override public void exitShortRevoke(MySqlParser.ShortRevokeContext ctx) { }
-	@Override public void enterRevokeProxy(MySqlParser.RevokeProxyContext ctx) { }
-	@Override public void exitRevokeProxy(MySqlParser.RevokeProxyContext ctx) { }
-	@Override public void enterSetPasswordStatement(MySqlParser.SetPasswordStatementContext ctx) { }
-	@Override public void exitSetPasswordStatement(MySqlParser.SetPasswordStatementContext ctx) { }
-	@Override public void enterUserSpecification(MySqlParser.UserSpecificationContext ctx) { }
-	@Override public void exitUserSpecification(MySqlParser.UserSpecificationContext ctx) { }
-	@Override public void enterPasswordAuthOption(MySqlParser.PasswordAuthOptionContext ctx) { }
-	@Override public void exitPasswordAuthOption(MySqlParser.PasswordAuthOptionContext ctx) { }
-	@Override public void enterStringAuthOption(MySqlParser.StringAuthOptionContext ctx) { }
-	@Override public void exitStringAuthOption(MySqlParser.StringAuthOptionContext ctx) { }
-	@Override public void enterHashAuthOption(MySqlParser.HashAuthOptionContext ctx) { }
-	@Override public void exitHashAuthOption(MySqlParser.HashAuthOptionContext ctx) { }
-	@Override public void enterSimpleAuthOption(MySqlParser.SimpleAuthOptionContext ctx) { }
-	@Override public void exitSimpleAuthOption(MySqlParser.SimpleAuthOptionContext ctx) { }
-	@Override public void enterTlsOption(MySqlParser.TlsOptionContext ctx) { }
-	@Override public void exitTlsOption(MySqlParser.TlsOptionContext ctx) { }
-	@Override public void enterUserResourceOption(MySqlParser.UserResourceOptionContext ctx) { }
-	@Override public void exitUserResourceOption(MySqlParser.UserResourceOptionContext ctx) { }
-	@Override public void enterUserPasswordOption(MySqlParser.UserPasswordOptionContext ctx) { }
-	@Override public void exitUserPasswordOption(MySqlParser.UserPasswordOptionContext ctx) { }
-	@Override public void enterUserLockOption(MySqlParser.UserLockOptionContext ctx) { }
-	@Override public void exitUserLockOption(MySqlParser.UserLockOptionContext ctx) { }
-	@Override public void enterPrivelegeClause(MySqlParser.PrivelegeClauseContext ctx) { }
-	@Override public void exitPrivelegeClause(MySqlParser.PrivelegeClauseContext ctx) { }
-	@Override public void enterPrivilege(MySqlParser.PrivilegeContext ctx) { }
-	@Override public void exitPrivilege(MySqlParser.PrivilegeContext ctx) { }
-	@Override public void enterCurrentSchemaPriviLevel(MySqlParser.CurrentSchemaPriviLevelContext ctx) { }
-	@Override public void exitCurrentSchemaPriviLevel(MySqlParser.CurrentSchemaPriviLevelContext ctx) { }
-	@Override public void enterGlobalPrivLevel(MySqlParser.GlobalPrivLevelContext ctx) { }
-	@Override public void exitGlobalPrivLevel(MySqlParser.GlobalPrivLevelContext ctx) { }
-	@Override public void enterDefiniteSchemaPrivLevel(MySqlParser.DefiniteSchemaPrivLevelContext ctx) { }
-	@Override public void exitDefiniteSchemaPrivLevel(MySqlParser.DefiniteSchemaPrivLevelContext ctx) { }
-	@Override public void enterDefiniteFullTablePrivLevel(MySqlParser.DefiniteFullTablePrivLevelContext ctx) { }
-	@Override public void exitDefiniteFullTablePrivLevel(MySqlParser.DefiniteFullTablePrivLevelContext ctx) { }
-	@Override public void enterDefiniteTablePrivLevel(MySqlParser.DefiniteTablePrivLevelContext ctx) { }
-	@Override public void exitDefiniteTablePrivLevel(MySqlParser.DefiniteTablePrivLevelContext ctx) { }
-	@Override public void enterRenameUserClause(MySqlParser.RenameUserClauseContext ctx) { }
-	@Override public void exitRenameUserClause(MySqlParser.RenameUserClauseContext ctx) { }
-	@Override public void enterAnalyzeTable(MySqlParser.AnalyzeTableContext ctx) { }
-	@Override public void exitAnalyzeTable(MySqlParser.AnalyzeTableContext ctx) { }
-	@Override public void enterCheckTable(MySqlParser.CheckTableContext ctx) { }
-	@Override public void exitCheckTable(MySqlParser.CheckTableContext ctx) { }
-	@Override public void enterChecksumTable(MySqlParser.ChecksumTableContext ctx) { }
-	@Override public void exitChecksumTable(MySqlParser.ChecksumTableContext ctx) { }
-	@Override public void enterOptimizeTable(MySqlParser.OptimizeTableContext ctx) { }
-	@Override public void exitOptimizeTable(MySqlParser.OptimizeTableContext ctx) { }
-	@Override public void enterRepairTable(MySqlParser.RepairTableContext ctx) { }
-	@Override public void exitRepairTable(MySqlParser.RepairTableContext ctx) { }
-	@Override public void enterCheckTableOption(MySqlParser.CheckTableOptionContext ctx) { }
-	@Override public void exitCheckTableOption(MySqlParser.CheckTableOptionContext ctx) { }
-	@Override public void enterCreateUdfunction(MySqlParser.CreateUdfunctionContext ctx) { }
-	@Override public void exitCreateUdfunction(MySqlParser.CreateUdfunctionContext ctx) { }
-	@Override public void enterInstallPlugin(MySqlParser.InstallPluginContext ctx) { }
-	@Override public void exitInstallPlugin(MySqlParser.InstallPluginContext ctx) { }
-	@Override public void enterUninstallPlugin(MySqlParser.UninstallPluginContext ctx) { }
-	@Override public void exitUninstallPlugin(MySqlParser.UninstallPluginContext ctx) { }
-	@Override public void enterSetVariable(MySqlParser.SetVariableContext ctx) { }
-	@Override public void exitSetVariable(MySqlParser.SetVariableContext ctx) { }
-	@Override public void enterSetCharset(MySqlParser.SetCharsetContext ctx) { }
-	@Override public void exitSetCharset(MySqlParser.SetCharsetContext ctx) { }
-	@Override public void enterSetNames(MySqlParser.SetNamesContext ctx) { }
-	@Override public void exitSetNames(MySqlParser.SetNamesContext ctx) { }
-	@Override public void enterSetPassword(MySqlParser.SetPasswordContext ctx) { }
-	@Override public void exitSetPassword(MySqlParser.SetPasswordContext ctx) { }
-	@Override public void enterSetTransaction(MySqlParser.SetTransactionContext ctx) { }
-	@Override public void exitSetTransaction(MySqlParser.SetTransactionContext ctx) { }
-	@Override public void enterSetAutocommit(MySqlParser.SetAutocommitContext ctx) { }
-	@Override public void exitSetAutocommit(MySqlParser.SetAutocommitContext ctx) { }
-	@Override public void enterShowMasterLogs(MySqlParser.ShowMasterLogsContext ctx) { }
-	@Override public void exitShowMasterLogs(MySqlParser.ShowMasterLogsContext ctx) { }
-	@Override public void enterShowLogEvents(MySqlParser.ShowLogEventsContext ctx) { }
-	@Override public void exitShowLogEvents(MySqlParser.ShowLogEventsContext ctx) { }
-	@Override public void enterShowObjectFilter(MySqlParser.ShowObjectFilterContext ctx) { }
-	@Override public void exitShowObjectFilter(MySqlParser.ShowObjectFilterContext ctx) { }
-	@Override public void enterShowColumns(MySqlParser.ShowColumnsContext ctx) { }
-	@Override public void exitShowColumns(MySqlParser.ShowColumnsContext ctx) { }
-	@Override public void enterShowCreateDb(MySqlParser.ShowCreateDbContext ctx) { }
-	@Override public void exitShowCreateDb(MySqlParser.ShowCreateDbContext ctx) { }
-	@Override public void enterShowCreateFullIdObject(MySqlParser.ShowCreateFullIdObjectContext ctx) { }
-	@Override public void exitShowCreateFullIdObject(MySqlParser.ShowCreateFullIdObjectContext ctx) { }
-	@Override public void enterShowCreateUser(MySqlParser.ShowCreateUserContext ctx) { }
-	@Override public void exitShowCreateUser(MySqlParser.ShowCreateUserContext ctx) { }
-	@Override public void enterShowEngine(MySqlParser.ShowEngineContext ctx) { }
-	@Override public void exitShowEngine(MySqlParser.ShowEngineContext ctx) { }
-	@Override public void enterShowGlobalInfo(MySqlParser.ShowGlobalInfoContext ctx) { }
-	@Override public void exitShowGlobalInfo(MySqlParser.ShowGlobalInfoContext ctx) { }
-	@Override public void enterShowErrors(MySqlParser.ShowErrorsContext ctx) { }
-	@Override public void exitShowErrors(MySqlParser.ShowErrorsContext ctx) { }
-	@Override public void enterShowCountErrors(MySqlParser.ShowCountErrorsContext ctx) { }
-	@Override public void exitShowCountErrors(MySqlParser.ShowCountErrorsContext ctx) { }
-	@Override public void enterShowSchemaFilter(MySqlParser.ShowSchemaFilterContext ctx) { }
-	@Override public void exitShowSchemaFilter(MySqlParser.ShowSchemaFilterContext ctx) { }
-	@Override public void enterShowRoutine(MySqlParser.ShowRoutineContext ctx) { }
-	@Override public void exitShowRoutine(MySqlParser.ShowRoutineContext ctx) { }
-	@Override public void enterShowGrants(MySqlParser.ShowGrantsContext ctx) { }
-	@Override public void exitShowGrants(MySqlParser.ShowGrantsContext ctx) { }
-	@Override public void enterShowIndexes(MySqlParser.ShowIndexesContext ctx) { }
-	@Override public void exitShowIndexes(MySqlParser.ShowIndexesContext ctx) { }
-	@Override public void enterShowOpenTables(MySqlParser.ShowOpenTablesContext ctx) { }
-	@Override public void exitShowOpenTables(MySqlParser.ShowOpenTablesContext ctx) { }
-	@Override public void enterShowProfile(MySqlParser.ShowProfileContext ctx) { }
-	@Override public void exitShowProfile(MySqlParser.ShowProfileContext ctx) { }
-	@Override public void enterShowSlaveStatus(MySqlParser.ShowSlaveStatusContext ctx) { }
-	@Override public void exitShowSlaveStatus(MySqlParser.ShowSlaveStatusContext ctx) { }
-	@Override public void enterVariableClause(MySqlParser.VariableClauseContext ctx) { }
-	@Override public void exitVariableClause(MySqlParser.VariableClauseContext ctx) { }
-	@Override public void enterShowCommonEntity(MySqlParser.ShowCommonEntityContext ctx) { }
-	@Override public void exitShowCommonEntity(MySqlParser.ShowCommonEntityContext ctx) { }
-	@Override public void enterShowFilter(MySqlParser.ShowFilterContext ctx) { }
-	@Override public void exitShowFilter(MySqlParser.ShowFilterContext ctx) { }
-	@Override public void enterShowGlobalInfoClause(MySqlParser.ShowGlobalInfoClauseContext ctx) { }
-	@Override public void exitShowGlobalInfoClause(MySqlParser.ShowGlobalInfoClauseContext ctx) { }
-	@Override public void enterShowSchemaEntity(MySqlParser.ShowSchemaEntityContext ctx) { }
-	@Override public void exitShowSchemaEntity(MySqlParser.ShowSchemaEntityContext ctx) { }
-	@Override public void enterShowProfileType(MySqlParser.ShowProfileTypeContext ctx) { }
-	@Override public void exitShowProfileType(MySqlParser.ShowProfileTypeContext ctx) { }
-	@Override public void enterBinlogStatement(MySqlParser.BinlogStatementContext ctx) { }
-	@Override public void exitBinlogStatement(MySqlParser.BinlogStatementContext ctx) { }
-	@Override public void enterCacheIndexStatement(MySqlParser.CacheIndexStatementContext ctx) { }
-	@Override public void exitCacheIndexStatement(MySqlParser.CacheIndexStatementContext ctx) { }
-	@Override public void enterFlushStatement(MySqlParser.FlushStatementContext ctx) { }
-	@Override public void exitFlushStatement(MySqlParser.FlushStatementContext ctx) { }
-	@Override public void enterKillStatement(MySqlParser.KillStatementContext ctx) { }
-	@Override public void exitKillStatement(MySqlParser.KillStatementContext ctx) { }
-	@Override public void enterLoadIndexIntoCache(MySqlParser.LoadIndexIntoCacheContext ctx) { }
-	@Override public void exitLoadIndexIntoCache(MySqlParser.LoadIndexIntoCacheContext ctx) { }
-	@Override public void enterResetStatement(MySqlParser.ResetStatementContext ctx) { }
-	@Override public void exitResetStatement(MySqlParser.ResetStatementContext ctx) { }
-	@Override public void enterShutdownStatement(MySqlParser.ShutdownStatementContext ctx) { }
-	@Override public void exitShutdownStatement(MySqlParser.ShutdownStatementContext ctx) { }
-	@Override public void enterTableIndexes(MySqlParser.TableIndexesContext ctx) { }
-	@Override public void exitTableIndexes(MySqlParser.TableIndexesContext ctx) { }
-	@Override public void enterSimpleFlushOption(MySqlParser.SimpleFlushOptionContext ctx) { }
-	@Override public void exitSimpleFlushOption(MySqlParser.SimpleFlushOptionContext ctx) { }
-	@Override public void enterChannelFlushOption(MySqlParser.ChannelFlushOptionContext ctx) { }
-	@Override public void exitChannelFlushOption(MySqlParser.ChannelFlushOptionContext ctx) { }
-	@Override public void enterTableFlushOption(MySqlParser.TableFlushOptionContext ctx) { }
-	@Override public void exitTableFlushOption(MySqlParser.TableFlushOptionContext ctx) { }
-	@Override public void enterFlushTableOption(MySqlParser.FlushTableOptionContext ctx) { }
-	@Override public void exitFlushTableOption(MySqlParser.FlushTableOptionContext ctx) { }
-	@Override public void enterLoadedTableIndexes(MySqlParser.LoadedTableIndexesContext ctx) { }
-	@Override public void exitLoadedTableIndexes(MySqlParser.LoadedTableIndexesContext ctx) { }
-	@Override public void enterSimpleDescribeStatement(MySqlParser.SimpleDescribeStatementContext ctx) { }
-	@Override public void exitSimpleDescribeStatement(MySqlParser.SimpleDescribeStatementContext ctx) { }
-	@Override public void enterFullDescribeStatement(MySqlParser.FullDescribeStatementContext ctx) { }
-	@Override public void exitFullDescribeStatement(MySqlParser.FullDescribeStatementContext ctx) { }
-	@Override public void enterHelpStatement(MySqlParser.HelpStatementContext ctx) { }
-	@Override public void exitHelpStatement(MySqlParser.HelpStatementContext ctx) { }
-	@Override public void enterUseStatement(MySqlParser.UseStatementContext ctx) { }
-	@Override public void exitUseStatement(MySqlParser.UseStatementContext ctx) { }
-	@Override public void enterDescribeStatements(MySqlParser.DescribeStatementsContext ctx) { }
-	@Override public void exitDescribeStatements(MySqlParser.DescribeStatementsContext ctx) { }
-	@Override public void enterDescribeConnection(MySqlParser.DescribeConnectionContext ctx) { }
-	@Override public void exitDescribeConnection(MySqlParser.DescribeConnectionContext ctx) { }
-	@Override public void enterFullId(MySqlParser.FullIdContext ctx) { }
-	@Override public void exitFullId(MySqlParser.FullIdContext ctx) { }
-	@Override public void enterTableName(MySqlParser.TableNameContext ctx) { }
-	@Override public void exitTableName(MySqlParser.TableNameContext ctx) { }
-	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) { }
-	@Override public void exitFullColumnName(MySqlParser.FullColumnNameContext ctx) { }
-	@Override public void enterIndexColumnName(MySqlParser.IndexColumnNameContext ctx) { }
-	@Override public void exitIndexColumnName(MySqlParser.IndexColumnNameContext ctx) { }
-	@Override public void enterUserName(MySqlParser.UserNameContext ctx) { }
-	@Override public void exitUserName(MySqlParser.UserNameContext ctx) { }
-	@Override public void enterMysqlVariable(MySqlParser.MysqlVariableContext ctx) { }
-	@Override public void exitMysqlVariable(MySqlParser.MysqlVariableContext ctx) { }
-	@Override public void enterCharsetName(MySqlParser.CharsetNameContext ctx) { }
-	@Override public void exitCharsetName(MySqlParser.CharsetNameContext ctx) { }
-	@Override public void enterCollationName(MySqlParser.CollationNameContext ctx) { }
-	@Override public void exitCollationName(MySqlParser.CollationNameContext ctx) { }
-	@Override public void enterEngineName(MySqlParser.EngineNameContext ctx) { }
-	@Override public void exitEngineName(MySqlParser.EngineNameContext ctx) { }
-	@Override public void enterUuidSet(MySqlParser.UuidSetContext ctx) { }
-	@Override public void exitUuidSet(MySqlParser.UuidSetContext ctx) { }
-	@Override public void enterXid(MySqlParser.XidContext ctx) { }
-	@Override public void exitXid(MySqlParser.XidContext ctx) { }
-	@Override public void enterXuidStringId(MySqlParser.XuidStringIdContext ctx) { }
-	@Override public void exitXuidStringId(MySqlParser.XuidStringIdContext ctx) { }
-	@Override public void enterAuthPlugin(MySqlParser.AuthPluginContext ctx) { }
-	@Override public void exitAuthPlugin(MySqlParser.AuthPluginContext ctx) { }
-	@Override public void enterUid(MySqlParser.UidContext ctx) { }
-	@Override public void exitUid(MySqlParser.UidContext ctx) { }
-	@Override public void enterSimpleId(MySqlParser.SimpleIdContext ctx) { }
-	@Override public void exitSimpleId(MySqlParser.SimpleIdContext ctx) { }
-	@Override public void enterDottedId(MySqlParser.DottedIdContext ctx) { }
-	@Override public void exitDottedId(MySqlParser.DottedIdContext ctx) { }
-	@Override public void enterDecimalLiteral(MySqlParser.DecimalLiteralContext ctx) { }
-	@Override public void exitDecimalLiteral(MySqlParser.DecimalLiteralContext ctx) { }
-	@Override public void enterFileSizeLiteral(MySqlParser.FileSizeLiteralContext ctx) { }
-	@Override public void exitFileSizeLiteral(MySqlParser.FileSizeLiteralContext ctx) { }
-	@Override public void enterStringLiteral(MySqlParser.StringLiteralContext ctx) { }
-	@Override public void exitStringLiteral(MySqlParser.StringLiteralContext ctx) { }
-	@Override public void enterBooleanLiteral(MySqlParser.BooleanLiteralContext ctx) { }
-	@Override public void exitBooleanLiteral(MySqlParser.BooleanLiteralContext ctx) { }
-	@Override public void enterHexadecimalLiteral(MySqlParser.HexadecimalLiteralContext ctx) { }
-	@Override public void exitHexadecimalLiteral(MySqlParser.HexadecimalLiteralContext ctx) { }
-	@Override public void enterNullNotnull(MySqlParser.NullNotnullContext ctx) { }
-	@Override public void exitNullNotnull(MySqlParser.NullNotnullContext ctx) { }
-	@Override public void enterConstant(MySqlParser.ConstantContext ctx) { }
-	@Override public void exitConstant(MySqlParser.ConstantContext ctx) { }
-	@Override public void enterStringDataType(MySqlParser.StringDataTypeContext ctx) { }
-	@Override public void exitStringDataType(MySqlParser.StringDataTypeContext ctx) { }
-	@Override public void enterDimensionDataType(MySqlParser.DimensionDataTypeContext ctx) { }
-	@Override public void exitDimensionDataType(MySqlParser.DimensionDataTypeContext ctx) { }
-	@Override public void enterSimpleDataType(MySqlParser.SimpleDataTypeContext ctx) { }
-	@Override public void exitSimpleDataType(MySqlParser.SimpleDataTypeContext ctx) { }
-	@Override public void enterCollectionDataType(MySqlParser.CollectionDataTypeContext ctx) { }
-	@Override public void exitCollectionDataType(MySqlParser.CollectionDataTypeContext ctx) { }
-	@Override public void enterSpatialDataType(MySqlParser.SpatialDataTypeContext ctx) { }
-	@Override public void exitSpatialDataType(MySqlParser.SpatialDataTypeContext ctx) { }
-	@Override public void enterConvertedDataType(MySqlParser.ConvertedDataTypeContext ctx) { }
-	@Override public void exitConvertedDataType(MySqlParser.ConvertedDataTypeContext ctx) { }
-	@Override public void enterLengthOneDimension(MySqlParser.LengthOneDimensionContext ctx) { }
-	@Override public void exitLengthOneDimension(MySqlParser.LengthOneDimensionContext ctx) { }
-	@Override public void enterLengthTwoDimension(MySqlParser.LengthTwoDimensionContext ctx) { }
-	@Override public void exitLengthTwoDimension(MySqlParser.LengthTwoDimensionContext ctx) { }
-	@Override public void enterLengthTwoOptionalDimension(MySqlParser.LengthTwoOptionalDimensionContext ctx) { }
-	@Override public void exitLengthTwoOptionalDimension(MySqlParser.LengthTwoOptionalDimensionContext ctx) { }
-	@Override public void enterUidList(MySqlParser.UidListContext ctx) { }
-	@Override public void exitUidList(MySqlParser.UidListContext ctx) { }
-	@Override public void enterTables(MySqlParser.TablesContext ctx) { }
-	@Override public void exitTables(MySqlParser.TablesContext ctx) { }
-	@Override public void enterIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) { }
-	@Override public void exitIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) { }
-	@Override public void enterExpressions(MySqlParser.ExpressionsContext ctx) { }
-	@Override public void exitExpressions(MySqlParser.ExpressionsContext ctx) { }
-	@Override public void enterExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) { }
-	@Override public void exitExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) { }
-	@Override public void enterConstants(MySqlParser.ConstantsContext ctx) { }
-	@Override public void exitConstants(MySqlParser.ConstantsContext ctx) { }
-	@Override public void enterSimpleStrings(MySqlParser.SimpleStringsContext ctx) { }
-	@Override public void exitSimpleStrings(MySqlParser.SimpleStringsContext ctx) { }
-	@Override public void enterUserVariables(MySqlParser.UserVariablesContext ctx) { }
-	@Override public void exitUserVariables(MySqlParser.UserVariablesContext ctx) { }
-	@Override public void enterDefaultValue(MySqlParser.DefaultValueContext ctx) { }
-	@Override public void exitDefaultValue(MySqlParser.DefaultValueContext ctx) { }
-	@Override public void enterExpressionOrDefault(MySqlParser.ExpressionOrDefaultContext ctx) { }
-	@Override public void exitExpressionOrDefault(MySqlParser.ExpressionOrDefaultContext ctx) { }
-	@Override public void enterIfExists(MySqlParser.IfExistsContext ctx) { }
-	@Override public void exitIfExists(MySqlParser.IfExistsContext ctx) { }
-	@Override public void enterIfNotExists(MySqlParser.IfNotExistsContext ctx) { }
-	@Override public void exitIfNotExists(MySqlParser.IfNotExistsContext ctx) { }
-	@Override public void enterSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) { }
-	@Override public void exitSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) { }
-	@Override public void enterAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) { }
-	@Override public void exitAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) { }
-	@Override public void enterScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) { }
-	@Override public void exitScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) { }
-	@Override public void enterUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) { }
-	@Override public void exitUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) { }
-	@Override public void enterPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) { }
-	@Override public void exitPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) { }
-	@Override public void enterSimpleFunctionCall(MySqlParser.SimpleFunctionCallContext ctx) { }
-	@Override public void exitSimpleFunctionCall(MySqlParser.SimpleFunctionCallContext ctx) { }
-	@Override public void enterDataTypeFunctionCall(MySqlParser.DataTypeFunctionCallContext ctx) { }
-	@Override public void exitDataTypeFunctionCall(MySqlParser.DataTypeFunctionCallContext ctx) { }
-	@Override public void enterValuesFunctionCall(MySqlParser.ValuesFunctionCallContext ctx) { }
-	@Override public void exitValuesFunctionCall(MySqlParser.ValuesFunctionCallContext ctx) { }
-	@Override public void enterCaseFunctionCall(MySqlParser.CaseFunctionCallContext ctx) { }
-	@Override public void exitCaseFunctionCall(MySqlParser.CaseFunctionCallContext ctx) { }
-	@Override public void enterCharFunctionCall(MySqlParser.CharFunctionCallContext ctx) { }
-	@Override public void exitCharFunctionCall(MySqlParser.CharFunctionCallContext ctx) { }
-	@Override public void enterPositionFunctionCall(MySqlParser.PositionFunctionCallContext ctx) { }
-	@Override public void exitPositionFunctionCall(MySqlParser.PositionFunctionCallContext ctx) { }
-	@Override public void enterSubstrFunctionCall(MySqlParser.SubstrFunctionCallContext ctx) { }
-	@Override public void exitSubstrFunctionCall(MySqlParser.SubstrFunctionCallContext ctx) { }
-	@Override public void enterTrimFunctionCall(MySqlParser.TrimFunctionCallContext ctx) { }
-	@Override public void exitTrimFunctionCall(MySqlParser.TrimFunctionCallContext ctx) { }
-	@Override public void enterWeightFunctionCall(MySqlParser.WeightFunctionCallContext ctx) { }
-	@Override public void exitWeightFunctionCall(MySqlParser.WeightFunctionCallContext ctx) { }
-	@Override public void enterExtractFunctionCall(MySqlParser.ExtractFunctionCallContext ctx) { }
-	@Override public void exitExtractFunctionCall(MySqlParser.ExtractFunctionCallContext ctx) { }
-	@Override public void enterGetFormatFunctionCall(MySqlParser.GetFormatFunctionCallContext ctx) { }
-	@Override public void exitGetFormatFunctionCall(MySqlParser.GetFormatFunctionCallContext ctx) { }
-	@Override public void enterCaseFuncAlternative(MySqlParser.CaseFuncAlternativeContext ctx) { }
-	@Override public void exitCaseFuncAlternative(MySqlParser.CaseFuncAlternativeContext ctx) { }
-	@Override public void enterLevelWeightList(MySqlParser.LevelWeightListContext ctx) { }
-	@Override public void exitLevelWeightList(MySqlParser.LevelWeightListContext ctx) { }
-	@Override public void enterLevelWeightRange(MySqlParser.LevelWeightRangeContext ctx) { }
-	@Override public void exitLevelWeightRange(MySqlParser.LevelWeightRangeContext ctx) { }
-	@Override public void enterLevelInWeightListElement(MySqlParser.LevelInWeightListElementContext ctx) { }
-	@Override public void exitLevelInWeightListElement(MySqlParser.LevelInWeightListElementContext ctx) { }
-	@Override public void enterAggregateWindowedFunction(MySqlParser.AggregateWindowedFunctionContext ctx) { }
-	@Override public void exitAggregateWindowedFunction(MySqlParser.AggregateWindowedFunctionContext ctx) { }
-	@Override public void enterScalarFunctionName(MySqlParser.ScalarFunctionNameContext ctx) { }
-	@Override public void exitScalarFunctionName(MySqlParser.ScalarFunctionNameContext ctx) { }
-	@Override public void enterPasswordFunctionClause(MySqlParser.PasswordFunctionClauseContext ctx) { }
-	@Override public void exitPasswordFunctionClause(MySqlParser.PasswordFunctionClauseContext ctx) { }
-	@Override public void enterFunctionArgs(MySqlParser.FunctionArgsContext ctx) { }
-	@Override public void exitFunctionArgs(MySqlParser.FunctionArgsContext ctx) { }
-	@Override public void enterFunctionArg(MySqlParser.FunctionArgContext ctx) { }
-	@Override public void exitFunctionArg(MySqlParser.FunctionArgContext ctx) { }
-	@Override public void enterIsExpression(MySqlParser.IsExpressionContext ctx) { }
-	@Override public void exitIsExpression(MySqlParser.IsExpressionContext ctx) { }
-	@Override public void enterNotExpression(MySqlParser.NotExpressionContext ctx) { }
-	@Override public void exitNotExpression(MySqlParser.NotExpressionContext ctx) { }
-	@Override public void enterLogicalExpression(MySqlParser.LogicalExpressionContext ctx) { }
-	@Override public void exitLogicalExpression(MySqlParser.LogicalExpressionContext ctx) { }
-	@Override public void enterPredicateExpression(MySqlParser.PredicateExpressionContext ctx) { }
-	@Override public void exitPredicateExpression(MySqlParser.PredicateExpressionContext ctx) { }
-	@Override public void enterSoundsLikePredicate(MySqlParser.SoundsLikePredicateContext ctx) { }
-	@Override public void exitSoundsLikePredicate(MySqlParser.SoundsLikePredicateContext ctx) { }
-	@Override public void enterExpressionAtomPredicate(MySqlParser.ExpressionAtomPredicateContext ctx) { }
-	@Override public void exitExpressionAtomPredicate(MySqlParser.ExpressionAtomPredicateContext ctx) { }
-	@Override public void enterInPredicate(MySqlParser.InPredicateContext ctx) { }
-	@Override public void exitInPredicate(MySqlParser.InPredicateContext ctx) { }
-	@Override public void enterSubqueryComparasionPredicate(MySqlParser.SubqueryComparasionPredicateContext ctx) { }
-	@Override public void exitSubqueryComparasionPredicate(MySqlParser.SubqueryComparasionPredicateContext ctx) { }
-	@Override public void enterBetweenPredicate(MySqlParser.BetweenPredicateContext ctx) { }
-	@Override public void exitBetweenPredicate(MySqlParser.BetweenPredicateContext ctx) { }
-	@Override public void enterBinaryComparasionPredicate(MySqlParser.BinaryComparasionPredicateContext ctx) { }
-	@Override public void exitBinaryComparasionPredicate(MySqlParser.BinaryComparasionPredicateContext ctx) { }
-	@Override public void enterIsNullPredicate(MySqlParser.IsNullPredicateContext ctx) { }
-	@Override public void exitIsNullPredicate(MySqlParser.IsNullPredicateContext ctx) { }
-	@Override public void enterLikePredicate(MySqlParser.LikePredicateContext ctx) { }
-	@Override public void exitLikePredicate(MySqlParser.LikePredicateContext ctx) { }
-	@Override public void enterRegexpPredicate(MySqlParser.RegexpPredicateContext ctx) { }
-	@Override public void exitRegexpPredicate(MySqlParser.RegexpPredicateContext ctx) { }
-	@Override public void enterUnaryExpressionAtom(MySqlParser.UnaryExpressionAtomContext ctx) { }
-	@Override public void exitUnaryExpressionAtom(MySqlParser.UnaryExpressionAtomContext ctx) { }
-	@Override public void enterCollateExpressionAtom(MySqlParser.CollateExpressionAtomContext ctx) { }
-	@Override public void exitCollateExpressionAtom(MySqlParser.CollateExpressionAtomContext ctx) { }
-	@Override public void enterSubqueryExpessionAtom(MySqlParser.SubqueryExpessionAtomContext ctx) { }
-	@Override public void exitSubqueryExpessionAtom(MySqlParser.SubqueryExpessionAtomContext ctx) { }
-	@Override public void enterMysqlVariableExpressionAtom(MySqlParser.MysqlVariableExpressionAtomContext ctx) { }
-	@Override public void exitMysqlVariableExpressionAtom(MySqlParser.MysqlVariableExpressionAtomContext ctx) { }
-	@Override public void enterNestedExpressionAtom(MySqlParser.NestedExpressionAtomContext ctx) { }
-	@Override public void exitNestedExpressionAtom(MySqlParser.NestedExpressionAtomContext ctx) { }
-	@Override public void enterNestedRowExpressionAtom(MySqlParser.NestedRowExpressionAtomContext ctx) { }
-	@Override public void exitNestedRowExpressionAtom(MySqlParser.NestedRowExpressionAtomContext ctx) { }
-	@Override public void enterMathExpressionAtom(MySqlParser.MathExpressionAtomContext ctx) { }
-	@Override public void exitMathExpressionAtom(MySqlParser.MathExpressionAtomContext ctx) { }
-	@Override public void enterIntervalExpressionAtom(MySqlParser.IntervalExpressionAtomContext ctx) { }
-	@Override public void exitIntervalExpressionAtom(MySqlParser.IntervalExpressionAtomContext ctx) { }
-	@Override public void enterExistsExpessionAtom(MySqlParser.ExistsExpessionAtomContext ctx) { }
-	@Override public void exitExistsExpessionAtom(MySqlParser.ExistsExpessionAtomContext ctx) { }
-	@Override public void enterConstantExpressionAtom(MySqlParser.ConstantExpressionAtomContext ctx) { }
-	@Override public void exitConstantExpressionAtom(MySqlParser.ConstantExpressionAtomContext ctx) { }
-	@Override public void enterFunctionCallExpressionAtom(MySqlParser.FunctionCallExpressionAtomContext ctx) { }
-	@Override public void exitFunctionCallExpressionAtom(MySqlParser.FunctionCallExpressionAtomContext ctx) { }
-	@Override public void enterBinaryExpressionAtom(MySqlParser.BinaryExpressionAtomContext ctx) { }
-	@Override public void exitBinaryExpressionAtom(MySqlParser.BinaryExpressionAtomContext ctx) { }
-	@Override public void enterFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) { }
-	@Override public void exitFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) { }
-	@Override public void enterBitExpressionAtom(MySqlParser.BitExpressionAtomContext ctx) { }
-	@Override public void exitBitExpressionAtom(MySqlParser.BitExpressionAtomContext ctx) { }
-	@Override public void enterUnaryOperator(MySqlParser.UnaryOperatorContext ctx) { }
-	@Override public void exitUnaryOperator(MySqlParser.UnaryOperatorContext ctx) { }
-	@Override public void enterComparisonOperator(MySqlParser.ComparisonOperatorContext ctx) { }
-	@Override public void exitComparisonOperator(MySqlParser.ComparisonOperatorContext ctx) { }
-	@Override public void enterLogicalOperator(MySqlParser.LogicalOperatorContext ctx) { }
-	@Override public void exitLogicalOperator(MySqlParser.LogicalOperatorContext ctx) { }
-	@Override public void enterBitOperator(MySqlParser.BitOperatorContext ctx) { }
-	@Override public void exitBitOperator(MySqlParser.BitOperatorContext ctx) { }
-	@Override public void enterMathOperator(MySqlParser.MathOperatorContext ctx) { }
-	@Override public void exitMathOperator(MySqlParser.MathOperatorContext ctx) { }
-	@Override public void enterCharsetNameBase(MySqlParser.CharsetNameBaseContext ctx) { }
-	@Override public void exitCharsetNameBase(MySqlParser.CharsetNameBaseContext ctx) { }
-	@Override public void enterTransactionLevelBase(MySqlParser.TransactionLevelBaseContext ctx) { }
-	@Override public void exitTransactionLevelBase(MySqlParser.TransactionLevelBaseContext ctx) { }
-	@Override public void enterPrivilegesBase(MySqlParser.PrivilegesBaseContext ctx) { }
-	@Override public void exitPrivilegesBase(MySqlParser.PrivilegesBaseContext ctx) { }
-	@Override public void enterIntervalTypeBase(MySqlParser.IntervalTypeBaseContext ctx) { }
-	@Override public void exitIntervalTypeBase(MySqlParser.IntervalTypeBaseContext ctx) { }
-	@Override public void enterDataTypeBase(MySqlParser.DataTypeBaseContext ctx) { }
-	@Override public void exitDataTypeBase(MySqlParser.DataTypeBaseContext ctx) { }
-	@Override public void enterKeywordsCanBeId(MySqlParser.KeywordsCanBeIdContext ctx) { }
-	@Override public void exitKeywordsCanBeId(MySqlParser.KeywordsCanBeIdContext ctx) { }
-	@Override public void enterFunctionNameBase(MySqlParser.FunctionNameBaseContext ctx) { }
-	@Override public void exitFunctionNameBase(MySqlParser.FunctionNameBaseContext ctx) { }
-
-	@Override public void enterEveryRule(ParserRuleContext ctx) { }
-	@Override public void exitEveryRule(ParserRuleContext ctx) { }
-	@Override public void visitTerminal(TerminalNode node) { }
-	@Override public void visitErrorNode(ErrorNode node) { }
+	@Override public void enterSelectIntoDumpFile(MySqlParser.SelectIntoDumpFileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoDumpFile()");}
+	@Override public void exitSelectIntoDumpFile(MySqlParser.SelectIntoDumpFileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoDumpFile()");}
+	@Override public void enterSelectIntoTextFile(MySqlParser.SelectIntoTextFileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoTextFile()");}
+	@Override public void exitSelectIntoTextFile(MySqlParser.SelectIntoTextFileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoTextFile()");}
+	@Override public void enterSelectFieldsInto(MySqlParser.SelectFieldsIntoContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSelectFieldsInto()");}
+	@Override public void exitSelectFieldsInto(MySqlParser.SelectFieldsIntoContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSelectLinesInto()");}
+	@Override public void enterSelectLinesInto(MySqlParser.SelectLinesIntoContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSelectLinesInto()");}
+	@Override public void exitSelectLinesInto(MySqlParser.SelectLinesIntoContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSelectLinesInto()");}
+	@Override public void enterFromClause(MySqlParser.FromClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFromClause()");}
+	@Override public void exitFromClause(MySqlParser.FromClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFromClause()");}
+	@Override public void enterGroupByItem(MySqlParser.GroupByItemContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterGroupByItem()");}
+	@Override public void exitGroupByItem(MySqlParser.GroupByItemContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGroupByItem()");}
+	@Override public void enterLimitClause(MySqlParser.LimitClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLimitClause()");}
+	@Override public void exitLimitClause(MySqlParser.LimitClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLimitClause()");}
+	@Override public void enterStartTransaction(MySqlParser.StartTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterStartTransaction()");}
+	@Override public void exitStartTransaction(MySqlParser.StartTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitStartTransaction()");}
+	@Override public void enterBeginWork(MySqlParser.BeginWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBeginWork()");}
+	@Override public void exitBeginWork(MySqlParser.BeginWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBeginWork()");}
+	@Override public void enterCommitWork(MySqlParser.CommitWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCommitWork()");}
+	@Override public void exitCommitWork(MySqlParser.CommitWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCommitWork()");}
+	@Override public void enterRollbackWork(MySqlParser.RollbackWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRollbackWork()");}
+	@Override public void exitRollbackWork(MySqlParser.RollbackWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRollbackWork()");}
+	@Override public void enterSavepointStatement(MySqlParser.SavepointStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSavepointStatement()");}
+	@Override public void exitSavepointStatement(MySqlParser.SavepointStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSavepointStatement()");}
+	@Override public void enterRollbackStatement(MySqlParser.RollbackStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRollbackStatement()");}
+	@Override public void exitRollbackStatement(MySqlParser.RollbackStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRollbackStatement()");}
+	@Override public void enterReleaseStatement(MySqlParser.ReleaseStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitReleaseStatement(MySqlParser.ReleaseStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterReleaseStatement()");}
+	@Override public void enterLockTables(MySqlParser.LockTablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLockTables()");}
+	@Override public void exitLockTables(MySqlParser.LockTablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLockTables()");}
+	@Override public void enterUnlockTables(MySqlParser.UnlockTablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUnlockTables()");}
+	@Override public void exitUnlockTables(MySqlParser.UnlockTablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUnlockTables()");}
+	@Override public void enterSetAutocommitStatement(MySqlParser.SetAutocommitStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSetAutocommitStatement()");}
+	@Override public void exitSetAutocommitStatement(MySqlParser.SetAutocommitStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSetAutocommitStatement()");}
+	@Override public void enterSetTransactionStatement(MySqlParser.SetTransactionStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSetTransactionStatement()");}
+	@Override public void exitSetTransactionStatement(MySqlParser.SetTransactionStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSetTransactionStatement()");}
+	@Override public void enterTransactionMode(MySqlParser.TransactionModeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTransactionMode()");}
+	@Override public void exitTransactionMode(MySqlParser.TransactionModeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTransactionMode()");}
+	@Override public void enterLockTableElement(MySqlParser.LockTableElementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLockTableElement()");}
+	@Override public void exitLockTableElement(MySqlParser.LockTableElementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLockTableElement()");}
+	@Override public void enterLockAction(MySqlParser.LockActionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLockAction()");}
+	@Override public void exitLockAction(MySqlParser.LockActionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLockAction()");}
+	@Override public void enterTransactionOption(MySqlParser.TransactionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTransactionOption()");}
+	@Override public void exitTransactionOption(MySqlParser.TransactionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTransactionOption()");}
+	@Override public void enterTransactionLevel(MySqlParser.TransactionLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTransactionLevel()");}
+	@Override public void exitTransactionLevel(MySqlParser.TransactionLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTransactionLevel()");}
+	@Override public void enterChangeMaster(MySqlParser.ChangeMasterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterChangeMaster()");}
+	@Override public void exitChangeMaster(MySqlParser.ChangeMasterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitChangeMaster()");}
+	@Override public void enterChangeReplicationFilter(MySqlParser.ChangeReplicationFilterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterChangeReplicationFilter()");}
+	@Override public void exitChangeReplicationFilter(MySqlParser.ChangeReplicationFilterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitChangeReplicationFilter()");}
+	@Override public void enterPurgeBinaryLogs(MySqlParser.PurgeBinaryLogsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPurgeBinaryLogs()");}
+	@Override public void exitPurgeBinaryLogs(MySqlParser.PurgeBinaryLogsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPurgeBinaryLogs()");}
+	@Override public void enterResetMaster(MySqlParser.ResetMasterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterResetMaster()");}
+	@Override public void exitResetMaster(MySqlParser.ResetMasterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitResetMaster()");}
+	@Override public void enterResetSlave(MySqlParser.ResetSlaveContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterResetSlave()");}
+	@Override public void exitResetSlave(MySqlParser.ResetSlaveContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitResetSlave()");}
+	@Override public void enterStartSlave(MySqlParser.StartSlaveContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterStartSlave()");}
+	@Override public void exitStartSlave(MySqlParser.StartSlaveContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitStartSlave()");}
+	@Override public void enterStopSlave(MySqlParser.StopSlaveContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterStopSlave()");}
+	@Override public void exitStopSlave(MySqlParser.StopSlaveContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitStopSlave()");}
+	@Override public void enterStartGroupReplication(MySqlParser.StartGroupReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterStartGroupReplication()");}
+	@Override public void exitStartGroupReplication(MySqlParser.StartGroupReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitStartGroupReplication()");}
+	@Override public void enterStopGroupReplication(MySqlParser.StopGroupReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterStopGroupReplication()");}
+	@Override public void exitStopGroupReplication(MySqlParser.StopGroupReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitStopGroupReplication()");}
+	@Override public void enterMasterStringOption(MySqlParser.MasterStringOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMasterStringOption()");}
+	@Override public void exitMasterStringOption(MySqlParser.MasterStringOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMasterStringOption()");}
+	@Override public void enterMasterDecimalOption(MySqlParser.MasterDecimalOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMasterDecimalOption()");}
+	@Override public void exitMasterDecimalOption(MySqlParser.MasterDecimalOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMasterDecimalOption()");}
+	@Override public void enterMasterBoolOption(MySqlParser.MasterBoolOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMasterBoolOption()");}
+	@Override public void exitMasterBoolOption(MySqlParser.MasterBoolOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMasterBoolOption()");}
+	@Override public void enterMasterRealOption(MySqlParser.MasterRealOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMasterRealOption()");}
+	@Override public void exitMasterRealOption(MySqlParser.MasterRealOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMasterRealOption()");}
+	@Override public void enterMasterUidListOption(MySqlParser.MasterUidListOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMasterUidListOption()");}
+	@Override public void exitMasterUidListOption(MySqlParser.MasterUidListOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMasterUidListOption()");}
+	@Override public void enterStringMasterOption(MySqlParser.StringMasterOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterStringMasterOption()");}
+	@Override public void exitStringMasterOption(MySqlParser.StringMasterOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitStringMasterOption()");}
+	@Override public void enterDecimalMasterOption(MySqlParser.DecimalMasterOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDecimalMasterOption()");}
+	@Override public void exitDecimalMasterOption(MySqlParser.DecimalMasterOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDecimalMasterOption()");}
+	@Override public void enterBoolMasterOption(MySqlParser.BoolMasterOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBoolMasterOption()");}
+	@Override public void exitBoolMasterOption(MySqlParser.BoolMasterOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBoolMasterOption()");}
+	@Override public void enterChannelOption(MySqlParser.ChannelOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterChannelOption()");}
+	@Override public void exitChannelOption(MySqlParser.ChannelOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitChannelOption()");}
+	@Override public void enterDoDbReplication(MySqlParser.DoDbReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDoDbReplication()");}
+	@Override public void exitDoDbReplication(MySqlParser.DoDbReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDoDbReplication()");}
+	@Override public void enterIgnoreDbReplication(MySqlParser.IgnoreDbReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIgnoreDbReplication()");}
+	@Override public void exitIgnoreDbReplication(MySqlParser.IgnoreDbReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIgnoreDbReplication()");}
+	@Override public void enterDoTableReplication(MySqlParser.DoTableReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDoTableReplication()");}
+	@Override public void exitDoTableReplication(MySqlParser.DoTableReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDoTableReplication()");}
+	@Override public void enterIgnoreTableReplication(MySqlParser.IgnoreTableReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIgnoreTableReplication()");}
+	@Override public void exitIgnoreTableReplication(MySqlParser.IgnoreTableReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIgnoreTableReplication()");}
+	@Override public void enterWildDoTableReplication(MySqlParser.WildDoTableReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterWildDoTableReplication()");}
+	@Override public void exitWildDoTableReplication(MySqlParser.WildDoTableReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitWildDoTableReplication()");}
+	@Override public void enterWildIgnoreTableReplication(MySqlParser.WildIgnoreTableReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterWildIgnoreTableReplication()");}
+	@Override public void exitWildIgnoreTableReplication(MySqlParser.WildIgnoreTableReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitWildIgnoreTableReplication()");}
+	@Override public void enterRewriteDbReplication(MySqlParser.RewriteDbReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitRewriteDbReplication(MySqlParser.RewriteDbReplicationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRewriteDbReplication()");}
+	@Override public void enterTablePair(MySqlParser.TablePairContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTablePair()");}
+	@Override public void exitTablePair(MySqlParser.TablePairContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTablePair()");}
+	@Override public void enterThreadType(MySqlParser.ThreadTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterThreadType()");}
+	@Override public void exitThreadType(MySqlParser.ThreadTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitThreadType()");}
+	@Override public void enterGtidsUntilOption(MySqlParser.GtidsUntilOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterGtidsUntilOption()");}
+	@Override public void exitGtidsUntilOption(MySqlParser.GtidsUntilOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGtidsUntilOption()");}
+	@Override public void enterMasterLogUntilOption(MySqlParser.MasterLogUntilOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMasterLogUntilOption()");}
+	@Override public void exitMasterLogUntilOption(MySqlParser.MasterLogUntilOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMasterLogUntilOption()");}
+	@Override public void enterRelayLogUntilOption(MySqlParser.RelayLogUntilOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRelayLogUntilOption()");}
+	@Override public void exitRelayLogUntilOption(MySqlParser.RelayLogUntilOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRelayLogUntilOption()");}
+	@Override public void enterSqlGapsUntilOption(MySqlParser.SqlGapsUntilOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSqlGapsUntilOption()");}
+	@Override public void exitSqlGapsUntilOption(MySqlParser.SqlGapsUntilOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSqlGapsUntilOption()");}
+	@Override public void enterUserConnectionOption(MySqlParser.UserConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUserConnectionOption()");}
+	@Override public void exitUserConnectionOption(MySqlParser.UserConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUserConnectionOption()");}
+	@Override public void enterPasswordConnectionOption(MySqlParser.PasswordConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPasswordConnectionOption()");}
+	@Override public void exitPasswordConnectionOption(MySqlParser.PasswordConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPasswordConnectionOption()");}
+	@Override public void enterDefaultAuthConnectionOption(MySqlParser.DefaultAuthConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDefaultAuthConnectionOption()");}
+	@Override public void exitDefaultAuthConnectionOption(MySqlParser.DefaultAuthConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDefaultAuthConnectionOption()");}
+	@Override public void enterPluginDirConnectionOption(MySqlParser.PluginDirConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPluginDirConnectionOption()");}
+	@Override public void exitPluginDirConnectionOption(MySqlParser.PluginDirConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPluginDirConnectionOption()");}
+	@Override public void enterGtuidSet(MySqlParser.GtuidSetContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterGtuidSet()");}
+	@Override public void exitGtuidSet(MySqlParser.GtuidSetContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGtuidSet()");}
+	@Override public void enterXaStartTransaction(MySqlParser.XaStartTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterXaStartTransaction()");}
+	@Override public void exitXaStartTransaction(MySqlParser.XaStartTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitXaStartTransaction()");}
+	@Override public void enterXaEndTransaction(MySqlParser.XaEndTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterXaEndTransaction()");}
+	@Override public void exitXaEndTransaction(MySqlParser.XaEndTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitXaEndTransaction()");}
+	@Override public void enterXaPrepareStatement(MySqlParser.XaPrepareStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterXaPrepareStatement()");}
+	@Override public void exitXaPrepareStatement(MySqlParser.XaPrepareStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitXaPrepareStatement()");}
+	@Override public void enterXaCommitWork(MySqlParser.XaCommitWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterXaCommitWork()");}
+	@Override public void exitXaCommitWork(MySqlParser.XaCommitWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitXaCommitWork()");}
+	@Override public void enterXaRollbackWork(MySqlParser.XaRollbackWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterXaRollbackWork()");}
+	@Override public void exitXaRollbackWork(MySqlParser.XaRollbackWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitXaRollbackWork()");}
+	@Override public void enterXaRecoverWork(MySqlParser.XaRecoverWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterXaRecoverWork()");}
+	@Override public void exitXaRecoverWork(MySqlParser.XaRecoverWorkContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitXaRecoverWork()");}
+	@Override public void enterPrepareStatement(MySqlParser.PrepareStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPrepareStatement()");}
+	@Override public void exitPrepareStatement(MySqlParser.PrepareStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPrepareStatement()");}
+	@Override public void enterExecuteStatement(MySqlParser.ExecuteStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterExecuteStatement()");}
+	@Override public void exitExecuteStatement(MySqlParser.ExecuteStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitExecuteStatement()");}
+	@Override public void enterDeallocatePrepare(MySqlParser.DeallocatePrepareContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDeallocatePrepare()");}
+	@Override public void exitDeallocatePrepare(MySqlParser.DeallocatePrepareContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDeallocatePrepare()");}
+	@Override public void enterRoutineBody(MySqlParser.RoutineBodyContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRoutineBodyenterRoutineBody()");}
+	@Override public void exitRoutineBody(MySqlParser.RoutineBodyContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRoutineBody()");}
+	@Override public void enterBlockStatement(MySqlParser.BlockStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBlockStatement()");}
+	@Override public void exitBlockStatement(MySqlParser.BlockStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBlockStatement()");}
+	@Override public void enterCaseStatement(MySqlParser.CaseStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCaseStatement()");}
+	@Override public void exitCaseStatement(MySqlParser.CaseStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCaseStatement()");}
+	@Override public void enterIfStatement(MySqlParser.IfStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIfStatement()");}
+	@Override public void exitIfStatement(MySqlParser.IfStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIfStatement()");}
+	@Override public void enterIterateStatement(MySqlParser.IterateStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIterateStatement()");}
+	@Override public void exitIterateStatement(MySqlParser.IterateStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIterateStatement()");}
+	@Override public void enterLeaveStatement(MySqlParser.LeaveStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLeaveStatement()");}
+	@Override public void exitLeaveStatement(MySqlParser.LeaveStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLeaveStatement()");}
+	@Override public void enterLoopStatement(MySqlParser.LoopStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLoopStatement()");}
+	@Override public void exitLoopStatement(MySqlParser.LoopStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLoopStatement()");}
+	@Override public void enterRepeatStatement(MySqlParser.RepeatStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRepeatStatement()");}
+	@Override public void exitRepeatStatement(MySqlParser.RepeatStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRepeatStatement()");}
+	@Override public void enterReturnStatement(MySqlParser.ReturnStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterReturnStatement()");}
+	@Override public void exitReturnStatement(MySqlParser.ReturnStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitReturnStatement()");}
+	@Override public void enterWhileStatement(MySqlParser.WhileStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterWhileStatement()");}
+	@Override public void exitWhileStatement(MySqlParser.WhileStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitWhileStatement()");}
+	@Override public void enterCloseCursor(MySqlParser.CloseCursorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCloseCursor()");}
+	@Override public void exitCloseCursor(MySqlParser.CloseCursorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCloseCursor()");}
+	@Override public void enterFetchCursor(MySqlParser.FetchCursorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFetchCursor()");}
+	@Override public void exitFetchCursor(MySqlParser.FetchCursorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFetchCursor()");}
+	@Override public void enterOpenCursor(MySqlParser.OpenCursorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterOpenCursor()");}
+	@Override public void exitOpenCursor(MySqlParser.OpenCursorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitOpenCursor()");}
+	@Override public void enterDeclareVariable(MySqlParser.DeclareVariableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDeclareVariable()");}
+	@Override public void exitDeclareVariable(MySqlParser.DeclareVariableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDeclareVariable()");}
+	@Override public void enterDeclareCondition(MySqlParser.DeclareConditionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDeclareCondition()");}
+	@Override public void exitDeclareCondition(MySqlParser.DeclareConditionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDeclareCondition()");}
+	@Override public void enterDeclareCursor(MySqlParser.DeclareCursorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDeclareCursor()");}
+	@Override public void exitDeclareCursor(MySqlParser.DeclareCursorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDeclareCursor()");}
+	@Override public void enterDeclareHandler(MySqlParser.DeclareHandlerContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDeclareHandler()");}
+	@Override public void exitDeclareHandler(MySqlParser.DeclareHandlerContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterHandlerConditionCode(MySqlParser.HandlerConditionCodeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDeclareHandler()");}
+	@Override public void exitHandlerConditionCode(MySqlParser.HandlerConditionCodeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterHandlerConditionCode()");}
+	@Override public void enterHandlerConditionState(MySqlParser.HandlerConditionStateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitHandlerConditionCode()");}
+	@Override public void exitHandlerConditionState(MySqlParser.HandlerConditionStateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterHandlerConditionState()");}
+	@Override public void enterHandlerConditionName(MySqlParser.HandlerConditionNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitHandlerConditionState()");}
+	@Override public void exitHandlerConditionName(MySqlParser.HandlerConditionNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterHandlerConditionName()");}
+	@Override public void enterHandlerConditionWarning(MySqlParser.HandlerConditionWarningContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitHandlerConditionName()");}
+	@Override public void exitHandlerConditionWarning(MySqlParser.HandlerConditionWarningContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterHandlerConditionWarning()");}
+	@Override public void enterHandlerConditionNotfound(MySqlParser.HandlerConditionNotfoundContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitHandlerConditionWarning()");}
+	@Override public void exitHandlerConditionNotfound(MySqlParser.HandlerConditionNotfoundContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitHandlerConditionNotfound()");}
+	@Override public void enterHandlerConditionException(MySqlParser.HandlerConditionExceptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterHandlerConditionException()");}
+	@Override public void exitHandlerConditionException(MySqlParser.HandlerConditionExceptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitHandlerConditionException()");}
+	@Override public void enterProcedureSqlStatement(MySqlParser.ProcedureSqlStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterProcedureSqlStatement()");}
+	@Override public void exitProcedureSqlStatement(MySqlParser.ProcedureSqlStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitProcedureSqlStatement()");}
+	@Override public void enterCaseAlternative(MySqlParser.CaseAlternativeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCaseAlternative()");}
+	@Override public void exitCaseAlternative(MySqlParser.CaseAlternativeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCaseAlternative()");}
+	@Override public void enterElifAlternative(MySqlParser.ElifAlternativeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterElifAlternative()");}
+	@Override public void exitElifAlternative(MySqlParser.ElifAlternativeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitElifAlternative()");}
+	@Override public void enterAlterUserMysqlV56(MySqlParser.AlterUserMysqlV56Context ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAlterUserMysqlV56()");}
+	@Override public void exitAlterUserMysqlV56(MySqlParser.AlterUserMysqlV56Context ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAlterUserMysqlV56()");}
+	@Override public void enterAlterUserMysqlV57(MySqlParser.AlterUserMysqlV57Context ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAlterUserMysqlV57()");}
+	@Override public void exitAlterUserMysqlV57(MySqlParser.AlterUserMysqlV57Context ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAlterUserMysqlV57()");}
+	@Override public void enterCreateUserMysqlV56(MySqlParser.CreateUserMysqlV56Context ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCreateUserMysqlV56()");}
+	@Override public void exitCreateUserMysqlV56(MySqlParser.CreateUserMysqlV56Context ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCreateUserMysqlV56()");}
+	@Override public void enterCreateUserMysqlV57(MySqlParser.CreateUserMysqlV57Context ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCreateUserMysqlV57()");}
+	@Override public void exitCreateUserMysqlV57(MySqlParser.CreateUserMysqlV57Context ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCreateUserMysqlV57()");}
+	@Override public void enterDropUser(MySqlParser.DropUserContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDropUser()");}
+	@Override public void exitDropUser(MySqlParser.DropUserContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDropUser()");}
+	@Override public void enterGrantStatement(MySqlParser.GrantStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterGrantStatement()");}
+	@Override public void exitGrantStatement(MySqlParser.GrantStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGrantStatement()");}
+	@Override public void enterGrantProxy(MySqlParser.GrantProxyContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterGrantProxy()");}
+	@Override public void exitGrantProxy(MySqlParser.GrantProxyContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGrantProxy()");}
+	@Override public void enterRenameUser(MySqlParser.RenameUserContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRenameUser()");}
+	@Override public void exitRenameUser(MySqlParser.RenameUserContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRenameUser()");}
+	@Override public void enterDetailRevoke(MySqlParser.DetailRevokeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDetailRevoke()");}
+	@Override public void exitDetailRevoke(MySqlParser.DetailRevokeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDetailRevoke()");}
+	@Override public void enterShortRevoke(MySqlParser.ShortRevokeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShortRevoke()");}
+	@Override public void exitShortRevoke(MySqlParser.ShortRevokeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShortRevoke()");}
+	@Override public void enterRevokeProxy(MySqlParser.RevokeProxyContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRevokeProxy()");}
+	@Override public void exitRevokeProxy(MySqlParser.RevokeProxyContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRevokeProxy()");}
+	@Override public void enterSetPasswordStatement(MySqlParser.SetPasswordStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSetPasswordStatement()");}
+	@Override public void exitSetPasswordStatement(MySqlParser.SetPasswordStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListenerexitSetPasswordStatement.()");}
+	@Override public void enterUserSpecification(MySqlParser.UserSpecificationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUserSpecification()");}
+	@Override public void exitUserSpecification(MySqlParser.UserSpecificationContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUserSpecification()");}
+	@Override public void enterPasswordAuthOption(MySqlParser.PasswordAuthOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPasswordAuthOption()");}
+	@Override public void exitPasswordAuthOption(MySqlParser.PasswordAuthOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPasswordAuthOption()");}
+	@Override public void enterStringAuthOption(MySqlParser.StringAuthOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterStringAuthOption()");}
+	@Override public void exitStringAuthOption(MySqlParser.StringAuthOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitStringAuthOption()");}
+	@Override public void enterHashAuthOption(MySqlParser.HashAuthOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterHashAuthOption()");}
+	@Override public void exitHashAuthOption(MySqlParser.HashAuthOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitHashAuthOption()");}
+	@Override public void enterSimpleAuthOption(MySqlParser.SimpleAuthOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleAuthOption()");}
+	@Override public void exitSimpleAuthOption(MySqlParser.SimpleAuthOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleAuthOption()");}
+	@Override public void enterTlsOption(MySqlParser.TlsOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTlsOption()");}
+	@Override public void exitTlsOption(MySqlParser.TlsOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTlsOption()");}
+	@Override public void enterUserResourceOption(MySqlParser.UserResourceOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUserResourceOption()");}
+	@Override public void exitUserResourceOption(MySqlParser.UserResourceOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUserResourceOption()");}
+	@Override public void enterUserPasswordOption(MySqlParser.UserPasswordOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUserPasswordOption()");}
+	@Override public void exitUserPasswordOption(MySqlParser.UserPasswordOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUserPasswordOption()");}
+	@Override public void enterUserLockOption(MySqlParser.UserLockOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUserLockOption()");}
+	@Override public void exitUserLockOption(MySqlParser.UserLockOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUserLockOption()");}
+	@Override public void enterPrivelegeClause(MySqlParser.PrivelegeClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPrivelegeClause()");}
+	@Override public void exitPrivelegeClause(MySqlParser.PrivelegeClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPrivelegeClause()");}
+	@Override public void enterPrivilege(MySqlParser.PrivilegeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPrivilege()");}
+	@Override public void exitPrivilege(MySqlParser.PrivilegeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPrivilege()");}
+	@Override public void enterCurrentSchemaPriviLevel(MySqlParser.CurrentSchemaPriviLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCurrentSchemaPriviLevel()");}
+	@Override public void exitCurrentSchemaPriviLevel(MySqlParser.CurrentSchemaPriviLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCurrentSchemaPriviLevel()");}
+	@Override public void enterGlobalPrivLevel(MySqlParser.GlobalPrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterGlobalPrivLevel()");}
+	@Override public void exitGlobalPrivLevel(MySqlParser.GlobalPrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGlobalPrivLevel()");}
+	@Override public void enterDefiniteSchemaPrivLevel(MySqlParser.DefiniteSchemaPrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDefiniteSchemaPrivLevel()");}
+	@Override public void exitDefiniteSchemaPrivLevel(MySqlParser.DefiniteSchemaPrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDefiniteSchemaPrivLevel()");}
+	@Override public void enterDefiniteFullTablePrivLevel(MySqlParser.DefiniteFullTablePrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDefiniteFullTablePrivLevel()");}
+	@Override public void exitDefiniteFullTablePrivLevel(MySqlParser.DefiniteFullTablePrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDefiniteFullTablePrivLevel()");}
+	@Override public void enterDefiniteTablePrivLevel(MySqlParser.DefiniteTablePrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDefiniteTablePrivLevel()");}
+	@Override public void exitDefiniteTablePrivLevel(MySqlParser.DefiniteTablePrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDefiniteTablePrivLevel()");}
+	@Override public void enterRenameUserClause(MySqlParser.RenameUserClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRenameUserClause()");}
+	@Override public void exitRenameUserClause(MySqlParser.RenameUserClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRenameUserClause()");}
+	@Override public void enterAnalyzeTable(MySqlParser.AnalyzeTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAnalyzeTable()");}
+	@Override public void exitAnalyzeTable(MySqlParser.AnalyzeTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAnalyzeTable()");}
+	@Override public void enterCheckTable(MySqlParser.CheckTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCheckTable()");}
+	@Override public void exitCheckTable(MySqlParser.CheckTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCheckTable()");}
+	@Override public void enterChecksumTable(MySqlParser.ChecksumTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterChecksumTable()");}
+	@Override public void exitChecksumTable(MySqlParser.ChecksumTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitChecksumTable()");}
+	@Override public void enterOptimizeTable(MySqlParser.OptimizeTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterOptimizeTable()");}
+	@Override public void exitOptimizeTable(MySqlParser.OptimizeTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitOptimizeTable()");}
+	@Override public void enterRepairTable(MySqlParser.RepairTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRepairTable()");}
+	@Override public void exitRepairTable(MySqlParser.RepairTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRepairTable()");}
+	@Override public void enterCheckTableOption(MySqlParser.CheckTableOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCheckTableOption()");}
+	@Override public void exitCheckTableOption(MySqlParser.CheckTableOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCheckTableOption()");}
+	@Override public void enterCreateUdfunction(MySqlParser.CreateUdfunctionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCreateUdfunction()");}
+	@Override public void exitCreateUdfunction(MySqlParser.CreateUdfunctionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCreateUdfunction()");}
+	@Override public void enterInstallPlugin(MySqlParser.InstallPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterInstallPlugin()");}
+	@Override public void exitInstallPlugin(MySqlParser.InstallPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitInstallPlugin()");}
+	@Override public void enterUninstallPlugin(MySqlParser.UninstallPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUninstallPlugin()");}
+	@Override public void exitUninstallPlugin(MySqlParser.UninstallPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUninstallPlugin()");}
+	@Override public void enterSetVariable(MySqlParser.SetVariableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSetVariable()");}
+	@Override public void exitSetVariable(MySqlParser.SetVariableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSetVariable()");}
+	@Override public void enterSetCharset(MySqlParser.SetCharsetContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSetCharset()");}
+	@Override public void exitSetCharset(MySqlParser.SetCharsetContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSetCharset()");}
+	@Override public void enterSetNames(MySqlParser.SetNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSetNames()");}
+	@Override public void exitSetNames(MySqlParser.SetNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSetNames()");}
+	@Override public void enterSetPassword(MySqlParser.SetPasswordContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSetPassword()");}
+	@Override public void exitSetPassword(MySqlParser.SetPasswordContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSetPassword()");}
+	@Override public void enterSetTransaction(MySqlParser.SetTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSetTransaction()");}
+	@Override public void exitSetTransaction(MySqlParser.SetTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSetTransaction()");}
+	@Override public void enterSetAutocommit(MySqlParser.SetAutocommitContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSetAutocommit()");}
+	@Override public void exitSetAutocommit(MySqlParser.SetAutocommitContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSetAutocommit()");}
+	@Override public void enterShowMasterLogs(MySqlParser.ShowMasterLogsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowMasterLogs()");}
+	@Override public void exitShowMasterLogs(MySqlParser.ShowMasterLogsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowMasterLogs()");}
+	@Override public void enterShowLogEvents(MySqlParser.ShowLogEventsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowLogEvents()");}
+	@Override public void exitShowLogEvents(MySqlParser.ShowLogEventsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowLogEvents()");}
+	@Override public void enterShowObjectFilter(MySqlParser.ShowObjectFilterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowObjectFilter()");}
+	@Override public void exitShowObjectFilter(MySqlParser.ShowObjectFilterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowObjectFilter()");}
+	@Override public void enterShowColumns(MySqlParser.ShowColumnsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowColumns()");}
+	@Override public void exitShowColumns(MySqlParser.ShowColumnsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowColumns()");}
+	@Override public void enterShowCreateDb(MySqlParser.ShowCreateDbContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowCreateDb()");}
+	@Override public void exitShowCreateDb(MySqlParser.ShowCreateDbContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowCreateDb()");}
+	@Override public void enterShowCreateFullIdObject(MySqlParser.ShowCreateFullIdObjectContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowCreateFullIdObject()");}
+	@Override public void exitShowCreateFullIdObject(MySqlParser.ShowCreateFullIdObjectContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowCreateFullIdObject()");}
+	@Override public void enterShowCreateUser(MySqlParser.ShowCreateUserContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowCreateUser()");}
+	@Override public void exitShowCreateUser(MySqlParser.ShowCreateUserContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowCreateUser()");}
+	@Override public void enterShowEngine(MySqlParser.ShowEngineContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowEngine()");}
+	@Override public void exitShowEngine(MySqlParser.ShowEngineContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowEngine()");}
+	@Override public void enterShowGlobalInfo(MySqlParser.ShowGlobalInfoContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowGlobalInfo()");}
+	@Override public void exitShowGlobalInfo(MySqlParser.ShowGlobalInfoContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterShowErrors(MySqlParser.ShowErrorsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowGlobalInfo()");}
+	@Override public void exitShowErrors(MySqlParser.ShowErrorsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowErrors()");}
+	@Override public void enterShowCountErrors(MySqlParser.ShowCountErrorsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowCountErrors()");}
+	@Override public void exitShowCountErrors(MySqlParser.ShowCountErrorsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowCountErrors()");}
+	@Override public void enterShowSchemaFilter(MySqlParser.ShowSchemaFilterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowSchemaFilter()");}
+	@Override public void exitShowSchemaFilter(MySqlParser.ShowSchemaFilterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowSchemaFilter()");}
+	@Override public void enterShowRoutine(MySqlParser.ShowRoutineContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowRoutine()");}
+	@Override public void exitShowRoutine(MySqlParser.ShowRoutineContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowRoutine()");}
+	@Override public void enterShowGrants(MySqlParser.ShowGrantsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowGrants()");}
+	@Override public void exitShowGrants(MySqlParser.ShowGrantsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowGrants()");}
+	@Override public void enterShowIndexes(MySqlParser.ShowIndexesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowIndexes()");}
+	@Override public void exitShowIndexes(MySqlParser.ShowIndexesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowIndexes()");}
+	@Override public void enterShowOpenTables(MySqlParser.ShowOpenTablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowOpenTables()");}
+	@Override public void exitShowOpenTables(MySqlParser.ShowOpenTablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowOpenTables()");}
+	@Override public void enterShowProfile(MySqlParser.ShowProfileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowProfile()");}
+	@Override public void exitShowProfile(MySqlParser.ShowProfileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowProfile()");}
+	@Override public void enterShowSlaveStatus(MySqlParser.ShowSlaveStatusContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowSlaveStatus()");}
+	@Override public void exitShowSlaveStatus(MySqlParser.ShowSlaveStatusContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowSlaveStatus()");}
+	@Override public void enterVariableClause(MySqlParser.VariableClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterVariableClause()");}
+	@Override public void exitVariableClause(MySqlParser.VariableClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitVariableClause()");}
+	@Override public void enterShowCommonEntity(MySqlParser.ShowCommonEntityContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowCommonEntity()");}
+	@Override public void exitShowCommonEntity(MySqlParser.ShowCommonEntityContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowCommonEntity()");}
+	@Override public void enterShowFilter(MySqlParser.ShowFilterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowFilter()");}
+	@Override public void exitShowFilter(MySqlParser.ShowFilterContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowFilter()");}
+	@Override public void enterShowGlobalInfoClause(MySqlParser.ShowGlobalInfoClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowGlobalInfoClause()");}
+	@Override public void exitShowGlobalInfoClause(MySqlParser.ShowGlobalInfoClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowGlobalInfoClause()");}
+	@Override public void enterShowSchemaEntity(MySqlParser.ShowSchemaEntityContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowSchemaEntity()");}
+	@Override public void exitShowSchemaEntity(MySqlParser.ShowSchemaEntityContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowSchemaEntity()");}
+	@Override public void enterShowProfileType(MySqlParser.ShowProfileTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterShowProfileType()");}
+	@Override public void exitShowProfileType(MySqlParser.ShowProfileTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitShowProfileType()");}
+	@Override public void enterBinlogStatement(MySqlParser.BinlogStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBinlogStatement()");}
+	@Override public void exitBinlogStatement(MySqlParser.BinlogStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBinlogStatement()");}
+	@Override public void enterCacheIndexStatement(MySqlParser.CacheIndexStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCacheIndexStatement()");}
+	@Override public void exitCacheIndexStatement(MySqlParser.CacheIndexStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCacheIndexStatement()");}
+	@Override public void enterFlushStatement(MySqlParser.FlushStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFlushStatement()");}
+	@Override public void exitFlushStatement(MySqlParser.FlushStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFlushStatement()");}
+	@Override public void enterKillStatement(MySqlParser.KillStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterKillStatement()");}
+	@Override public void exitKillStatement(MySqlParser.KillStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitKillStatement()");}
+	@Override public void enterLoadIndexIntoCache(MySqlParser.LoadIndexIntoCacheContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLoadIndexIntoCache()");}
+	@Override public void exitLoadIndexIntoCache(MySqlParser.LoadIndexIntoCacheContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLoadIndexIntoCache()");}
+	@Override public void enterResetStatement(MySqlParser.ResetStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterResetStatement()");}
+	@Override public void exitResetStatement(MySqlParser.ResetStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterShutdownStatement(MySqlParser.ShutdownStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitShutdownStatement(MySqlParser.ShutdownStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterTableIndexes(MySqlParser.TableIndexesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitTableIndexes(MySqlParser.TableIndexesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterSimpleFlushOption(MySqlParser.SimpleFlushOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitSimpleFlushOption(MySqlParser.SimpleFlushOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterChannelFlushOption(MySqlParser.ChannelFlushOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitChannelFlushOption(MySqlParser.ChannelFlushOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterTableFlushOption(MySqlParser.TableFlushOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitTableFlushOption(MySqlParser.TableFlushOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterFlushTableOption(MySqlParser.FlushTableOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitFlushTableOption(MySqlParser.FlushTableOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterLoadedTableIndexes(MySqlParser.LoadedTableIndexesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitLoadedTableIndexes(MySqlParser.LoadedTableIndexesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterSimpleDescribeStatement(MySqlParser.SimpleDescribeStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitSimpleDescribeStatement(MySqlParser.SimpleDescribeStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterFullDescribeStatement(MySqlParser.FullDescribeStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitFullDescribeStatement(MySqlParser.FullDescribeStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterHelpStatement(MySqlParser.HelpStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitHelpStatement(MySqlParser.HelpStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterUseStatement(MySqlParser.UseStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitUseStatement(MySqlParser.UseStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterDescribeStatements(MySqlParser.DescribeStatementsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitDescribeStatements(MySqlParser.DescribeStatementsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterDescribeConnection(MySqlParser.DescribeConnectionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitDescribeConnection(MySqlParser.DescribeConnectionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterFullId(MySqlParser.FullIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitFullId(MySqlParser.FullIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitFullColumnName(MySqlParser.FullColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterIndexColumnName(MySqlParser.IndexColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitIndexColumnName(MySqlParser.IndexColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterUserName(MySqlParser.UserNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitUserName(MySqlParser.UserNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterMysqlVariable(MySqlParser.MysqlVariableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitMysqlVariable(MySqlParser.MysqlVariableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterCharsetName(MySqlParser.CharsetNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitCharsetName(MySqlParser.CharsetNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterCollationName(MySqlParser.CollationNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitCollationName(MySqlParser.CollationNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterEngineName(MySqlParser.EngineNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitEngineName(MySqlParser.EngineNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterUuidSet(MySqlParser.UuidSetContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitUuidSet(MySqlParser.UuidSetContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterXid(MySqlParser.XidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitXid(MySqlParser.XidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterXuidStringId(MySqlParser.XuidStringIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitXuidStringId(MySqlParser.XuidStringIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterAuthPlugin(MySqlParser.AuthPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitAuthPlugin(MySqlParser.AuthPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterUid(MySqlParser.UidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitUid(MySqlParser.UidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterSimpleId(MySqlParser.SimpleIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitSimpleId(MySqlParser.SimpleIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterDottedId(MySqlParser.DottedIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitDottedId(MySqlParser.DottedIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterDecimalLiteral(MySqlParser.DecimalLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitDecimalLiteral(MySqlParser.DecimalLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterFileSizeLiteral(MySqlParser.FileSizeLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitFileSizeLiteral(MySqlParser.FileSizeLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterStringLiteral(MySqlParser.StringLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitStringLiteral(MySqlParser.StringLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterBooleanLiteral(MySqlParser.BooleanLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitBooleanLiteral(MySqlParser.BooleanLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterHexadecimalLiteral(MySqlParser.HexadecimalLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitHexadecimalLiteral(MySqlParser.HexadecimalLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterNullNotnull(MySqlParser.NullNotnullContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitNullNotnull(MySqlParser.NullNotnullContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterConstant(MySqlParser.ConstantContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitConstant(MySqlParser.ConstantContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterStringDataType(MySqlParser.StringDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitStringDataType(MySqlParser.StringDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterDimensionDataType(MySqlParser.DimensionDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitDimensionDataType(MySqlParser.DimensionDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterSimpleDataType(MySqlParser.SimpleDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitSimpleDataType(MySqlParser.SimpleDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterCollectionDataType(MySqlParser.CollectionDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitCollectionDataType(MySqlParser.CollectionDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterSpatialDataType(MySqlParser.SpatialDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitSpatialDataType(MySqlParser.SpatialDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterConvertedDataType(MySqlParser.ConvertedDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitConvertedDataType(MySqlParser.ConvertedDataTypeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterLengthOneDimension(MySqlParser.LengthOneDimensionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitLengthOneDimension(MySqlParser.LengthOneDimensionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterLengthTwoDimension(MySqlParser.LengthTwoDimensionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitLengthTwoDimension(MySqlParser.LengthTwoDimensionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterLengthTwoOptionalDimension(MySqlParser.LengthTwoOptionalDimensionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitLengthTwoOptionalDimension(MySqlParser.LengthTwoOptionalDimensionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterUidList(MySqlParser.UidListContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitUidList(MySqlParser.UidListContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterTables(MySqlParser.TablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitTables(MySqlParser.TablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterExpressions(MySqlParser.ExpressionsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitExpressions(MySqlParser.ExpressionsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitExpressionsWithDefaults(MySqlParser.ExpressionsWithDefaultsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterConstants(MySqlParser.ConstantsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitConstants(MySqlParser.ConstantsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterSimpleStrings(MySqlParser.SimpleStringsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitSimpleStrings(MySqlParser.SimpleStringsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterUserVariables(MySqlParser.UserVariablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitUserVariables(MySqlParser.UserVariablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterDefaultValue(MySqlParser.DefaultValueContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitDefaultValue(MySqlParser.DefaultValueContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterExpressionOrDefault(MySqlParser.ExpressionOrDefaultContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitExpressionOrDefault(MySqlParser.ExpressionOrDefaultContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterIfExists(MySqlParser.IfExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitIfExists(MySqlParser.IfExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterIfNotExists(MySqlParser.IfNotExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitIfNotExists(MySqlParser.IfNotExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterSimpleFunctionCall(MySqlParser.SimpleFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitSimpleFunctionCall(MySqlParser.SimpleFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterDataTypeFunctionCall(MySqlParser.DataTypeFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitDataTypeFunctionCall(MySqlParser.DataTypeFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterValuesFunctionCall(MySqlParser.ValuesFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitValuesFunctionCall(MySqlParser.ValuesFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterCaseFunctionCall(MySqlParser.CaseFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitCaseFunctionCall(MySqlParser.CaseFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterCharFunctionCall(MySqlParser.CharFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitCharFunctionCall(MySqlParser.CharFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterPositionFunctionCall(MySqlParser.PositionFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitPositionFunctionCall(MySqlParser.PositionFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterSubstrFunctionCall(MySqlParser.SubstrFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitSubstrFunctionCall(MySqlParser.SubstrFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterTrimFunctionCall(MySqlParser.TrimFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitTrimFunctionCall(MySqlParser.TrimFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterWeightFunctionCall(MySqlParser.WeightFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitWeightFunctionCall(MySqlParser.WeightFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterExtractFunctionCall(MySqlParser.ExtractFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitExtractFunctionCall(MySqlParser.ExtractFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterGetFormatFunctionCall(MySqlParser.GetFormatFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitGetFormatFunctionCall(MySqlParser.GetFormatFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterCaseFuncAlternative(MySqlParser.CaseFuncAlternativeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitCaseFuncAlternative(MySqlParser.CaseFuncAlternativeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterLevelWeightList(MySqlParser.LevelWeightListContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitLevelWeightList(MySqlParser.LevelWeightListContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterLevelWeightRange(MySqlParser.LevelWeightRangeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void exitLevelWeightRange(MySqlParser.LevelWeightRangeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterLevelInWeightListElement(MySqlParser.LevelInWeightListElementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLevelInWeightListElement()");}
+	@Override public void exitLevelInWeightListElement(MySqlParser.LevelInWeightListElementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLevelInWeightListElement()");}
+	@Override public void enterAggregateWindowedFunction(MySqlParser.AggregateWindowedFunctionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAggregateWindowedFunction()");}
+	@Override public void exitAggregateWindowedFunction(MySqlParser.AggregateWindowedFunctionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAggregateWindowedFunction()");}
+	@Override public void enterScalarFunctionName(MySqlParser.ScalarFunctionNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterScalarFunctionName()");}
+	@Override public void exitScalarFunctionName(MySqlParser.ScalarFunctionNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitScalarFunctionName()");}
+	@Override public void enterPasswordFunctionClause(MySqlParser.PasswordFunctionClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPasswordFunctionClause()");}
+	@Override public void exitPasswordFunctionClause(MySqlParser.PasswordFunctionClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPasswordFunctionClause()");}
+	@Override public void enterFunctionArgs(MySqlParser.FunctionArgsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFunctionArgs()");}
+	@Override public void exitFunctionArgs(MySqlParser.FunctionArgsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFunctionArgs()");}
+	@Override public void enterFunctionArg(MySqlParser.FunctionArgContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFunctionArg()");}
+	@Override public void exitFunctionArg(MySqlParser.FunctionArgContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFunctionArg()");}
+	@Override public void enterIsExpression(MySqlParser.IsExpressionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIsExpression()");}
+	@Override public void exitIsExpression(MySqlParser.IsExpressionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIsExpression()");}
+	@Override public void enterNotExpression(MySqlParser.NotExpressionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterNotExpression()");}
+	@Override public void exitNotExpression(MySqlParser.NotExpressionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitNotExpression()");}
+	@Override public void enterLogicalExpression(MySqlParser.LogicalExpressionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLogicalExpression()");}
+	@Override public void exitLogicalExpression(MySqlParser.LogicalExpressionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLogicalExpression()");}
+	@Override public void enterPredicateExpression(MySqlParser.PredicateExpressionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPredicateExpression()");}
+	@Override public void exitPredicateExpression(MySqlParser.PredicateExpressionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPredicateExpression()");}
+	@Override public void enterSoundsLikePredicate(MySqlParser.SoundsLikePredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSoundsLikePredicate()");}
+	@Override public void exitSoundsLikePredicate(MySqlParser.SoundsLikePredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSoundsLikePredicate()");}
+	@Override public void enterExpressionAtomPredicate(MySqlParser.ExpressionAtomPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterExpressionAtomPredicate()");}
+	@Override public void exitExpressionAtomPredicate(MySqlParser.ExpressionAtomPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitExpressionAtomPredicate()");}
+	@Override public void enterInPredicate(MySqlParser.InPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterInPredicate()");}
+	@Override public void exitInPredicate(MySqlParser.InPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitInPredicate()");}
+	@Override public void enterSubqueryComparasionPredicate(MySqlParser.SubqueryComparasionPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSubqueryComparasionPredicate()");}
+	@Override public void exitSubqueryComparasionPredicate(MySqlParser.SubqueryComparasionPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSubqueryComparasionPredicate()");}
+	@Override public void enterBetweenPredicate(MySqlParser.BetweenPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBetweenPredicate()");}
+	@Override public void exitBetweenPredicate(MySqlParser.BetweenPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBetweenPredicate()");}
+	@Override public void enterBinaryComparasionPredicate(MySqlParser.BinaryComparasionPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBinaryComparasionPredicate()");}
+	@Override public void exitBinaryComparasionPredicate(MySqlParser.BinaryComparasionPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBinaryComparasionPredicate()");}
+	@Override public void enterIsNullPredicate(MySqlParser.IsNullPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIsNullPredicate()");}
+	@Override public void exitIsNullPredicate(MySqlParser.IsNullPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIsNullPredicate()");}
+	@Override public void enterLikePredicate(MySqlParser.LikePredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLikePredicate()");}
+	@Override public void exitLikePredicate(MySqlParser.LikePredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLikePredicate()");}
+	@Override public void enterRegexpPredicate(MySqlParser.RegexpPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRegexpPredicate()");}
+	@Override public void exitRegexpPredicate(MySqlParser.RegexpPredicateContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRegexpPredicate()");}
+	@Override public void enterUnaryExpressionAtom(MySqlParser.UnaryExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUnaryExpressionAtom()");}
+	@Override public void exitUnaryExpressionAtom(MySqlParser.UnaryExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUnaryExpressionAtom()");}
+	@Override public void enterCollateExpressionAtom(MySqlParser.CollateExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCollateExpressionAtom()");}
+	@Override public void exitCollateExpressionAtom(MySqlParser.CollateExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCollateExpressionAtom()");}
+	@Override public void enterSubqueryExpessionAtom(MySqlParser.SubqueryExpessionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSubqueryExpessionAtom()");}
+	@Override public void exitSubqueryExpessionAtom(MySqlParser.SubqueryExpessionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSubqueryExpessionAtom()");}
+	@Override public void enterMysqlVariableExpressionAtom(MySqlParser.MysqlVariableExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMysqlVariableExpressionAtom()");}
+	@Override public void exitMysqlVariableExpressionAtom(MySqlParser.MysqlVariableExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMysqlVariableExpressionAtom()");}
+	@Override public void enterNestedExpressionAtom(MySqlParser.NestedExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterNestedExpressionAtom()");}
+	@Override public void exitNestedExpressionAtom(MySqlParser.NestedExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitNestedExpressionAtom()");}
+	@Override public void enterNestedRowExpressionAtom(MySqlParser.NestedRowExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterNestedRowExpressionAtom()");}
+	@Override public void exitNestedRowExpressionAtom(MySqlParser.NestedRowExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitNestedRowExpressionAtom()");}
+	@Override public void enterMathExpressionAtom(MySqlParser.MathExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMathExpressionAtom()");}
+	@Override public void exitMathExpressionAtom(MySqlParser.MathExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMathExpressionAtom()");}
+	@Override public void enterIntervalExpressionAtom(MySqlParser.IntervalExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIntervalExpressionAtom()");}
+	@Override public void exitIntervalExpressionAtom(MySqlParser.IntervalExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIntervalExpressionAtom()");}
+	@Override public void enterExistsExpessionAtom(MySqlParser.ExistsExpessionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterExistsExpessionAtom()");}
+	@Override public void exitExistsExpessionAtom(MySqlParser.ExistsExpessionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitExistsExpessionAtom()");}
+	@Override public void enterConstantExpressionAtom(MySqlParser.ConstantExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterConstantExpressionAtom()");}
+	@Override public void exitConstantExpressionAtom(MySqlParser.ConstantExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitConstantExpressionAtom()");}
+	@Override public void enterFunctionCallExpressionAtom(MySqlParser.FunctionCallExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFunctionCallExpressionAtom()");}
+	@Override public void exitFunctionCallExpressionAtom(MySqlParser.FunctionCallExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFunctionCallExpressionAtom()");}
+	@Override public void enterBinaryExpressionAtom(MySqlParser.BinaryExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBinaryExpressionAtom()");}
+	@Override public void exitBinaryExpressionAtom(MySqlParser.BinaryExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBinaryExpressionAtom()");}
+	@Override public void enterFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFullColumnNameExpressionAtom()");}
+	@Override public void exitFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnNameExpressionAtom()");}
+	@Override public void enterBitExpressionAtom(MySqlParser.BitExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBitExpressionAtom()");}
+	@Override public void exitBitExpressionAtom(MySqlParser.BitExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBitExpressionAtom()");}
+	@Override public void enterUnaryOperator(MySqlParser.UnaryOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUnaryOperator()");}
+	@Override public void exitUnaryOperator(MySqlParser.UnaryOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUnaryOperator()");}
+	@Override public void enterComparisonOperator(MySqlParser.ComparisonOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterComparisonOperator()");}
+	@Override public void exitComparisonOperator(MySqlParser.ComparisonOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitComparisonOperator()");}
+	@Override public void enterLogicalOperator(MySqlParser.LogicalOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLogicalOperator()");}
+	@Override public void exitLogicalOperator(MySqlParser.LogicalOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLogicalOperator()");}
+	@Override public void enterBitOperator(MySqlParser.BitOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBitOperator()");}
+	@Override public void exitBitOperator(MySqlParser.BitOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBitOperator()");}
+	@Override public void enterMathOperator(MySqlParser.MathOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMathOperator()");}
+	@Override public void exitMathOperator(MySqlParser.MathOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMathOperator()");}
+	@Override public void enterCharsetNameBase(MySqlParser.CharsetNameBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterCharsetNameBase()");}
+	@Override public void exitCharsetNameBase(MySqlParser.CharsetNameBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitCharsetNameBase()");}
+	@Override public void enterTransactionLevelBase(MySqlParser.TransactionLevelBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTransactionLevelBase()");}
+	@Override public void exitTransactionLevelBase(MySqlParser.TransactionLevelBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTransactionLevelBase()");}
+	@Override public void enterPrivilegesBase(MySqlParser.PrivilegesBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPrivilegesBase()");}
+	@Override public void exitPrivilegesBase(MySqlParser.PrivilegesBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPrivilegesBase()");}
+	@Override public void enterIntervalTypeBase(MySqlParser.IntervalTypeBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIntervalTypeBase()");}
+	@Override public void exitIntervalTypeBase(MySqlParser.IntervalTypeBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.()");}
+	@Override public void enterDataTypeBase(MySqlParser.DataTypeBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDataTypeBase()");}
+	@Override public void exitDataTypeBase(MySqlParser.DataTypeBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDataTypeBase()");}
+	@Override public void enterKeywordsCanBeId(MySqlParser.KeywordsCanBeIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterKeywordsCanBeId()");}
+	@Override public void exitKeywordsCanBeId(MySqlParser.KeywordsCanBeIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitKeywordsCanBeId()");}
+	@Override public void enterFunctionNameBase(MySqlParser.FunctionNameBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFunctionNameBase()");}
+	@Override public void exitFunctionNameBase(MySqlParser.FunctionNameBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFunctionNameBase()");}
+	@Override public void enterEveryRule(ParserRuleContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterEveryRule()");}
+	@Override public void exitEveryRule(ParserRuleContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitEveryRule()");}
+	@Override public void visitTerminal(TerminalNode node) {Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal()");}
+	@Override public void visitErrorNode(ErrorNode node) {Log.logQueryParseProgress("AntlrMySQLListener.visitErrorNode()");}
 }
 /*
  * @Override public void exitExpression(@NotNull
@@ -905,6 +904,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
  * visit(ctx.right_element()); // for (TerminalNode t: ctx.getTokens(1)) { //
  * System.out.println("********************** exitSimple_expression Token " +
  * t.toString()); // } } catch (Exception ex) {
- * Log.logProgress("AntlrMySQLListener.exitSimple_expression(): " +
+ * Log.logQueryParseProgress("AntlrMySQLListener.exitSimple_expression(): " +
  * ex.getLocalizedMessage()); } }
  */
