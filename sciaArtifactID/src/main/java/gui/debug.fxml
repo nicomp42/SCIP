@@ -47,6 +47,16 @@
                   </AnchorPane>
             </content>
           </Tab>
+          <Tab text="SQL Query Parsing">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea id="txaSQLQueryParsing" fx:id="txaSQLQueryParsing" editable="false" prefHeight="334.0" prefWidth="688.0" />
+                        <Button fx:id="btnClearSQLQueryParsing" layoutX="519.0" layoutY="339.0" mnemonicParsing="false" onAction="#btnClearSQLQueryParsing_OnClick" text="Clear SQL Query Parsing Log" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
         </tabs>
       </TabPane>
    </children>

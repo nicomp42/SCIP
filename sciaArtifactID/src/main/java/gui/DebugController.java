@@ -27,11 +27,11 @@ import javafx.stage.Stage;
  */
 public class DebugController /* extends Application */ {
 
-	@FXML TextArea txaProgress, txaNeo4jQuerys, txaErrors;
-	@FXML Button btnClear, btnClearNeo4jQuerys, btnClearErrors;
+	@FXML TextArea txaProgress, txaNeo4jQuerys, txaErrors, txaSQLQueryParsing;
+	@FXML Button btnClear, btnClearNeo4jQuerys, btnClearErrors, btnClearSQLQueryParsing;
 	@FXML AnchorPane apDebug;
 	private Scene myScene;
-	private double  btnClearHeight, btnClearWidth, btnClearNeo4jQuerysWidth, btnClearNeo4jQuerysHeight, btnClearErrorsWidth, btnClearErrorsHeight;
+	private double  btnClearHeight, btnClearWidth, btnClearSQLQueryParsingWidth, btnClearNeo4jQuerysWidth, btnClearNeo4jQuerysHeight, btnClearErrorsWidth, btnClearErrorsHeight, btnClearSQLQueryParsingHeight;
 	private Stage myStage;
 
 	public DebugController() {
@@ -61,6 +61,7 @@ public class DebugController /* extends Application */ {
 			        txaProgress.setPrefWidth(myScene.getWidth() - 10);
 			        txaNeo4jQuerys.setPrefWidth(myScene.getWidth() - 10);
 			        txaErrors.setPrefWidth(myScene.getWidth() - 10);
+			        txaSQLQueryParsing.setPrefWidth(myScene.getWidth() - 10);
 
 //			        txaProgress.setPrefHeight(myScene.getHeight() - 50);
 //			        txaNeo4jQuerys.setPrefHeight(myScene.getHeight() - 50);
@@ -69,6 +70,7 @@ public class DebugController /* extends Application */ {
 			        relocateBtnClear();
 			        relocateBtnClearNeo4jQuerys();
 			        relocateBtnClearErrors();
+			        relocateBtnClearSQLQueryParsing();
 		    	} catch (Exception ex) {}
 		    }
 		});
@@ -85,6 +87,9 @@ public class DebugController /* extends Application */ {
 		    }
 		});
 */
+	}
+	private void relocateBtnClearSQLQueryParsing() {
+		btnClearSQLQueryParsing.relocate(txaSQLQueryParsing.getWidth() - btnClearSQLQueryParsing.getWidth() - 3, txaSQLQueryParsing.getHeight() + 7);
 	}
 	private void relocateBtnClear() {
 		btnClear.relocate(txaProgress.getWidth() - btnClear.getWidth() - 3, txaProgress.getHeight() + 7);
@@ -121,6 +126,14 @@ public class DebugController /* extends Application */ {
 			System.out.println("DebugController.writeNeo4jQueryInfo: " + ex.getLocalizedMessage());
 		}
 	}
+	public void writeQueryParseProgress(String msg) {
+		try {
+			txaSQLQueryParsing.appendText("\n" + msg);
+		} catch (Exception ex) {
+			System.out.println("DebugController.writeQueryParseProgress: " + ex.getLocalizedMessage());
+		}
+	}
+
 	public void writeError(String msg) {
 		try {
 			txaErrors.appendText("\n" + msg);

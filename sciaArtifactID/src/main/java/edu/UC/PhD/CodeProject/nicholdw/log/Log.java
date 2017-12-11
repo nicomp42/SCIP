@@ -5,7 +5,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
-
+/**
+ * Message logging for the application
+ * @author nicomp
+ *
+ */
 public class Log {
 	// Is there is a non-null buffer, bypass processing the message and just store it in the buffer
 	private static List<String> progressBuffer, errorBuffer, neo4jQueryHistoryBuffer;
@@ -67,6 +71,17 @@ public class Log {
 			}
 		} else {
 			errorBuffer.add(msg + "\n" + ex.getLocalizedMessage());
+		}
+	}
+	public static synchronized void logQueryParseProgress(String msg) {
+		if (progressBuffer == null) {
+			if (Config.getConfig().getDebugController() != null) {
+				Config.getConfig().getDebugController().writeQueryParseProgress(msg);
+			} else {
+				if (!Config.getConfig().getSupressOutputToConsole()) {System.out.println(msg);}
+			}
+		} else {
+			progressBuffer.add(msg);
 		}
 	}
 	public static synchronized void logProgress(String msg) {
