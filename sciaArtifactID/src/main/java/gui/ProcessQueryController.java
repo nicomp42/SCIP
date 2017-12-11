@@ -22,7 +22,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchema;
 import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchemas;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
-import edu.UC.PhD.CodeProject.nicholdw.queryParser.QueryParser;
+import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.Select;
 import javafx.application.Application;
 import javafx.event.ActionEvent;

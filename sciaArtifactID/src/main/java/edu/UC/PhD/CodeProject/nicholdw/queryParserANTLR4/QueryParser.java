@@ -1,4 +1,4 @@
-package edu.UC.PhD.CodeProject.nicholdw.queryParser;
+package edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4;
 
 import java.util.ArrayList;
 
@@ -49,7 +49,7 @@ public class QueryParser {
 
 	    // Walk it with our listener
 	    ParseTreeWalker walker = new ParseTreeWalker();
-	    AntlrMySQLListener_test listener = new AntlrMySQLListener_test(queryDefinition);
+	    AntlrMySQLListener listener = new AntlrMySQLListener(queryDefinition);
 	    walker.walk(listener, MYSQLSentenceContext);
 	}
 

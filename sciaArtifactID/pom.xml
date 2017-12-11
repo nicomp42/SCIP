@@ -25,11 +25,6 @@
     	<version>5.1.23</version>
 		</dependency>
 		<dependency>
-    		<groupId>org.antlr</groupId>
-    		<artifactId>antlr3-maven-plugin</artifactId>
-    		<version>3.5.2</version>
-			</dependency>
-		<dependency>
 		    <groupId>junit</groupId>
 		    <artifactId>junit</artifactId>
 		    <version>4.12</version>
@@ -40,12 +35,24 @@
    	    	<artifactId>selenium-java</artifactId>
         	<version>3.4.0</version>
     	</dependency>
-		<?ignore
 		<dependency>
-		    <groupId>org.neo4j.driver</groupId>
-		    <artifactId>neo4j-java-driver</artifactId>
-		    <version>1.0.0-RC2</version>
+		  <groupId>org.antlr</groupId>
+		  <artifactId>antlr4-maven-plugin</artifactId>
+  			<version>4.3</version>
+			<type>maven-plugin</type>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
+		<dependency>
+    		<groupId>org.antlr</groupId>
+    		<artifactId>antlr4-runtime</artifactId>
+    		<version>4.7.1</version>
+		</dependency>
+		<?ignore
+			<dependency>
+		    	<groupId>org.neo4j.driver</groupId>
+		    	<artifactId>neo4j-java-driver</artifactId>
+		    	<version>1.0.0-RC2</version>
+			</dependency>
 		?>
     </dependencies>
 </project>

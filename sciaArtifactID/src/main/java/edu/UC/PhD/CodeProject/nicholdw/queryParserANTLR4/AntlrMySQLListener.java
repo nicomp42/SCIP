@@ -1,12 +1,10 @@
-package edu.UC.PhD.CodeProject.nicholdw.queryParser;
+
+package edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4;
 
 import java.util.List;
 import java.util.Objects;
-import org.Antlr4MySQLFromANTLRRepo.MySQLParserFromANTLRRepo;
-import org.Antlr4MySQLFromANTLRRepo.MySQLParserFromANTLRRepo.Left_elementContext;
-import org.Antlr4MySQLFromANTLRRepo.MySQLParserFromANTLRRepo.Right_elementContext;
-import org.Antlr4MySQLFromANTLRRepo.MySQLParserFromANTLRRepo.Table_aliasContext;
-import org.Antlr4MySQLFromANTLRRepo.MySQLParserFromANTLRRepoBaseListener;
+
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -21,7 +19,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseWhere;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 
-public class AntlrMySQLListener_test extends MySQLParserFromANTLRRepoBaseListener {
+public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParserBaseListener {
 
 	private QueryDefinition queryDefinition;
 	private QueryClause queryClause;
@@ -29,7 +27,8 @@ public class AntlrMySQLListener_test extends MySQLParserFromANTLRRepoBaseListene
 	private TableNameParts tableNameParts = new TableNameParts();
 	private QueryTable currentQueryTable;
 
-	public AntlrMySQLListener_test(QueryDefinition queryDefinition) {
+	public AntlrMySQLListener(QueryDefinition queryDefinition) {
+		System.out.println("AntlrMySQLListener.AntlrMySQLListener(qd)");
 		this.queryDefinition = queryDefinition;
 		queryClause = new QueryClauseUnknown();
 	}
@@ -41,24 +40,27 @@ public class AntlrMySQLListener_test extends MySQLParserFromANTLRRepoBaseListene
 	 * System.out.println(ctx.getText()); }
 	 */
 	@Override
-	public void enterSchema_name(@NotNull MySQLParserFromANTLRRepo.Schema_nameContext ctx) {
-		Log.logProgress("enterSchema_name: " + ctx.getText() + ":");
+	public void enterSchema_name(@NotNull MySqlParser.Schema_nameContext ctx) {
+		Log.logProgress("AntlrMySQLListener.enterSchema_name: " + ctx.getText() + ":");
 	}
 
 	@Override
-	public void exitSchema_name(@NotNull MySQLParserFromANTLRRepo.Schema_nameContext ctx) {
-		Log.logProgress("exitSchema_name: " + ctx.getText() + ":");
+	public void exitSchema_name(@NotNull MySqlParser.Schema_nameContext ctx) {
+		Log.logProgress("AntlrMySQLListener.exitSchema_name: " + ctx.getText() + ":");
 		columnNameParts.schemaName = ctx.getText();
 	}
+	@Override public void enterSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
+		Log.logProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText());
+	}
 
 	@Override
-	public void enterSelect_clause(MySQLParserFromANTLRRepo.Select_clauseContext ctx) {
+	public void enterSelect_clause(MySqlParser.Select_clauseContext ctx) {
 		queryClause = new QueryClauseSelect();
 		Log.logProgress("enterSelect_clause"); // + ctx.getText() + ":" );
 	}
 
 	@Override
-	public void exitRight_element(@NotNull MySQLParserFromANTLRRepo.Right_elementContext ctx) {
+	public void exitRight_element(@NotNull MySqlParser.Right_elementContext ctx) {
 		Log.logProgress("exitRight_element(): " + ctx.getText() + ": ctx.getText() = " + ctx.getText());
 		try {
 			visit(ctx);
@@ -67,7 +69,7 @@ public class AntlrMySQLListener_test extends MySQLParserFromANTLRRepoBaseListene
 		}
 	}
 
-	public void exitLeft_element(@NotNull MySQLParserFromANTLRRepo.Left_elementContext ctx) {
+	public void exitLeft_element(@NotNull MySqlParser.Left_elementContext ctx) {
 		Log.logProgress("exitLeft_element(): " + ctx.getText() + ": ctx.getText() = " + ctx.getText());
 		try {
 			visit(ctx);
@@ -144,13 +146,13 @@ public class AntlrMySQLListener_test extends MySQLParserFromANTLRRepoBaseListene
 		}
 	}
 	@Override
-	public void enterWhere_clause(MySQLParserFromANTLRRepo.Where_clauseContext ctx) {
+	public void enterWhere_clause(MySqlParser.Where_clauseContext ctx) {
 		queryClause = new QueryClauseWhere();
 		Log.logProgress("enterWhere_clause()"); // : " + ctx.getText() + ":
 													// ctx.getText() = " +
 													// ctx.getText());
 	}
-	public void exitWhere_clause(MySQLParserFromANTLRRepo.Where_clauseContext ctx) {
+	public void exitWhere_clause(MySqlParser.Where_clauseContext ctx) {
 		Log.logProgress("exitWhere_clause()"); // :
 													// ctx.expression().getText()
 													// = " +
@@ -160,23 +162,23 @@ public class AntlrMySQLListener_test extends MySQLParserFromANTLRRepoBaseListene
 		// printTerminalNodes(ctx.getTokens(0));
 	}
 	@Override
-	public void enterColumn_name(MySQLParserFromANTLRRepo.Column_nameContext ctx) {
+	public void enterColumn_name(MySqlParser.Column_nameContext ctx) {
 		Log.logProgress("enterColumn_name(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
 		columnNameParts.init();
 	}
 	@Override
-	public void enterColumn_name_alias(MySQLParserFromANTLRRepo.Column_name_aliasContext ctx) {
+	public void enterColumn_name_alias(MySqlParser.Column_name_aliasContext ctx) {
 		Log.logProgress("enterColumn_name_alias(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
 	}
 	@Override
-	public void exitColumn_name_alias(MySQLParserFromANTLRRepo.Column_name_aliasContext ctx) {
+	public void exitColumn_name_alias(MySqlParser.Column_name_aliasContext ctx) {
 		Log.logProgress("exitColumn_name_alias(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
 		columnNameParts.aliasName = ctx.getText(); // There will be nothing but
 													// the terminal node when we
 													// are in this context
 	}
 	@Override
-	public void exitColumn_name(MySQLParserFromANTLRRepo.Column_nameContext ctx) {
+	public void exitColumn_name(MySqlParser.Column_nameContext ctx) {
 		Log.logProgress("exitColumn_name(): " + ctx.getText() + ": ctx.ID() = " + ctx.ID().toString());
 		parseColumnName(ctx.ID()); // ctx.getText());
 		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(columnNameParts.schemaName,
@@ -223,7 +225,7 @@ public class AntlrMySQLListener_test extends MySQLParserFromANTLRRepoBaseListene
 					+ parts.toString() + ")");
 		}
 	}
-	public void exitTable_name(MySQLParserFromANTLRRepo.Table_nameContext ctx) {
+	public void exitTable_name(MySqlParser.Table_nameContext ctx) {
 		// TODO our grammar doesn't handle appended schema names on tables, we need to add that logic when we get new grammar.
 		Log.logProgress("exitTable_name: " + ctx.getText());
 		tableNameParts.tableName = ctx.getText();
@@ -272,12 +274,12 @@ public class AntlrMySQLListener_test extends MySQLParserFromANTLRRepoBaseListene
 }
 /*
  * @Override public void exitExpression(@NotNull
- * MySQLParserFromANTLRRepo.ExpressionContext ctx) {
+ * MySqlParser.ExpressionContext ctx) {
  * System.out.println("exitExpression(): " + ctx.getText() +
  * ": ctx.getText() = " + ctx.getText()); }
  *
  * @Override public void exitSimple_expression(@NotNull
- * MySQLParserFromANTLRRepo.Simple_expressionContext ctx) { try {
+ * MySqlParser.Simple_expressionContext ctx) { try {
  * System.out.println("exitSimple_expression(): " + ctx.getText() +
  * ": ctx.getText() = " + ctx.getText() + " left element = " +
  * ctx.left_element().getText() + " right element = " +
@@ -285,6 +287,6 @@ public class AntlrMySQLListener_test extends MySQLParserFromANTLRRepoBaseListene
  * visit(ctx.right_element()); // for (TerminalNode t: ctx.getTokens(1)) { //
  * System.out.println("********************** exitSimple_expression Token " +
  * t.toString()); // } } catch (Exception ex) {
- * Log.logProgress("AntlrMySQLListener_test.exitSimple_expression(): " +
+ * Log.logProgress("AntlrMySQLListener.exitSimple_expression(): " +
  * ex.getLocalizedMessage()); } }
  */

@@ -1,4 +1,4 @@
-package edu.UC.PhD.CodeProject.nicholdw.queryParser;
+package edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4;
 
 public class ParseException extends Exception {
 

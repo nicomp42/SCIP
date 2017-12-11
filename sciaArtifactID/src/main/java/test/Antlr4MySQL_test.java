@@ -1,25 +1,36 @@
 package test;
 
-import org.Antlr4MySQLFromANTLRRepo.MySQLLexxerFromANTLRRepo;
-import org.Antlr4MySQLFromANTLRRepo.MySQLParserFromANTLRRepo;
-import org.Antlr4MySQLFromANTLRRepo.MySQLParserFromANTLRRepoBaseListener;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import org.Antlr4MySQLFromANTLRRepo.MySqlLexer;
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
-
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
-import edu.UC.PhD.CodeProject.nicholdw.queryParser.AntlrMySQLListener_test;
+import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.AntlrMySQLListener;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.Select;
 
 public class Antlr4MySQL_test {
 
 	public static void main( String[] args) throws Exception
 	{
-		testSelect();
+		//simpleParseTest("SELECT fruit FROM tFruit ORDER BY fruit");
+		simpleParseTest("SELECT `ttablea`.`testString` AS `testString`,`ttablea`.`testInt` AS `testInt`,`ttablea`.`testDateTime` AS `testDateTime`,`ttablea`.`testDouble` AS `testDouble`, `twidget`.`Widget` AS `Widget`,`qc`.`testFieldATableC` AS `testfieldatablec`,`qd`.`testFieldATableD` AS `testfieldatabled`,`qlevelaa`.`TestFieldATableE` AS `testfieldatablee`,`qlevelaa`.`TestFieldATableF` AS `testfieldatablef` FROM (((((`ttablea` JOIN `ttableb`) JOIN `qc`) JOIN `qd`) JOIN `twidget`) JOIN `qlevelaa`)");
+		//simpleParseTest("SELECT 1.e-3 as 123e;");
+		//simpleParseTest("SELECT `hello world` as bar");
+		//simpleParseTest("select acme.tpilot.PilotID foo, sakila.actor.last_name, boo SumBoo from tpilot, actor");
+		//simpleParseTest("SELECT a,b,c FROM tFoo ORDER BY Gorp WHERE a=`aaa`");
+		//simpleParseTest("SELECT a,b,c FROM tFoo ORDER BY Gorp WHERE a=`aaa`");
+		//simpleParseTest("ALTER TABLE `acme`.`tpilot` ADD COLUMN `FavoriteColor` VARCHAR(45) NULL AFTER `FirstName`");
+//		testSelect();
 //		testAlter();
 	}
-	private static void testAlter() {
+	private static void testAlter() throws Exception {
 		//		String sql = "select  x xx, FOOAlias.y yy, z from FOO FOOAlias join bar";
 		//      1         2         3         4
 		//1234567890123456789012345678901234567890
@@ -36,7 +47,7 @@ public class Antlr4MySQL_test {
 			System.out.println(queryTable.toString());
 		}
 	}
-	private static void testSelect() {
+	private static void testSelect() throws Exception {
 		//		String sql = "select  x xx, FOOAlias.y yy, z from FOO FOOAlias join bar";
 		//      1         2         3         4
 		//1234567890123456789012345678901234567890
@@ -60,58 +71,73 @@ public class Antlr4MySQL_test {
 			System.out.println(queryTable.toString());
 		}
 	}
-	static QueryDefinition parseSelectQuery(String sql) {
+	static QueryDefinition parseSelectQuery(String sql) throws Exception {
 		QueryDefinition qd = new QueryDefinition("","","",new Select(), "dummyQueryName", sql, "dummySchemaName");
 		// Get our lexxer
-		MySQLLexxerFromANTLRRepo lexxer = new MySQLLexxerFromANTLRRepo(new ANTLRInputStream(sql));
+		MySqlLexer lexxer = new MySqlLexer(new ANTLRInputStream(sql));
 		// Get a list of matched tokens
 		CommonTokenStream tokens = new CommonTokenStream(lexxer);
 		// Pass the tokens to the parser
-		MySQLParserFromANTLRRepo parser = new MySQLParserFromANTLRRepo(tokens);
+		MySqlParser parser = new MySqlParser(tokens);
 		// Specify our entry point
-		ParserRuleContext MYSQLSentenceContext = parser.select_clause();
+
+        ParserRuleContext MYSQLSentenceContext = parser.getContext();
 		// Walk it and attach our listener
 		ParseTreeWalker walker = new ParseTreeWalker();
-		MySQLParserFromANTLRRepoBaseListener listener = new AntlrMySQLListener_test(qd);
-		walker.walk(listener, MYSQLSentenceContext);
-		return qd;
+		throw new Exception("NOT IMPLEMENTED");
+//		MySqlParserBaseListener listener = new MySqlParserBaseListener(qd);
+//		walker.walk(listener, MYSQLSentenceContext);
+//		return qd;
 	}
 	static QueryDefinition parseAlterQuery(String sql) {
 		QueryDefinition qd = new QueryDefinition("","","",new Select(), "dummyQueryName", sql, "dummySchemaName");
 /*		// Get our lexxer
-		MySQLLexxerFromANTLRRepo lexxer = new MySQLLexxerFromANTLRRepo(new ANTLRInputStream(sql));
+		MySQLLexxerRepo lexxer = new MySQLLexxerRepo(new ANTLRInputStream(sql));
 		// Get a list of matched tokens
 		CommonTokenStream tokens = new CommonTokenStream(lexxer);
 		// Pass the tokens to the parser
-		MySQLParserFromANTLRRepo parser = new MySQLParserFromANTLRRepo(tokens);
+		MySQLParserRepo parser = new MySQLParserRepo(tokens);
 		// Specify our entry point
 
 		ParserRuleContext MYSQLSentenceContext = parser.alter_clause();		// oops. Don't have ALTER in the grammer, yet.
 		// Walk it and attach our listener
 		ParseTreeWalker walker = new ParseTreeWalker();
-		MySQLParserFromANTLRRepoBaseListener listener = new AntlrMySQLListener_test(qd);
+		MySQLParserRepoBaseListener listener = new AntlrMySQLListener_test(qd);
 		walker.walk(listener, MYSQLSentenceContext);
 */
 		return qd;
 	}
 	private static void simpleParseTest(String sql) {
+		try {
+			QueryDefinition qd = new QueryDefinition("","","",new Select(), "dummyQueryName", sql, "dummySchemaName");
+			System.out.println("Parsing SQL: " + sql);
+			// Get our lexxer
 
-		System.out.println("Parsing SQL: " + sql);
-		// Get our lexxer
-		MySQLLexxerFromANTLRRepo lexxer = new MySQLLexxerFromANTLRRepo(new ANTLRInputStream(sql));
+//			This works for ANTLR Runtime 4.7, but not for 4.3.5
+			InputStream stream = new ByteArrayInputStream(sql.getBytes(StandardCharsets.UTF_8));
+			MySqlLexer lexxer = new MySqlLexer(CharStreams.fromStream(stream, StandardCharsets.UTF_8));
 
-		// Get a list of matched tokens
-		CommonTokenStream tokens = new CommonTokenStream(lexxer);
+// 			This works for ANTLR 4.3.5...
+//			CharStream stream = new ANTLRInputStream(sql);
+//			MySqlLexer lexxer = new MySqlLexer(stream);
 
-		// Pass the tokens to the parser
-		MySQLParserFromANTLRRepo parser = new MySQLParserFromANTLRRepo(tokens);
+			// Get a list of matched tokens
+			//List<? extends Token> x = lexxer.getAllTokens();
 
-		// Specify our entry point
-		ParserRuleContext MYSQLSentenceContext = parser.select_clause();
+			CommonTokenStream tokens = new CommonTokenStream(lexxer);
 
-		// Walk it and attach our listener
-		ParseTreeWalker walker = new ParseTreeWalker();
-		MySQLParserFromANTLRRepoBaseListener listener = new AntlrMySQLListener_test(null);
-		walker.walk(listener, MYSQLSentenceContext);
+			// Pass the tokens to the parser
+			MySqlParser parser = new MySqlParser(tokens);
+			// Specify our entry point
+			ParserRuleContext MYSQLSentenceContext = parser.root();
+
+			// Walk it and attach our listener
+			ParseTreeWalker walker = new ParseTreeWalker();
+			AntlrMySQLListener listener = new AntlrMySQLListener(qd);
+			parser.addParseListener(listener);
+			walker.walk(listener, MYSQLSentenceContext);
+		} catch (Exception ex) {
+			System.out.println("simpleParseTest: " + ex.getLocalizedMessage());
+		}
 	}
 }

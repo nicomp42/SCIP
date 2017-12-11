@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
-import edu.UC.PhD.CodeProject.nicholdw.queryParser.QueryParser;
+import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.Select;
 
 //@RunWith(Suite.class)
