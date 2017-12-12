@@ -34,18 +34,28 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	boolean includeAllFields;
 	boolean parsingColumn, nextIsAlias;
 
+	ArrayList<String> fullColumnNames;		// Trap every attribute just by using the AntlrMySQLListener.enterFullColumnName() listener
+	ArrayList<String> fullTableNames;		// Trap every table just by using the AntlrMySQLListener.enterTableSourceBase() listener
+
+
 	public AntlrMySQLListener(QueryDefinition queryDefinition) {
 		System.out.println("AntlrMySQLListener.AntlrMySQLListener(qd)");
 		this.queryDefinition = queryDefinition;
 		queryClause = new QueryClauseUnknown();
 		parsingColumn = false;
 		nextIsAlias = false;
+		fullColumnNames = new ArrayList<String>();
+		fullTableNames = new ArrayList<String>();
 	}
 	@Override public void enterRoot(MySqlParser.RootContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterRoot()");
 	}
 	@Override public void exitRoot(MySqlParser.RootContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitRoot()");
+		System.out.println("Attributes collected from the enterFullColumnName() listener...");
+		for (String s: fullColumnNames) {System.out.println(s);}
+		System.out.println("Tables collected from the enterAtomTableItem() listener...");
+		for (String s: fullTableNames) {System.out.println(s);}
 	}
 	@Override public void enterSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText());
@@ -83,7 +93,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(columnNameParts.schemaName, columnNameParts.tableName, columnNameParts.attributeName, new AliasNameClass(columnNameParts.aliasName), new QueryClauseSelect()));
 		parsingColumn = false;
 	}
-
 	@Override public void enterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectFunctionElement: " + ctx.getText());
 	}
@@ -104,7 +113,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoVariables: " + ctx.getText());
 
 	}
-
 	private void parseColumnName(MySqlParser.SelectColumnElementContext scec) {
 		switch (scec.getChildCount()) {
 		case 1:		// Just an attribute
@@ -602,6 +610,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText());
 		//parseColumnName(ctx);
 		parsingColumn = true;
+		fullColumnNames.add(ctx.getText());
 	}
 	@Override public void exitFullColumnName(MySqlParser.FullColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnName()");}
 	@Override public void enterIndexColumnName(MySqlParser.IndexColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIndexColumnName()");}
@@ -867,6 +876,21 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitOrderByClauseLabel(): " + ctx.getText());
 	}
+
+	@Override public void enterTableSourceBase(MySqlParser.TableSourceBaseContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText());
+	}
+
+	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) { 
+		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText());
+		fullTableNames.add(ctx.getText());
+	}
+	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) { 
+		Log.logQueryParseProgress("AntlrMySQLListener.exitAtomTableItem(): " + ctx.getText());
+	}
+	
+
+
 	/**
 	 * Start with a string formatted like schemaName.TableName.AttributeName and extract the parts into a structure.
 	 * There cannot be an alias in the string to parse.
