@@ -12,10 +12,10 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
  */
 public class Log {
 	// Is there is a non-null buffer, bypass processing the message and just store it in the buffer
-	private static List<String> progressBuffer, errorBuffer, neo4jQueryHistoryBuffer;
+	private static List<String> progressBuffer, errorBuffer, neo4jQueryHistoryBuffer, queryParseProgressBuffer;
 
 	static {
-		progressBuffer = null; errorBuffer = null; neo4jQueryHistoryBuffer = null;
+		progressBuffer = null; errorBuffer = null; neo4jQueryHistoryBuffer = null; queryParseProgressBuffer = null;
 		//resetMsgBuffer();
 		//resetErrorBuffer();
 		//resetNeo4jBuffer();
@@ -73,16 +73,21 @@ public class Log {
 			errorBuffer.add(msg + "\n" + ex.getLocalizedMessage());
 		}
 	}
-	public static synchronized void logQueryParseProgress(String msg) {
-		if (progressBuffer == null) {
+	public static synchronized void logQueryParseProgress(String msg, Boolean isError) {
+		String prefix = "";
+		if (isError) {prefix = "***** ";}
+		if (queryParseProgressBuffer == null) {
 			if (Config.getConfig().getDebugController() != null) {
-				Config.getConfig().getDebugController().writeQueryParseProgress(msg);
+				Config.getConfig().getDebugController().writeQueryParseProgress(prefix + msg);
 			} else {
-				if (!Config.getConfig().getSupressOutputToConsole()) {System.out.println(msg);}
+				if (!Config.getConfig().getSupressOutputToConsole()) {System.out.println(prefix + msg);}
 			}
 		} else {
-			progressBuffer.add(msg);
+			queryParseProgressBuffer.add(prefix + msg);
 		}
+	}
+	public static synchronized void logQueryParseProgress(String msg) {
+		logQueryParseProgress(msg, false);
 	}
 	public static synchronized void logProgress(String msg) {
 		if (progressBuffer == null) {

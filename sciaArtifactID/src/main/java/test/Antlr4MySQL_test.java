@@ -19,8 +19,9 @@ public class Antlr4MySQL_test {
 
 	public static void main( String[] args) throws Exception
 	{
-		//simpleParseTest("SELECT fruit FROM tFruit ORDER BY fruit");
-		simpleParseTest("SELECT 123 AS `myConstant`, `SchemaA`.`ttablea`.`testString` AS `testString`,`ttablea`.`testInt` AS `testInt`,`ttablea`.`testDateTime` AS `testDateTime`,`ttablea`.`testDouble` AS `testDouble`, `twidget`.`Widget` AS `Widget`,`qc`.`testFieldATableC` AS `testfieldatablec`,`qd`.`testFieldATableD` AS `testfieldatabled`,`qlevelaa`.`TestFieldATableE` AS `testfieldatablee`,`qlevelaa`.`TestFieldATableF` AS `testfieldatablef` FROM (((((`ttablea` JOIN `ttableb`) JOIN `qc`) JOIN `qd`) JOIN `twidget`) JOIN `qlevelaa`)");
+		//simpleParseTest("SELECT `fruit` FROM `tFruit` ORDER BY `fruit`");
+		simpleParseTest("SELECT `mySchema`.`myTable`.`myAttribute` AS `myAttributeAlias`, `mySchema01`.`myTable01`.`myAttribute01` AS `myAttributeAlias01`  FROM `tFruit` ORDER BY `fruit`");
+		//simpleParseTest("SELECT 123 AS `myConstant`, `SchemaA`.`ttablea`.`testString` AS `testString`,`ttablea`.`testInt` AS `testInt`,`ttablea`.`testDateTime` AS `testDateTime`,`ttablea`.`testDouble` AS `testDouble`, `twidget`.`Widget` AS `Widget`,`qc`.`testFieldATableC` AS `testfieldatablec`,`qd`.`testFieldATableD` AS `testfieldatabled`,`qlevelaa`.`TestFieldATableE` AS `testfieldatablee`,`qlevelaa`.`TestFieldATableF` AS `testfieldatablef` FROM (((((`ttablea` JOIN `ttableb`) JOIN `qc`) JOIN `qd`) JOIN `twidget`) JOIN `qlevelaa`)");
 		//simpleParseTest("SELECT 1.e-3 as 123e;");
 		//simpleParseTest("SELECT `hello world` as bar");
 		//simpleParseTest("select acme.tpilot.PilotID foo, sakila.actor.last_name, boo SumBoo from tpilot, actor");
@@ -136,6 +137,7 @@ public class Antlr4MySQL_test {
 			AntlrMySQLListener listener = new AntlrMySQLListener(qd);
 			parser.addParseListener(listener);
 			walker.walk(listener, MYSQLSentenceContext);
+			System.out.println("simpleParseTest() done.");
 		} catch (Exception ex) {
 			System.out.println("simpleParseTest: " + ex.getLocalizedMessage());
 		}
