@@ -53,7 +53,7 @@ public class QueryAttribute /* extends Attribute */ {
 		String result = "";
 		String comma = "";
 		for (AliasNameClass aliasName: aliasNames) {
-			result += comma + aliasName;
+			result += comma + aliasName.getAliasName();
 			comma = ", ";
 		}
 		return result;
