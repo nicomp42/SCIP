@@ -2500,13 +2500,13 @@ public class MySqlParserBaseListener implements MySqlParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOrderByClause(MySqlParser.OrderByClauseContext ctx) { }
+	@Override public void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOrderByClause(MySqlParser.OrderByClauseContext ctx) { }
+	@Override public void exitOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

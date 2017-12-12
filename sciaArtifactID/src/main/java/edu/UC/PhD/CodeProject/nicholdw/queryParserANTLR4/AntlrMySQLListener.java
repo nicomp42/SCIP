@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -16,6 +17,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClass;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClause;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseOrderBy;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseSelect;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseWhere;
@@ -78,7 +80,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectColumnElement: " + ctx.getText());
 		columnNameParts.processSymbols();
-		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(columnNameParts.schemaName, columnNameParts.tableName, columnNameParts.attributeName, new AliasNameClass(columnNameParts.aliasName), new QueryClauseUnknown()));
+		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(columnNameParts.schemaName, columnNameParts.tableName, columnNameParts.attributeName, new AliasNameClass(columnNameParts.aliasName), new QueryClauseSelect()));
 		parsingColumn = false;
 	}
 
@@ -102,8 +104,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoVariables: " + ctx.getText());
 
 	}
-
-
 
 	private void parseColumnName(MySqlParser.SelectColumnElementContext scec) {
 		switch (scec.getChildCount()) {
@@ -599,7 +599,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTableName()");}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterFullColumnName()");
+		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText());
 		//parseColumnName(ctx);
 		parsingColumn = true;
 	}
@@ -791,7 +791,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterBinaryExpressionAtom(MySqlParser.BinaryExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBinaryExpressionAtom()");}
 	@Override public void exitBinaryExpressionAtom(MySqlParser.BinaryExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBinaryExpressionAtom()");}
 	@Override public void enterFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFullColumnNameExpressionAtom()");}
-	@Override public void exitFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnNameExpressionAtom()");}
+	// An expression, such as a WHERE clause or an ORDER BY clause
+	@Override public void exitFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnNameExpressionAtom()");
+	}
 	@Override public void enterBitExpressionAtom(MySqlParser.BitExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBitExpressionAtom()");}
 	@Override public void exitBitExpressionAtom(MySqlParser.BitExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBitExpressionAtom()");}
 	@Override public void enterUnaryOperator(MySqlParser.UnaryOperatorContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUnaryOperator()");}
@@ -825,9 +828,19 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		switch (node.getText().toUpperCase()) {
 		case "AS":
 			nextIsAlias = true;
+			// It would be really nice to get the next token rather than waiting for it to come around in the parsing process. I think.
 			break;
 		case "WHERE":
-
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): WHERE found");
+			break;
+		case "ORDERBY":
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): ORDERBY found");
+			break;
+		case "ORDER":
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): ORDER found");
+			break;
+		case "BY":
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): BY found");
 			break;
 		default:
 			if (parsingColumn) {
@@ -843,4 +856,45 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		}
 	}
 	@Override public void visitErrorNode(ErrorNode node) {Log.logQueryParseProgress("AntlrMySQLListener.visitErrorNode()");}
+
+	@Override public void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterOrderByClauseLabel(): " + ctx.getText());
+		// The third child will be the order by expression
+		MySqlParser.OrderByExpressionContext obec = (OrderByExpressionContext) ctx.getChild(2);
+		ColumnNameParts cnp = parseColumnName(obec.getText());
+		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(cnp.schemaName, cnp.tableName, cnp.attributeName, (AliasNameClass)null , new QueryClauseOrderBy()));
+	}
+	@Override public void exitOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitOrderByClauseLabel(): " + ctx.getText());
+	}
+	/**
+	 * Start with a string formatted like schemaName.TableName.AttributeName and extract the parts into a structure.
+	 * There cannot be an alias in the string to parse.
+	 * @param columnName The string to parse
+	 * @return The pasts extracted into a structure
+	 */
+	private ColumnNameParts parseColumnName(String columnName) {
+		ColumnNameParts columnNameParts = new ColumnNameParts();
+		String s2[] = columnName.split("\\.");			// The . character is special in RegEx.
+		switch (s2.length) {
+		case 1:			// Just a column name
+			columnNameParts.attributeName = s2[0].replace("`", "").replace(".", "");
+			break;
+		case 2:			// column name and table name
+			columnNameParts.attributeName = s2[1].replace("`", "").replace(".", "");
+			columnNameParts.tableName = s2[0].replace("`", "").replace(".", "");
+			break;
+
+		case 3:			// column name, table name, schema name
+			columnNameParts.attributeName = s2[2].replace("`", "").replace(".", "");
+			columnNameParts.tableName = s2[1].replace("`", "").replace(".", "");
+			columnNameParts.schemaName = s2[0].replace("`", "").replace(".", "");
+			break;
+
+		default:
+			Log.logQueryParseProgress("AntlrMySQLListener.parseColumnName(): unexpected number of parts to parse (" + s2.length + "): " + " started with " + columnName, true);
+
+		}
+		return columnNameParts;
+	}
 }

@@ -47,14 +47,29 @@ public class QueryAttribute /* extends Attribute */ {
 	public QueryClause getQueryClause() {return queryClause;}
 	public void setQueryClause(QueryClause queryClause) {this.queryClause = queryClause;}
 
-	public String toString() {return schemaName + ":" + tableName + ":" + queryClause.toString() + ":" + attributeName + ":" + aliasNameListToString();}
+	public String toString() {
+		return queryClause.toString()
+			   + ":" + schemaName
+			   + ":" + tableName
+			   + ":" + attributeName
+			   + ":" + aliasNameListToString();
+	}
 
+	/**
+	 * Build a comma-delimited list of the alias names for this attribute or an empty string if there are none
+	 * @return The comma-delimited string
+	 */
 	public String aliasNameListToString() {
 		String result = "";
+		// There may be no attribute list, just return an empty string
 		String comma = "";
-		for (AliasNameClass aliasName: aliasNames) {
-			result += comma + aliasName.getAliasName();
-			comma = ", ";
+		try {
+			for (AliasNameClass aliasName: aliasNames) {
+				result += comma + aliasName.getAliasName();
+				comma = ", ";
+			}
+		} catch (Exception ex) {
+			// Eat it.
 		}
 		return result;
 	}

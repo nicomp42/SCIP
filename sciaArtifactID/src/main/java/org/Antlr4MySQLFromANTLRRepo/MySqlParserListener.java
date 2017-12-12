@@ -2316,15 +2316,17 @@ public interface MySqlParserListener extends ParseTreeListener {
 	 */
 	void exitMultipleUpdateStatement(MySqlParser.MultipleUpdateStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MySqlParser#orderByClause}.
+	 * Enter a parse tree produced by the {@code orderByClauseLabel}
+	 * labeled alternative in {@link MySqlParser#orderByClause}.
 	 * @param ctx the parse tree
 	 */
-	void enterOrderByClause(MySqlParser.OrderByClauseContext ctx);
+	void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MySqlParser#orderByClause}.
+	 * Exit a parse tree produced by the {@code orderByClauseLabel}
+	 * labeled alternative in {@link MySqlParser#orderByClause}.
 	 * @param ctx the parse tree
 	 */
-	void exitOrderByClause(MySqlParser.OrderByClauseContext ctx);
+	void exitOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MySqlParser#orderByExpression}.
 	 * @param ctx the parse tree
