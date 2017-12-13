@@ -194,13 +194,13 @@ public class AttributeProvenanceController /* extends Application */ {
 			AttributeParts attributeParts = new AttributeParts();
 			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem());
 			Node rootIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
-			TreeItem<String> rootItem = new TreeItem<String> (queryDefinition.getSchemaName() + "." + queryDefinition.getQueryName() + "." + attributeParts.attributeName, rootIcon);
+			TreeItem<String> rootItem = new TreeItem<String> (queryDefinition.getSchemaName() + "." + queryDefinition.getQueryName() + "." + attributeParts.getAttributeName(), rootIcon);
 			rootItem.setExpanded(true);
 			tvAttributeProvenance.setRoot(rootItem);
-			QueryTables qt = QueryDefinition.buildProvenance(queryDefinition, attributeParts.schemaName, attributeParts.tableName, attributeParts.attributeName);
+			QueryTables qt = QueryDefinition.buildProvenance(queryDefinition, attributeParts.getSchemaName(), attributeParts.getTableName(), attributeParts.getAttributeName());
 			for (QueryTable queryTable: qt) {
 				Node schemaIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/database-iconSilver24px.png")));
-				TreeItem<String> schemaItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + attributeParts.attributeName, schemaIcon);
+				TreeItem<String> schemaItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + attributeParts.getAttributeName(), schemaIcon);
 				rootItem.getChildren().add(schemaItem);
 				rootItem = schemaItem;
 				rootItem.setExpanded(true);

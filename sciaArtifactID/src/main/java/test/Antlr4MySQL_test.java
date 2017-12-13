@@ -13,6 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.AntlrMySQLListener;
+import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 
 public class Antlr4MySQL_test {
@@ -55,32 +56,10 @@ public class Antlr4MySQL_test {
 		try {
 			QueryDefinition qd = new QueryDefinition("","","",new QueryTypeSelect(), "dummyQueryName", sql, "dummySchemaName");
 			System.out.println("Parsing SQL: " + sql);
-			// Get our lexxer
-
-//			This works for ANTLR Runtime 4.7, but not for 4.3.5
-			InputStream stream = new ByteArrayInputStream(sql.getBytes(StandardCharsets.UTF_8));
-			MySqlLexer lexxer = new MySqlLexer(CharStreams.fromStream(stream, StandardCharsets.UTF_8));
-
-// 			This works for ANTLR 4.3.5...
-//			CharStream stream = new ANTLRInputStream(sql);
-//			MySqlLexer lexxer = new MySqlLexer(stream);
-
-			// Get a list of matched tokens
-			//List<? extends Token> x = lexxer.getAllTokens();
-
-			CommonTokenStream tokens = new CommonTokenStream(lexxer);
-
-			// Pass the tokens to the parser
-			MySqlParser parser = new MySqlParser(tokens);
-			// Specify our entry point
-			ParserRuleContext MYSQLSentenceContext = parser.root();
-
-			// Walk it and attach our listener
-			ParseTreeWalker walker = new ParseTreeWalker();
-			AntlrMySQLListener listener = new AntlrMySQLListener(qd);
-			parser.addParseListener(listener);
-			walker.walk(listener, MYSQLSentenceContext);
+			QueryParser qp = new QueryParser();
+			qp.parseQuery(qd);
 			System.out.println("simpleParseTest() done.");
+
 			for (QueryAttribute qa: qd.getQueryAttributes()) {
 				System.out.println(qa.toString());
 			}

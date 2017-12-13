@@ -39,7 +39,7 @@ public class AttributeProvenance {
 
 	public static boolean exportCSVFiles(AttributeParts attributeParts, QueryDefinition qd, String filePath) {
 		String fileName = Utils.formatPath(Utils.cleanPath(filePath)) + Config.getConfig().getNeo4jSuffix() + attributeProvenanceFileSuffix + Config.getConfig().getCSVFileExtension();
-		QueryTables queryTables = QueryDefinition.buildProvenance(qd, attributeParts.schemaName, attributeParts.tableName, attributeParts.attributeName);
+		QueryTables queryTables = QueryDefinition.buildProvenance(qd, attributeParts.getSchemaName(), attributeParts.getTableName(), attributeParts.getAttributeName());
 		return writeAttributeProvenanceCSVFile(fileName, qd, queryTables, attributeParts);
 	}
 	/**
@@ -51,7 +51,6 @@ public class AttributeProvenance {
 		boolean status = true;	// Hope for the best
 		try {
 			Log.logProgress("AttributeProvenance.executeCypherQueries(" + filePath  + ")");
-	//		Neo4jUtils.setNeo4jConnectionParameters("neo4j", "Danger42");		// TODO generalize this
 			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 			// Run the queries that add the constraints
 			QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenance.cypherQueriesStep1, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
@@ -103,35 +102,35 @@ public class AttributeProvenance {
 			// It should be a different type than all the other nodes just so the visual presentation is improved.
 			writer.append("RootNode");
 			writer.append(",");
-			writer.append(qd.getSchemaName().trim() + "." + qd.getQueryName().trim() + "." + attributeParts.attributeName.trim());
+			writer.append(qd.getSchemaName().trim() + "." + qd.getQueryName().trim() + "." + attributeParts.getAttributeName().trim());
 			writer.append(",");
 			writer.append(qd.getSchemaName().trim());
 			writer.append(",");
 			writer.append(qd.getQueryName().trim());
 			writer.append(",");
-			writer.append( attributeParts.attributeName.trim());
+			writer.append( attributeParts.getAttributeName().trim());
 			writer.append(",");
-			writer.append(attributeParts.dataType.trim());
+			writer.append(attributeParts.getDataType().trim());
 			writer.append(",");
 			writer.append(previousKey.trim());
 			writer.append('\n');
-			previousKey = qd.getSchemaName().trim() + "." + qd.getQueryName().trim() + "." + attributeParts.attributeName.trim();
+			previousKey = qd.getSchemaName().trim() + "." + qd.getQueryName().trim() + "." + attributeParts.getAttributeName().trim();
 			for (QueryTable queryTable : queryTables) {
 				writer.append("SubNode");
 				writer.append(",");
-				writer.append(queryTable.getSchemaName().trim() + "." + queryTable.getTableName().trim() + "." + attributeParts.attributeName.trim());
+				writer.append(queryTable.getSchemaName().trim() + "." + queryTable.getTableName().trim() + "." + attributeParts.getAttributeName().trim());
 				writer.append(",");
 				writer.append(queryTable.getSchemaName().trim());
 				writer.append(",");
 				writer.append(queryTable.getTableName().trim());
 				writer.append(",");
-				writer.append( attributeParts.attributeName.trim());
+				writer.append( attributeParts.getAttributeName().trim());
 				writer.append(",");
-				writer.append(attributeParts.dataType.trim());
+				writer.append(attributeParts.getDataType().trim());
 				writer.append(",");
 				writer.append(previousKey.trim());
 				writer.append('\n');
-				previousKey = queryTable.getSchemaName().trim() + "." + queryTable.getTableName().trim() + "." + attributeParts.attributeName.trim();
+				previousKey = queryTable.getSchemaName().trim() + "." + queryTable.getTableName().trim() + "." + attributeParts.getAttributeName().trim();
 			}
 			writer.flush();
 			writer.close();
