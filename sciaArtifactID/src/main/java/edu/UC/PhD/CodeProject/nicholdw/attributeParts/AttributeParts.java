@@ -13,7 +13,7 @@ public class AttributeParts {
 	public String dataType;
 	/**
 	 * Split this string: schemaName.TableName.AttributeName (dataType) into the component parts of an attribute
-	 * @param attributeString
+	 * @param attributeString The string to be parsed.
 	 * @return Nothing. The attributes of the object are populated.
 	 */
 	public void split(String attributeString) {
