@@ -14,7 +14,7 @@ public class AttributeParts {
 	/**
 	 * Split this string: schemaName.TableName.AttributeName (dataType) into the component parts of an attribute
 	 * @param attributeString
-	 * @return
+	 * @return Nothing. The attributes of the object are populated.
 	 */
 	public void split(String attributeString) {
 		String[] tmp = attributeString.split("\\.");
