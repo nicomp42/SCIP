@@ -19,8 +19,8 @@ public class Antlr4MySQL_test {
 
 	public static void main( String[] args) throws Exception
 	{
-//		testSelect();
-		testAlter();
+		testSelect();
+//		testAlter();
 //		testMiscellaneous();
 	}
 	private static void testMiscellaneous() {

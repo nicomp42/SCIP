@@ -24,6 +24,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseWhere;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlter;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 
 public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParserBaseListener {
@@ -904,7 +905,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): " + ctx.getText());
 		if (queryDefinition.getQueryType() instanceof QueryTypeUnknown) {
 			Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): this is an ALTER statement ");
-			queryDefinition.setQueryType(new QueryTypeAlter());
+			queryDefinition.setQueryType(new QueryTypeAlterView());
 		} else {Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): this statement was already defined as " + queryDefinition.getQueryType().toString());}
 	}
 	@Override public void exitAlterView(MySqlParser.AlterViewContext ctx) {

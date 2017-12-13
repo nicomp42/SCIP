@@ -1,7 +1,7 @@
 package edu.UC.PhD.CodeProject.nicholdw.queryType;
 
-public class QueryTypeDrop extends QueryType {
-	public QueryTypeDrop() {
-		super("Drop");
+public abstract class QueryTypeDrop extends QueryType {
+	public QueryTypeDrop(String queryType) {
+		super(queryType);
 	}
 }
