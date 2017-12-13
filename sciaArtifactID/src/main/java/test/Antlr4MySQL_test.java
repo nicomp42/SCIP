@@ -34,7 +34,7 @@ public class Antlr4MySQL_test {
 		simpleParseTest("ALTER TABLE `acme`.`tpilot` ADD COLUMN `FavoriteColor` VARCHAR(45) NULL AFTER `FirstName`");
 	}
 	private static void testSelect() throws Exception {
-		simpleParseTest(" SELECT `schematopologytest01`.`talpha`.`CommonField` AS `CommonField_tAlpha`,`schematopologytest01`.`tbeta`.`CommonField` AS `CommonField_tBeta` FROM (`schematopologytest01`.`talpha` JOIN `schematopologytest01`.`tbeta`)");
+		simpleParseTest(" SELECT `schematopologytest01`.`talpha`.`CommonField` AS `CommonField_tAlpha`,`schematopologytest01`.`tbeta`.`CommonField` AS `CommonField_tBeta`, `tBeta`.`Spoon` FROM (`schematopologytest01`.`talpha` JOIN `schematopologytest01`.`tbeta`)");
 		//simpleParseTest(hereIsASakilaView());
 		//simpleParseTest("SELECT `fruit`, (`abc`.`gorp` + 2) AS `foo` , MAX(`happy`)  FROM `tFruit` WHERE `tree`=\"apple\" AND `limit` > 100 ORDER BY `tfruit`.`fruit` ");
 /*		simpleParseTest("SELECT "
@@ -54,13 +54,13 @@ public class Antlr4MySQL_test {
 	}
 	private static void simpleParseTest(String sql) {
 		try {
-			QueryDefinition qd = new QueryDefinition("","","",new QueryTypeSelect(), "dummyQueryName", sql, "dummySchemaName");
+			QueryDefinition queryDefinition = new QueryDefinition("","","",new QueryTypeSelect(), "dummyQueryName", sql, "dummySchemaName");
 			System.out.println("Parsing SQL: " + sql);
-			QueryParser qp = new QueryParser();
-			qp.parseQuery(qd);
+			QueryParser queryParser = new QueryParser();
+			queryParser.parseQuery(queryDefinition);
 			System.out.println("simpleParseTest() done.");
 
-			for (QueryAttribute qa: qd.getQueryAttributes()) {
+			for (QueryAttribute qa: queryDefinition.getQueryAttributes()) {
 				System.out.println(qa.toString());
 			}
 		} catch (Exception ex) {
@@ -68,7 +68,7 @@ public class Antlr4MySQL_test {
 		}
 	}
 	/**
-	 * A relative complex query from the Sakila schema
+	 * A relatively complex query from the Sakila schema
 	 * @return
 	 */
 	static String hereIsASakilaView() {

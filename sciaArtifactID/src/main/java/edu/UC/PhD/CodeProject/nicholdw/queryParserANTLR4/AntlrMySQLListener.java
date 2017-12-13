@@ -1,4 +1,3 @@
-
 package edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4;
 
 import java.util.ArrayList;
@@ -27,6 +26,10 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlter;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 
+/**
+ * Parsing MySQL SQL statements and event handlers for such.
+ * @author nicomp
+ */
 public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParserBaseListener {
 
 	private QueryDefinition queryDefinition;
@@ -34,88 +37,20 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	private ColumnNameParts columnNameParts = new ColumnNameParts();
 	private TableNameParts tableNameParts = new TableNameParts();
 	private QueryTable currentQueryTable;
-	boolean includeAllFields;
-	boolean parsingColumn, nextIsAlias;
+	private boolean includeAllFields;
+	private boolean parsingColumn;
 
 	ArrayList<String> fullColumnNames;		// Trap every attribute just by using the AntlrMySQLListener.enterFullColumnName() listener
 	ArrayList<String> fullTableNames;		// Trap every table just by using the AntlrMySQLListener.enterTableSourceBase() listener
-
 
 	public AntlrMySQLListener(QueryDefinition queryDefinition) {
 		System.out.println("AntlrMySQLListener.AntlrMySQLListener(qd)");
 		this.queryDefinition = queryDefinition;
 		queryClause = new QueryClauseUnknown();
 		parsingColumn = false;
-		nextIsAlias = false;
 		fullColumnNames = new ArrayList<String>();
 		fullTableNames = new ArrayList<String>();
 		queryDefinition.setQueryType(new QueryTypeUnknown());
-	}
-	@Override public void enterRoot(MySqlParser.RootContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterRoot()");
-	}
-	@Override public void exitRoot(MySqlParser.RootContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitRoot()");
-		System.out.println("Attributes collected from the enterFullColumnName() listener...");
-		for (String s: fullColumnNames) {System.out.println(s);}
-		System.out.println("Tables collected from the enterAtomTableItem() listener...");
-		for (String s: fullTableNames) {System.out.println(s);}
-	}
-	@Override public void enterSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText());
-
-	}
-
-	@Override public void exitSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText());
-	}
-
-	@Override public void enterSelectElements(MySqlParser.SelectElementsContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectElements: " + ctx.getText());
-	}
-
-	@Override public void exitSelectElements(MySqlParser.SelectElementsContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectElements: " + ctx.getText());
-	}
-
-	@Override public void enterSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectStarElement: " + ctx.getText());
-	}
-
-	@Override public void exitSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectStarElement: " + ctx.getText());
-	}
-	@Override public void enterSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectColumnElement: " + ctx.getText());
-		columnNameParts.init();
-		parsingColumn = true;
-//		parseColumnName(ctx);		// Don't get greedy!
-	}
-	@Override public void exitSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectColumnElement: " + ctx.getText());
-		columnNameParts.processSymbols();
-		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(columnNameParts.schemaName, columnNameParts.tableName, columnNameParts.attributeName, new AliasNameClass(columnNameParts.aliasName), new QueryClauseSelect()));
-		parsingColumn = false;
-	}
-	@Override public void enterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectFunctionElement: " + ctx.getText());
-	}
-	@Override public void exitSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectFunctionElement: " + ctx.getText());
-	}
-	@Override public void enterSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectExpressionElement: " + ctx.getText());
-	}
-	@Override public void exitSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectExpressionElement: " + ctx.getText());
-	}
-
-	@Override public void enterSelectIntoVariables(MySqlParser.SelectIntoVariablesContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoVariables: " + ctx.getText());
-	}
-	@Override public void exitSelectIntoVariables(MySqlParser.SelectIntoVariablesContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoVariables: " + ctx.getText());
-
 	}
 	private void parseColumnName(MySqlParser.SelectColumnElementContext scec) {
 		switch (scec.getChildCount()) {
@@ -136,7 +71,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		}
 		Log.logQueryParseProgress("AntlrMySQLListener.parseColumnName(MySqlParser.SelectColumnElementContext): schema = <" + columnNameParts.schemaName + "> table = <" + columnNameParts.tableName + "> attribute = <" + columnNameParts.attributeName + "> alias = <" + columnNameParts.aliasName + ">");
 	}
-
 	private void parseColumnName(MySqlParser.FullColumnNameContext fcnc) {
 		switch (fcnc.getChildCount()) {
 		case 1:		// Just an attribute
@@ -243,6 +177,66 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			tableName = "";
 			aliasName = "";
 		}
+	}
+	@Override public void enterRoot(MySqlParser.RootContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterRoot()");
+	}
+	@Override public void exitRoot(MySqlParser.RootContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitRoot()");
+		System.out.println("Attributes collected from the enterFullColumnName() listener...");
+		for (String s: fullColumnNames) {System.out.println(s);}
+		System.out.println("Tables collected from the enterAtomTableItem() listener...");
+		for (String s: fullTableNames) {System.out.println(s);}
+	}
+	@Override public void enterSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText());
+
+	}
+	@Override public void exitSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText());
+	}
+	@Override public void enterSelectElements(MySqlParser.SelectElementsContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectElements: " + ctx.getText());
+	}
+	@Override public void exitSelectElements(MySqlParser.SelectElementsContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectElements: " + ctx.getText());
+	}
+
+	@Override public void enterSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectStarElement: " + ctx.getText());
+	}
+	@Override public void exitSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectStarElement: " + ctx.getText());
+	}
+	@Override public void enterSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectColumnElement: " + ctx.getText());
+		columnNameParts.init();
+		parsingColumn = true;
+//		parseColumnName(ctx);		// Don't get greedy!
+	}
+	@Override public void exitSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectColumnElement: " + ctx.getText());
+		columnNameParts.processSymbols();
+		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(columnNameParts.schemaName, columnNameParts.tableName, columnNameParts.attributeName, new AliasNameClass(columnNameParts.aliasName), new QueryClauseSelect()));
+		parsingColumn = false;
+	}
+	@Override public void enterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectFunctionElement: " + ctx.getText());
+	}
+	@Override public void exitSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectFunctionElement: " + ctx.getText());
+	}
+	@Override public void enterSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectExpressionElement: " + ctx.getText());
+	}
+	@Override public void exitSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectExpressionElement: " + ctx.getText());
+	}
+	@Override public void enterSelectIntoVariables(MySqlParser.SelectIntoVariablesContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoVariables: " + ctx.getText());
+	}
+	@Override public void exitSelectIntoVariables(MySqlParser.SelectIntoVariablesContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoVariables: " + ctx.getText());
 	}
 	@Override public void enterSelectIntoDumpFile(MySqlParser.SelectIntoDumpFileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoDumpFile()");}
 	@Override public void exitSelectIntoDumpFile(MySqlParser.SelectIntoDumpFileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoDumpFile()");}
@@ -611,7 +605,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTableName()");}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
-		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText());
+		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + " Parent.stop = " + ctx.getParent().getStop().getText());
 		//parseColumnName(ctx);
 		parsingColumn = true;
 		fullColumnNames.add(ctx.getText());
@@ -840,8 +834,18 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): " + node.getText());
 		switch (node.getText().toUpperCase()) {
 		case "AS":
-			nextIsAlias = true;
 			// It would be really nice to get the next token rather than waiting for it to come around in the parsing process. I think.
+			// Assuming there cannot be anything between the AS keyword and the alias name, this logic will work. :)
+			System.out.println( "AS alias = " + node.getParent().getChild(2).getText());
+/*			ParseTree pt = node.getParent();
+			for (int i = 0; i < pt.getChildCount(); i++) {
+				System.out.print("i = " + i );
+				ParseTree child = pt.getChild(i);
+				System.out.println(" -> " + child.getText());
+				for (int j = 0; j < child.getChildCount(); j++) {
+					System.out.println("     j = " + j + ", " + child.getChild(j).getText());
+				}
+			} */
 			break;
 		case "WHERE":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): WHERE found");
@@ -856,16 +860,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): BY found");
 			break;
 		default:
-			if (parsingColumn) {
-				if (nextIsAlias) {
-					columnNameParts.aliasName = node.getText();
-					nextIsAlias = false;
-				} else {
-					if (!node.getText().equals(".")) {
-						columnNameParts.addSymbol(node.getText());
-					}
-				}
-			}
 		}
 	}
 	@Override public void visitErrorNode(ErrorNode node) {Log.logQueryParseProgress("AntlrMySQLListener.visitErrorNode()");}
