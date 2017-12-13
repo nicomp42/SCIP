@@ -4,8 +4,8 @@ package edu.UC.PhD.CodeProject.nicholdw.queryType;
  * A query that changes the structure of a table
  * @author nicomp
  */
-public class Alter extends QueryType {
-	public Alter() {
+public class QueryTypeAlter extends QueryType {
+	public QueryTypeAlter() {
 		super("Alter");
 	}
 

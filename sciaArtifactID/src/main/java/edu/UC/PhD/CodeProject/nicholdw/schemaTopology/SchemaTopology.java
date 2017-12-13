@@ -13,7 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitions;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.Unknown;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 
 /**
  * Generate the Schema Topology graph
@@ -102,7 +102,7 @@ public class SchemaTopology {
 		for (String queryName : queryNames) {
 			String sql;
 			sql = QueryDefinition.readSQLFromDatabaseServerQueryDefinition(hostName, userName, password, schemaName, queryName);
-			queryDefinition = new QueryDefinition(hostName, userName, password, new Unknown(), queryName, sql, schemaName );
+			queryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), queryName, sql, schemaName );
 			queryDefinitions.addQueryDefinition(queryDefinition);
 			queryDefinition.crunchIt();
 			schemaTopologyResults.incrementTotalQueries();

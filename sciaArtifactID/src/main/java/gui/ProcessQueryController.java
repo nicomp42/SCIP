@@ -23,7 +23,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchemas;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.Select;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -267,7 +267,7 @@ public class ProcessQueryController /* extends Application */ {
 		sql = txaSQL.getText(); // Process whatever is in the text area. It may have been edited by the user.
 		// sql = = loadSQLFromSchema(fullyQualifiedQueryName);
 		// txaSQL.setText(sql);
-		rootQueryDefinition = new QueryDefinition(txtPqHostName.getText(), txtPqLoginName.getText(), txtPqPassword.getText(), new Select(), fqqnp.queryName, sql, fqqnp.schemaName);
+		rootQueryDefinition = new QueryDefinition(txtPqHostName.getText(), txtPqLoginName.getText(), txtPqPassword.getText(), new QueryTypeSelect(), fqqnp.queryName, sql, fqqnp.schemaName);
 		rootQueryDefinition.crunchIt();
 		scatterQueryParts(rootQueryDefinition);
 	}

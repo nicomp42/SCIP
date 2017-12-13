@@ -5,8 +5,8 @@ package edu.UC.PhD.CodeProject.nicholdw.queryType;
  * @author nicomp
  *
  */
-public class Insert extends QueryType {
-	public Insert() {
+public class QueryTypeInsert extends QueryType {
+	public QueryTypeInsert() {
 		super("Insert");
 	}
 }

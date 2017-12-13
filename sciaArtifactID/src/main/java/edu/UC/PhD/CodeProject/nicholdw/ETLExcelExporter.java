@@ -7,7 +7,7 @@ import java.util.List;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.Select;;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;;
 
 public class ETLExcelExporter {
 
@@ -91,7 +91,7 @@ public class ETLExcelExporter {
 
 			for (TableInputStep stepObj : steps) {
 				// TODO need to parse this query
-				QueryDefinition qd = new QueryDefinition("", "", "", new Select(), stepObj.getTransName() + ":" + stepObj.getStepName(), stepObj.getSql(), stepObj.getDbName());		// Query Name, SQL, Schema Name
+				QueryDefinition qd = new QueryDefinition("", "", "", new QueryTypeSelect(), stepObj.getTransName() + ":" + stepObj.getStepName(), stepObj.getSql(), stepObj.getDbName());		// Query Name, SQL, Schema Name
 				QueryParser qp = new QueryParser();
 				qp.parseQuery(qd);
 

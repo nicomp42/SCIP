@@ -6,5 +6,6 @@ public abstract class QueryType {
 	public QueryType(String friendlyName) {setFriendlyName(friendlyName);}
 	public String getFriendlyName() {return friendlyName;}
 	public void setFriendlyName(String friendlyName) {this.friendlyName = friendlyName;}
+	public String toString() {return friendlyName;}
 
 }

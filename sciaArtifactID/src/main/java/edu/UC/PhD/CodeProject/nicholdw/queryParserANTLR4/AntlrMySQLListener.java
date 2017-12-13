@@ -23,6 +23,8 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseWhere;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlter;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 
 public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParserBaseListener {
 
@@ -46,6 +48,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		nextIsAlias = false;
 		fullColumnNames = new ArrayList<String>();
 		fullTableNames = new ArrayList<String>();
+		queryDefinition.setQueryType(new QueryTypeUnknown());
 	}
 	@Override public void enterRoot(MySqlParser.RootContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterRoot()");
@@ -881,15 +884,38 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText());
 	}
 
-	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) { 
+	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText());
 		fullTableNames.add(ctx.getText());
 	}
-	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) { 
+	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAtomTableItem(): " + ctx.getText());
 	}
-	
-
+	@Override public void exitAlterTable(MySqlParser.AlterTableContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterTable(): " + ctx.getText());
+	}
+	@Override public void enterAlterTablespace(MySqlParser.AlterTablespaceContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterTable(): " + ctx.getText());
+	}
+	@Override public void exitAlterTablespace(MySqlParser.AlterTablespaceContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterTablespace(): " + ctx.getText());
+	}
+	@Override public void enterAlterView(MySqlParser.AlterViewContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): " + ctx.getText());
+		if (queryDefinition.getQueryType() instanceof QueryTypeUnknown) {
+			Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): this is an ALTER statement ");
+			queryDefinition.setQueryType(new QueryTypeAlter());
+		} else {Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): this statement was already defined as " + queryDefinition.getQueryType().toString());}
+	}
+	@Override public void exitAlterView(MySqlParser.AlterViewContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterView(): " + ctx.getText());
+	}
+	@Override public void enterDropView(MySqlParser.DropViewContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterDropView(): " + ctx.getText());
+	}
+	@Override public void exitDropView(MySqlParser.DropViewContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitDropView(): " + ctx.getText());
+	}
 
 	/**
 	 * Start with a string formatted like schemaName.TableName.AttributeName and extract the parts into a structure.

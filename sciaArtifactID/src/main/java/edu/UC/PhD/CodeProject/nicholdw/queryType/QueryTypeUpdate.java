@@ -1,7 +1,7 @@
 package edu.UC.PhD.CodeProject.nicholdw.queryType;
 
-public class Update extends QueryType {
-	public Update() {
+public class QueryTypeUpdate extends QueryType {
+	public QueryTypeUpdate() {
 		super("Update");
 	}
 

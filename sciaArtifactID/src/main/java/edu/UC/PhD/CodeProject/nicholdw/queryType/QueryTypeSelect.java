@@ -1,7 +1,7 @@
 package edu.UC.PhD.CodeProject.nicholdw.queryType;
 
-public class Select extends QueryType {
-	public Select() {
+public class QueryTypeSelect extends QueryType {
+	public QueryTypeSelect() {
 		super("Select");
 	}
 

@@ -13,7 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.OperationalSchemaQueries;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.Select;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import lib.MySQL;
 
 /**
@@ -299,7 +299,7 @@ public class QueryDefinition {
 					QueryDefinition qd;
 					String tmpSQL;
 					tmpSQL = QueryDefinition.readSQLFromDatabaseServerQueryDefinition(hostName, loginName, password, qt.getSchemaName(), qt.getTableName());
-					qd = new QueryDefinition(hostName, loginName, password, new Select(), qt.getTableName(), tmpSQL, qt.getSchemaName());
+					qd = new QueryDefinition(hostName, loginName, password, new QueryTypeSelect(), qt.getTableName(), tmpSQL, qt.getSchemaName());
 					qd.setParent(parent);
 					parent.children.addQueryDefinition(qd);
 					qp.parseQuery(qd);

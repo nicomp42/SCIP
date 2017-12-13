@@ -1,7 +1,7 @@
 package edu.UC.PhD.CodeProject.nicholdw.queryType;
 
-public class Create extends QueryType {
-	public Create() {
+public class QueryTypeCreate extends QueryType {
+	public QueryTypeCreate() {
 		super("Create");
 	}
 

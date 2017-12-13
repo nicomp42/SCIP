@@ -1,7 +1,7 @@
 package edu.UC.PhD.CodeProject.nicholdw.queryType;
 
-public class Delete extends QueryType {
-	public Delete() {
+public class QueryTypeDelete extends QueryType {
+	public QueryTypeDelete() {
 		super("Delete");
 	}
 

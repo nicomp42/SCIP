@@ -12,7 +12,7 @@ import edu.UC.PhD.CodeProject.nicholdw.exception.DataTypeException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitions;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.Select;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import lib.MySQL;
 
 /**
@@ -124,7 +124,7 @@ public class Schema {
 	 * @return The QueryDefinition object, initialized from the query definition in the schems
 	 */
 	public QueryDefinition readQueryDefinition(String queryName, String hostName, String loginName, String password ) {
-		QueryDefinition queryDefinition = new QueryDefinition(hostName, loginName, password, new Select(), queryName, "", schemaName);
+		QueryDefinition queryDefinition = new QueryDefinition(hostName, loginName, password, new QueryTypeSelect(), queryName, "", schemaName);
 		ArrayList<String> queryNames = new ArrayList<String>();
 		try {
 			String sql = qSQLbyQueryName.replace("#", schemaName).replace("@",  queryName);

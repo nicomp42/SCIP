@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.Select;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 
 //@RunWith(Suite.class)
 @SuiteClasses({
@@ -30,7 +30,7 @@ public class QueryParser_test {
     @Test
     public void parseQueryForAttributesAndTables() {
 		String sql = "select A AAlias , B BAlias, E EAlias from TT TAlias inner join U UAlias";
-		QueryDefinition qd = new QueryDefinition("","","", new Select(), "qFoo", sql, "schemaName");
+		QueryDefinition qd = new QueryDefinition("","","", new QueryTypeSelect(), "qFoo", sql, "schemaName");
 		QueryParser qp = new QueryParser();
 		qp.parseQuery(qd);
 
