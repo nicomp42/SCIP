@@ -64,13 +64,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		for (FullColumnName fcn: fullColumnNames) {
 			fcn.processRawData();
 			fcn.copyIntoQueryDefinition(queryDefinition);
-			System.out.println(fcn.toString());
+			Log.logQueryParseProgress(fcn.toString());
 		}
 		System.out.println("Tables collected from the enterAtomTableItem() listener...");
 		for (FullTableName ftn: fullTableNames) {
 			ftn.processRawData();
 			ftn.copyIntoQueryDefinition(queryDefinition);
-			System.out.println(ftn.toString());
+			Log.logQueryParseProgress(ftn.toString());
 		}
 	}
 	@Override public void enterSimpleSelect(MySqlParser.SimpleSelectContext ctx) {

@@ -253,6 +253,7 @@ public class ProcessQueryController /* extends Application */ {
 		FullyQualifiedQueryNameParts fqqnp = null;
 		try {
 			fqqnp = new FullyQualifiedQueryNameParts();
+			// TODO A query name in MySQL can contain a period. This needs to be fixed.
 			String tmp[] = fullyQualifiedQueryName.split("\\."); // Regular expression, we need to hide the . so it looks like a .
 			fqqnp.schemaName = tmp[0];
 			fqqnp.queryName = tmp[1];
