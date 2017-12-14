@@ -48,11 +48,12 @@ public class QueryAttribute /* extends Attribute */ {
 	public void setQueryClause(QueryClause queryClause) {this.queryClause = queryClause;}
 
 	public String toString() {
-		return queryClause.toString()
-			   + ":" + schemaName
+		String aliasNameToString = aliasNameListToString();
+		return ":" + schemaName
 			   + ":" + tableName
 			   + ":" + attributeName
-			   + ":" + aliasNameListToString();
+			   + (aliasNameToString.length() > 0? " AS " + aliasNameToString:"")
+			   + "  (" + queryClause.toString() + " query clause)";
 	}
 
 	/**

@@ -146,6 +146,12 @@ public class Utils {
 		return count;
 	}
 	/**
+	 * Remove the period from a string
+	 * @param data The string
+	 * @return The string with period removed
+	 */
+	public static String removePeriod(String data) {return data.replace("\\.", "");}	// The . is a special character in RegEx. We have to hide it.
+	/**
 	 * Remove the back quotes from a string
 	 * @param data The string
 	 * @return The string with back quotes removed
