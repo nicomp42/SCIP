@@ -6,9 +6,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-
+import org.Antlr4MySQLFromANTLRRepo.CaseInsensitiveInputStream;
 import org.Antlr4MySQLFromANTLRRepo.MySqlLexer;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -38,12 +40,14 @@ public class QueryParser {
 		String sql = queryDefinition.getSql();
 		// Get our lexxer
 //		This works for ANTLR Runtime 4.7, but not for 4.3.5
-		InputStream stream = new ByteArrayInputStream(sql.getBytes(StandardCharsets.UTF_8));
-		MySqlLexer lexxer = new MySqlLexer(CharStreams.fromStream(stream, StandardCharsets.UTF_8));	// This will throw an exception.
+//		InputStream stream = new ByteArrayInputStream(sql.getBytes(StandardCharsets.UTF_8));
+//		MySqlLexer lexxer = new MySqlLexer(CharStreams.fromStream(stream, StandardCharsets.UTF_8));	// This will throw an exception.
 
 //		This works for ANTLR 4.3.5...
 //		CharStream stream = new ANTLRInputStream(sql);
-//		MySqlLexer lexxer = new MySqlLexer(stream);
+		// See gist.github.com/sharwell/9424666 for the case-insensitive input stream.
+		CharStream stream = new CaseInsensitiveInputStream(sql);
+		MySqlLexer lexxer = new MySqlLexer(stream);
 
 		// Get a list of matched tokens
 		//List<? extends Token> x = lexxer.getAllTokens();
