@@ -23,7 +23,7 @@ import lib.MySQL;
  * We care about attributes and the tables/schemas they come from.
  *  
  * @author nicomp
- *
+ *  
  */
 public class QueryDefinition {
 	private String sql;
