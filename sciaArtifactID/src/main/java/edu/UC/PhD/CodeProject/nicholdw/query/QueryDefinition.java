@@ -38,7 +38,7 @@ public class QueryDefinition {
 	private Boolean noNestedQuerys;
 	private Boolean isFinal;
 	private CompoundAliases compoundAliases;
-	
+	  
 	public QueryDefinition(String hostName, String loginName, String password, QueryType queryType, String queryName, String sql, String schemaName) {
 		setQueryType(queryType);
 		setQueryName(queryName);
