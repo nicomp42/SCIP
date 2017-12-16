@@ -21,7 +21,7 @@ import lib.MySQL;
  * Query definition from a MySQL schema.
  * This is for creating the CSV file to be imported into Neo4j.
  * We care about attributes and the tables/schemas they come from.
- *
+ *  
  * @author nicomp
  *
  */
