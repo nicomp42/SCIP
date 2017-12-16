@@ -37,7 +37,8 @@ public class QueryDefinition {
 	private QueryDefinition parent;
 	private Boolean noNestedQuerys;
 	private Boolean isFinal;
-
+	private CompoundAliases compoundAliases;
+	
 	public QueryDefinition(String hostName, String loginName, String password, QueryType queryType, String queryName, String sql, String schemaName) {
 		setQueryType(queryType);
 		setQueryName(queryName);
@@ -52,8 +53,10 @@ public class QueryDefinition {
 		parent = null;
 		setNoNestedQuerys(false);
 		setIsFinal(false);
+		setCompoundAliases(compoundAliases);
 	}
-/*
+	public void setCompoundAliases(CompoundAliases compoundAliases) {this.compoundAliases = compoundAliases;}
+	/*
 	public QueryDefinition(QueryType queryType, String queryName, String schemaName) {
 		setQueryType(queryType);
 		setQueryName(queryName);

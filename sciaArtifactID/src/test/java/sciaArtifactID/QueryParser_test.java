@@ -2,6 +2,8 @@ package sciaArtifactID;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
@@ -28,7 +30,7 @@ public class QueryParser_test {
 	}
 */
     @Test
-    public void parseQueryForAttributesAndTables() {
+    public void parseQueryForAttributesAndTables() throws IOException {
 		String sql = "select A AAlias , B BAlias, E EAlias from TT TAlias inner join U UAlias";
 		QueryDefinition qd = new QueryDefinition("","","", new QueryTypeSelect(), "qFoo", sql, "schemaName");
 		QueryParser qp = new QueryParser();
