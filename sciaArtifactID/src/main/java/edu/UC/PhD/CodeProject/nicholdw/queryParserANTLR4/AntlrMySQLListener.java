@@ -3,7 +3,7 @@ package edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+import org.Antlr4MySQLFromANTLRRepo.NestingLevel;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClass;
@@ -43,6 +44,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 
 	ArrayList<FullColumnName> fullColumnNames;		// Trap every attribute just by using the AntlrMySQLListener.enterFullColumnName() listener
 	ArrayList<FullTableName> fullTableNames;		// Trap every table just by using the AntlrMySQLListener.enterTableSourceBase() listener
+	private NestingLevel currentNestingLevel, previousNestingLevel;
+	private String lastTerminalNode;
 	CompoundAliases compoundAliases;
 
 	public AntlrMySQLListener(QueryDefinition queryDefinition) {
@@ -52,7 +55,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		fullColumnNames = new ArrayList<FullColumnName>();
 		fullTableNames = new ArrayList<FullTableName>();
 		compoundAliases = new CompoundAliases();
+		currentNestingLevel = new NestingLevel();
 		queryDefinition.setQueryType(new QueryTypeUnknown());
+		lastTerminalNode = "";
 	}
 	private void printTerminalNodes(List<TerminalNode> tns) {
 		for (TerminalNode tn : tns) {
@@ -495,7 +500,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
 //		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + " Parent.stop = " + ctx.getParent().getStop().getText());
-		fullColumnNames.add(new FullColumnName(ctx.getText()));	// Store the raw data and we will parse it later
+		fullColumnNames.add(new FullColumnName(ctx.getText(), currentNestingLevel));	// Store the raw data and we will parse it later
 	}
 	@Override public void exitFullColumnName(MySqlParser.FullColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnName()");}
 	@Override public void enterIndexColumnName(MySqlParser.IndexColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIndexColumnName()");}
@@ -720,27 +725,65 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void visitTerminal(TerminalNode node) {
 		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): " + node.getText());
 		switch (node.getText().toUpperCase()) {
+		case Config.LR_BRACKET:		// Left Paren
+			// Adjust the current nesting level
+			currentNestingLevel.incrementNestingLevel();
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): Left Paren, Nesting Level is now " + currentNestingLevel.toString());
+			lastTerminalNode = Config.LR_BRACKET;
+			break;
+		case Config.RT_BRACKET:		// Right Paren
+			// Adjust the current nesting level
+			previousNestingLevel = new NestingLevel(currentNestingLevel);	// Save a copy in case we encounter an AS in the next token
+			currentNestingLevel.decrementNestingLevel();
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): Right Paren, Nesting Level is now " + currentNestingLevel.toString());
+			lastTerminalNode = Config.RT_BRACKET;
+			break;
 		case "AS":
 			// It would be really nice to get the next token rather than waiting for it to come around in the parsing process. I think.
 			// Assuming there cannot be anything between the AS keyword and the alias name, this logic will work. :)
 			System.out.println( "AS alias = " + node.getParent().getChild(2).getText());
-			// Add the alias to the last column name we processed.
-			fullColumnNames.get(fullColumnNames.size()-1).setAliasName(node.getParent().getChild(2).getText().replace("`", ""));
-			compoundAliases.addCompoundAlias(new CompoundAlias(node.getParent().getChild(2).getText().replace("`", "")));
-			break;
+			// Add the alias to the last column name we processed. If we are not nested at all
+			if (lastTerminalNode.equals(Config.RT_BRACKET)) {
+				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): Found \"AS\" after \"" + Config.RT_BRACKET + "\"" + " NestingLevel = " + currentNestingLevel.toString());
+				// Add to aliasAggregate structure that accumulates sets of attributes that are under one alias
+				// ToDo
+				// Get the previous nesting level just before the AS
+				// Create a new alias in the compoundAlias structure
+				// For each attribute already captured
+				//   If the Nestinglevel of the attribute == the previous nesting level
+				//		Add the attribute to the collection of attributes for this compoundAlias
+				// Neat stuff!
+				CompoundAlias compoundAlias = new CompoundAlias(Utils.removeBackQuotes(node.getParent().getChild(2).getText()));
+				for (FullColumnName fcn: fullColumnNames) {
+					fcn.processRawData();
+					if (fcn.getNestingLevel().isNestedInOrIsEqualTo(previousNestingLevel)) {
+						Log.logQueryParseProgress("Adding column " + fcn.getRawData() + " to compoundAlias " + node.getParent().getChild(2).getText());
+						compoundAlias.addFullColumnName(fcn);
+					}
+				}
+				compoundAliases.addCompoundAlias(compoundAlias);
+			} else {
+				fullColumnNames.get(fullColumnNames.size()-1).setAliasName(node.getParent().getChild(2).getText().replace("`", ""));
+			}
+			lastTerminalNode = "AS";
 		case "WHERE":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): WHERE found");
+			lastTerminalNode = "WHERE";
 			break;
 		case "ORDERBY":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): ORDERBY found");
+			lastTerminalNode = "ORDERBY";
 			break;
 		case "ORDER":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): ORDER found");
+			lastTerminalNode = "ORDER";
 			break;
 		case "BY":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): BY found");
+			lastTerminalNode = "BY";
 			break;
 		default:
+			lastTerminalNode = "UNKNOWN";
 		}
 	}
 	@Override public void visitErrorNode(ErrorNode node) {Log.logQueryParseProgress("AntlrMySQLListener.visitErrorNode()");}
@@ -753,11 +796,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitOrderByClauseLabel(): " + ctx.getText());
 	}
-
 	@Override public void enterTableSourceBase(MySqlParser.TableSourceBaseContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText());
 	}
-
 	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText());
 		fullTableNames.add(new FullTableName(ctx.getText()));
@@ -807,7 +848,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			this.rawData = rawData;
 		}
 		public String toString() {
-			return (schemaName.length() > 0? schemaName + ".": "") + tableName + (aliasName.length() > 0 ? " AS " + aliasName:"");
+			return (schemaName.length() > 0? schemaName + ".": "") + 
+					tableName 
+					+ (aliasName.length() > 0 ? " AS " + aliasName:"");
 		}
 		void init() {
 			schemaName = "";
@@ -846,7 +889,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			queryDefinition.getQueryTables().addQueryTable(new QueryTable(schemaName, tableName, aliasName, queryClause));
 		}
 	}
-
 }
 
 /*

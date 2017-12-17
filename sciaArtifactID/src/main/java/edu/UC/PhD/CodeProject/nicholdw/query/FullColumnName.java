@@ -1,6 +1,8 @@
 
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
+import org.Antlr4MySQLFromANTLRRepo.NestingLevel;
+
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
@@ -15,14 +17,19 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		private String attributeName;
 		private QueryClause queryClause;
 		private String aliasName;
+		private NestingLevel nestingLevel;
 		private String rawData;			// Taken from the SQL during parsing. could be schema.table.attribute, table.attribute, or just attribute
 		public String getRawData() {return rawData;}
 		public String toString() {
 			return (schemaName.length() > 0? schemaName + ".":"") + (tableName.length() > 0 ? tableName + "." : "") + attributeName + (aliasName.length() > 0 ? " AS " + aliasName:"");
 		}
-		public FullColumnName(String rawData) {
+		public String getAttributeName() {return attributeName;}
+		public String getTableName() {return tableName;}
+		public String getSchemaName() {return schemaName;}
+		public FullColumnName(String rawData, NestingLevel nestingLevel) {
 			init();
 			this.rawData = rawData;
+			setNestingLevel(nestingLevel);			
 		}
 		public void init() {
 			schemaName = "";
@@ -31,6 +38,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			aliasName = "";
 			queryClause = new QueryClauseUndefined();
 		}
+		public String getAliasName() {return aliasName;}
 		public void setAliasName(String aliasName) {
 			this.aliasName = aliasName;
 		}
@@ -73,4 +81,16 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		public void copyIntoQueryDefinition(QueryDefinition queryDefinition) {
 			queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(schemaName, tableName, attributeName, new AliasNameClass(aliasName), queryClause));
 		}
+		/**
+		 * Set the nesting level of this attribute
+		 * @param nestingLevel
+		 */
+		public void setNestingLevel(NestingLevel nestingLevel) {
+			this.nestingLevel = new NestingLevel(nestingLevel);
+		}
+		/**
+		 * Get the nesting Level of this column
+		 * @return The nesting level of this column
+		 */
+		public NestingLevel getNestingLevel() {return nestingLevel;}
 	}

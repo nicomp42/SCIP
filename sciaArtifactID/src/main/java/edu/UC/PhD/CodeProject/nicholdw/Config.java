@@ -255,6 +255,11 @@ public class Config implements Serializable {
 		this.supressOutputToConsole = supressOutputToConsole;
 	}
 	public String getNeo4jFilePrefix() {return neo4jFilePrefix;}
+	
+	// Used in the parser/lexxer. See edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser class
+	public static final String LR_BRACKET = "(";
+	public static final String RT_BRACKET = ")";
+
 }
 // List the static fields that should be serialized. In this class, that's all of them that are not marked final.
 // This does not work, an error is thrown on the writeObject statement.
