@@ -115,6 +115,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 //		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(columnNameParts.schemaName, columnNameParts.tableName, columnNameParts.attributeName, new AliasNameClass(columnNameParts.aliasName), new QueryClauseSelect()));
 	}
 	@Override public void enterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
+		// ToDo capture this as a function and store it somewhere
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectFunctionElement: " + ctx.getText());
 	}
 	@Override public void exitSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
@@ -595,7 +596,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAggregateFunctionCall()");}
 	@Override public void enterScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterScalarFunctionCall()");}
 	@Override public void exitScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitScalarFunctionCall()");}
-	@Override public void enterUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUdfFunctionCall()");}
+	@Override public void enterUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterUdfFunctionCall(): " + ctx.getText() + ", " + ctx.getChild(0).getText());
+		// ToDo capture this as a UDF. child(0) is the name of the function. :)
+		}
 	@Override public void exitUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUdfFunctionCall()");}
 	@Override public void enterPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPasswordFunctionCall()");}
 	@Override public void exitPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPasswordFunctionCall()");}

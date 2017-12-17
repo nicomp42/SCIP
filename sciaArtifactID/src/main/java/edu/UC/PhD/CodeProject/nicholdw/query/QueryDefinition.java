@@ -1,5 +1,6 @@
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ public class QueryDefinition {
 		setIsFinal(false);
 		setCompoundAliases(compoundAliases);
 	}
+	public CompoundAliases getCompoundAliases() {return compoundAliases;}
 	public void setCompoundAliases(CompoundAliases compoundAliases) {this.compoundAliases = compoundAliases;}
 	/*
 	public QueryDefinition(QueryType queryType, String queryName, String schemaName) {
@@ -486,4 +488,25 @@ public class QueryDefinition {
 	public void setNoNestedQuerys(Boolean noNestedQueries) {this.noNestedQuerys = noNestedQueries;}
 	public Boolean getIsFinal() {return isFinal;}
 	public void setIsFinal(Boolean isFinal) {this.isFinal = isFinal;}
+	
+	/**
+	 * Tell us everything you know about the query
+	 * @param os Where the info should go
+	 */
+	public void print(PrintStream os) {
+		os.println("Query Name: " + this.getQueryName());
+		os.println(" Attributes:");
+		for (QueryAttribute qa: this.getQueryAttributes()) {
+			os.println("\t" + qa.toString());
+		}
+		os.println(" Compound Aliases:");
+		for (CompoundAlias ca: this.getCompoundAliases()) {
+			os.println("\t" + ca.toString());
+		}
+		os.println(" Tables/Views:");
+		for (QueryTable qt: this.getQueryTables()) {
+			os.println("\t" + qt.toString());
+		}
+	}
+	
 }

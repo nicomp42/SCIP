@@ -2,6 +2,7 @@ package test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.AntlrMySQLListener;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 
-public class Antlr4MySQL_test {
+public class Antlr4MySQLQueryParser_test {
 
 	public static void main( String[] args) throws Exception
 	{
@@ -34,10 +35,10 @@ public class Antlr4MySQL_test {
 		simpleParseTest("ALTER TABLE `acme`.`tpilot` ADD COLUMN `FavoriteColor` VARCHAR(45) NULL AFTER `FirstName`");
 	}
 	private static void testSelect() throws Exception {
-
+		QueryDefinition qd = null;
 		//simpleParseTest("SELECT `tAlpha`.`epsilon` AS `myEpsilon`, (`tAlpha`.`beta` + `tDelta`.`gamma`) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 
-		simpleParseTest("SELECT `tAlpha`.`epsilon` AS `myEpsilon`, `tAlpha`.`omega`, ((`tZeta`.`upsilon`) + (`tAlpha`.`beta` + `tDelta`.`gamma`)) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 
-
+		qd = simpleParseTest("SELECT `GetAlphaStdDev`(\"tAlpha\") AS `myFunctionResult`, `mySchema`.`tAlpha`.`epsilon` AS `myEpsilon`, `tAlpha`.`omega`, ((`tZeta`.`upsilon`) + (`tAlpha`.`beta` + `tDelta`.`gamma`)) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 
+		qd.print(System.out);
 		//		simpleParseTest("select `queryprocessingtest`.`ttablea`.`testString` AS `testString`,`queryprocessingtest`.`ttablea`.`testInt` AS `testInt`,`queryprocessingtest`.`ttablea`.`testDateTime` AS `testDateTime`,`queryprocessingtest`.`ttablea`.`testDouble` AS `testDouble`,`queryprocessingtest`.`twidget`.`Widget` AS `Widget`,`qc`.`testFieldATableC` AS `testfieldatablec`,`qd`.`testFieldATableD` AS `testfieldatabled`,`qlevelaa`.`TestFieldATableE` AS `testfieldatablee`,`qlevelaa`.`TestFieldATableF` AS `testfieldatablef` from `queryprocessingtest`.`ttablea` join `queryprocessingtest`.`ttableb` join `queryprocessingtest`.`qc` join `queryprocessingtest`.`qd` join `queryprocessingtest`.`twidget` join `queryprocessingtest`.`qlevelaa`");
 		//simpleParseTest(" SELECT `schematopologytest01`.`talpha`.`CommonField` AS `CommonField_tAlpha`,`schematopologytest01`.`tbeta`.`CommonField` AS `CommonField_tBeta`, `tBeta`.`Spoon` FROM (`schematopologytest01`.`talpha` JOIN `schematopologytest01`.`tbeta`)");
 		//simpleParseTest(actor_info);
@@ -58,20 +59,21 @@ public class Antlr4MySQL_test {
 		//simpleParseTest("SELECT a,b,c FROM tFoo ORDER BY Gorp WHERE a=`aaa`");
 		//simpleParseTest("SELECT a,b,c FROM tFoo ORDER BY Gorp WHERE a=`aaa`");
 	}
-	private static void simpleParseTest(String sql) {
+	private static QueryDefinition simpleParseTest(String sql) {
+		System.out.println("Antlr4MySQLQueryParser_test.simpleParseTest(): Parsing SQL: " + sql);
+		QueryDefinition queryDefinition = null;
 		try {
-			QueryDefinition queryDefinition = new QueryDefinition("","","",new QueryTypeSelect(), "dummyQueryName", sql, "dummySchemaName");
-			System.out.println("Parsing SQL: " + sql);
+			queryDefinition = new QueryDefinition("","","",new QueryTypeSelect(), "dummyQueryName", sql, "dummySchemaName");
 			QueryParser queryParser = new QueryParser();
 			queryParser.parseQuery(queryDefinition);
-			System.out.println("simpleParseTest() done.");
-			System.out.println("Atttibutes found in the query:");
+			System.out.println("Antlr4MySQLQueryParser_test.simpleParseTest(): Atttibutes found in the query:");
 			for (QueryAttribute qa: queryDefinition.getQueryAttributes()) {
 				System.out.println(qa.toString());
 			}
 		} catch (Exception ex) {
-			System.out.println("simpleParseTest: " + ex.getLocalizedMessage());
+			System.out.println("Antlr4MySQLQueryParser_test.simpleParseTest(): " + ex.getLocalizedMessage());
 		}
+		return queryDefinition;
 	}
 	// Sakila Queries for parse testing
 	private static String actor_info = "SELECT`a`.`actor_id` AS `actor_id`,  `a`.`first_name` AS `first_name`,  `a`.`last_name` AS `last_name`,  GROUP_CONCAT(DISTINCT CONCAT(`c`.`name`,  ': ',  (SELECT GROUP_CONCAT(`f`.`title`ORDER BY `f`.`title` ASC SEPARATOR ', ')FROM ((`sakila`.`film`  JOIN `sakila`.`film_category` `fc` ON ((`f`.`film_id` = `fc`.`film_id`))) JOIN `sakila`.`film_actor` `fa` ON ((`f`.`film_id` = `fa`.`film_id`)))WHERE ((`fc`.`category_id` = `c`.`category_id`)  AND (`fa`.`actor_id` = `a`.`actor_id`))))ORDER BY `c`.`name` ASC SEPARATOR '; ') AS `film_info` FROM  (((`sakila`.`actor` `a`  LEFT JOIN `sakila`.`film_actor` `fa` ON ((`a`.`actor_id` = `fa`.`actor_id`)))  LEFT JOIN `sakila`.`film_category` `fc` ON ((`fa`.`film_id` = `fc`.`film_id`)))  LEFT JOIN `sakila`.`category` `c` ON ((`fc`.`category_id` = `c`.`category_id`))) GROUP BY `a`.`actor_id` , `a`.`first_name` , `a`.`last_name`";
