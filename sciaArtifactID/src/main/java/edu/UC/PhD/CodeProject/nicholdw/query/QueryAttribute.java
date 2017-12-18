@@ -4,7 +4,7 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
  * A member of a QueryDefinition object.
  * @author nicomp
  */
-public class QueryAttribute /* extends Attribute */ {
+public class QueryAttribute extends QueryComponent  {
 	private AliasNames aliasNames;
 	private String schemaName;		// Not necessarily redundant. A query can span multiple schemas
 	private QueryClause queryClause;

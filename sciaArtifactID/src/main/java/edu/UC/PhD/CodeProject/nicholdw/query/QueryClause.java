@@ -1,6 +1,6 @@
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
-public abstract class QueryClause {
+public abstract class QueryClause extends QueryComponent {
 	private String queryClauseName;
 
 	public QueryClause(String queryClauseName){
