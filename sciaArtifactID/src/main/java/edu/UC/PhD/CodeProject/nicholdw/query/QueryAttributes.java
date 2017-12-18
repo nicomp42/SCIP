@@ -48,6 +48,18 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 		Iterator<QueryAttribute> myIterator = queryAttributes.iterator();
         return myIterator;
     }
-	public String toString() {return queryAttributes.size() + " attributes";}
+	public String toString() {return queryAttributes.size() + " query attributes";}
 	public int size() { return queryAttributes.size();}
+	/**
+	 * Does this collection contain a particular QueryAttribute?
+	 * @param queryAttribute The QueryAttribute to look for
+	 * @return true if this collection contains a particular QueryAttribute, false otherwise
+	 */
+	public boolean contains(QueryAttribute queryAttribute) {
+		boolean result = false;
+		for (QueryAttribute qa : queryAttributes) {
+			if (qa.equals(queryAttribute)) {result = true; break;}
+		}
+		return result;
+	}
 }

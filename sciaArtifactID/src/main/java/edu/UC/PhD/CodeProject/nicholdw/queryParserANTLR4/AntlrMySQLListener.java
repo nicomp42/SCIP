@@ -532,7 +532,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleId(): " + ctx.getText());
 	}
 	@Override public void exitSimpleId(MySqlParser.SimpleIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleId()");}
-	@Override public void enterDottedId(MySqlParser.DottedIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDottedId()");}
+	@Override public void enterDottedId(MySqlParser.DottedIdContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterDottedId(): " + ctx.getText());
+		}
 	@Override public void exitDottedId(MySqlParser.DottedIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDottedId()");}
 	@Override public void enterDecimalLiteral(MySqlParser.DecimalLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDecimalLiteral()");}
 	@Override public void exitDecimalLiteral(MySqlParser.DecimalLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDecimalLiteral()");}
@@ -598,6 +600,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitScalarFunctionCall()");}
 	@Override public void enterUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterUdfFunctionCall(): " + ctx.getText() + ", " + ctx.getChild(0).getText());
+		
 		// ToDo capture this as a UDF. child(0) is the name of the function. :)
 		}
 	@Override public void exitUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUdfFunctionCall()");}
@@ -722,10 +725,12 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitDataTypeBase(MySqlParser.DataTypeBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDataTypeBase()");}
 	@Override public void enterKeywordsCanBeId(MySqlParser.KeywordsCanBeIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterKeywordsCanBeId()");}
 	@Override public void exitKeywordsCanBeId(MySqlParser.KeywordsCanBeIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitKeywordsCanBeId()");}
-	@Override public void enterFunctionNameBase(MySqlParser.FunctionNameBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFunctionNameBase()");}
+	@Override public void enterFunctionNameBase(MySqlParser.FunctionNameBaseContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterFunctionNameBase(): " + ctx.getText());
+	}
 	@Override public void exitFunctionNameBase(MySqlParser.FunctionNameBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFunctionNameBase()");}
-	@Override public void enterEveryRule(ParserRuleContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterEveryRule()");}
-	@Override public void exitEveryRule(ParserRuleContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitEveryRule()");}
+	@Override public void enterEveryRule(ParserRuleContext ctx) {/*Log.logQueryParseProgress("AntlrMySQLListener.enterEveryRule()");*/}
+	@Override public void exitEveryRule(ParserRuleContext ctx) {/*Log.logQueryParseProgress("AntlrMySQLListener.exitEveryRule()");*/}
 	@Override public void visitTerminal(TerminalNode node) {
 		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): " + node.getText());
 		switch (node.getText().toUpperCase()) {
@@ -770,6 +775,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				fullColumnNames.get(fullColumnNames.size()-1).setAliasName(node.getParent().getChild(2).getText().replace("`", ""));
 			}
 			lastTerminalNode = "AS";
+			break;
 		case "WHERE":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): WHERE found");
 			lastTerminalNode = "WHERE";

@@ -39,6 +39,7 @@ public class QueryDefinition {
 	private Boolean noNestedQuerys;
 	private Boolean isFinal;
 	private CompoundAliases compoundAliases;
+	private QueryFunctions queryFunctions;
 	  
 	public QueryDefinition(String hostName, String loginName, String password, QueryType queryType, String queryName, String sql, String schemaName) {
 		setQueryType(queryType);
@@ -55,6 +56,7 @@ public class QueryDefinition {
 		setNoNestedQuerys(false);
 		setIsFinal(false);
 		setCompoundAliases(compoundAliases);
+		setQueryFunctions(new QueryFunctions());
 	}
 	public CompoundAliases getCompoundAliases() {return compoundAliases;}
 	public void setCompoundAliases(CompoundAliases compoundAliases) {this.compoundAliases = compoundAliases;}
@@ -507,6 +509,12 @@ public class QueryDefinition {
 		for (QueryTable qt: this.getQueryTables()) {
 			os.println("\t" + qt.toString());
 		}
+	}
+	public QueryFunctions getQueryFunctions() {
+		return queryFunctions;
+	}
+	public void setQueryFunctions(QueryFunctions queryFunctions) {
+		this.queryFunctions = queryFunctions;
 	}
 	
 }

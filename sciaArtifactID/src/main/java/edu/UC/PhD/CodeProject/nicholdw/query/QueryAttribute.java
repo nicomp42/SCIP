@@ -86,4 +86,18 @@ public class QueryAttribute extends QueryComponent  {
 	 */
 	public String getExpression() {return expression;}
 	public void setExpression(String expression) {this.expression = expression;}
+	/**
+	 * Is an attribute the same as this one?
+	 * @param queryAttribute
+	 * @return True if the attributes are the same for {attribute name, table name, schema name}, false otherwise. 
+	 */
+	public boolean equals(QueryAttribute queryAttribute) {
+		boolean result = false;
+		if (this.getAttributeName().equals(queryAttribute.getAttributeName()) && 
+			this.getTableName().equals(queryAttribute.getTableName()) && 
+			this.getSchemaName().equals(queryAttribute.getSchemaName())) {
+			result = true;
+		}
+		return result;
+	}
 }
