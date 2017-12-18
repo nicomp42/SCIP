@@ -259,6 +259,7 @@ public class Config implements Serializable {
 	// Used in the parser/lexxer. See edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser class
 	public static final String LR_BRACKET = "(";
 	public static final String RT_BRACKET = ")";
+	public static final String SQL_STATEMENT_DELIMITER = ";";		// between SQL statements
 
 }
 // List the static fields that should be serialized. In this class, that's all of them that are not marked final.

@@ -495,9 +495,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitDescribeStatements(MySqlParser.DescribeStatementsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDescribeStatements()");}
 	@Override public void enterDescribeConnection(MySqlParser.DescribeConnectionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDescribeConnection()");}
 	@Override public void exitDescribeConnection(MySqlParser.DescribeConnectionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDescribeConnection()");}
-	@Override public void enterFullId(MySqlParser.FullIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFullId()");}
+	@Override public void enterFullId(MySqlParser.FullIdContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterFullId(): " + ctx.getText());
+		}
 	@Override public void exitFullId(MySqlParser.FullIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullId()");}
-	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTableName()");}
+	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText());
+	}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
 //		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + " Parent.stop = " + ctx.getParent().getStop().getText());
@@ -792,6 +796,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): BY found");
 			lastTerminalNode = "BY";
 			break;
+		case Config.SQL_STATEMENT_DELIMITER:
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): SQL statement delimiter found: " + Config.SQL_STATEMENT_DELIMITER);
+			break;
 		default:
 			lastTerminalNode = "UNKNOWN";
 		}
@@ -809,6 +816,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterTableSourceBase(MySqlParser.TableSourceBaseContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText());
 	}
+	/**
+	 * This event has the alias appended to the table name. Not useful because there's no delimiter between the two values
+	 */
 	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText());
 		fullTableNames.add(new FullTableName(ctx.getText()));

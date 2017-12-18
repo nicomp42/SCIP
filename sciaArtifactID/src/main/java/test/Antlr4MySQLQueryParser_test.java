@@ -36,8 +36,8 @@ public class Antlr4MySQLQueryParser_test {
 	}
 	private static void testSelect() throws Exception {
 		QueryDefinition qd = null;
-		
-		qd = simpleParseTest("SELECT mySchema.myTable.myAttribute as myAlias from myTable myTableAlias");
+ 		 
+		qd = simpleParseTest(tests[3]);
 		qd.print(System.out);
 		
 		//simpleParseTest("SELECT `tAlpha`.`epsilon` AS `myEpsilon`, (`tAlpha`.`beta` + `tDelta`.`gamma`) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 
@@ -82,4 +82,14 @@ public class Antlr4MySQLQueryParser_test {
 	// Sakila Queries for parse testing
 	private static String actor_info = "SELECT`a`.`actor_id` AS `actor_id`,  `a`.`first_name` AS `first_name`,  `a`.`last_name` AS `last_name`,  GROUP_CONCAT(DISTINCT CONCAT(`c`.`name`,  ': ',  (SELECT GROUP_CONCAT(`f`.`title`ORDER BY `f`.`title` ASC SEPARATOR ', ')FROM ((`sakila`.`film`  JOIN `sakila`.`film_category` `fc` ON ((`f`.`film_id` = `fc`.`film_id`))) JOIN `sakila`.`film_actor` `fa` ON ((`f`.`film_id` = `fa`.`film_id`)))WHERE ((`fc`.`category_id` = `c`.`category_id`)  AND (`fa`.`actor_id` = `a`.`actor_id`))))ORDER BY `c`.`name` ASC SEPARATOR '; ') AS `film_info` FROM  (((`sakila`.`actor` `a`  LEFT JOIN `sakila`.`film_actor` `fa` ON ((`a`.`actor_id` = `fa`.`actor_id`)))  LEFT JOIN `sakila`.`film_category` `fc` ON ((`fa`.`film_id` = `fc`.`film_id`)))  LEFT JOIN `sakila`.`category` `c` ON ((`fc`.`category_id` = `c`.`category_id`))) GROUP BY `a`.`actor_id` , `a`.`first_name` , `a`.`last_name`";
 	private static String sales_by_film_category = "SELECT `c`.`name` AS `category`, SUM(`p`.`amount`) AS `total_sales` FROM (((((`sakila`.`payment` `p` JOIN `sakila`.`rental` `r` ON ((`p`.`rental_id` = `r`.`rental_id`))) JOIN `sakila`.`inventory` `i` ON ((`r`.`inventory_id` = `i`.`inventory_id`))) JOIN `sakila`.`film` `f` ON ((`i`.`film_id` = `f`.`film_id`))) JOIN `sakila`.`film_category` `fc` ON ((`f`.`film_id` = `fc`.`film_id`))) JOIN `sakila`.`category` `c` ON ((`fc`.`category_id` = `c`.`category_id`))) GROUP BY `c`.`name` ORDER BY `total_sales` DESC";
+	private static String tests[] = {
+		// myView01: one minimal attribute, one minimal table.
+		"SELECT myAttribute01` FROM `myTable01`",	 
+		// myView02: one fully qualified attribute with alias, one fully qualified table.
+		"SELECT `mySchema01`.`myTable01`.`myAttribute01` AS `myAlias01` FROM `mySchema01`.`myTable01`",
+		// myView03: one fully qualified attribute with alias, one fully qualified table using the table alias
+		"SELECT `myTablealias`.`myAttribute01` AS `myAlias01` FROM `mySchema01`.`myTable01` mytablealias",
+		// myView04: one function call with minimal attribute, one minimal table.
+		"SELECT `myschema01`.MYFUNCTION01(`myschema01`.`mytable01`.`myAttribute01`) AS `myAlias` FROM `myschema01`.`mytable01`",	 
+	                                };
 }
