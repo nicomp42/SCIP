@@ -41,6 +41,7 @@ public class QueryDefinition {
 	private CompoundAliases compoundAliases;
 	private QueryFunctions queryFunctions;
 	private QueryVariables queryVariables;
+	private QueryTerminalSymbols queryTerminalSymbols;
 	  
 	public QueryDefinition(String hostName, String loginName, String password, QueryType queryType, String queryName, String sql, String schemaName) {
 		setQueryType(queryType);
@@ -59,6 +60,7 @@ public class QueryDefinition {
 		setCompoundAliases(compoundAliases);
 		setQueryFunctions(new QueryFunctions());
 		setQueryVariables(new QueryVariables());
+		setQueryTerminalSymbols(new QueryTerminalSymbols());		
 	}
 	public CompoundAliases getCompoundAliases() {return compoundAliases;}
 	public void setCompoundAliases(CompoundAliases compoundAliases) {this.compoundAliases = compoundAliases;}
@@ -496,8 +498,9 @@ public class QueryDefinition {
 	/**
 	 * Tell us everything you know about the query
 	 * @param os Where the info should go
+	 * @param printTerminalSymbols true if terminal symbols should be printed, false otherwise
 	 */
-	public void print(PrintStream os) {
+	public void print(PrintStream os, boolean printTerminalSymbols) {
 		os.println("Query Name: " + this.getQueryName());
 		os.println(" Attributes:");
 		for (QueryAttribute qa: this.getQueryAttributes()) {
@@ -511,9 +514,19 @@ public class QueryDefinition {
 		for (QueryTable qt: this.getQueryTables()) {
 			os.println("\t" + qt.toString());
 		}
+		if (printTerminalSymbols) {			// This will be long
+			os.println(" Terminal Symbols:");
+			int counter = 1;
+			for (QueryTerminalSymbol qts: queryTerminalSymbols) {
+				os.print("\t" + qts.toString());
+				if (counter++ % 5 == 0) {os.println("");}
+			}
+		}
 	}
 	public QueryFunctions getQueryFunctions() {return queryFunctions;}
 	public void setQueryFunctions(QueryFunctions queryFunctions) {this.queryFunctions = queryFunctions;}
 	public QueryVariables getQueryVariables() {return queryVariables;}
-	public void setQueryVariables(QueryVariables queryVariables) {this.queryVariables = queryVariables;}	
+	public void setQueryVariables(QueryVariables queryVariables) {this.queryVariables = queryVariables;}
+	public QueryTerminalSymbols getQueryTerminalSymbols() {return queryTerminalSymbols;}
+	public void setQueryTerminalSymbols(QueryTerminalSymbols queryTerminalSymbols) {this.queryTerminalSymbols = queryTerminalSymbols;}	
 }

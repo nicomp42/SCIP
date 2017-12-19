@@ -36,32 +36,8 @@ public class Antlr4MySQLQueryParser_test {
 	}
 	private static void testSelect() throws Exception {
 		QueryDefinition qd = null;
- 		 
-		qd = simpleParseTest(tests[5]);
-		qd.print(System.out);
-		
-		//simpleParseTest("SELECT `tAlpha`.`epsilon` AS `myEpsilon`, (`tAlpha`.`beta` + `tDelta`.`gamma`) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 
-		//qd = simpleParseTest("SELECT `mySchema`.`fSIN`(`tZeta`.`zeta`) as sinZeta, SIN(`tZeta`.`zeta`) as sinZeta01, `GetAlphaStdDev`(\"tAlpha\") AS `myFunctionResult`, `mySchema`.`tAlpha`.`epsilon` AS `myEpsilon`, `tAlpha`.`omega`, ((`tZeta`.`upsilon`) + (`tAlpha`.`beta` + `tDelta`.`gamma`)) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 
-		//qd.print(System.out);
-		//		simpleParseTest("select `queryprocessingtest`.`ttablea`.`testString` AS `testString`,`queryprocessingtest`.`ttablea`.`testInt` AS `testInt`,`queryprocessingtest`.`ttablea`.`testDateTime` AS `testDateTime`,`queryprocessingtest`.`ttablea`.`testDouble` AS `testDouble`,`queryprocessingtest`.`twidget`.`Widget` AS `Widget`,`qc`.`testFieldATableC` AS `testfieldatablec`,`qd`.`testFieldATableD` AS `testfieldatabled`,`qlevelaa`.`TestFieldATableE` AS `testfieldatablee`,`qlevelaa`.`TestFieldATableF` AS `testfieldatablef` from `queryprocessingtest`.`ttablea` join `queryprocessingtest`.`ttableb` join `queryprocessingtest`.`qc` join `queryprocessingtest`.`qd` join `queryprocessingtest`.`twidget` join `queryprocessingtest`.`qlevelaa`");
-		//simpleParseTest(" SELECT `schematopologytest01`.`talpha`.`CommonField` AS `CommonField_tAlpha`,`schematopologytest01`.`tbeta`.`CommonField` AS `CommonField_tBeta`, `tBeta`.`Spoon` FROM (`schematopologytest01`.`talpha` JOIN `schematopologytest01`.`tbeta`)");
-		//simpleParseTest(actor_info);
-		//simpleParseTest(sales_by_film_category);
-		//simpleParseTest("SELECT `fruit`, (`abc`.`gorp` + 2) AS `foo` , MAX(`happy`)  FROM `tFruit` WHERE `tree`=\"apple\" AND `limit` > 100 ORDER BY `tfruit`.`fruit` ");
-/*		simpleParseTest("SELECT "
-				+ " `mySchema`.`myTable`.`myAttribute` AS `myAttributeAlias`"
-				+ ", `mySchema01`.`myTable01`.`myAttribute01` AS `myAttributeAlias01`"
-				+ ", `myTable02`.`myAttribute02` AS `myAttributeAlias02`"
-				+ ", `myAttribute03` AS `myAlias03`"
-				+ ", `myAttribute04` "
-				+ "FROM `tFruit` ORDER BY `fruit`");
-*/
-		//simpleParseTest("SELECT 123 AS `myConstant`, `SchemaA`.`ttablea`.`testString` AS `testString`,`ttablea`.`testInt` AS `testInt`,`ttablea`.`testDateTime` AS `testDateTime`,`ttablea`.`testDouble` AS `testDouble`, `twidget`.`Widget` AS `Widget`,`qc`.`testFieldATableC` AS `testfieldatablec`,`qd`.`testFieldATableD` AS `testfieldatabled`,`qlevelaa`.`TestFieldATableE` AS `testfieldatablee`,`qlevelaa`.`TestFieldATableF` AS `testfieldatablef` FROM (((((`ttablea` JOIN `ttableb`) JOIN `qc`) JOIN `qd`) JOIN `twidget`) JOIN `qlevelaa`)");
-		//simpleParseTest("SELECT 1.e-3 as `123e`");
-		//simpleParseTest("SELECT `hello world` as bar");
-		//simpleParseTest("select acme.tpilot.PilotID foo, sakila.actor.last_name, boo SumBoo from tpilot, actor");
-		//simpleParseTest("SELECT a,b,c FROM tFoo ORDER BY Gorp WHERE a=`aaa`");
-		//simpleParseTest("SELECT a,b,c FROM tFoo ORDER BY Gorp WHERE a=`aaa`");
+		qd = simpleParseTest(actor_info);
+		qd.print(System.out, true);		
 	}
 	private static QueryDefinition simpleParseTest(String sql) {
 		System.out.println("Antlr4MySQLQueryParser_test.simpleParseTest(): Parsing SQL: " + sql);
@@ -93,7 +69,31 @@ public class Antlr4MySQLQueryParser_test {
 		"SELECT `MYFUNCTION01`(`myschema01`.`mytable01`.`myAttribute01`) AS `myAlias` FROM `myschema01`.`mytable01`",
 		// myView05: an aggregate function. Note the weird alias that was built by default by MySQLWorkbench or the MySQL Server.
 		" SELECT MAX(`myschema01`.`mytable01`.`myAttribute01`) AS `MAX(myAttribute01)` FROM `myschema01`.`mytable01`",
-		// myView06: Use variables in the SELECT statement
-		"SELECT myAttribute02 , myAttribute01 INTO @myvar , @foo FROM mytable01 WHERE myAttribute01 = 1;"
+		// myViewnn: Use variables in the SELECT statement. This can be done in an SQL tab in MySQLWorkbench but cannot be done in a view: https://dev.mysql.com/doc/refman/5.6/en/create-view.html
+		//"SELECT `myAttribute01`,`myAttribute02`,`myAttribute03` INTO @myvar01 , @@myvar02, @myvar03 FROM `mytable01` WHERE `myAttribute01` = 1;"
+		
 	                                };
 }
+
+//simpleParseTest("SELECT `tAlpha`.`epsilon` AS `myEpsilon`, (`tAlpha`.`beta` + `tDelta`.`gamma`) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 
+//qd = simpleParseTest("SELECT `mySchema`.`fSIN`(`tZeta`.`zeta`) as sinZeta, SIN(`tZeta`.`zeta`) as sinZeta01, `GetAlphaStdDev`(\"tAlpha\") AS `myFunctionResult`, `mySchema`.`tAlpha`.`epsilon` AS `myEpsilon`, `tAlpha`.`omega`, ((`tZeta`.`upsilon`) + (`tAlpha`.`beta` + `tDelta`.`gamma`)) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 
+//qd.print(System.out);
+//		simpleParseTest("select `queryprocessingtest`.`ttablea`.`testString` AS `testString`,`queryprocessingtest`.`ttablea`.`testInt` AS `testInt`,`queryprocessingtest`.`ttablea`.`testDateTime` AS `testDateTime`,`queryprocessingtest`.`ttablea`.`testDouble` AS `testDouble`,`queryprocessingtest`.`twidget`.`Widget` AS `Widget`,`qc`.`testFieldATableC` AS `testfieldatablec`,`qd`.`testFieldATableD` AS `testfieldatabled`,`qlevelaa`.`TestFieldATableE` AS `testfieldatablee`,`qlevelaa`.`TestFieldATableF` AS `testfieldatablef` from `queryprocessingtest`.`ttablea` join `queryprocessingtest`.`ttableb` join `queryprocessingtest`.`qc` join `queryprocessingtest`.`qd` join `queryprocessingtest`.`twidget` join `queryprocessingtest`.`qlevelaa`");
+//simpleParseTest(" SELECT `schematopologytest01`.`talpha`.`CommonField` AS `CommonField_tAlpha`,`schematopologytest01`.`tbeta`.`CommonField` AS `CommonField_tBeta`, `tBeta`.`Spoon` FROM (`schematopologytest01`.`talpha` JOIN `schematopologytest01`.`tbeta`)");
+//simpleParseTest(actor_info);
+//simpleParseTest(sales_by_film_category);
+//simpleParseTest("SELECT `fruit`, (`abc`.`gorp` + 2) AS `foo` , MAX(`happy`)  FROM `tFruit` WHERE `tree`=\"apple\" AND `limit` > 100 ORDER BY `tfruit`.`fruit` ");
+/*		simpleParseTest("SELECT "
+		+ " `mySchema`.`myTable`.`myAttribute` AS `myAttributeAlias`"
+		+ ", `mySchema01`.`myTable01`.`myAttribute01` AS `myAttributeAlias01`"
+		+ ", `myTable02`.`myAttribute02` AS `myAttributeAlias02`"
+		+ ", `myAttribute03` AS `myAlias03`"
+		+ ", `myAttribute04` "
+		+ "FROM `tFruit` ORDER BY `fruit`");
+*/
+//simpleParseTest("SELECT 123 AS `myConstant`, `SchemaA`.`ttablea`.`testString` AS `testString`,`ttablea`.`testInt` AS `testInt`,`ttablea`.`testDateTime` AS `testDateTime`,`ttablea`.`testDouble` AS `testDouble`, `twidget`.`Widget` AS `Widget`,`qc`.`testFieldATableC` AS `testfieldatablec`,`qd`.`testFieldATableD` AS `testfieldatabled`,`qlevelaa`.`TestFieldATableE` AS `testfieldatablee`,`qlevelaa`.`TestFieldATableF` AS `testfieldatablef` FROM (((((`ttablea` JOIN `ttableb`) JOIN `qc`) JOIN `qd`) JOIN `twidget`) JOIN `qlevelaa`)");
+//simpleParseTest("SELECT 1.e-3 as `123e`");
+//simpleParseTest("SELECT `hello world` as bar");
+//simpleParseTest("select acme.tpilot.PilotID foo, sakila.actor.last_name, boo SumBoo from tpilot, actor");
+//simpleParseTest("SELECT a,b,c FROM tFoo ORDER BY Gorp WHERE a=`aaa`");
+//simpleParseTest("SELECT a,b,c FROM tFoo ORDER BY Gorp WHERE a=`aaa`");

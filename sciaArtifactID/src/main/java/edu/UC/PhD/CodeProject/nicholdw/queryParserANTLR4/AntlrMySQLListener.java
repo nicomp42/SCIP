@@ -27,6 +27,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseWhere;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryTerminalSymbol;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlter;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
@@ -741,6 +742,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitEveryRule(ParserRuleContext ctx) {/*Log.logQueryParseProgress("AntlrMySQLListener.exitEveryRule()");*/}
 	@Override public void visitTerminal(TerminalNode node) {
 		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): " + node.getText());
+		try {
+			queryDefinition.getQueryTerminalSymbols().addQueryTerminalSymbol(new QueryTerminalSymbol(node.getText()));
+		} catch (Exception ex) {}		// Eat the exception? ToDo check this.
 		switch (node.getText().toUpperCase()) {
 		case Config.LR_BRACKET:		// Left Paren
 			// Adjust the current nesting level
