@@ -596,9 +596,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitIfExists(MySqlParser.IfExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIfExists()");}
 	@Override public void enterIfNotExists(MySqlParser.IfNotExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIfNotExists()");}
 	@Override public void exitIfNotExists(MySqlParser.IfNotExistsContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIfNotExists()");}
-	@Override public void enterSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSpecificFunctionCall()");}
+	@Override public void enterSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSpecificFunctionCall(): " + ctx.getText() );
+	}
 	@Override public void exitSpecificFunctionCall(MySqlParser.SpecificFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSpecificFunctionCall()");}
-	@Override public void enterAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAggregateFunctionCall()");}
+	@Override public void enterAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterAggregateFunctionCall(): " + ctx.getText());
+	}
 	@Override public void exitAggregateFunctionCall(MySqlParser.AggregateFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAggregateFunctionCall()");}
 	@Override public void enterScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterScalarFunctionCall()");}
 	@Override public void exitScalarFunctionCall(MySqlParser.ScalarFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitScalarFunctionCall()");}
@@ -606,7 +610,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterUdfFunctionCall(): " + ctx.getText() + ", " + ctx.getChild(0).getText());
 		
 		// ToDo capture this as a UDF. child(0) is the name of the function. :)
-		}
+	}
 	@Override public void exitUdfFunctionCall(MySqlParser.UdfFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUdfFunctionCall()");}
 	@Override public void enterPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPasswordFunctionCall()");}
 	@Override public void exitPasswordFunctionCall(MySqlParser.PasswordFunctionCallContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPasswordFunctionCall()");}

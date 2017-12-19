@@ -37,7 +37,7 @@ public class Antlr4MySQLQueryParser_test {
 	private static void testSelect() throws Exception {
 		QueryDefinition qd = null;
  		 
-		qd = simpleParseTest(tests[3]);
+		qd = simpleParseTest(tests[5]);
 		qd.print(System.out);
 		
 		//simpleParseTest("SELECT `tAlpha`.`epsilon` AS `myEpsilon`, (`tAlpha`.`beta` + `tDelta`.`gamma`) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 
@@ -90,6 +90,10 @@ public class Antlr4MySQLQueryParser_test {
 		// myView03: one fully qualified attribute with alias, one fully qualified table using the table alias
 		"SELECT `myTablealias`.`myAttribute01` AS `myAlias01` FROM `mySchema01`.`myTable01` mytablealias",
 		// myView04: one function call with minimal attribute, one minimal table.
-		"SELECT `myschema01`.MYFUNCTION01(`myschema01`.`mytable01`.`myAttribute01`) AS `myAlias` FROM `myschema01`.`mytable01`",	 
+		"SELECT `MYFUNCTION01`(`myschema01`.`mytable01`.`myAttribute01`) AS `myAlias` FROM `myschema01`.`mytable01`",
+		// myView05: an aggregate function. Note the weird alias that was built by default by MySQLWorkbench or the MySQL Server.
+		" SELECT MAX(`myschema01`.`mytable01`.`myAttribute01`) AS `MAX(myAttribute01)` FROM `myschema01`.`mytable01`",
+		// myView06: Use variables in the SELECT statement
+		"SELECT myAttribute02 , myAttribute01 INTO @myvar , @foo FROM mytable01 WHERE myAttribute01 = 1;"
 	                                };
 }

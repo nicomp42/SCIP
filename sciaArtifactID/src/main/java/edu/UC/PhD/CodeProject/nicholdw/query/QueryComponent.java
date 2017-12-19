@@ -6,7 +6,5 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
  *
  */
 public abstract class QueryComponent {
-	public String toString() {
-		return "Query Component";
-	}
+	public abstract String toString(); // {return "Query Component";}
 }

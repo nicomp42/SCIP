@@ -40,6 +40,7 @@ public class QueryDefinition {
 	private Boolean isFinal;
 	private CompoundAliases compoundAliases;
 	private QueryFunctions queryFunctions;
+	private QueryVariables queryVariables;
 	  
 	public QueryDefinition(String hostName, String loginName, String password, QueryType queryType, String queryName, String sql, String schemaName) {
 		setQueryType(queryType);
@@ -57,6 +58,7 @@ public class QueryDefinition {
 		setIsFinal(false);
 		setCompoundAliases(compoundAliases);
 		setQueryFunctions(new QueryFunctions());
+		setQueryVariables(new QueryVariables());
 	}
 	public CompoundAliases getCompoundAliases() {return compoundAliases;}
 	public void setCompoundAliases(CompoundAliases compoundAliases) {this.compoundAliases = compoundAliases;}
@@ -510,11 +512,8 @@ public class QueryDefinition {
 			os.println("\t" + qt.toString());
 		}
 	}
-	public QueryFunctions getQueryFunctions() {
-		return queryFunctions;
-	}
-	public void setQueryFunctions(QueryFunctions queryFunctions) {
-		this.queryFunctions = queryFunctions;
-	}
-	
+	public QueryFunctions getQueryFunctions() {return queryFunctions;}
+	public void setQueryFunctions(QueryFunctions queryFunctions) {this.queryFunctions = queryFunctions;}
+	public QueryVariables getQueryVariables() {return queryVariables;}
+	public void setQueryVariables(QueryVariables queryVariables) {this.queryVariables = queryVariables;}	
 }

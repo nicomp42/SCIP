@@ -20,4 +20,5 @@ public class QueryFunction extends QueryComponent {
 	}
 	public String getSchemaName() {return schemaName;}
 	public void setSchemaName(String schemaName) {this.schemaName = schemaName;}
+	public String toString() {return ((getSchemaName()).length() > 0? getSchemaName() + "." : "") + getQueryFunctionName();}
 }
