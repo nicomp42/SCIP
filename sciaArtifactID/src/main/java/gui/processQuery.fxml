@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="apProcessAQuery" fx:id="apProcessAQuery" prefHeight="850.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessQueryController">
+<AnchorPane id="apProcessAQuery" fx:id="apProcessAQuery" prefHeight="850.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessQueryController">
    <padding>
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
@@ -90,7 +90,7 @@
                         <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnExportCSVFilesToNeo4j" layoutX="452.0" layoutY="210.0" mnemonicParsing="false" onAction="#btnExportCSVFilesToNeo4j_OnClick" text="Export CSV Files to Neo4j" />
                         <Label fx:id="lblCSVFolder" layoutX="14.0" layoutY="177.0" prefHeight="25.0" prefWidth="167.0" text="Destination Folder for CSV Files" />
                         <TextArea fx:id="txaCSVFolder" layoutX="188.0" layoutY="177.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the the import folder of the current Neo4j DB." />
-                        <Button fx:id="btnBrowseForCSVFolder" layoutX="612.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
+                        <Button fx:id="btnBrowseForCSVFolder" layoutX="650.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
                      </children>
                   </AnchorPane>
               </content>

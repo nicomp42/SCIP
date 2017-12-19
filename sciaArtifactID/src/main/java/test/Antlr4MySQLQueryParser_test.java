@@ -36,8 +36,8 @@ public class Antlr4MySQLQueryParser_test {
 	}
 	private static void testSelect() throws Exception {
 		QueryDefinition qd = null;
-		qd = simpleParseTest(actor_info);
-		qd.print(System.out, true);		
+		qd = simpleParseTest(tests[1]);
+		qd.print(System.out, false);		
 	}
 	private static QueryDefinition simpleParseTest(String sql) {
 		System.out.println("Antlr4MySQLQueryParser_test.simpleParseTest(): Parsing SQL: " + sql);

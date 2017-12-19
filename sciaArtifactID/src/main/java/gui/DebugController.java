@@ -112,6 +112,10 @@ public class DebugController /* extends Application */ {
 	public void btnClearNeo4jQuerys_OnClick(ActionEvent event) {
 		txaNeo4jQuerys.setText("");
 	}
+	@FXML
+	public void btnClearSQLQueryParsing_OnClick(ActionEvent event) {
+		txaSQLQueryParsing.setText("");
+	}
 	public void writeProgress(String msg) {
 		try {
 			txaProgress.appendText("\n" + msg);

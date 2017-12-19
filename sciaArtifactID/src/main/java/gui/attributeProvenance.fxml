@@ -10,21 +10,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="apAttributeProvenance" fx:id="apAttributeProvenance" prefHeight="440.0" prefWidth="703.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AttributeProvenanceController">
+<AnchorPane id="apAttributeProvenance" fx:id="apAttributeProvenance" prefHeight="554.0" prefWidth="812.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AttributeProvenanceController">
    <padding>
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
    <children>
-      <TreeView id="tvAttributeProvenance" fx:id="tvAttributeProvenance" editable="false" layoutX="14.0" layoutY="32.0" prefHeight="311.0" prefWidth="681.0" />
-      <ComboBox fx:id="cbPqAttributes" layoutX="75.0" layoutY="2.0" prefHeight="25.0" prefWidth="620.0" />
+      <TreeView id="tvAttributeProvenance" fx:id="tvAttributeProvenance" editable="false" layoutX="14.0" layoutY="36.0" prefHeight="311.0" prefWidth="789.0" />
+      <ComboBox fx:id="cbPqAttributes" layoutX="96.0" layoutY="2.0" prefHeight="31.0" prefWidth="708.0" />
       <Label layoutX="14.0" layoutY="6.0" text="Attributes " />
-      <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnSaveSchemaArtifactsToCSVFiles" layoutX="452.0" layoutY="353.0" mnemonicParsing="false" onAction="#btnSaveSchemaArtifactsToCSVFiles_OnClick" text="Save Selected Artifact to CSV" />
-      <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnExportCSVFilesToNeo4j" layoutX="452.0" layoutY="422.0" mnemonicParsing="false" onAction="#btnExportCSVFilesToNeo4j_OnClick" text="Export CSV to Neo4j" />
-      <Label fx:id="lblCSVFolder" layoutX="14.0" layoutY="353.0" prefHeight="25.0" prefWidth="167.0" text="Destination Folder for CSV Files" />
-      <TextArea fx:id="txaCSVFolder" layoutX="188.0" layoutY="353.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="77.0" prefWidth="257.0" promptText="Enter the the import folder of the current Neo4j DB." />
-      <Button fx:id="btnBrowseForCSVFolder" layoutX="629.0" layoutY="353.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
-      <CheckBox fx:id="cbClearNeo4jBeforeExport" layoutX="452.0" layoutY="383.0" mnemonicParsing="false" text="Clear the Neo4j DB before exporting" />
-      <Button fx:id="btnProcessEverything" layoutX="15.0" layoutY="422.0" mnemonicParsing="false" onAction="#btnProcessEverything_OnClick" text="Process all Attributes" />
-      <CheckBox fx:id="cbOpenBrowserWindowAfterExporting" layoutX="452.0" layoutY="402.0" mnemonicParsing="false" text="Open browser window after exporting" />
+      <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnSaveSchemaArtifactsToCSVFiles" layoutX="450.0" layoutY="437.0" mnemonicParsing="false" onAction="#btnSaveSchemaArtifactsToCSVFiles_OnClick" text="Save Selected Artifact to CSV" />
+      <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnExportCSVFilesToNeo4j" layoutX="651.0" layoutY="516.0" mnemonicParsing="false" onAction="#btnExportCSVFilesToNeo4j_OnClick" text="Export CSV to Neo4j" />
+      <Label fx:id="lblCSVFolder" layoutX="14.0" layoutY="353.0" prefHeight="25.0" prefWidth="225.0" text="Destination Folder for CSV Files" />
+      <TextArea fx:id="txaCSVFolder" layoutX="249.0" layoutY="353.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="77.0" prefWidth="446.0" promptText="Enter the the import folder of the current Neo4j DB." />
+      <Button fx:id="btnBrowseForCSVFolder" layoutX="705.0" layoutY="353.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
+      <CheckBox fx:id="cbClearNeo4jBeforeExport" layoutX="450.0" layoutY="473.0" minWidth="-Infinity" mnemonicParsing="false" text="Clear the Neo4j DB before exporting" />
+      <Button fx:id="btnProcessEverything" layoutX="17.0" layoutY="437.0" mnemonicParsing="false" onAction="#btnProcessEverything_OnClick" text="Process all Attributes" />
+      <CheckBox fx:id="cbOpenBrowserWindowAfterExporting" layoutX="450.0" layoutY="494.0" mnemonicParsing="false" text="Open browser window after exporting" />
    </children>
 </AnchorPane>
