@@ -195,7 +195,7 @@ public class QueryDefinition {
 			try {
 				sql = TestQueries.getSQL(queryName.toLowerCase());
 			} catch (Exception ex) {
-				Log.logError("QueryDefinition.readSQLFromQueryDefinition(): " + ex.getLocalizedMessage());
+				Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition(): " + ex.getLocalizedMessage());
 			}
 		} else {
 			String query = "SELECT view_definition FROM information_schema.VIEWS where table_schema = " +  MySQL.wrapStringInSingleQuotes(schemaName) + " AND table_name=" + MySQL.wrapStringInSingleQuotes(queryName);
@@ -206,7 +206,7 @@ public class QueryDefinition {
 			    try {
 					preparedStatement = connection.prepareStatement(query);
 				} catch (SQLException e) {
-					System.out.println("QueryDefinition.readSQLFromSchema() : " + e.getLocalizedMessage());
+					System.out.println("QueryDefinition.readSQLFromDatabaseServerQueryDefinition() : " + e.getLocalizedMessage());
 				}
 			    java.sql.ResultSet resultSet = null;
 			    try {
@@ -215,8 +215,8 @@ public class QueryDefinition {
 			    try {
 			    	resultSet.next();					// Move to the first record
 					sql = resultSet.getString(1);		// The argument to getString() is one-based, not zero-based
-				} catch (Exception e) {Log.logError("QueryDefinition.readSQLFromSchema() : " + e.getLocalizedMessage());}
-			} catch (Exception ex) {Log.logError("QueryDefinition.readSQLFromSchema(): " + ex.getLocalizedMessage()); }
+				} catch (Exception e) {Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition() : " + e.getLocalizedMessage());}
+			} catch (Exception ex) {Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition(): " + ex.getLocalizedMessage()); }
 			try {connection.close();} catch (Exception ex) {}
 		}
 		return sql;
@@ -266,7 +266,7 @@ public class QueryDefinition {
 		}
 	}
 	/**
-	 * Make sure tables have schema names and figure out if it's a table or a query
+	 * Make sure tables/queries have schema names and figure out if it's a table or a query
 	 * After the query has been parsed, this information must be available because the query is assumed to be properly formed.
 	 */
 	public void reconcileTables() {
@@ -274,9 +274,9 @@ public class QueryDefinition {
 		for (QueryTable qt: this.getQueryTables()) {
 			if (qt.getSchemaName() == null || qt.getSchemaName().equals("")) {
 				qt.setSchemaName(this.getSchemaName());
-				// Figure out if it's a table or a query
-				qt.setIsQuery(isItAQuery(qt.getSchemaName(), qt.getTableName(), this));
 			}
+			// Figure out if it's a table or a query
+			qt.setIsQuery(isItAQuery(qt.getSchemaName(), qt.getTableName(), this));
 		}
 	}
 	/**

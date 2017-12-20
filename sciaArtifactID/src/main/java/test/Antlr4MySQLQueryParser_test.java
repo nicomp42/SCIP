@@ -37,7 +37,7 @@ public class Antlr4MySQLQueryParser_test {
 	}
 	private static void testSelect() throws Exception {
 		QueryDefinition qd = null;
-		qd = simpleParseTest(selectTests[1]);
+		qd = simpleParseTest(selectTests[7]);
 		qd.print(System.out, false);		
 	}
 	private static void testCreate() throws Exception {
@@ -52,10 +52,10 @@ public class Antlr4MySQLQueryParser_test {
 			queryDefinition = new QueryDefinition("","","",new QueryTypeSelect(), "dummyQueryName", sql, "dummySchemaName");
 			QueryParser queryParser = new QueryParser();
 			queryParser.parseQuery(queryDefinition);
-			System.out.println("Antlr4MySQLQueryParser_test.simpleParseTest(): Atttibutes found in the query:");
-			for (QueryAttribute qa: queryDefinition.getQueryAttributes()) {
-				System.out.println(qa.toString());
-			}
+			//System.out.println("Antlr4MySQLQueryParser_test.simpleParseTest(): Atttibutes found in the query:");
+			//for (QueryAttribute qa: queryDefinition.getQueryAttributes()) {
+			//	System.out.println(qa.toString());
+			//}
 		} catch (Exception ex) {
 			System.out.println("Antlr4MySQLQueryParser_test.simpleParseTest(): " + ex.getLocalizedMessage());
 		}
@@ -69,6 +69,8 @@ public class Antlr4MySQLQueryParser_test {
 		"SELECT `myAttribute01` FROM `myTable01`",	 
 		// myView01a: one minimal attribute, one minimal table and some SELECT qualifiers.
 		"SELECT ALL HIGH_PRIORITY STRAIGHT_JOIN `myAttribute01` FROM `myTable01`",	 
+		// myView01b: three minimal attributes, one minimal table.
+		"SELECT `myAttribute01`, `myAttribute02`, `myAttribute03` FROM `myTable01`",	 
 		// myView02: one fully qualified attribute with alias, one fully qualified table.
 		"SELECT `mySchema01`.`myTable01`.`myAttribute01` AS `myAlias01` FROM `mySchema01`.`myTable01`",
 		// myView03: one fully qualified attribute with alias, one fully qualified table using the table alias
@@ -76,11 +78,11 @@ public class Antlr4MySQLQueryParser_test {
 		// myView04: one function call with minimal attribute, one minimal table.
 		"SELECT `MYFUNCTION01`(`myschema01`.`mytable01`.`myAttribute01`) AS `myAlias` FROM `myschema01`.`mytable01`",
 		// myView05: an aggregate function. Note the weird alias that was built by default by MySQLWorkbench or the MySQL Server.
-		" SELECT MAX(`myschema01`.`mytable01`.`myAttribute01`) AS `MAX(myAttribute01)` FROM `myschema01`.`mytable01`",
+		"SELECT MAX(`myschema01`.`mytable01`.`myAttribute01`) AS `MAX(myAttribute01)` FROM `myschema01`.`mytable01`",
 		// myViewnn: Use variables in the SELECT statement. This can be done in an SQL tab in MySQLWorkbench but cannot be done in a view: https://dev.mysql.com/doc/refman/5.6/en/create-view.html
 		//"SELECT `myAttribute01`,`myAttribute02`,`myAttribute03` INTO @myvar01 , @@myvar02, @myvar03 FROM `mytable01` WHERE `myAttribute01` = 1;"
 		// myView06a: referencing attributes in a view and a table
-		"VIEW `myschema01`.`myview06a` AS SELECT `myview06`.`myAttribute01` AS `myView06.myAttribute01`, `myschema01`.`mytable02`.`myAttribute01` AS `myTable02.myAttribute01` FROM (`myschema01`.`mytable02` JOIN `myschema01`.`myview06`)"
+		"SELECT `myview06`.`myAttribute01` AS `myView06.myAttribute01`, `myschema01`.`mytable02`.`myAttribute01` AS `myTable02.myAttribute01` FROM (`myschema01`.`mytable02` JOIN `myschema01`.`myview06`)"
 	                                };
 	private static String dropTests[] = {
 		// Drop a table	

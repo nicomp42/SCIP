@@ -19,7 +19,7 @@ public class QueryTable extends Table {
 		setIncludeAllAttributes(false);
 		setAliasName(alias);
 		setQueryClause(queryClause);
-		setIsQuery(true);		// Assume it's a table. We will reconcile it later.
+		setIsQuery(true);		// Assume it's a table. We will reconcile it later. See QueryDefinition.reconcileTables() 
 		setIsProcessed(false);
 		setContainingQueryName("");
 	}
