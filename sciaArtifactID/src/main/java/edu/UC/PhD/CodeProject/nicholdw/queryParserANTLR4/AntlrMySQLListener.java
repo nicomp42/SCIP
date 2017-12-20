@@ -30,6 +30,11 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTerminalSymbol;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlter;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreate;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateTable;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateView;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.query.FullColumnName;
 /**
@@ -502,6 +507,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitFullId(MySqlParser.FullIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullId()");}
 	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText());
+		fullTableNames.add(new FullTableName(ctx.getText()));		
 	}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
@@ -738,14 +744,27 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterFunctionNameBase(): " + ctx.getText());
 	}
 	@Override public void exitFunctionNameBase(MySqlParser.FunctionNameBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFunctionNameBase()");}
-	@Override public void enterEveryRule(ParserRuleContext ctx) {/*Log.logQueryParseProgress("AntlrMySQLListener.enterEveryRule()");*/}
+	@Override public void enterEveryRule(ParserRuleContext ctx) {/*
+		Log.logQueryParseProgress("AntlrMySQLListener.enterEveryRule()"); */
+	}
 	@Override public void exitEveryRule(ParserRuleContext ctx) {/*Log.logQueryParseProgress("AntlrMySQLListener.exitEveryRule()");*/}
 	@Override public void visitTerminal(TerminalNode node) {
-		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): " + node.getText());
+ 		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): " + node.getText());
+		Object context = node.getParent().getPayload();
+ 		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): getPayload() = " + context.getClass());
+		
+		if (context instanceof org.Antlr4MySQLFromANTLRRepo.MySqlParser.SqlStatementsContext) {
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): context = SqlStatementsContext");			
+		} else if (context instanceof org.Antlr4MySQLFromANTLRRepo.MySqlParser.SelectColumnElementContext) {
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): context = SelectColumnElementContext");			
+		}
 		try {
 			queryDefinition.getQueryTerminalSymbols().addQueryTerminalSymbol(new QueryTerminalSymbol(node.getText()));
 		} catch (Exception ex) {}		// Eat the exception? ToDo check this.
 		switch (node.getText().toUpperCase()) {
+		case "SELECT":
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): found SELECT");
+			break;
 		case Config.LR_BRACKET:		// Left Paren
 			// Adjust the current nesting level
 			currentNestingLevel.incrementNestingLevel();
@@ -808,8 +827,43 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): SQL statement delimiter found: " + Config.SQL_STATEMENT_DELIMITER);
 			break;
 		case "CREATE":		// We are creating something. 
-			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE found: ");
-			
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE found, but what are we creating? ");
+			String createType = node.getParent().getChild(1).getText().trim().toUpperCase();
+			if (createType.trim().toUpperCase().equals("TEMPORARY")) {createType = node.getParent().getChild(1).getText().trim().toUpperCase();}
+			switch (createType) {
+				case "TABLE": 
+					queryDefinition.setQueryType(new QueryTypeCreateTable());
+					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+					break;
+				case "VIEW": 
+					queryDefinition.setQueryType(new QueryTypeCreateView());
+					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+					break;
+				default:		// It's an error. We don't know what we're creating
+					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE somthing is unidentified: " + createType, true);
+			}
+			break;
+		case "DROP":		// We are dropping something. 
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): DROP found, but what are we dropping? ");
+			String dropType = node.getParent().getChild(1).getText().trim().toUpperCase();
+			if (dropType.trim().toUpperCase().equals("TEMPORARY")) {dropType = node.getParent().getChild(2).getText().trim().toUpperCase();}
+			switch (dropType) {
+				case "TABLE": 
+					queryDefinition.setQueryType(new QueryTypeDropTable());
+					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+					break;
+				case "VIEW": 
+					queryDefinition.setQueryType(new QueryTypeDropView());
+					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+					break;
+				default:		// It's an error. We don't know what we're dropping
+					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE something is unidentified: " + dropType, true);
+			}
+		// All the SELECT statement qualifiers
+		case "ALL": case "DISTINCT" : case "DISTINCTROW" : case "HIGH_PRIORITY" : case "STRAIGHT_JOIN" : case "SQL_SMALL_RESULT" : 
+		case "SQL_BIG_RESULT" : case "SQL_BUFFER_RESULT": case "SQL_CACHE" : case "SQL_NO_CACHE" : case "SQL_CALC_FOUND_ROWS":
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): SELECT statement qualifier: " + node.getText().toUpperCase());
+			break;
 		default:
 			lastTerminalNode = "UNKNOWN";
 		}
@@ -828,11 +882,11 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText());
 	}
 	/**
-	 * This event has the alias appended to the table name. Not useful because there's no delimiter between the two values
+	 * This event has the alias appended to the table name. Not useful because there's no delimiter between the two values when you call getText()
 	 */
 	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText());
-		fullTableNames.add(new FullTableName(ctx.getText()));
+				//fullTableNames.add(new FullTableName(ctx.getText()));		// Moved to enterTableName
 	}
 	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAtomTableItem(): " + ctx.getText());

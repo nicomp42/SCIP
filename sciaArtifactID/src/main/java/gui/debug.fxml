@@ -10,54 +10,55 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="apDebug" fx:id="apDebug" prefHeight="421.0" prefWidth="701.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DebugController">
+<AnchorPane id="apDebug" fx:id="apDebug" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="421.0" prefWidth="716.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DebugController">
    <padding>
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
    <children>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
           <Tab text="Activity Log">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="690.0">
                      <children>
-                        <TextArea id="txaProgress" fx:id="txaProgress" editable="false" prefHeight="334.0" prefWidth="688.0" />
-                        <Button fx:id="btnClear" layoutX="581.0" layoutY="339.0" mnemonicParsing="false" onAction="#btnClear_OnClick" text="Clear Activity Log" />
+                        <TextArea id="txaProgress" fx:id="txaProgress" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="334.0" prefWidth="688.0" />
+                        <Button fx:id="btnClear" layoutX="555.0" layoutY="339.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#btnClear_OnClick" text="Clear Activity Log" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
           <Tab text="Errors">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="690.0">
                      <children>
-                        <TextArea id="txaErrors" fx:id="txaErrors" editable="false" prefHeight="334.0" prefWidth="688.0" />
-                        <Button fx:id="btnClearErrors" layoutX="581.0" layoutY="339.0" mnemonicParsing="false" onAction="#btnClearErrors_OnClick" text="Clear Error Log" />
+                        <TextArea id="txaErrors" fx:id="txaErrors" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="334.0" prefWidth="688.0" />
+                        <Button fx:id="btnClearErrors" layoutX="570.0" layoutY="339.0" mnemonicParsing="false" onAction="#btnClearErrors_OnClick" text="Clear Error Log" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
           <Tab text="Neo4j Queries">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="690.0">
                      <children>
-                        <TextArea id="txaNeo4jQuerys" fx:id="txaNeo4jQuerys" editable="false" prefHeight="334.0" prefWidth="688.0" />
-                        <Button fx:id="btnClearNeo4jQuerys" layoutX="551.0" layoutY="339.0" mnemonicParsing="false" onAction="#btnClearNeo4jQuerys_OnClick" text="Clear Neo4j Query Log" />
+                        <TextArea id="txaNeo4jQuerys" fx:id="txaNeo4jQuerys" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="334.0" prefWidth="688.0" />
+                        <Button fx:id="btnClearNeo4jQuerys" layoutX="519.0" layoutY="339.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#btnClearNeo4jQuerys_OnClick" text="Clear Neo4j Query Log" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
           <Tab text="SQL Query Parsing">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="690.0">
                      <children>
-                        <TextArea id="txaSQLQueryParsing" fx:id="txaSQLQueryParsing" editable="false" prefHeight="334.0" prefWidth="688.0" />
-                        <Button fx:id="btnClearSQLQueryParsing" layoutX="519.0" layoutY="339.0" mnemonicParsing="false" onAction="#btnClearSQLQueryParsing_OnClick" text="Clear SQL Query Parsing Log" />
+                        <TextArea id="txaSQLQueryParsing" fx:id="txaSQLQueryParsing" editable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="334.0" prefWidth="688.0" />
+                        <Button fx:id="btnClearSQLQueryParsing" layoutX="479.0" layoutY="339.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#btnClearSQLQueryParsing_OnClick" text="Clear SQL Query Parsing Log" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
         </tabs>
       </TabPane>
+      <Button fx:id="btnClearAllLogs" layoutX="2.0" layoutY="382.0" mnemonicParsing="false" onAction="#btnClearAllLogs_OnClick" text="Clear All Logs" />
    </children>
 </AnchorPane>

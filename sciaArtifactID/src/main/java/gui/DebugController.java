@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 public class DebugController /* extends Application */ {
 
 	@FXML TextArea txaProgress, txaNeo4jQuerys, txaErrors, txaSQLQueryParsing;
-	@FXML Button btnClear, btnClearNeo4jQuerys, btnClearErrors, btnClearSQLQueryParsing;
+	@FXML Button btnClear, btnClearNeo4jQuerys, btnClearErrors, btnClearSQLQueryParsing, btnClearAllLogs;
 	@FXML AnchorPane apDebug;
 	private Scene myScene;
 	private double  btnClearHeight, btnClearWidth, btnClearSQLQueryParsingWidth, btnClearNeo4jQuerysWidth, btnClearNeo4jQuerysHeight, btnClearErrorsWidth, btnClearErrorsHeight, btnClearSQLQueryParsingHeight;
@@ -101,6 +101,10 @@ public class DebugController /* extends Application */ {
 		btnClearErrors.relocate(txaErrors.getWidth() - btnClearErrors.getWidth() - 3, txaErrors.getHeight() + 7);
 	}
 	@FXML
+	public void btnClearAllLogs_OnClick(ActionEvent event) {
+		clearAllLogs();
+	}
+	@FXML
 	public void btnClear_OnClick(ActionEvent event) {
 		txaProgress.setText("");
 	}
@@ -144,6 +148,12 @@ public class DebugController /* extends Application */ {
 		} catch (Exception ex) {
 			System.out.println("DebugController.writeNeo4jQueryInfo: " + ex.getLocalizedMessage());
 		}
+	}
+	private void clearAllLogs() {
+		txaProgress.setText("");
+		txaErrors.setText("");
+		txaNeo4jQuerys.setText("");
+		txaSQLQueryParsing.setText("");
 	}
 	public void setScene(Scene scene) {this.myScene = scene;}
 	public Stage getStage() {return myStage;}

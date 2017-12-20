@@ -172,7 +172,7 @@ public class QueryDefinition {
 	public void setQueryAttributes(QueryAttributes queryAttributes) {this.queryAttributes = queryAttributes;}
 	public String getSchemaName() {return schemaName;}
 	public void setSchemaName(String schemaName) {this.schemaName = schemaName;}
-	public String toString() {return schemaName + ":" + queryName + ":" + queryType.getFriendlyName();}
+	public String toString() {return schemaName + ":" + queryName + ":" + queryType.getQueryType();}
 	public void listAttributes(PrintStream myPrintStream) {
 		myPrintStream.println("Attributes found in query:");
 		for (QueryAttribute queryAttribute: this.getQueryAttributes()) {
