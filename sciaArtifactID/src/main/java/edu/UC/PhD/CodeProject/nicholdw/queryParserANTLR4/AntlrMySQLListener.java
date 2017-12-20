@@ -807,6 +807,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		case Config.SQL_STATEMENT_DELIMITER:
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): SQL statement delimiter found: " + Config.SQL_STATEMENT_DELIMITER);
 			break;
+		case "CREATE":		// We are creating something. 
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE found: ");
+			
 		default:
 			lastTerminalNode = "UNKNOWN";
 		}

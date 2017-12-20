@@ -21,7 +21,8 @@ public class Antlr4MySQLQueryParser_test {
 
 	public static void main( String[] args) throws Exception
 	{
-		testSelect();
+//		testSelect();
+		testCreate();
 //		testAlter();
 //		testMiscellaneous();
 	}
@@ -36,7 +37,12 @@ public class Antlr4MySQLQueryParser_test {
 	}
 	private static void testSelect() throws Exception {
 		QueryDefinition qd = null;
-		qd = simpleParseTest(tests[1]);
+		qd = simpleParseTest(selectTests[1]);
+		qd.print(System.out, false);		
+	}
+	private static void testCreate() throws Exception {
+		QueryDefinition qd = null;
+		qd = simpleParseTest(createTests[0]);
 		qd.print(System.out, false);		
 	}
 	private static QueryDefinition simpleParseTest(String sql) {
@@ -58,7 +64,7 @@ public class Antlr4MySQLQueryParser_test {
 	// Sakila Queries for parse testing
 	private static String actor_info = "SELECT`a`.`actor_id` AS `actor_id`,  `a`.`first_name` AS `first_name`,  `a`.`last_name` AS `last_name`,  GROUP_CONCAT(DISTINCT CONCAT(`c`.`name`,  ': ',  (SELECT GROUP_CONCAT(`f`.`title`ORDER BY `f`.`title` ASC SEPARATOR ', ')FROM ((`sakila`.`film`  JOIN `sakila`.`film_category` `fc` ON ((`f`.`film_id` = `fc`.`film_id`))) JOIN `sakila`.`film_actor` `fa` ON ((`f`.`film_id` = `fa`.`film_id`)))WHERE ((`fc`.`category_id` = `c`.`category_id`)  AND (`fa`.`actor_id` = `a`.`actor_id`))))ORDER BY `c`.`name` ASC SEPARATOR '; ') AS `film_info` FROM  (((`sakila`.`actor` `a`  LEFT JOIN `sakila`.`film_actor` `fa` ON ((`a`.`actor_id` = `fa`.`actor_id`)))  LEFT JOIN `sakila`.`film_category` `fc` ON ((`fa`.`film_id` = `fc`.`film_id`)))  LEFT JOIN `sakila`.`category` `c` ON ((`fc`.`category_id` = `c`.`category_id`))) GROUP BY `a`.`actor_id` , `a`.`first_name` , `a`.`last_name`";
 	private static String sales_by_film_category = "SELECT `c`.`name` AS `category`, SUM(`p`.`amount`) AS `total_sales` FROM (((((`sakila`.`payment` `p` JOIN `sakila`.`rental` `r` ON ((`p`.`rental_id` = `r`.`rental_id`))) JOIN `sakila`.`inventory` `i` ON ((`r`.`inventory_id` = `i`.`inventory_id`))) JOIN `sakila`.`film` `f` ON ((`i`.`film_id` = `f`.`film_id`))) JOIN `sakila`.`film_category` `fc` ON ((`f`.`film_id` = `fc`.`film_id`))) JOIN `sakila`.`category` `c` ON ((`fc`.`category_id` = `c`.`category_id`))) GROUP BY `c`.`name` ORDER BY `total_sales` DESC";
-	private static String tests[] = {
+	private static String selectTests[] = {
 		// myView01: one minimal attribute, one minimal table.
 		"SELECT myAttribute01` FROM `myTable01`",	 
 		// myView02: one fully qualified attribute with alias, one fully qualified table.
@@ -71,8 +77,25 @@ public class Antlr4MySQLQueryParser_test {
 		" SELECT MAX(`myschema01`.`mytable01`.`myAttribute01`) AS `MAX(myAttribute01)` FROM `myschema01`.`mytable01`",
 		// myViewnn: Use variables in the SELECT statement. This can be done in an SQL tab in MySQLWorkbench but cannot be done in a view: https://dev.mysql.com/doc/refman/5.6/en/create-view.html
 		//"SELECT `myAttribute01`,`myAttribute02`,`myAttribute03` INTO @myvar01 , @@myvar02, @myvar03 FROM `mytable01` WHERE `myAttribute01` = 1;"
-		
+		// myView06a: referencing attributes in a view and a table
+		"VIEW `myschema01`.`myview06a` AS SELECT `myview06`.`myAttribute01` AS `myView06.myAttribute01`, `myschema01`.`mytable02`.`myAttribute01` AS `myTable02.myAttribute01` FROM (`myschema01`.`mytable02` JOIN `myschema01`.`myview06`)"
 	                                };
+	private static String dropTests[] = {
+		// Drop a table	
+		"DROP TABLE tTable99"
+				
+		};
+	
+	private static String createTests[] = {
+		// Create a table	
+		"CREATE TABLE `myschema01`.`mytable99` (`myAttribute01` INT NOT NULL, `myAttribute02` VARCHAR(45) NULL, `myAttribute03` VARCHAR(45) NULL, PRIMARY KEY (`myAttribute01`));",		
+		};
+	
+		private static String alterTests[] = {
+			// Add a field to a table	
+				
+				
+		};
 }
 
 //simpleParseTest("SELECT `tAlpha`.`epsilon` AS `myEpsilon`, (`tAlpha`.`beta` + `tDelta`.`gamma`) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 

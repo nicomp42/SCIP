@@ -1,11 +1,10 @@
 package edu.UC.PhD.CodeProject.nicholdw.queryType;
 
 public abstract class QueryType {
-	private String friendlyName;
+	private String queryType;
 
-	public QueryType(String friendlyName) {setFriendlyName(friendlyName);}
-	public String getFriendlyName() {return friendlyName;}
-	public void setFriendlyName(String friendlyName) {this.friendlyName = friendlyName;}
-	public String toString() {return friendlyName;}
-
+	public QueryType(String queryType) {setQueryType(queryType);}
+	public String getQueryType() {return queryType;}
+	public void setQueryType(String queryType) {this.queryType = queryType;}
+	public String toString() {return queryType;}
 }
