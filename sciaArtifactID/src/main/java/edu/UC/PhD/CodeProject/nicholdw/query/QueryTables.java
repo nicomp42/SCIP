@@ -2,6 +2,8 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
+
 	/***
 	 * List of Table objects
 	 * @author nicomp
@@ -40,7 +42,7 @@ import java.util.Iterator;
 		public QueryTable matchQueryTable(String queryTableName) {
 			QueryTable queryTable = null;
 			for (QueryTable qt : queryTables) {
-				if (qt.getTableName().trim().equals(queryTableName) || qt.getAliasName().trim().equals(queryTableName)) {
+				if (Config.compareTableNames(qt.getTableName(), queryTableName) == true || Config.compareAliasNames(qt.getAliasName(), queryTableName) == true) {
 					queryTable = qt;
 					break;
 				}
@@ -58,9 +60,11 @@ import java.util.Iterator;
 			QueryTable qt = null;
 			// Look through all the tables
 			for (QueryTable queryTable: queryTables) {
-				if (queryTable.getAttributeDataType(queryAttribute.getAttributeName()) != null) {
-					qt = queryTable;
-					break;
+				if (Config.compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true && Config.compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) == true) {
+					if (queryTable.getAttributeDataType(queryAttribute.getAttributeName()) != null) {
+						qt = queryTable;
+						break;
+					}
 				}
 			}
 			// TODO: need to search by alias(es) as well

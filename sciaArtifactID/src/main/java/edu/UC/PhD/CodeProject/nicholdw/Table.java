@@ -256,23 +256,12 @@ public class Table {
 	 * @param attributeName The name of the attribute
 	 * @return The data type of the attribute, or null if not found
 	 */
-	public String getAttributeDataType(String attributeNameTarget) {
+	public String getAttributeDataType(String attributeName) {
 		String attributeDataType = null;
 		for (Attribute attribute: attributes) {
-			if (Config.getConfig().getUsecasesensitiveattributecomparison() == true) {
-				if (attribute.getAttributeName().equals(attributeNameTarget)) {
-					attributeDataType = attribute.getType();
-					break;
-				}
-			} else {
-				String a1 = attribute.getAttributeName().toLowerCase().trim();
-				String a2 = attributeNameTarget.toLowerCase().trim();
-				//System.out.println(">"+ a1 + "<");
-				//System.out.println(">"+ a2 + "<");
-				if (a1.equals(a2)) {
-					attributeDataType = attribute.getType();
-					break;
-				}
+			if ((Config.compareAttributeNames(attribute.getAttributeName(), attributeName) == true)) { 
+				attributeDataType = attribute.getType();
+				break;
 			}
 		}
 		return attributeDataType;

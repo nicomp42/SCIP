@@ -53,8 +53,10 @@ public class Config implements Serializable {
 	private Config() {}
 	private final String version = "0.03";
 	private final int mySQLDefaultPort = 3306;
-	private final Boolean UseCaseSensitiveAttributeComparison = false;
+	private final Boolean UseCaseSensitiveAttributeNameComparison = false;
 	private final Boolean UseCaseSensitiveAliasNameComparison = false;
+	private final Boolean UseCaseSensitiveTableNameComparison = false;
+	private final Boolean UseCaseSensitiveSchemaNameComparison = false;
 	private final String applicationTitle = "SCIPPER : Schema Change Impact Project";		//"Schema Change Impact Analysis");
 	private final String[] ETLLayers = {"ids-dwh", "op-ids"};		// ids =  Intermediate Data Store
 	private final String neo4jFilesPath_Relative = "neo4j";
@@ -170,8 +172,8 @@ public class Config implements Serializable {
 
 	public String getVersion() {return version;}
 	public int getMySQLDefaultPort() {return mySQLDefaultPort;}
-	public Boolean getUsecasesensitiveattributecomparison() {return UseCaseSensitiveAttributeComparison;}
-	public Boolean getUsecasesensitivealiasnamecomparison() {return UseCaseSensitiveAliasNameComparison;}
+	public Boolean getUseCasesSensitiveAttributeNameComparison() {return UseCaseSensitiveAttributeNameComparison;}
+	public Boolean getUseCaseSensitiveAliasNameComparison() {return UseCaseSensitiveAliasNameComparison;}
 	public String getNeo4jTableToAttributeRelationName() {return Neo4jTableToAttributeRelationName;}
 	public void setNeo4jTableToAttributeRelationName(String neo4jTableToAttributeRelationName) {Neo4jTableToAttributeRelationName = neo4jTableToAttributeRelationName;}
 	public String getAttributenameprefix() {return attributeNamePrefix;}
@@ -261,6 +263,64 @@ public class Config implements Serializable {
 	public static final String RT_BRACKET = ")";
 	public static final String SQL_STATEMENT_DELIMITER = ";";		// between SQL statements
 
+	public static boolean compareTableNames(String tableName1, String tableName2) {
+		boolean result = false;
+		if (Config.getConfig().getUseCaseSensitiveTableNameComparison() == true) {
+			if (tableName1.trim().equals(tableName2.trim())) {
+				result = true;
+			}
+		} else {
+			if (tableName1.trim().toLowerCase().equals(tableName2.trim().toLowerCase())) {
+				result = true;
+			}
+		}
+		return result;
+	}
+	public static boolean compareAttributeNames(String attributeName1, String attributeName2) {
+		boolean result = false;
+		if (Config.getConfig().getUseCasesSensitiveAttributeNameComparison() == true) {
+			if (attributeName1.trim().equals(attributeName2.trim())) {
+				result = true;
+			}
+		} else {
+			if (attributeName1.trim().toLowerCase().equals(attributeName2.trim().toLowerCase())) {
+				result = true;
+			}
+		}
+		return result;
+	}
+	public static boolean compareSchemaNames(String schemaName1, String schemaName2) {
+		boolean result = false;
+		if (Config.getConfig().getUseCaseSensitiveSchemaNameComparison() == true) {
+			if (schemaName1.trim().equals(schemaName2.trim())) {
+				result = true;
+			}
+		} else {
+			if (schemaName1.trim().toLowerCase().equals(schemaName2.trim().toLowerCase())) {
+				result = true;
+			}
+		}
+		return result;
+	}
+	public static boolean compareAliasNames(String aliasName1, String aliasName2) {
+		boolean result = false;
+		if (Config.getConfig().getUseCaseSensitiveAliasNameComparison() == true) {
+			if (aliasName1.equals(aliasName2)) {
+				result = true;
+			}
+		} else {
+			if (aliasName1.toLowerCase().equals(aliasName2.toLowerCase())) {
+				result = true;
+			}
+		}
+		return result;
+	}
+	public Boolean getUseCaseSensitiveTableNameComparison() {
+		return UseCaseSensitiveTableNameComparison;
+	}
+	public Boolean getUseCaseSensitiveSchemaNameComparison() {
+		return UseCaseSensitiveSchemaNameComparison;
+	}	
 }
 // List the static fields that should be serialized. In this class, that's all of them that are not marked final.
 // This does not work, an error is thrown on the writeObject statement.

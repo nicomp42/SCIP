@@ -391,10 +391,17 @@ public class QueryDefinition {
 		queryDefinition.reconcileAttributes();	// After doing all the children, the parent should be ready to have all attributes reconciled
 		Log.logProgress("QueryDefinition.traverseQueryDefinitions(): finished " + queryDefinition.getSchemaName() + "." + queryDefinition.getQueryName() );
 	}
-
+	/**
+	 * Schema Name/Table Name/Attribute name must uniquely identify an attribute in a table or query
+	 * @param qd Query Definition that we are processing
+	 * @param schemaName Schema Name associated with the attribute
+	 * @param tableName Table Name associated with the attribute 
+	 * @param attributeName Attribute Name
+	 * @return The ordered list of tables that define the provenance of the attribute
+	 */
 	public static QueryTables buildProvenance(QueryDefinition qd, String schemaName, String tableName, String attributeName) {
 		// TODO: need to process alias's as well as attribute names
-		Log.logProgress("QueryDefinition.buildProvenance(): " + qd.getSchemaName() + "." + qd.getQueryName() + ", attribute = " + schemaName + "." + tableName + "." + attributeName );
+		Log.logProgress("QueryDefinition.buildProvenance(): query = " + qd.getSchemaName() + "." + qd.getQueryName() + ", attribute = " + schemaName + "." + tableName + "." + attributeName );
 		QueryTables queryTablesProvenance = new QueryTables();
 		try {
 			QueryTable qt = qd.getQueryTables().findQueryAttribute(new QueryAttribute(schemaName, tableName, attributeName, null, null));

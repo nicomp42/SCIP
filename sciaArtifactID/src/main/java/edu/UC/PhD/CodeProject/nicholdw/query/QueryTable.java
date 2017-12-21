@@ -8,7 +8,7 @@ public class QueryTable extends Table {
 	 * If true, the query has a ".*" qualifier on this table in the SELECT clause. All attributes should be included.
 	 */
 	private boolean includeAllAttributes;
-	private String aliasName;
+	private String aliasName;			// ToDo a table referenced in a query can have multiple alias names in the MySQL dialect. Yikes. 
 	private QueryClause queryClause;
 	private Boolean isQuery;		// If true, this is a query, else it's a table
 	private Boolean isProcessed;

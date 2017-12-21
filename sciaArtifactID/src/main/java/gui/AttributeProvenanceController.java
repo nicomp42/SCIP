@@ -6,7 +6,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
 import edu.UC.PhD.CodeProject.nicholdw.attributeParts.AttributeParts;
-import edu.UC.PhD.CodeProject.nicholdw.attributeProvenance.AttributeProvenance;
+import edu.UC.PhD.CodeProject.nicholdw.attributeProvenance.AttributeProvenanceForNe04j;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
@@ -103,7 +103,7 @@ public class AttributeProvenanceController /* extends Application */ {
 			// This is hinkey: we have a formatted string with schema, table, attribute and we will extract those individual values
 			AttributeParts attributeParts = new AttributeParts();
 			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem());
-			AttributeProvenance.exportCSVFiles(attributeParts, queryDefinition, txaCSVFolder.getText() );
+			AttributeProvenanceForNe04j.exportCSVFiles(attributeParts, queryDefinition, txaCSVFolder.getText() );
 		} else {
     		Alert alert = new Alert(AlertType.ERROR);		// http://code.makery.ch/blog/javafx-dialogs-official/
     		alert.setTitle("File path needed");
@@ -124,7 +124,7 @@ public class AttributeProvenanceController /* extends Application */ {
 		if (cbClearNeo4jBeforeExport.isSelected()) {
 			Neo4jUtils.clearDB();
 		}
-		AttributeProvenance.executeCypherQueries( txaCSVFolder.getText());
+		AttributeProvenanceForNe04j.executeCypherQueries( txaCSVFolder.getText());
 	}
 	private void setTheScene() {
 		// Lambda method
@@ -169,8 +169,8 @@ public class AttributeProvenanceController /* extends Application */ {
 					AttributeParts attributeParts;
 					attributeParts = new AttributeParts();
 					attributeParts.split(s);
-					AttributeProvenance.exportCSVFiles(attributeParts, queryDefinition, txaCSVFolder.getText());
-					AttributeProvenance.executeCypherQueries(txaCSVFolder.getText());
+					AttributeProvenanceForNe04j.exportCSVFiles(attributeParts, queryDefinition, txaCSVFolder.getText());
+					AttributeProvenanceForNe04j.executeCypherQueries(txaCSVFolder.getText());
 				}
 				if (cbOpenBrowserWindowAfterExporting.isSelected() == true) {openBrowserWindow();}
 			} else {
@@ -206,7 +206,7 @@ public class AttributeProvenanceController /* extends Application */ {
 				rootItem.setExpanded(true);
 			}
 		} catch (Exception ex) {
-			Log.logProgress("AttributeProvenanceController.populateTreeView(): " + ex.getLocalizedMessage());
+			Log.logError("AttributeProvenanceController.populateTreeView(): " + ex.getLocalizedMessage());
 		}
 	}
 	public ListView<String> getLvPqAttributes() {return lvPqAttributes;}

@@ -14,7 +14,7 @@ public class AliasNameClass {
 
 	public Boolean equals(AliasNameClass aliasNameClass) {
 		Boolean result = false;
-		if (Config.getConfig().getUsecasesensitivealiasnamecomparison() == true) {
+		if (Config.getConfig().getUseCaseSensitiveAliasNameComparison() == true) {
 			if (this.aliasName.equals(aliasNameClass.getAliasName())) {
 				result = true;
 			}

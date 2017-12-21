@@ -32,7 +32,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
  * Helper class that creates CSV files and submits queries to the current Neo4j DB.
  * @author nicomp
  */
-public class AttributeProvenance {
+public class AttributeProvenanceForNe04j {
 
 	private static final String attributeProvenanceFileSuffix = "AttributeProvenance";
 	private static final String provenanceRealationName = "Provenance";
@@ -53,13 +53,13 @@ public class AttributeProvenance {
 			Log.logProgress("AttributeProvenance.executeCypherQueries(" + filePath  + ")");
 			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 			// Run the queries that add the constraints
-			QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenance.cypherQueriesStep1, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
+			QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenanceForNe04j.cypherQueriesStep1, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
 
 			String fileName = Utils.formatPath(Utils.cleanPath(filePath)) + Config.getConfig().getNeo4jSuffix() + attributeProvenanceFileSuffix + Config.getConfig().getCSVFileExtension();
 			ProcessCSVFileByLine(fileName);
 
 			// Run the queries that build the relationships
-			QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenance.cypherQueriesStep2, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
+			QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenanceForNe04j.cypherQueriesStep2, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
 			Log.logProgress("AttributeProvenance.executeCypherQueries(" + filePath  + ") Done");
 		} catch (Exception ex) {
 			Log.logError("AttributeProvenance.executeCypherQueries(" + filePath  + ")", ex );
