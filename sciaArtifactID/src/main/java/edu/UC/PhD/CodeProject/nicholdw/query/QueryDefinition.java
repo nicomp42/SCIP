@@ -403,7 +403,7 @@ public class QueryDefinition {
 		// TODO: need to process alias's as well as attribute names
 		Log.logProgress("QueryDefinition.buildProvenance(): query = " + qd.getSchemaName() + "." + qd.getQueryName() + ", attribute = " + schemaName + "." + tableName + "." + attributeName );
 		QueryTables queryTablesProvenance = new QueryTables();
-		try {
+		try { 
 			QueryTable qt = qd.getQueryTables().findQueryAttribute(new QueryAttribute(schemaName, tableName, attributeName, null, null));
 //			queryTablesProvenance.addQueryTable(qt);
 //			Log.logProgress("QueryDefinition.buildProvenance(): first table added" + qt.getSchemaName() + "." + qt.getTableName());
