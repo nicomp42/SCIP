@@ -33,12 +33,20 @@ public class QueryAttribute extends QueryComponent  {
 	 * @param tableName
 	 */
 	public void setTableName(String tableName) {
-		this.tableName = tableName;
+		if (tableName == null) {
+			this.tableName = "";
+		} else {
+			this.tableName = tableName.trim();
 		}
+	}
 	public String getTableName() {return this.tableName;}
 
 	public AliasNames getAliasNames() {return aliasNames;}
-	public void addAliasName(AliasNameClass aliasName) {aliasNames.addAliasName(aliasName);}
+	public void addAliasName(AliasNameClass aliasNameClass) {
+		if (aliasNameClass != null) {
+			aliasNames.addAliasName(aliasNameClass);
+		}
+	}
 	public Boolean hasAliasName(String aliasNameTarget) {
 		Boolean result = false;
 		for (AliasNameClass aliasName: aliasNames) {
@@ -50,8 +58,13 @@ public class QueryAttribute extends QueryComponent  {
 		return result;
 	}
 	public String getSchemaName() {return schemaName;}
-	public void setSchemaName(String schemaName) {this.schemaName = schemaName;}
-
+	public void setSchemaName(String schemaName) {
+		if (schemaName == null) {
+			this.schemaName = "";
+		} else {
+			this.schemaName = schemaName.trim();
+		}
+	}
 	public QueryClause getQueryClause() {return queryClause;}
 	public void setQueryClause(QueryClause queryClause) {this.queryClause = queryClause;}
 

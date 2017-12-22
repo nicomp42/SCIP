@@ -10,8 +10,13 @@ public class AliasNameClass {
 	}
 	public String getAliasName() {return aliasName;}
 
-	public void setAliasName(String aliasName) {this.aliasName = aliasName;}
-
+	public void setAliasName(String aliasName) {
+		if (aliasName != null) {
+			this.aliasName = aliasName.trim();
+		} else {
+			this.aliasName = "";
+		}
+	}
 	/**
 	 * Compare the name properties of two AliasNameClass objects
 	 * @param aliasNameClass

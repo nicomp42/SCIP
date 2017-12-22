@@ -28,7 +28,9 @@ public class AliasNames implements Iterable<AliasNameClass> {
 	public int size() {return aliasNames.size();}
 
 	public void addAliasName(AliasNameClass aliasNameClass) {
-		if (!this.contains(aliasNameClass) ) {aliasNames.add(aliasNameClass);}
+		if (aliasNameClass.getAliasName().length() > 0) {
+			if (!this.contains(aliasNameClass) ) {aliasNames.add(aliasNameClass);}
+		}
 	}
 
 	/**

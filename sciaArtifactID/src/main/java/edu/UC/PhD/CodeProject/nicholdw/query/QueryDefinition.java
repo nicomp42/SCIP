@@ -232,20 +232,26 @@ public class QueryDefinition {
 	 * After the query has been parsed, this information must be available because we are assuming the query was properly formed from the get-go.
 	 */
 	public void reconcileAttributes() {
+		// Taken from a SQL statement, an attribute can have:
+		// 1. No table or schema, 
+		// 2. A table but no schema, or
+		// 3. A table and a schema.
 		Log.logProgress("QueryDefinition.reconcileAttributes(): processing the query " + this.getSchemaName() + "." + this.getQueryName());
 		// Make sure every query attribute has a table/query that it belongs to
 		for (QueryAttribute qa : this.getQueryAttributes()) {
+			Log.logProgress("QueryDefinition.reconcileAttributes(): processing the attribute " + qa.toString());
+			QueryTable qt = null;
 			Log.logProgress("QueryDefinition.reconcileAttributes(): attribute = " + qa.toString());
-			if (qa.getTableName() == null || qa.getTableName().equals("")) {
-				Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has no table");
-				// The attribute has no table name. Assuming this is a properly formed query, there must be one and only one table containing this attribute name
-				QueryTable qt = this.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed or there is a nested query
+			if ((qa.getTableName().length() > 0) && (qa.getSchemaName().length() > 0)) {
+				Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a schema and a table. Nothing to do here.");
+			} else  {
+				qt = this.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed or there are > 0 nested queries to search
 				if (qt != null) {
+					Log.logProgress("QueryDefinition.reconcileArtifacts(): found the table: " + qt.toString());
 					qa.setTableName(qt.getTableName());
 					qa.setSchemaName(qt.getSchemaName());
-					Log.logProgress("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " found in " + qt.getSchemaName() + "." +  qt.getTableName());
 				} else {
-					Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " not found in any tables. Looking through nested queries.");
+					Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " not found in any tables. Even checked aliases. Looking in child queries");
 					for (QueryDefinition qdChild : children) {
 						qt = qdChild.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed
 						if (qt != null) {
@@ -257,17 +263,9 @@ public class QueryDefinition {
 						}
 					}
 				}
-				if (qt == null) {	// we did not find the attribute in any table
-					Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " not found in any tables or nested queries. Very bad. Program will probably crash.");
-				}
-			} else {
-				// Attribute has a table but no schema. Look up the table and grab the schema from it
-				Log.logProgress("QueryDefinition.reconcileAttributes(): attribute " + qa.getAttributeName() + " already has a table, " + qa.getTableName());
-				for (QueryTable qt : this.queryTables) {
-					// match the table name or one of the alias names. There can only be one match
-					
-					
-				}
+			}
+			if (qt == null) {	// we did not find the attribute in any table
+				Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.toString() + " not found in any tables or nested queries. Very bad. Program results will probably be incomplete/incorrect.");
 			}
 		}
 	}

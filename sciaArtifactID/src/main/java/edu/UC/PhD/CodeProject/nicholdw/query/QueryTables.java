@@ -61,34 +61,34 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		 */
 		public QueryTable findQueryAttribute(QueryAttribute queryAttribute) {
 			Log.logProgress("QueryTables.findQueryAttribute(): Looking for " + queryAttribute.toString());
-			QueryTable qt = null;
+			QueryTable queryTableResult = null;
 			boolean foundTable = false;
 			// Look through all the tables
 			for (QueryTable queryTable: queryTables) {
-				// Check the schema name first
-				if (Config.compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) == true) {
-					// Check the table name for a match
-					if (Config.compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true) {
+				// Check the schema name first or skip it if the attribute has no schema name
+				if (queryAttribute.getSchemaName().length() == 0 || (Config.compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) == true)) {
+					// Check the table name for a match or skip if it the attribute has no table name
+					if (queryAttribute.getTableName().length() == 0 || (Config.compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true)) {
 						if (queryTable.getAttributeDataType(queryAttribute.getAttributeName()) != null) {
-							qt = queryTable;
+							queryTableResult = queryTable;
 							break;
-						}
+						} else {Log.logProgress("QueryTables.findQueryAttribute(): table name match but there's no data type. Table = " + queryTable.toString());}
 						// No match in the table names? Perhaps the table name in the queryAttribute is an alias
 						for (AliasNameClass aliasNameClass : queryTable.getAliasNames()) {
 							if (Config.compareAliasNames(aliasNameClass.getAliasName(), queryAttribute.getTableName()) == true) {
 								if (queryTable.getAttributeDataType(queryAttribute.getAttributeName()) != null) {
-									qt = queryTable;
+									queryTableResult = queryTable;
 									foundTable = true;
 									break;
-								}
+								} else {Log.logProgress("QueryTables.findQueryAttribute(): table alias match, but there's no data type. Table = " + queryTable.toString());}
 							}
 						}
 						if (foundTable == true) {break;}
 					}
 				}
 			}
-			Log.logProgress("QueryTables.findQueryAttribute(): " + ((qt != null) ? "Table found: " + qt.toString(): "Table not found"));
-			return qt;
+			Log.logProgress("QueryTables.findQueryAttribute(): " + ((queryTableResult != null) ? "Table found: " + queryTableResult.toString(): "Table not found"));
+			return queryTableResult;
 		}
 	}
 

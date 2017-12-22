@@ -42,6 +42,6 @@ public class QueryParser_test {
         assertEquals("First attribute is \"A\"", "A", qd.getQueryAttributes().iterator().next().getAttributeName());
         assertEquals("First attribute alias is \"AAlias\"", "AAlias", qd.getQueryAttributes().iterator().next().getAliasNames().toString());
         assertEquals("First table is \"TT\"", "TT", qd.getQueryTables().iterator().next().getTableName());
-        assertEquals("First table alias is \"TAlias\"", "TAlias", qd.getQueryTables().iterator().next().getAliasName());
+        assertEquals("First table alias(s) are \"TAlias\"", "TAlias", qd.getQueryTables().iterator().next().getAliasNames().toString());
     }
 }

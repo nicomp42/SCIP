@@ -82,8 +82,13 @@ public class Antlr4MySQLQueryParser_test {
 		// myViewnn: Use variables in the SELECT statement. This can be done in an SQL tab in MySQLWorkbench but cannot be done in a view: https://dev.mysql.com/doc/refman/5.6/en/create-view.html
 		//"SELECT `myAttribute01`,`myAttribute02`,`myAttribute03` INTO @myvar01 , @@myvar02, @myvar03 FROM `mytable01` WHERE `myAttribute01` = 1;"
 		// myView06a: referencing attributes in a view and a table
-		"SELECT `myview06`.`myAttribute01` AS `myView06.myAttribute01`, `myschema01`.`mytable02`.`myAttribute01` AS `myTable02.myAttribute01` FROM (`myschema01`.`mytable02` JOIN `myschema01`.`myview06`)"
+		"SELECT `myview06`.`myAttribute01` AS `myView06.myAttribute01`, `myschema01`.`mytable02`.`myAttribute01` AS `myTable02.myAttribute01` FROM (`myschema01`.`mytable02` JOIN `myschema01`.`myview06`)",
+		
+		// myView08: simple select with an ORDER by Clause
+		"SELECT `myschema01`.`mytable01`.`myAttribute01` AS `myAttribute01` FROM `myschema01`.`mytable01` ORDER BY `myschema01`.`mytable01`.`myAttribute02`",
+		
 	                                };
+	
 	private static String dropTests[] = {
 		// Drop a table	
 		"DROP TABLE tTable99"
