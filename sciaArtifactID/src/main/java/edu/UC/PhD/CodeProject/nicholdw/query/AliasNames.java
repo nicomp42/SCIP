@@ -39,15 +39,24 @@ public class AliasNames implements Iterable<AliasNameClass> {
 	public Boolean contains(AliasNameClass aliasNameClassTarget) {
 		Boolean result = false;
 		for (AliasNameClass aliasNameClass: aliasNames) {
-			if (aliasNameClass.equals(aliasNameClassTarget)) {
+			if (Config.compareAliasNames(aliasNameClass.getAliasName(), aliasNameClassTarget.getAliasName())) {
 				result = true;
 				break;
 			}
 		}
 		return result;
 	}
+	/**
+	 * Create a comma-delimited list of all the alias names in the collection
+	 */
+	public String toString() {
+		StringBuilder result = new StringBuilder("");
+		String comma = "";
+		for (AliasNameClass aliasNameClass : aliasNames) {
+			result.append(comma);
+			result.append(aliasNameClass.toString());
+			comma = ", ";
+		}
+		return result.toString();
+	}
 }
-
-
-
-

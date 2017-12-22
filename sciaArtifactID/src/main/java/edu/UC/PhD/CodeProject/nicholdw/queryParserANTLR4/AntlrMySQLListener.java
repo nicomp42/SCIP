@@ -971,7 +971,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			}
 		}
 		public void copyIntoQueryDefinition(QueryDefinition queryDefinition) {
-			queryDefinition.getQueryTables().addQueryTable(new QueryTable(schemaName, tableName, aliasName, queryClause));
+			queryDefinition.getQueryTables().addQueryTable(new QueryTable(schemaName, tableName, new AliasNameClass(aliasName), queryClause));
 		}
 	}
 }

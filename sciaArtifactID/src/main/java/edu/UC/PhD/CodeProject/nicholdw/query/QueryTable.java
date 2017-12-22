@@ -8,18 +8,19 @@ public class QueryTable extends Table {
 	 * If true, the query has a ".*" qualifier on this table in the SELECT clause. All attributes should be included.
 	 */
 	private boolean includeAllAttributes;
-	private String aliasName;			// ToDo a table referenced in a query can have multiple alias names in the MySQL dialect. Yikes. 
+	private AliasNames aliasNames;			// ToDo a table referenced in a query can have multiple alias names in the MySQL dialect. Yikes. 
 	private QueryClause queryClause;
 	private Boolean isQuery;		// If true, this is a query, else it's a table
 	private Boolean isProcessed;
 	private String containingQueryName;
 
-	public QueryTable(String schemaName, String tableName, String alias, QueryClause queryClause) {
+	public QueryTable(String schemaName, String tableName, AliasNameClass aliasNameClass, QueryClause queryClause) {
 		super(tableName, schemaName);
 		setIncludeAllAttributes(false);
-		setAliasName(alias);
+		aliasNames = new AliasNames();
+		addAliasName(aliasNameClass);
 		setQueryClause(queryClause);
-		setIsQuery(true);		// Assume it's a table. We will reconcile it later. See QueryDefinition.reconcileTables() 
+		setIsQuery(true);		// Assume it's a query. We will reconcile it later. See QueryDefinition.reconcileTables() 
 		setIsProcessed(false);
 		setContainingQueryName("");
 	}
@@ -33,11 +34,13 @@ public class QueryTable extends Table {
 	 * @param includeAllAttributes  True if this table has a ".*" in the SELECT clause
 	 */
 	public void setIncludeAllAttributes(boolean includeAllAttributes) {this.includeAllAttributes = includeAllAttributes;}
-	public String getAliasName() {return aliasName;}
-	public void setAliasName(String aliasName) {this.aliasName = aliasName;}
+	public AliasNames getAliasNames() {return aliasNames;}
+	public void addAliasName(AliasNameClass aliasNameClass) {
+		if (aliasNameClass.getAliasName().length() > 0) {this.aliasNames.addAliasName(aliasNameClass);}
+	}
 	public QueryClause getQueryClause() {return queryClause;}
 	public void setQueryClause(QueryClause queryClause) {this.queryClause = queryClause;}
-	public String toString() {return schemaName + ":" + tableName + ":" + aliasName;}
+	public String toString() {return schemaName + ":" + tableName + " AS " + aliasNames.toString();}
 	public Boolean getIsQuery() {return isQuery;}
 	public void setIsQuery(Boolean isQuery) {this.isQuery = isQuery;}
 	public Boolean getIsProcessed() {return isProcessed;}

@@ -229,15 +229,15 @@ public class QueryDefinition {
 	}
 	/**
 	 * Make sure attributes have schema names and table names, etc.
-	 * After the query has been parsed, this information must be available if the query is properly formed.
+	 * After the query has been parsed, this information must be available because we are assuming the query was properly formed from the get-go.
 	 */
 	public void reconcileAttributes() {
-		Log.logProgress("QueryDefinition.reconcileAttributes(): " + this.getSchemaName() + "." + this.getQueryName());
+		Log.logProgress("QueryDefinition.reconcileAttributes(): processing the query " + this.getSchemaName() + "." + this.getQueryName());
 		// Make sure every query attribute has a table/query that it belongs to
 		for (QueryAttribute qa : this.getQueryAttributes()) {
-			Log.logProgress("QueryDefinition.reconcileAttributes(): attribute = " + qa.getAttributeName());
+			Log.logProgress("QueryDefinition.reconcileAttributes(): attribute = " + qa.toString());
 			if (qa.getTableName() == null || qa.getTableName().equals("")) {
-				Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute " + qa.getAttributeName() + " has no table");
+				Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has no table");
 				// The attribute has no table name. Assuming this is a properly formed query, there must be one and only one table containing this attribute name
 				QueryTable qt = this.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed or there is a nested query
 				if (qt != null) {
@@ -261,7 +261,13 @@ public class QueryDefinition {
 					Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " not found in any tables or nested queries. Very bad. Program will probably crash.");
 				}
 			} else {
+				// Attribute has a table but no schema. Look up the table and grab the schema from it
 				Log.logProgress("QueryDefinition.reconcileAttributes(): attribute " + qa.getAttributeName() + " already has a table, " + qa.getTableName());
+				for (QueryTable qt : this.queryTables) {
+					// match the table name or one of the alias names. There can only be one match
+					
+					
+				}
 			}
 		}
 	}
@@ -412,14 +418,14 @@ public class QueryDefinition {
 				QueryDefinition qdTmp = qd.children.findQueryDefinitionBySchemaAndTableName(schemaName, tableName);
 				if (qdTmp != null) {
 					// We found it. Add it to the provenance
-					queryTablesProvenance.addQueryTable(new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), "", null));
+					queryTablesProvenance.addQueryTable(new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClass(""), null));
 					qd = qdTmp;
 					QueryTable queryTable = qd.getQueryTables().findQueryAttribute(new QueryAttribute(schemaName, tableName, attributeName, null, null));
 					schemaName = queryTable.getSchemaName();
 					tableName = queryTable.getTableName();
 				} else {
 					// Add the last item to the provenance, which must be a table not a query. Use the schema name and table name that we didn't find in the children collection.
-					queryTablesProvenance.addQueryTable(new QueryTable(schemaName, tableName, "", null));
+					queryTablesProvenance.addQueryTable(new QueryTable(schemaName, tableName, new AliasNameClass(""), null));
 					break;
 				}
 			}

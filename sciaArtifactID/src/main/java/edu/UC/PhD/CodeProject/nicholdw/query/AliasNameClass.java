@@ -12,17 +12,14 @@ public class AliasNameClass {
 
 	public void setAliasName(String aliasName) {this.aliasName = aliasName;}
 
+	/**
+	 * Compare the name properties of two AliasNameClass objects
+	 * @param aliasNameClass
+	 * @return true if the names are lexically identical, false otherwise. 
+	 */
 	public Boolean equals(AliasNameClass aliasNameClass) {
 		Boolean result = false;
-		if (Config.getConfig().getUseCaseSensitiveAliasNameComparison() == true) {
-			if (this.aliasName.equals(aliasNameClass.getAliasName())) {
-				result = true;
-			}
-		} else {
-			if (this.aliasName.toLowerCase().equals(aliasNameClass.getAliasName().toLowerCase())) {
-				result = true;
-			}
-		}
-		return result;
+		return (Config.compareAliasNames(this.getAliasName(), aliasNameClass.getAliasName()));
 	}
+	public String toString() {return getAliasName();}
 }

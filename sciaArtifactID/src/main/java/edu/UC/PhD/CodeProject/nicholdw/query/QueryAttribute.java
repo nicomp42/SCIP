@@ -1,5 +1,7 @@
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+
 /**
  * A member of a QueryDefinition object.
  * @author nicomp
@@ -49,11 +51,17 @@ public class QueryAttribute extends QueryComponent  {
 
 	public String toString() {
 		String aliasNameToString = aliasNameListToString();
-		return ":" + schemaName
-			   + ":" + tableName
-			   + ":" + attributeName
-			   + (aliasNameToString.length() > 0? " AS " + aliasNameToString:"")
-			   + "  (" + queryClause.toString() + " query clause)";
+		StringBuilder result = new StringBuilder("");
+		try {
+			result.append(schemaName + ":");
+			result.append(tableName + ":");
+			result.append(attributeName);
+			result.append((aliasNameToString.length() > 0? " AS " + aliasNameToString:""));
+//			result.append("  (" + queryClause.toString() + " query clause)");
+		} catch (Exception ex) {
+			Log.logError("QueryAttribute.toString(); " + ex.getLocalizedMessage());
+		}
+		return result.toString();
 	}
 
 	/**
