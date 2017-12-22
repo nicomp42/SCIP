@@ -28,7 +28,13 @@ public class QueryAttribute extends QueryComponent  {
 	public void setAttributeName(String attributeName) {this.attributeName = attributeName;}
 	public String getAttributeName() {return this.attributeName;}
 
-	public void setTableName(String tableName) {this.tableName = tableName;}
+	/**
+	 * Set the table name from whence this attribute originates. This could be an alias!
+	 * @param tableName
+	 */
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+		}
 	public String getTableName() {return this.tableName;}
 
 	public AliasNames getAliasNames() {return aliasNames;}

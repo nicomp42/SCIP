@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 	/***
 	 * List of Table objects
@@ -38,7 +39,8 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 			Iterator<QueryTable> iprof = queryTables.iterator();
 	        return iprof;
 	    }
-
+/*
+ * 		Not used and let's not start using it because it's logically incorrect anyway
 		public QueryTable matchQueryTable(String queryTableName) {
 			QueryTable queryTable = null;
 			for (QueryTable qt : queryTables) {
@@ -49,6 +51,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 			}
 			return queryTable;
 		}
+*/
 		public int size() {return queryTables.size();}
 
 		/**
@@ -57,17 +60,34 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 		 * @return The Query Table, or null if none.
 		 */
 		public QueryTable findQueryAttribute(QueryAttribute queryAttribute) {
+			Log.logProgress("QueryTables.findQueryAttribute(): Looking for " + queryAttribute.toString());
 			QueryTable qt = null;
+			boolean foundTable = false;
 			// Look through all the tables
 			for (QueryTable queryTable: queryTables) {
-				if (Config.compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true && Config.compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) == true) {
-					if (queryTable.getAttributeDataType(queryAttribute.getAttributeName()) != null) {
-						qt = queryTable;
-						break;
+				// Check the schema name first
+				if (Config.compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) == true) {
+					// Check the table name for a match
+					if (Config.compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true) {
+						if (queryTable.getAttributeDataType(queryAttribute.getAttributeName()) != null) {
+							qt = queryTable;
+							break;
+						}
+						// No match in the table names? Perhaps the table name in the queryAttribute is an alias
+						for (AliasNameClass aliasNameClass : queryTable.getAliasNames()) {
+							if (Config.compareAliasNames(aliasNameClass.getAliasName(), queryAttribute.getTableName()) == true) {
+								if (queryTable.getAttributeDataType(queryAttribute.getAttributeName()) != null) {
+									qt = queryTable;
+									foundTable = true;
+									break;
+								}
+							}
+						}
+						if (foundTable == true) {break;}
 					}
 				}
 			}
-			// TODO: need to search by alias(es) as well
+			Log.logProgress("QueryTables.findQueryAttribute(): " + ((qt != null) ? "Table found: " + qt.toString(): "Table not found"));
 			return qt;
 		}
 	}
