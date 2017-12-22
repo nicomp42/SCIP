@@ -254,10 +254,10 @@ public class Table {
 	/**
 	 * Look up the data type for an attribute in the table
 	 * @param attributeName The name of the attribute
-	 * @return The data type of the attribute, or null if not found
+	 * @return The data type of the attribute, or "" if not found
 	 */
 	public String getAttributeDataType(String attributeName) {
-		String attributeDataType = null;
+		String attributeDataType = "";
 		try {
 			for (Attribute attribute: attributes) {
 				if ((Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName) == true)) { 

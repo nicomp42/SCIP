@@ -411,6 +411,7 @@ public class QueryDefinition {
 		Log.logProgress("QueryDefinition.buildProvenance(): query = " + qd.getSchemaName() + "." + qd.getQueryName() + ", attribute = " + schemaName + "." + tableName + "." + attributeName );
 		QueryTables queryTablesProvenance = new QueryTables();
 		try { 
+			// We were given schema.table.attribute so we need to search the query definition for the query table containing that attribute
 			QueryTable qt = qd.getQueryTables().findQueryAttribute(new QueryAttribute(schemaName, tableName, attributeName, null, null));
 //			queryTablesProvenance.addQueryTable(qt);
 //			Log.logProgress("QueryDefinition.buildProvenance(): first table added" + qt.getSchemaName() + "." + qt.getTableName());

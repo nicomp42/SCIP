@@ -57,6 +57,7 @@ public class Config implements Serializable {
 	private final Boolean useCaseSensitiveAliasNameComparison = false;
 	private final Boolean useCaseSensitiveTableNameComparison = false;
 	private final Boolean useCaseSensitiveSchemaNameComparison = false;
+	private final Boolean useCaseSensitiveQueryNameComparison = false;
 	private final String applicationTitle = "SCIPPER : Schema Change Impact Project";		//"Schema Change Impact Analysis");
 	private final String[] ETLLayers = {"ids-dwh", "op-ids"};		// ids =  Intermediate Data Store
 	private final String neo4jFilesPath_Relative = "neo4j";
@@ -274,6 +275,19 @@ public class Config implements Serializable {
 	public static final String RT_BRACKET = ")";
 	public static final String SQL_STATEMENT_DELIMITER = ";";		// between SQL statements
 
+	public boolean compareQueryNames(String queryName1, String queryName2) {
+		boolean result = false;
+		if (Config.getConfig().getUseCaseSensitiveQueryNameComparison() == true) {
+			if (queryName1.trim().equals(queryName2.trim())) {
+				result = true;
+			}
+		} else {
+			if (queryName1.trim().toLowerCase().equals(queryName2.trim().toLowerCase())) {
+				result = true;
+			}
+		}
+		return result;
+	}
 	public boolean compareTableNames(String tableName1, String tableName2) {
 		boolean result = false;
 		if (Config.getConfig().getUseCaseSensitiveTableNameComparison() == true) {
@@ -325,6 +339,9 @@ public class Config implements Serializable {
 			}
 		}
 		return result;
+	}
+	public Boolean getUseCaseSensitiveQueryNameComparison() {
+		return useCaseSensitiveQueryNameComparison;
 	}
 }
 // List the static fields that should be serialized. In this class, that's all of them that are not marked final.

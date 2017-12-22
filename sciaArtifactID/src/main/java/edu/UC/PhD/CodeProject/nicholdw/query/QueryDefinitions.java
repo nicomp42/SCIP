@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.apache.lucene.queryparser.surround.parser.QueryParser;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import gudusoft.gsqlparser.TGSqlParser;
 
@@ -33,7 +34,7 @@ public class QueryDefinitions implements Iterable<QueryDefinition> {
 	public QueryDefinition findQueryDefinitionBySchemaAndTableName(String schemaName, String queryName) {
 		QueryDefinition qd = null;
 		for (QueryDefinition queryDefinition : QueryDefinitions) {
-			if (queryDefinition.getSchemaName().equals(schemaName) && queryDefinition.getQueryName().equals(queryName)) {
+			if (Config.getConfig().compareSchemaNames(queryDefinition.getSchemaName(), schemaName) && Config.getConfig().compareQueryNames(queryDefinition.getQueryName(), queryName)) {
 				qd = queryDefinition;
 				break;
 			}
