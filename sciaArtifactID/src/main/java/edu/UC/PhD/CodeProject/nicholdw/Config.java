@@ -51,12 +51,12 @@ public class Config implements Serializable {
 	 * A private constructor will prevent the class from being instantiated. It's a Singleton. Not sure if this works.
 	 */
 	private Config() {}
-	private final String version = "0.03";
+	private final String version = "0.04";
 	private final int mySQLDefaultPort = 3306;
-	private final Boolean UseCaseSensitiveAttributeNameComparison = false;
-	private final Boolean UseCaseSensitiveAliasNameComparison = false;
-	private final Boolean UseCaseSensitiveTableNameComparison = false;
-	private final Boolean UseCaseSensitiveSchemaNameComparison = false;
+	private final Boolean useCaseSensitiveAttributeNameComparison = false;
+	private final Boolean useCaseSensitiveAliasNameComparison = false;
+	private final Boolean useCaseSensitiveTableNameComparison = false;
+	private final Boolean useCaseSensitiveSchemaNameComparison = false;
 	private final String applicationTitle = "SCIPPER : Schema Change Impact Project";		//"Schema Change Impact Analysis");
 	private final String[] ETLLayers = {"ids-dwh", "op-ids"};		// ids =  Intermediate Data Store
 	private final String neo4jFilesPath_Relative = "neo4j";
@@ -68,7 +68,7 @@ public class Config implements Serializable {
 	private final String SCIPFileExtension  = ".ser";	//  A SCIP file is a "Schema Change Impact Project" file. Refer to the SchemaChangeImpactProject class
 	private String Neo4jTableToAttributeRelationName = "comprises";
 	private String Neo4jQueryToTableRelationName = "contains";
-	private Boolean useTestData = true;
+	private Boolean useTestData = false;
 	private String initialDirectory = "c:/SCIP/Test/";	// TODO generalize this
 	private String neo4jDBDefaultUser = "neo4j";
 	private String neo4jDBDefaultPassword = "Danger42";
@@ -170,10 +170,17 @@ public class Config implements Serializable {
 	public Boolean getUseTestData() {return useTestData;}
 	public void setUseTestData(Boolean useTestData) {this.useTestData = useTestData;}
 
+//	public void setUseCasesSensitiveAttributeNameComparison(Boolean useCaseSensitiveAttributeNameComparison) {this.useCaseSensitiveAttributeNameComparison = useCaseSensitiveAttributeNameComparison;}
+//	public void setUseCaseSensitiveAliasNameComparison(Boolean useCaseSensitiveAliasNameComparison) {this.useCaseSensitiveAliasNameComparison = useCaseSensitiveAliasNameComparison;}
+//	public void setUseCasesSensitiveTableNameComparison(Boolean useCaseSensitiveTableNameComparison) {this.useCaseSensitiveTableNameComparison = useCaseSensitiveTableNameComparison;}
+//	public void setUseCasesSensitiveSchemaNameComparison(Boolean useCaseSensitiveSchemaNameComparison) {this.useCaseSensitiveSchemaNameComparison = useCaseSensitiveSchemaNameComparison;}
+
 	public String getVersion() {return version;}
 	public int getMySQLDefaultPort() {return mySQLDefaultPort;}
-	public Boolean getUseCasesSensitiveAttributeNameComparison() {return UseCaseSensitiveAttributeNameComparison;}
-	public Boolean getUseCaseSensitiveAliasNameComparison() {return UseCaseSensitiveAliasNameComparison;}
+	public Boolean getUseCasesSensitiveAttributeNameComparison() {return useCaseSensitiveAttributeNameComparison;}
+	public Boolean getUseCaseSensitiveAliasNameComparison() {return useCaseSensitiveAliasNameComparison;}
+	public Boolean getUseCaseSensitiveTableNameComparison() {return useCaseSensitiveTableNameComparison;}
+	public Boolean getUseCaseSensitiveSchemaNameComparison() {return useCaseSensitiveSchemaNameComparison;}
 	public String getNeo4jTableToAttributeRelationName() {return Neo4jTableToAttributeRelationName;}
 	public void setNeo4jTableToAttributeRelationName(String neo4jTableToAttributeRelationName) {Neo4jTableToAttributeRelationName = neo4jTableToAttributeRelationName;}
 	public String getAttributenameprefix() {return attributeNamePrefix;}
@@ -194,14 +201,14 @@ public class Config implements Serializable {
 	         out.close();
 	         fileOut.close();
 	 		Log.logProgress("Config.save() done.");
-		} catch (Exception ex) {
-			Log.logError("Config.save(): " + fileName + ": "  + ex.getLocalizedMessage());		}
+		} catch (Exception ex) {Log.logError("Config.save(): " + fileName + ": "  + ex.getLocalizedMessage());}
 	}
 	/**
-	 * Load config settings from a file
-	 * @param configObject
+	 * Load Config object from a file
+	 * @param fileName where the serialized Config object is
 	 */
-	public static void load(Config configObject, String fileName) {
+	public static Boolean loadConfig(String fileName) {
+		Boolean result = false;
 		Log.logProgress("Config.load()...");
 		try {
 	         FileInputStream fileIn = new FileInputStream(fileName);
@@ -209,10 +216,14 @@ public class Config implements Serializable {
 	         setConfig((Config) in.readObject());
 	         in.close();
 	         fileIn.close();
-	 		Log.logProgress("Config.load() done.");
+	         result = true;
+	 		Log.logProgress("Config.loadConfig() done.");
 		} catch (Exception ex) {
-			Log.logError("Config.load(): " + fileName + ": "  + ex.getLocalizedMessage());
+			Log.logError("Config.loadConfig(): " + fileName + ": "  + ex.getLocalizedMessage());
+			Log.logProgress("Config.loadConfig(): creating new Config object from scratch.");
+			setConfig(new Config());
 		}
+		return result;
 	}
 	public String getConfigFilename() {return configFilename;}
 	public String getCSVFileExtension() {return CSVFileExtension;}
@@ -263,7 +274,7 @@ public class Config implements Serializable {
 	public static final String RT_BRACKET = ")";
 	public static final String SQL_STATEMENT_DELIMITER = ";";		// between SQL statements
 
-	public static boolean compareTableNames(String tableName1, String tableName2) {
+	public boolean compareTableNames(String tableName1, String tableName2) {
 		boolean result = false;
 		if (Config.getConfig().getUseCaseSensitiveTableNameComparison() == true) {
 			if (tableName1.trim().equals(tableName2.trim())) {
@@ -276,7 +287,7 @@ public class Config implements Serializable {
 		}
 		return result;
 	}
-	public static boolean compareAttributeNames(String attributeName1, String attributeName2) {
+	public boolean compareAttributeNames(String attributeName1, String attributeName2) {
 		boolean result = false;
 		if (Config.getConfig().getUseCasesSensitiveAttributeNameComparison() == true) {
 			if (attributeName1.trim().equals(attributeName2.trim())) {
@@ -289,7 +300,7 @@ public class Config implements Serializable {
 		}
 		return result;
 	}
-	public static boolean compareSchemaNames(String schemaName1, String schemaName2) {
+	public boolean compareSchemaNames(String schemaName1, String schemaName2) {
 		boolean result = false;
 		if (Config.getConfig().getUseCaseSensitiveSchemaNameComparison() == true) {
 			if (schemaName1.trim().equals(schemaName2.trim())) {
@@ -302,7 +313,7 @@ public class Config implements Serializable {
 		}
 		return result;
 	}
-	public static boolean compareAliasNames(String aliasName1, String aliasName2) {
+	public boolean compareAliasNames(String aliasName1, String aliasName2) {
 		boolean result = false;
 		if (Config.getConfig().getUseCaseSensitiveAliasNameComparison() == true) {
 			if (aliasName1.equals(aliasName2)) {
@@ -315,12 +326,6 @@ public class Config implements Serializable {
 		}
 		return result;
 	}
-	public Boolean getUseCaseSensitiveTableNameComparison() {
-		return UseCaseSensitiveTableNameComparison;
-	}
-	public Boolean getUseCaseSensitiveSchemaNameComparison() {
-		return UseCaseSensitiveSchemaNameComparison;
-	}	
 }
 // List the static fields that should be serialized. In this class, that's all of them that are not marked final.
 // This does not work, an error is thrown on the writeObject statement.

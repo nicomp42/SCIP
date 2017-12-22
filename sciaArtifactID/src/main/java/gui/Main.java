@@ -265,7 +265,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		Log.logProgress("Main.start() starting...");
 		try {
-			Config.load(Config.getConfig(), Config.getConfig().getConfigFilename());
+			Config.loadConfig(Config.getConfig().getConfigFilename());
 			myPrimaryStage = primaryStage;
 
 			FXMLLoader fxmlLoader = new FXMLLoader();

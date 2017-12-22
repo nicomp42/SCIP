@@ -237,37 +237,40 @@ public class QueryDefinition {
 		// 2. A table but no schema, or
 		// 3. A table and a schema.
 		Log.logProgress("QueryDefinition.reconcileAttributes(): processing the query " + this.getSchemaName() + "." + this.getQueryName());
-		// Make sure every query attribute has a table/query that it belongs to
-		for (QueryAttribute qa : this.getQueryAttributes()) {
-			Log.logProgress("QueryDefinition.reconcileAttributes(): processing the attribute " + qa.toString());
-			QueryTable qt = null;
-			Log.logProgress("QueryDefinition.reconcileAttributes(): attribute = " + qa.toString());
-			if ((qa.getTableName().length() > 0) && (qa.getSchemaName().length() > 0)) {
-				Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a schema and a table. Nothing to do here.");
-			} else  {
-				qt = this.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed or there are > 0 nested queries to search
-				if (qt != null) {
-					Log.logProgress("QueryDefinition.reconcileArtifacts(): found the table: " + qt.toString());
-					qa.setTableName(qt.getTableName());
-					qa.setSchemaName(qt.getSchemaName());
-				} else {
-					Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " not found in any tables. Even checked aliases. Looking in child queries");
-					for (QueryDefinition qdChild : children) {
-						qt = qdChild.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed
-						if (qt != null) {
-							qa.setTableName(qt.getTableName());
-							qa.setSchemaName(qt.getSchemaName());
-							// TODO: need data type
-							Log.logProgress("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " found in nested query " + qt.getSchemaName() + "." +  qt.getTableName());
-							break;
+		try {
+			// Make sure every query attribute has a table/query that it belongs to
+			for (QueryAttribute qa : this.getQueryAttributes()) {
+				Log.logProgress("QueryDefinition.reconcileAttributes(): processing the attribute " + qa.toString());
+				QueryTable qt = null;
+//				Log.logProgress("QueryDefinition.reconcileAttributes(): attribute = " + qa.toString());
+				if ((qa.getTableName().length() > 0) && (qa.getSchemaName().length() > 0)) {
+					Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a schema and a table. Nothing to do here.");
+				} else  {
+					qt = this.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed or there are > 0 nested queries to search
+					if (qt != null) {
+						Log.logProgress("QueryDefinition.reconcileArtifacts(): found the table: " + qt.toString());
+						qa.setTableName(qt.getTableName());
+						qa.setSchemaName(qt.getSchemaName());
+					} else {
+						Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " not found in any tables. Even checked aliases. Looking in child queries");
+						for (QueryDefinition qdChild : children) {
+							qt = qdChild.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed
+							if (qt != null) {
+								qa.setTableName(qt.getTableName());
+								qa.setSchemaName(qt.getSchemaName());
+								// TODO: need data type
+								Log.logProgress("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " found in nested query " + qt.getSchemaName() + "." +  qt.getTableName());
+								break;
+							}
 						}
+					}
+					if (qt == null) {	// we did not find the attribute in any table
+						Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.toString() + " not found in any tables or nested queries. Very bad. Program results will probably be incomplete/incorrect.");
 					}
 				}
 			}
-			if (qt == null) {	// we did not find the attribute in any table
-				Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.toString() + " not found in any tables or nested queries. Very bad. Program results will probably be incomplete/incorrect.");
-			}
-		}
+		} catch (Exception ex) {Log.logError("QueryDefinition.reconcileAttributes(): " + ex.getLocalizedMessage());}
+
 	}
 	/**
 	 * Make sure tables/queries have schema names and figure out if it's a table or a query

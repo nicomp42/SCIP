@@ -41,7 +41,7 @@ public class AliasNames implements Iterable<AliasNameClass> {
 	public Boolean contains(AliasNameClass aliasNameClassTarget) {
 		Boolean result = false;
 		for (AliasNameClass aliasNameClass: aliasNames) {
-			if (Config.compareAliasNames(aliasNameClass.getAliasName(), aliasNameClassTarget.getAliasName())) {
+			if (Config.getConfig().compareAliasNames(aliasNameClass.getAliasName(), aliasNameClassTarget.getAliasName())) {
 				result = true;
 				break;
 			}

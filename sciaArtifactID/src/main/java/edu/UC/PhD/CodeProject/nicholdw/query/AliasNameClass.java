@@ -24,7 +24,7 @@ public class AliasNameClass {
 	 */
 	public Boolean equals(AliasNameClass aliasNameClass) {
 		Boolean result = false;
-		return (Config.compareAliasNames(this.getAliasName(), aliasNameClass.getAliasName()));
+		return (Config.getConfig().compareAliasNames(this.getAliasName(), aliasNameClass.getAliasName()));
 	}
 	public String toString() {return getAliasName();}
 }

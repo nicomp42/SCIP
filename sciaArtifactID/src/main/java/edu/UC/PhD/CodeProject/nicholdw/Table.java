@@ -258,12 +258,14 @@ public class Table {
 	 */
 	public String getAttributeDataType(String attributeName) {
 		String attributeDataType = null;
-		for (Attribute attribute: attributes) {
-			if ((Config.compareAttributeNames(attribute.getAttributeName(), attributeName) == true)) { 
-				attributeDataType = attribute.getType();
-				break;
+		try {
+			for (Attribute attribute: attributes) {
+				if ((Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName) == true)) { 
+					attributeDataType = attribute.getType();
+					break;
+				}
 			}
-		}
+		} catch (Exception ex) {Log.logError("Tables.getAttributeDataType(): " + ex.getLocalizedMessage());}
 		return attributeDataType;
 	}
 	public String getDBInstanceName() {
