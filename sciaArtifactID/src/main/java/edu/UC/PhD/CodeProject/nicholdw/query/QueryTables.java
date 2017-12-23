@@ -55,12 +55,12 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		public int size() {return queryTables.size();}
 
 		/**
-		 * Find the Query Table in this QueryDefinition object that contains a particular query attribute name
+		 * Find the Query Table in this QueryDefinition object that provides a particular query attribute name
 		 * @param attributeName The attribute name
 		 * @return The Query Table, or null if none.
 		 */
-		public QueryTable findQueryAttribute(QueryAttribute queryAttribute) {
-			Log.logProgress("QueryTables.findQueryAttribute(): Looking for " + queryAttribute.toString());
+		public QueryTable findQueryOrTableContainingAttribute(QueryAttribute queryAttribute) {
+			Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): Looking for " + queryAttribute.toString());
 			QueryTable queryTableResult = null;
 			try {
 				boolean foundTable = false;
@@ -71,29 +71,29 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 						// Check the table name for a match or skip if it the attribute has no table name
 						if (queryAttribute.getTableName().length() == 0 || (Config.getConfig().compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true)) {
 							if (queryTable.findAttribute(queryAttribute.getAttributeName()) != null) {
-								Log.logProgress("QueryTables.findQueryAttribute(): found the attribute in table " + queryTable.toString());
+								Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): found the attribute in table " + queryTable.toString());
 								queryTableResult = queryTable;
 								break;
 							} else {
-								Log.logProgress("QueryTables.findQueryAttribute(): table name match but there's no data type. Table = " + queryTable.toString());
+								Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): table name match but there's no data type. Table = " + queryTable.toString());
 							}
 							// No match in the table names? Perhaps the table name in the queryAttribute is an alias
 							for (AliasNameClass aliasNameClass : queryTable.getAliasNames()) {
 								if (Config.getConfig().compareAliasNames(aliasNameClass.getAliasName(), queryAttribute.getTableName()) == true) {
 									if (queryTable.findAttribute(queryAttribute.getAttributeName()) != null) {
-										Log.logProgress("QueryTables.findQueryAttribute(): found the attribute in table using alias " + queryTable.toString());
+										Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): found the attribute in table using alias " + queryTable.toString());
 										queryTableResult = queryTable;
 										foundTable = true;
 										break;
-									} else {Log.logProgress("QueryTables.findQueryAttribute(): table alias match, but there's no attribute with matching name. Table = " + queryTable.toString());}
+									} else {Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): table alias match, but there's no attribute with matching name. Table = " + queryTable.toString());}
 								}
 							}
 							if (foundTable == true) {break;}
 						}
 					}
 				}
-			} catch (Exception ex) {Log.logError("QueryTables.findQueryAttribute(): " + ex.getLocalizedMessage());}
-			Log.logProgress("QueryTables.findQueryAttribute(): " + ((queryTableResult != null) ? "Table found: " + queryTableResult.toString(): "Table not found"));
+			} catch (Exception ex) {Log.logError("QueryTables.findQueryOrTableContainingAttribute(): " + ex.getLocalizedMessage());}
+			Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): " + ((queryTableResult != null) ? "Table found: " + queryTableResult.toString(): "Table not found"));
 			return queryTableResult;
 		}
 	}

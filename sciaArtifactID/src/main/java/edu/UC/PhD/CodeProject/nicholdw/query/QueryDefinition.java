@@ -29,12 +29,12 @@ import lib.MySQL;
 public class QueryDefinition {
 	private String sql;
 	private String queryName;
-	private QueryTables queryTables;
+	private QueryTables queryTables;	// The tables that this query draws from, if any.
 	private QueryAttributes queryAttributes;
 	private String schemaName;
 	private QueryType queryType;
 	private String hostName, loginName, password;
-	private QueryDefinitions children;
+	private QueryDefinitions children;	// The queries that this query draws from, if any.
 	private QueryDefinition parent;
 	private Boolean noNestedQuerys;
 	private Boolean isFinal;
@@ -246,7 +246,7 @@ public class QueryDefinition {
 				if ((qa.getTableName().length() > 0) && (qa.getSchemaName().length() > 0)) {
 					Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a schema and a table. Nothing to do here.");
 				} else  {
-					qt = this.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed or there are > 0 nested queries to search
+					qt = this.getQueryTables().findQueryOrTableContainingAttribute(qa);	// This must work, else the query is not properly formed or there are > 0 nested queries to search
 					if (qt != null) {
 						Log.logProgress("QueryDefinition.reconcileArtifacts(): found the table: " + qt.toString());
 						qa.setTableName(qt.getTableName());
@@ -254,7 +254,7 @@ public class QueryDefinition {
 					} else {
 						Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " not found in any tables. Even checked aliases. Looking in child queries");
 						for (QueryDefinition qdChild : children) {
-							qt = qdChild.getQueryTables().findQueryAttribute(qa);	// This must work, else the query is not properly formed
+							qt = qdChild.getQueryTables().findQueryOrTableContainingAttribute(qa);	// This must work, else the query is not properly formed
 							if (qt != null) {
 								qa.setTableName(qt.getTableName());
 								qa.setSchemaName(qt.getSchemaName());
@@ -407,27 +407,26 @@ public class QueryDefinition {
 	 * @return The ordered list of tables that define the provenance of the attribute
 	 */
 	public static QueryTables buildProvenance(QueryDefinition qd, String schemaName, String tableName, String attributeName) {
-		// TODO: need to process alias's as well as attribute names
 		Log.logProgress("QueryDefinition.buildProvenance(): query = " + qd.getSchemaName() + "." + qd.getQueryName() + ", attribute = " + schemaName + "." + tableName + "." + attributeName );
 		QueryTables queryTablesProvenance = new QueryTables();
 		try { 
 			// We were given schema.table.attribute so we need to search the query definition for the query table containing that attribute
-			QueryTable qt = qd.getQueryTables().findQueryAttribute(new QueryAttribute(schemaName, tableName, attributeName, null, null));
-//			queryTablesProvenance.addQueryTable(qt);
-//			Log.logProgress("QueryDefinition.buildProvenance(): first table added" + qt.getSchemaName() + "." + qt.getTableName());
+			QueryTable qt = qd.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(schemaName, tableName, attributeName, null, null));
+			//queryTablesProvenance.addQueryTable(qt);
 			// if this is a table, we're done. If it's not a table, it's a query and we need to find that query in the children collection for this Query Definition
 			while (true) {
-				QueryDefinition qdTmp = qd.children.findQueryDefinitionBySchemaAndTableName(schemaName, tableName);
-				if (qdTmp != null) {
-					// We found it. Add it to the provenance
+				// Retrieve the query by schemaName.QueryName that has the attribute in it. 
+				QueryDefinition qdTmp = qd.children.findQueryDefinitionBySchemaAndTableName(qt.getSchemaName(), qt.getTableName());
+				
+				if (qdTmp != null) {	// We found the underlying query that provides the attribute
 					queryTablesProvenance.addQueryTable(new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClass(""), null));
+					Log.logProgress("QueryDefinition.buildProvenance(): table added to provenance: " + qdTmp.getSchemaName() + "." + qdTmp.getQueryName());
+					QueryAttribute queryAttribute = qdTmp.getQueryAttributes().findAttribute(attributeName);
+					qt = qdTmp.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(queryAttribute.getSchemaName(), queryAttribute.getTableName(), queryAttribute.getAttributeName(), null, null));
 					qd = qdTmp;
-					QueryTable queryTable = qd.getQueryTables().findQueryAttribute(new QueryAttribute(schemaName, tableName, attributeName, null, null));
-					schemaName = queryTable.getSchemaName();
-					tableName = queryTable.getTableName();
 				} else {
 					// Add the last item to the provenance, which must be a table not a query. Use the schema name and table name that we didn't find in the children collection.
-					queryTablesProvenance.addQueryTable(new QueryTable(schemaName, tableName, new AliasNameClass(""), null));
+					queryTablesProvenance.addQueryTable(new QueryTable(qt.getSchemaName(), qt.getTableName(), new AliasNameClass(""), null));
 					break;
 				}
 			}

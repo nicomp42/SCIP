@@ -3,6 +3,7 @@ package edu.UC.PhD.CodeProject.nicholdw;
 import java.sql.SQLException;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClass;
 import lib.MySQL;
 
 /***
@@ -31,13 +32,14 @@ public class Table {
 	 * @return The corresponding Attribute object or null if no match
 	 */
 	public Attribute findAttribute(String attributeName) {
-		Attribute attribute = null;
-		for(Attribute a : attributes) {
-			if (Config.getConfig().compareAttributeNames(a.getAttributeName(),  attributeName) == true) {
-				attribute = a;
+		Attribute attributeFound = null;
+		for(Attribute attribute : attributes) {
+			if (Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName) == true) {
+				attributeFound = attribute;
+				break;
 			}
 		}
-		return attribute;
+		return attributeFound;
 	}
 	
 	public String generateScript() {

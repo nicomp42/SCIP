@@ -54,7 +54,7 @@ import javafx.stage.Stage;
 
 public class ProcessQueryController /* extends Application */ {
 
-	// test cases. Watch case. The parser is still weak.
+	// test cases. 
 	private String qNestedQuery = "select testFieldATableC, testFieldATableD from qc join qd";
 	private String q01 = "select testString, testInt, testDateTime, testDouble, Widget, testfieldatablec, testfieldatabled, testfieldatablee, testfieldatablef from ttablea, ttableb, qc, qd, tWidget, qlevelaa";
 	private String qSimpleTable = "select testInt from ttablea";		// Can't be more simple!
@@ -278,7 +278,7 @@ public class ProcessQueryController /* extends Application */ {
 			lvPqAttributes.getItems().clear();
 			QueryAttributes queryAttributes = qd.getQueryAttributes();
 			for (QueryAttribute queryAttribute : queryAttributes) {
-				lvPqAttributes.getItems().add(queryAttribute.getFullyQualifiedName() + " (" + qd.getQueryAttributeType(queryAttribute) + ")");
+				lvPqAttributes.getItems().add(queryAttribute.toString() + " (" + qd.getQueryAttributeType(queryAttribute) + ")");
 			}
 			// Schemas referenced in the query
 			lvPqSchemas.getItems().clear();

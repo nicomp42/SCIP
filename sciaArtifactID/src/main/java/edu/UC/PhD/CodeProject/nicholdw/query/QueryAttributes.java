@@ -3,6 +3,8 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
+
 public class QueryAttributes implements Iterable<QueryAttribute> {
 
 	private ArrayList<QueryAttribute> queryAttributes;
@@ -59,6 +61,34 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 		boolean result = false;
 		for (QueryAttribute qa : queryAttributes) {
 			if (qa.equals(queryAttribute)) {result = true; break;}
+		}
+		return result;
+	}
+	/**
+	 * Find a QueryAttribute by AttributeName or AliasName
+	 * @param attributeOrAliasName The name/alias to match
+	 * @return The QueryAttribute that is found, else null if not found
+	 */
+	public QueryAttribute findAttribute(String attributeOrAliasName) {
+		QueryAttribute result = null;
+		Boolean matchFound;
+		for (QueryAttribute queryAttribute : queryAttributes) {
+			matchFound = false;
+			if (Config.getConfig().compareAttributeNames(queryAttribute.getAttributeName(), attributeOrAliasName) == true){
+				result = queryAttribute;
+				matchFound = true;
+				break;
+			}
+			if (matchFound == false) {
+				for (AliasNameClass aliasName : queryAttribute.getAliasNames()) {
+					if (Config.getConfig().compareAliasNames(aliasName.getAliasName(), attributeOrAliasName) == true) {
+						result = queryAttribute;
+						matchFound = true;
+						break;
+					}
+				}
+			}
+			if (matchFound == true) {break;}
 		}
 		return result;
 	}
