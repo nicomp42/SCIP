@@ -70,18 +70,22 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 					if (queryAttribute.getSchemaName().length() == 0 || (Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) == true)) {
 						// Check the table name for a match or skip if it the attribute has no table name
 						if (queryAttribute.getTableName().length() == 0 || (Config.getConfig().compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true)) {
-							if (queryTable.getAttributeDataType(queryAttribute.getAttributeName()) != null) {
+							if (queryTable.findAttribute(queryAttribute.getAttributeName()) != null) {
+								Log.logProgress("QueryTables.findQueryAttribute(): found the attribute in table " + queryTable.toString());
 								queryTableResult = queryTable;
 								break;
-							} else {Log.logProgress("QueryTables.findQueryAttribute(): table name match but there's no data type. Table = " + queryTable.toString());}
+							} else {
+								Log.logProgress("QueryTables.findQueryAttribute(): table name match but there's no data type. Table = " + queryTable.toString());
+							}
 							// No match in the table names? Perhaps the table name in the queryAttribute is an alias
 							for (AliasNameClass aliasNameClass : queryTable.getAliasNames()) {
 								if (Config.getConfig().compareAliasNames(aliasNameClass.getAliasName(), queryAttribute.getTableName()) == true) {
-									if (queryTable.getAttributeDataType(queryAttribute.getAttributeName()) != null) {
+									if (queryTable.findAttribute(queryAttribute.getAttributeName()) != null) {
+										Log.logProgress("QueryTables.findQueryAttribute(): found the attribute in table using alias " + queryTable.toString());
 										queryTableResult = queryTable;
 										foundTable = true;
 										break;
-									} else {Log.logProgress("QueryTables.findQueryAttribute(): table alias match, but there's no data type. Table = " + queryTable.toString());}
+									} else {Log.logProgress("QueryTables.findQueryAttribute(): table alias match, but there's no attribute with matching name. Table = " + queryTable.toString());}
 								}
 							}
 							if (foundTable == true) {break;}

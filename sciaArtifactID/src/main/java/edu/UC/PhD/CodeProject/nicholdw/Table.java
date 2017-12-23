@@ -25,7 +25,21 @@ public class Table {
 
 	public String getComment() {return comment;}
 	public void setComment(String comment) {this.comment = comment;}
-
+	/**
+	 * Find an attribute by name in the collection for this table
+	 * @param attributeName The name to search for
+	 * @return The corresponding Attribute object or null if no match
+	 */
+	public Attribute findAttribute(String attributeName) {
+		Attribute attribute = null;
+		for(Attribute a : attributes) {
+			if (Config.getConfig().compareAttributeNames(a.getAttributeName(),  attributeName) == true) {
+				attribute = a;
+			}
+		}
+		return attribute;
+	}
+	
 	public String generateScript() {
 		String script = "CREATE TABLE " + tableName + " (";
 		String comma = "";
