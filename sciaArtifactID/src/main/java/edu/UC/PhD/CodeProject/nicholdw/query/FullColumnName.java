@@ -1,6 +1,8 @@
 
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
+import java.util.ArrayList;
+
 import org.Antlr4MySQLFromANTLRRepo.NestingLevel;
 
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
@@ -44,33 +46,40 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		}
 		/**
 		 * Start with a string formatted like schemaName.TableName.AttributeName and extract the parts into a structure.
-		 * Beware: A table name and an attribute name can have a . (period in it) Yikes.
+		 * Beware: A table name and an attribute name CAN have a . (period in it) Yikes.
 		 * There cannot be an alias in the string to parse.
 		 * @return The number of parts that were parsed: 0 - 3
 		 */
 		public int processRawData() {
 			int numberOfColumnParts = 0;
-			String columnParts[] = rawData.split("\\.");			// The . character is special in RegEx so we gotta hide it.
-			switch (columnParts.length) {
+			String tmpColumnParts[] = rawData.split("\\`");
+			ArrayList<String> columnParts = new ArrayList<String>();
+			for (String s : tmpColumnParts) {
+				if ((s.trim().length() > 0) && (s.equals(".") == false)) {
+					columnParts.add(s);
+				}
+			}			
+//			String columnParts[] = rawData.split("\\.");			// The . character is special in RegEx so we gotta hide it. Doesn't work because a symbol can contain a .
+			switch (columnParts.size()) {
 			case 1:			// Just a column name
-				this.attributeName = Utils.removeBackQuotes(columnParts[0]).trim();
+				this.attributeName = Utils.removeBackQuotes(columnParts.get(0).trim());
 				numberOfColumnParts = 1;
 				break;
 			case 2:			// column name and table name
-				this.attributeName = Utils.removePeriod(Utils.removeBackQuotes(columnParts[1])).trim();
-				this.tableName = Utils.removePeriod(Utils.removeBackQuotes(columnParts[0])).trim();
+				this.attributeName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(1))).trim();
+				this.tableName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(0))).trim();
 				numberOfColumnParts = 2;
 				break;
 
 			case 3:			// column name, table name, schema name
-				this.attributeName = Utils.removePeriod(Utils.removeBackQuotes(columnParts[2])).trim();
-				this.tableName = Utils.removePeriod(Utils.removeBackQuotes(columnParts[1])).trim();
-				this.schemaName = Utils.removePeriod(Utils.removeBackQuotes(columnParts[0])).trim();
+				this.attributeName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(2))).trim();
+				this.tableName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(1))).trim();
+				this.schemaName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(0))).trim();
 				numberOfColumnParts = 3;
 				break;
 
 			default:
-				Log.logQueryParseProgress("AntlrMySQLListener.processRawData(): unexpected number of parts to parse (" + columnParts.length + "): " + " started with " + rawData, true);
+				Log.logQueryParseProgress("AntlrMySQLListener.processRawData(): unexpected number of parts to parse (" + columnParts.size() + "): " + " started with " + rawData, true);
 			}
 			return numberOfColumnParts;
 		}

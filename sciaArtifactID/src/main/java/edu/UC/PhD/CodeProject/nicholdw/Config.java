@@ -334,7 +334,10 @@ public class Config implements Serializable {
 				result = true;
 			}
 		} else {
-			if (aliasName1.toLowerCase().equals(aliasName2.toLowerCase())) {
+			String a1 = aliasName1.toLowerCase().trim();
+			String a2 = aliasName2.toLowerCase().trim();
+			//System.out.println(a1 + "\n" + a2);
+			if (a1.equals(a2)) {
 				result = true;
 			}
 		}

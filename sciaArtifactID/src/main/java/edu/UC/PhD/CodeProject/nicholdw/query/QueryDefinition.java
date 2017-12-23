@@ -407,11 +407,12 @@ public class QueryDefinition {
 	 * @return The ordered list of tables that define the provenance of the attribute
 	 */
 	public static QueryTables buildProvenance(QueryDefinition qd, String schemaName, String tableName, String attributeName) {
+		String currentAttributeName = attributeName;
 		Log.logProgress("QueryDefinition.buildProvenance(): query = " + qd.getSchemaName() + "." + qd.getQueryName() + ", attribute = " + schemaName + "." + tableName + "." + attributeName );
 		QueryTables queryTablesProvenance = new QueryTables();
 		try { 
 			// We were given schema.table.attribute so we need to search the query definition for the query table containing that attribute
-			QueryTable qt = qd.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(schemaName, tableName, attributeName, null, null));
+			QueryTable qt = qd.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(schemaName, tableName, currentAttributeName, null, null));
 			//queryTablesProvenance.addQueryTable(qt);
 			// if this is a table, we're done. If it's not a table, it's a query and we need to find that query in the children collection for this Query Definition
 			while (true) {
@@ -421,7 +422,8 @@ public class QueryDefinition {
 				if (qdTmp != null) {	// We found the underlying query that provides the attribute
 					queryTablesProvenance.addQueryTable(new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClass(""), null));
 					Log.logProgress("QueryDefinition.buildProvenance(): table added to provenance: " + qdTmp.getSchemaName() + "." + qdTmp.getQueryName());
-					QueryAttribute queryAttribute = qdTmp.getQueryAttributes().findAttribute(attributeName);
+					QueryAttribute queryAttribute = qdTmp.getQueryAttributes().findAttribute(currentAttributeName);
+					currentAttributeName = queryAttribute.getAttributeName();		// We need the attribute name used in this query
 					qt = qdTmp.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(queryAttribute.getSchemaName(), queryAttribute.getTableName(), queryAttribute.getAttributeName(), null, null));
 					qd = qdTmp;
 				} else {

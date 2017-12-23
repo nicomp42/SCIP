@@ -83,7 +83,8 @@ public class Antlr4MySQLQueryParser_test {
 		//"SELECT `myAttribute01`,`myAttribute02`,`myAttribute03` INTO @myvar01 , @@myvar02, @myvar03 FROM `mytable01` WHERE `myAttribute01` = 1;"
 		// myView06a: referencing attributes in a view and a table
 		"SELECT `myview06`.`myAttribute01` AS `myView06.myAttribute01`, `myschema01`.`mytable02`.`myAttribute01` AS `myTable02.myAttribute01` FROM (`myschema01`.`mytable02` JOIN `myschema01`.`myview06`)",
-		
+		// myView06b: Another level of nesting: myView06b selects from myView06a which selects from myTable01
+		" SELECT `myview06a`.`myView06.myAttribute01` AS `myView06a.myAttribute01`, `myview06`.`myAttribute01` AS `myView06.myAttribute01`, `mytable02`.`myAttribute01` AS `myTable02.myAttribute01` FROM ((`mytable02` JOIN `myview06`) JOIN `myview06a`)",
 		// myView08: simple select with an ORDER by Clause
 		"SELECT `myschema01`.`mytable01`.`myAttribute01` AS `myAttribute01` FROM `myschema01`.`mytable01` ORDER BY `myschema01`.`mytable01`.`myAttribute02`",
 		
