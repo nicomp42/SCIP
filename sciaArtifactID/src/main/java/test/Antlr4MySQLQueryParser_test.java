@@ -21,9 +21,9 @@ public class Antlr4MySQLQueryParser_test {
 
 	public static void main( String[] args) throws Exception
 	{
-		testSelect();
+//		testSelect();
 //		testCreate();
-//		testAlter();
+		testAlter();
 //		testMiscellaneous();
 	}
 	private static void testMiscellaneous() {
@@ -32,8 +32,9 @@ public class Antlr4MySQLQueryParser_test {
 		//simpleParseTest("DROP VIEW IF EXISTS `foo`, `bar` RESTRICT");
 	}
 	private static void testAlter() throws Exception {
-		simpleParseTest("ALTER VIEW `acme`.`tpilot` AS SELECT `qbert` from `tFoo`");
-		simpleParseTest("ALTER TABLE `acme`.`tpilot` ADD COLUMN `FavoriteColor` VARCHAR(45) NULL AFTER `FirstName`");
+		QueryDefinition qd = null;
+		qd = simpleParseTest(alterTests[0]);
+		qd.print(System.out, false);		
 	}
 	private static void testSelect() throws Exception {
 		QueryDefinition qd = null;
@@ -87,8 +88,11 @@ public class Antlr4MySQLQueryParser_test {
 		" SELECT `myview06a`.`myView06.myAttribute01` AS `myView06a.myAttribute01`, `myview06`.`myAttribute01` AS `myView06.myAttribute01`, `mytable02`.`myAttribute01` AS `myTable02.myAttribute01` FROM ((`mytable02` JOIN `myview06`) JOIN `myview06a`)",
 		// myView08: simple select with an ORDER by Clause
 		"SELECT `myschema01`.`mytable01`.`myAttribute01` AS `myAttribute01` FROM `myschema01`.`mytable01` ORDER BY `myschema01`.`mytable01`.`myAttribute02`",
-		
-	                                };
+		// myView09: a SELECT using the alias on the table name
+		"SELECT `alias01`.`myAttribute01` AS `myAttribute01` FROM `mytable01` `alias01`",
+		// myview10: a SELECT using the alias on the table name and with a join of two tables
+		"SELECT `alias01`.`myAttribute01` AS `alias01.myattribute01`, `alias02`.`myAttribute01` AS `alias02.myAttribute01` FROM(`mytable01` `alias01 `JOIN `mytable02` `alias02`",
+		};
 	
 	private static String dropTests[] = {
 		// Drop a table	
@@ -101,11 +105,17 @@ public class Antlr4MySQLQueryParser_test {
 		"CREATE TABLE `myschema01`.`mytable99` (`myAttribute01` INT NOT NULL, `myAttribute02` VARCHAR(45) NULL, `myAttribute03` VARCHAR(45) NULL, PRIMARY KEY (`myAttribute01`));",		
 		};
 	
-		private static String alterTests[] = {
-			// Add a field to a table	
-				
-				
-		};
+	private static String alterTests[] = {
+		// spAlter01: drop an attribute from a table	
+		"Alter table mySchema01.myTable01 drop column `myAttribute01`",
+	};
+		
+	private static String createTables[] = {
+		// Create myyTable01
+		"CREATE TABLE `mytable01` (`myAttribute01` int(11) NOT NULL, `myAttribute02` varchar(45) DEFAULT NULL,  `myAttribute03` varchar(45) DEFAULT NULL,  PRIMARY KEY (`myAttribute01`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+
+		
+	};
 }
 
 //simpleParseTest("SELECT `tAlpha`.`epsilon` AS `myEpsilon`, (`tAlpha`.`beta` + `tDelta`.`gamma`) AS `mySUM` FROM `tAlpha` `tA` INNER JOIN `tDelta` `tD`;");		// Test compound attributes 

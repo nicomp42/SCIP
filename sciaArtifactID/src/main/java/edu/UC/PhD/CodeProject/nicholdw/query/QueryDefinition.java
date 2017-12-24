@@ -125,9 +125,22 @@ public class QueryDefinition {
 	 */
 	public QueryTable lookupTable(QueryDefinition qd, String schemaName, String tableName) {
 		QueryTable result = null;
+		boolean matchFound = false;
 		for (QueryTable queryTable : qd.getQueryTables()) {
-			if (queryTable.getTableName().equals(tableName) && queryTable.getSchemaName().equals(schemaName)) {
+			matchFound = false;
+			if (Config.getConfig().compareTableNames(queryTable.getTableName(), tableName) == true && Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), schemaName) == true) {
+				matchFound = true;
 				result = queryTable;
+				break;
+			}
+			for (AliasNameClass aliasName : queryTable.getAliasNames()) {
+				if (Config.getConfig().compareAliasNames(aliasName.getAliasName(),  tableName) == true) {
+					matchFound = true;
+					result = queryTable;
+					break;
+				}
+			}
+			if (matchFound == true) {
 				break;
 			}
 		}
