@@ -516,7 +516,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
-//		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + " Parent.stop = " + ctx.getParent().getStop().getText());
+		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + " Parent.stop = " + ctx.getParent().getStop().getText());
 		fullColumnNames.add(new FullColumnName(ctx.getText(), currentNestingLevel));	// Store the raw data and we will parse it later
 	}
 	@Override public void exitFullColumnName(MySqlParser.FullColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnName()");}
@@ -541,7 +541,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterAuthPlugin(MySqlParser.AuthPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAuthPlugin()");}
 	@Override public void exitAuthPlugin(MySqlParser.AuthPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAuthPlugin()");}
 	@Override public void enterUid(MySqlParser.UidContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterUid(): " + ctx.getText() + ", " + ctx.getChild(0).getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterUid(): " + ctx.getText() + ", " + ctx.getChild(0).getText() + " Parent Context = " + ctx.getParent().getClass());
 	}
 	@Override public void exitUid(MySqlParser.UidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUid()");}
 	@Override public void enterSimpleId(MySqlParser.SimpleIdContext ctx) {
@@ -749,14 +749,14 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterFunctionNameBase(): " + ctx.getText());
 	}
 	@Override public void exitFunctionNameBase(MySqlParser.FunctionNameBaseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFunctionNameBase()");}
-	@Override public void enterEveryRule(ParserRuleContext ctx) {/*
-		Log.logQueryParseProgress("AntlrMySQLListener.enterEveryRule()"); */
+	@Override public void enterEveryRule(ParserRuleContext ctx) {
+//		Log.logQueryParseProgress("AntlrMySQLListener.enterEveryRule(): context = " + ctx.getClass()); 
 	}
 	@Override public void exitEveryRule(ParserRuleContext ctx) {/*Log.logQueryParseProgress("AntlrMySQLListener.exitEveryRule()");*/}
 	@Override public void visitTerminal(TerminalNode node) {
  		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): " + node.getText());
 		Object context = node.getParent().getPayload();
- 		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): getPayload() = " + context.getClass());
+ 		Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): Parent context = " + context.getClass());
 		
 		if (context instanceof org.Antlr4MySQLFromANTLRRepo.MySqlParser.SqlStatementsContext) {
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): context = SqlStatementsContext");			
@@ -768,8 +768,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		} catch (Exception ex) {}		// Eat the exception? ToDo check this.
 		switch (node.getText().toUpperCase()) {
 		case "ALTER":
-			processTerminalNodeAlter(node);
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): found ALTER");
+			processTerminalNodeAlter(node);
 			break;
 		case "SELECT":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): found SELECT");
@@ -789,33 +789,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			lastTerminalNode = Config.RT_BRACKET;
 			break;
 		case "AS":
-			// It would be really nice to get the next token rather than waiting for it to come around in the parsing process. I think.
-			// Assuming there cannot be anything between the AS keyword and the alias name, this logic will work. :)
-			System.out.println( "AS alias = " + node.getParent().getChild(2).getText());
-			// Add the alias to the last column name we processed. If we are not nested at all
-			if (lastTerminalNode.equals(Config.RT_BRACKET)) {
-				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): Found \"AS\" after \"" + Config.RT_BRACKET + "\"" + " NestingLevel = " + currentNestingLevel.toString());
-				// Add to aliasAggregate structure that accumulates sets of attributes that are under one alias
-				// ToDo
-				// Get the previous nesting level just before the AS
-				// Create a new alias in the compoundAlias structure
-				// For each attribute already captured
-				//   If the Nestinglevel of the attribute == the previous nesting level
-				//		Add the attribute to the collection of attributes for this compoundAlias
-				// Neat stuff!
-				CompoundAlias compoundAlias = new CompoundAlias(Utils.removeBackQuotes(node.getParent().getChild(2).getText()));
-				for (FullColumnName fcn: fullColumnNames) {
-					fcn.processRawData();
-					if (fcn.getNestingLevel().isNestedInOrIsEqualTo(previousNestingLevel)) {
-						Log.logQueryParseProgress("Adding column " + fcn.getRawData() + " to compoundAlias " + node.getParent().getChild(2).getText());
-						compoundAlias.addFullColumnName(fcn);
-					}
-				}
-				compoundAliases.addCompoundAlias(compoundAlias);
-			} else {
-				fullColumnNames.get(fullColumnNames.size()-1).setAliasName(node.getParent().getChild(2).getText().replace("`", ""));
-			}
-			lastTerminalNode = "AS";
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): AS alias = " + node.getParent().getChild(2).getText());
+			processTerminalNodeAs(node);
 			break;
 		case "WHERE":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): WHERE found");
@@ -838,43 +813,11 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			break;
 		case "CREATE":		// We are creating something. 
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE found, but what are we creating? ");
-			if (firstVisit == true) {queryDefinition.setQueryType(new QueryTypeCreate()); firstVisit = false;}
-			String createType = node.getParent().getChild(1).getText().trim().toUpperCase();
-			if (createType.trim().toUpperCase().equals("TEMPORARY")) {createType = node.getParent().getChild(1).getText().trim().toUpperCase();}
-			switch (createType) {
-				case "TABLE": 
-					queryDefinition.setQueryType(new QueryTypeCreateTable());
-					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
-					break;
-				case "VIEW": 
-					queryDefinition.setQueryType(new QueryTypeCreateView());
-					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
-					break;
-				default:		// It's an error. We don't know what we're creating
-					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE somthing is unidentified: " + createType, true);
-			}
+			processTerminalNodeCreate(node);
 			break;
 		case "DROP":		// We are dropping something. 
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): DROP found, but what are we dropping? ");
-			if (firstVisit == true) {queryDefinition.setQueryType(new QueryTypeDrop()); firstVisit = false;}
-			String dropType = node.getParent().getChild(1).getText().trim().toUpperCase();
-			if (dropType.trim().toUpperCase().equals("TEMPORARY")) {dropType = node.getParent().getChild(2).getText().trim().toUpperCase();}
-			switch (dropType) {
-				case "COLUMN": 
-					queryDefinition.setQueryType(new QueryTypeDropView());
-					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
-					break;
-				case "TABLE": 
-					queryDefinition.setQueryType(new QueryTypeDropTable());
-					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
-					break;
-				case "VIEW": 
-					queryDefinition.setQueryType(new QueryTypeDropView());
-					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
-					break;
-				default:		// It's an error. We don't know what we're dropping
-					Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): DROP something is unidentified: " + dropType, true);
-			}
+			processTerminalNodeDrop(node);
 			break;
 		case "JOIN":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): JOIN found");
@@ -906,7 +849,12 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	 */
 	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText());
-			fullTableNames.add(new FullTableName(ctx.getText()));		// Moved to enterTableName
+		fullTableNames.add(new FullTableName(ctx.getText()));
+		Object context = ctx.getParent().getPayload();
+ 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): ctx.getParent context = " + context.getClass());
+		//if (context instanceof org.Antlr4MySQLFromANTLRRepo.MySqlParser.AlterByDropColumnContext) {
+		//	Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): context = AlterByDropColumnContext");			
+		//}		
 	}
 	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAtomTableItem(): " + ctx.getText());
@@ -935,6 +883,69 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void exitDropView(MySqlParser.DropViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitDropView(): " + ctx.getText());
+	}
+	private void processTerminalNodeDrop(TerminalNode node) {
+		if (firstVisit == true) {queryDefinition.setQueryType(new QueryTypeDrop()); firstVisit = false;}
+		String dropType = node.getParent().getChild(1).getText().trim().toUpperCase();
+		if (dropType.trim().toUpperCase().equals("TEMPORARY")) {dropType = node.getParent().getChild(2).getText().trim().toUpperCase();}
+		switch (dropType) {
+			case "COLUMN": 
+				queryDefinition.setQueryType(new QueryTypeDropView());
+				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+				break;
+			case "TABLE": 
+				queryDefinition.setQueryType(new QueryTypeDropTable());
+				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+				break;
+			case "VIEW": 
+				queryDefinition.setQueryType(new QueryTypeDropView());
+				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+				break;
+			default:		// It's an error. We don't know what we're dropping
+				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): DROP something is unidentified: " + dropType, true);
+		}
+	}
+	private void processTerminalNodeCreate(TerminalNode node) {
+		if (firstVisit == true) {queryDefinition.setQueryType(new QueryTypeCreate()); firstVisit = false;}
+		String createType = node.getParent().getChild(1).getText().trim().toUpperCase();
+		if (createType.trim().toUpperCase().equals("TEMPORARY")) {createType = node.getParent().getChild(1).getText().trim().toUpperCase();}
+		switch (createType) {
+			case "TABLE": 
+				queryDefinition.setQueryType(new QueryTypeCreateTable());
+				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+				break;
+			case "VIEW": 
+				queryDefinition.setQueryType(new QueryTypeCreateView());
+				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+				break;
+			default:		// It's an error. We don't know what we're creating
+				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE somthing is unidentified: " + createType, true);
+		}
+	}
+	private void processTerminalNodeAs(TerminalNode node) {
+		// Add the alias to the last column name we processed. If we are not nested at all
+		if (lastTerminalNode.equals(Config.RT_BRACKET)) {
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): Found \"AS\" after \"" + Config.RT_BRACKET + "\"" + " NestingLevel = " + currentNestingLevel.toString());
+			// Add to aliasAggregate structure that accumulates sets of attributes that are under one alias
+			// Get the previous nesting level just before the AS
+			// Create a new alias in the compoundAlias structure
+			// For each attribute already captured
+			//   If the Nestinglevel of the attribute == the previous nesting level
+			//		Add the attribute to the collection of attributes for this compoundAlias
+			// Neat stuff!
+			CompoundAlias compoundAlias = new CompoundAlias(Utils.removeBackQuotes(node.getParent().getChild(2).getText()));
+			for (FullColumnName fcn: fullColumnNames) {
+				fcn.processRawData();
+				if (fcn.getNestingLevel().isNestedInOrIsEqualTo(previousNestingLevel)) {
+					Log.logQueryParseProgress("Adding column " + fcn.getRawData() + " to compoundAlias " + node.getParent().getChild(2).getText());
+					compoundAlias.addFullColumnName(fcn);
+				}
+			}
+			compoundAliases.addCompoundAlias(compoundAlias);
+		} else {
+			fullColumnNames.get(fullColumnNames.size()-1).setAliasName(node.getParent().getChild(2).getText().replace("`", ""));
+		}
+		lastTerminalNode = "AS";
 	}
 	/**
 	 * A Terminal Node has been identified as "ALTER"

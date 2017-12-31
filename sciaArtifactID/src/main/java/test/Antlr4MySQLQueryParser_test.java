@@ -16,7 +16,11 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.AntlrMySQLListener;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
-
+/**
+ * MySQL tests. The syntax is exclusively MySQL. 
+ * @author nicomp
+ *
+ */
 public class Antlr4MySQLQueryParser_test {
 
 	public static void main( String[] args) throws Exception
@@ -38,7 +42,7 @@ public class Antlr4MySQLQueryParser_test {
 	}
 	private static void testSelect() throws Exception {
 		QueryDefinition qd = null;
-		qd = simpleParseTest(selectTests[7]);
+		qd = simpleParseTest(selectTests[13]);
 		qd.print(System.out, false);		
 	}
 	private static void testCreate() throws Exception {
@@ -92,6 +96,10 @@ public class Antlr4MySQLQueryParser_test {
 		"SELECT `alias01`.`myAttribute01` AS `myAttribute01` FROM `mytable01` `alias01`",
 		// myview10: a SELECT using the alias on the table name and with a join of two tables
 		"SELECT `alias01`.`myAttribute01` AS `alias01.myattribute01`, `alias02`.`myAttribute01` AS `alias02.myAttribute01` FROM(`mytable01` `alias01 `JOIN `mytable02` `alias02`",
+		// myView10a: two attributes selected from a table 
+		"SELECT `alias01`.`myAttribute01` AS `myAttribute01`, `alias01`.`myAttribute02` AS `myAttribute02` FROM (`mytable01` `alias01` JOIN `mytable02` `alias02`)",
+		// Just made it up. Attributes with no qualifiers, with table only, and with schema and table. Then three more similarly patterened attributes with aliases. Three tables also with aliases
+		"SELECT `a`, `tt`.`aa`, `sss`.`ttt`.`aaa`, `a1` AS `alias1`, `tt1`.`aa1` AS `alias2`, `sss1`.`ttt1`.`aaa1` AS `alias3` from `t` `talias1` join `tt` `talias2` join `ttt` `talias2` WHERE `aFilter`=\"12345\" ORDER BY `aOrderBy` + `bOrderBy` + SUM(`cOrderBy`) ;", 
 		};
 	
 	private static String dropTests[] = {
@@ -108,6 +116,8 @@ public class Antlr4MySQLQueryParser_test {
 	private static String alterTests[] = {
 		// spAlter01: drop an attribute from a table	
 		"Alter table mySchema01.myTable01 drop column `myAttribute01`",
+		// spAlter02: drop an attribute from a view. There is no ALTER VIEW except to completely redefine the view.
+		"Alter table myView10a drop column `myAttribute01`;",  
 	};
 		
 	private static String createTables[] = {
