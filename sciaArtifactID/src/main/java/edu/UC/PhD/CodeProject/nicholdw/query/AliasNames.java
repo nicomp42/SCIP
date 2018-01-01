@@ -10,7 +10,6 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
  *
  */
 public class AliasNames implements Iterable<AliasNameClass> {
-
 	private ArrayList<AliasNameClass> aliasNames;
 
 	/**
@@ -29,10 +28,14 @@ public class AliasNames implements Iterable<AliasNameClass> {
 
 	public void addAliasName(AliasNameClass aliasNameClass) {
 		if (aliasNameClass.getAliasName().length() > 0) {
-			if (!this.contains(aliasNameClass) ) {aliasNames.add(aliasNameClass);}
+			if (!this.contains(aliasNameClass) ) {aliasNames.add(new AliasNameClass(aliasNameClass));}
 		}
 	}
-
+	public void addAliasNames(AliasNames aliasNames) {
+		for (AliasNameClass aliasName : aliasNames) {
+			addAliasName(aliasName);
+		}
+	}
 	/**
 	 * Does this collection of alias name objects contain a particular alias name object
 	 * @param aliasNameClassTarget
@@ -59,6 +62,8 @@ public class AliasNames implements Iterable<AliasNameClass> {
 			result.append(aliasNameClass.toString());
 			comma = ", ";
 		}
+		// If the alias set is > 1, add curly braces for clarity
+		if (aliasNames.size() > 1) { result.insert(0, "{").append("}"); }
 		return result.toString();
 	}
 }

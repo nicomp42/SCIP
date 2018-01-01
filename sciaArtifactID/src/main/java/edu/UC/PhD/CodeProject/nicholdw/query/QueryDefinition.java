@@ -425,7 +425,7 @@ public class QueryDefinition {
 		QueryTables queryTablesProvenance = new QueryTables();
 		try { 
 			// We were given schema.table.attribute so we need to search the query definition for the query table containing that attribute
-			QueryTable qt = qd.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(schemaName, tableName, currentAttributeName, null, null));
+			QueryTable qt = qd.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(schemaName, tableName, currentAttributeName, (AliasNameClass)null, null));
 			//queryTablesProvenance.addQueryTable(qt);
 			// if this is a table, we're done. If it's not a table, it's a query and we need to find that query in the children collection for this Query Definition
 			while (true) {
@@ -437,7 +437,7 @@ public class QueryDefinition {
 					Log.logProgress("QueryDefinition.buildProvenance(): table added to provenance: " + qdTmp.getSchemaName() + "." + qdTmp.getQueryName());
 					QueryAttribute queryAttribute = qdTmp.getQueryAttributes().findAttribute(currentAttributeName);
 					currentAttributeName = queryAttribute.getAttributeName();		// We need the attribute name used in this query
-					qt = qdTmp.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(queryAttribute.getSchemaName(), queryAttribute.getTableName(), queryAttribute.getAttributeName(), null, null));
+					qt = qdTmp.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(queryAttribute.getSchemaName(), queryAttribute.getTableName(), queryAttribute.getAttributeName(), (AliasNameClass)null, null));
 					qd = qdTmp;
 				} else {
 					// Add the last item to the provenance, which must be a table not a query. Use the schema name and table name that we didn't find in the children collection.

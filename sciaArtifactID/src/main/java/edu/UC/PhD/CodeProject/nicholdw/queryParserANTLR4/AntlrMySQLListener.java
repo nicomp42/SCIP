@@ -40,6 +40,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.query.FullColumnName;
+import edu.UC.PhD.CodeProject.nicholdw.query.FullColumnNames;
 /**
  * Parsing MySQL SQL statements and event handlers for such.
  * @author nicomp
@@ -51,8 +52,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	private QueryTable currentQueryTable;
 	private boolean includeAllFields;
 
-	ArrayList<FullColumnName> fullColumnNames;		// Trap every attribute just by using the AntlrMySQLListener.enterFullColumnName() listener
-	ArrayList<FullTableName> fullTableNames;		// Trap every table just by using the AntlrMySQLListener.enterTableSourceBase() listener
+	FullColumnNames fullColumnNames;
+	ArrayList<FullTableName> fullTableNames;	
 	private NestingLevel currentNestingLevel, previousNestingLevel;
 	private String lastTerminalNode;
 	CompoundAliases compoundAliases;
@@ -62,7 +63,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		System.out.println("AntlrMySQLListener.AntlrMySQLListener(qd)");
 		this.queryDefinition = queryDefinition;
 		queryClause = new QueryClauseUnknown();
-		fullColumnNames = new ArrayList<FullColumnName>();
+		fullColumnNames = new FullColumnNames();
 		fullTableNames = new ArrayList<FullTableName>();
 		compoundAliases = new CompoundAliases();
 		currentNestingLevel = new NestingLevel();
@@ -510,14 +511,17 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterFullId(): " + ctx.getText());
 		}
 	@Override public void exitFullId(MySqlParser.FullIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullId()");}
+	/**
+	 * This is useful because it's called in DROP, ALTER, etc., but enter enterAtomTableItem() is not called for tables in those queries.
+	 */
 	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText());
-//		fullTableNames.add(new FullTableName(ctx.getText()));		moved to EnterAtomTableItem
+		Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText() + " Parent Context = " + ctx.getParent().getClass());
+//		fullTableNames.add(new FullTableName(ctx.getText()));		moved to EnterAtomTableItem because the alias is not here. 
 	}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
 		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + " Parent.stop = " + ctx.getParent().getStop().getText());
-		fullColumnNames.add(new FullColumnName(ctx.getText(), currentNestingLevel));	// Store the raw data and we will parse it later
+		fullColumnNames.addFullColumnName(new FullColumnName(ctx.getText(), currentNestingLevel));	// Store the raw data and we will parse it later
 	}
 	@Override public void exitFullColumnName(MySqlParser.FullColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnName()");}
 	@Override public void enterIndexColumnName(MySqlParser.IndexColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIndexColumnName()");}
@@ -845,13 +849,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText());
 	}
 	/**
-	 * This event has the alias appended to the table name. Not useful because there's no delimiter between the two values when you call getText()
+	 * This event has the alias appended to the table name. more useful thenEnterTableName() because that does not have the alias
 	 */
 	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText() + " parent = " + ctx.getParent().getClass());
 		fullTableNames.add(new FullTableName(ctx.getText()));
 		Object context = ctx.getParent().getPayload();
- 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): ctx.getParent context = " + context.getClass());
+// 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): ctx.getParent context = " + context.getClass());
 		//if (context instanceof org.Antlr4MySQLFromANTLRRepo.MySqlParser.AlterByDropColumnContext) {
 		//	Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): context = AlterByDropColumnContext");			
 		//}		
@@ -943,7 +947,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			}
 			compoundAliases.addCompoundAlias(compoundAlias);
 		} else {
-			fullColumnNames.get(fullColumnNames.size()-1).setAliasName(node.getParent().getChild(2).getText().replace("`", ""));
+			fullColumnNames.get(fullColumnNames.size()-1).addAliasName(new AliasNameClass(node.getParent().getChild(2).getText().replace("`", "")));
 		}
 		lastTerminalNode = "AS";
 	}

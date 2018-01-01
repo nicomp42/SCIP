@@ -3,6 +3,8 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
+
 public class FullColumnNames implements Iterable<FullColumnName> {
 
 	private ArrayList<FullColumnName> fullColumnNames;
@@ -18,13 +20,15 @@ public class FullColumnNames implements Iterable<FullColumnName> {
 	 * @return A reference to the queryAttribute list in the current object.
 	 */
 	public ArrayList<FullColumnName> getFullColumnNames (){return fullColumnNames;}
-	public FullColumnName getQueryAttribute(int i) {return fullColumnNames.get(i);}
+	public FullColumnName get(int i) {return fullColumnNames.get(i);}
 
 	public void addFullColumnName(FullColumnName fullColumnName) {
 		// Don't allow duplicates in the attribute collection
 		boolean matchFound = false;
 		for (FullColumnName fcn : fullColumnNames) {
-			if (fcn.getRawData().trim().toLowerCase().equals(fullColumnName.getRawData().trim().toLowerCase())) {
+			if (Config.getConfig().compareAttributeNames(fcn.getAttributeName(), fullColumnName.getAttributeName()) &&
+			    Config.getConfig().compareSchemaNames(fcn.getSchemaName(), fullColumnName.getSchemaName()) &&
+				Config.getConfig().compareTableNames(fcn.getTableName(), fullColumnName.getTableName())) {
 				matchFound = true;
 				break;
 			}

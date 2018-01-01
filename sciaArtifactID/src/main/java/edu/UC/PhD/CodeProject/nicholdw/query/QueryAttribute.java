@@ -13,10 +13,34 @@ public class QueryAttribute extends QueryComponent  {
 	private String attributeName;
 	private String tableName;
 	private String expression;
+	/**
+	 * Create a QueryAttribute object
+	 * @param schemaName
+	 * @param tableName
+	 * @param attributeName
+	 * @param aliasName If you only have one alias for this QueryAttribute object
+	 * @param queryClause
+	 */
 	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClass aliasName, QueryClause queryClause) {
 		this.setTableName(tableName);
 		aliasNames = new AliasNames();
 		this.addAliasName (aliasName);
+		this.setSchemaName(schemaName);
+		this.setQueryClause(queryClause);
+		this.setAttributeName(attributeName);
+	}
+	/**
+	 * Create a new QueryAttribute object
+	 * @param schemaName
+	 * @param tableName
+	 * @param attributeName
+	 * @param aliasNames If you already have an AliasNames object for this QueryAttribute object
+	 * @param queryClause
+	 */
+	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNames aliasNames, QueryClause queryClause) {
+		this.setTableName(tableName);
+		this.aliasNames = new AliasNames();
+		this.aliasNames.addAliasNames(aliasNames);
 		this.setSchemaName(schemaName);
 		this.setQueryClause(queryClause);
 		this.setAttributeName(attributeName);
@@ -45,6 +69,11 @@ public class QueryAttribute extends QueryComponent  {
 	public void addAliasName(AliasNameClass aliasNameClass) {
 		if (aliasNameClass != null) {
 			aliasNames.addAliasName(aliasNameClass);
+		}
+	}
+	public void addAliasNames(AliasNames aliasNames) {
+		for (AliasNameClass aliasName : aliasNames) {
+			this.aliasNames.addAliasName(aliasName);
 		}
 	}
 	public Boolean hasAliasName(String aliasNameTarget) {
@@ -80,6 +109,7 @@ public class QueryAttribute extends QueryComponent  {
 		} catch (Exception ex) {
 			Log.logError("QueryAttribute.toString(); " + ex.getLocalizedMessage());
 		}
+		
 		return result.toString();
 	}
 
@@ -88,18 +118,19 @@ public class QueryAttribute extends QueryComponent  {
 	 * @return The comma-delimited string
 	 */
 	public String aliasNameListToString() {
-		String result = "";
+		StringBuilder result = new StringBuilder("");
 		// There may be no attribute list, just return an empty string
 		String comma = "";
 		try {
 			for (AliasNameClass aliasName: aliasNames) {
-				result += comma + aliasName.getAliasName();
+				result.append(comma + aliasName.getAliasName());
 				comma = ", ";
 			}
 		} catch (Exception ex) {
 			// Eat it.
 		}
-		return result;
+		if (aliasNames.size() > 1) { result.insert(0, "{").append("}"); }
+		return result.toString();
 	}
 	/**
 	 * Build the name of the attribute with schema name and table name for display purposes.

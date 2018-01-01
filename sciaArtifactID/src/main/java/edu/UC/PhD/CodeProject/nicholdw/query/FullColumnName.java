@@ -10,7 +10,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 	/**
 	 * Fully qualified (or not) column reference from an SQL statement.
-	 * Could be schema.table.attribute, table.attribute, or just attribute. May also have an alias.
+	 * Could be schema.table.attribute, table.attribute, or just attribute. May also have one or more aliases.
 	 * @author nicomp
 	 */
 	public class FullColumnName {
@@ -18,12 +18,13 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		private String tableName;
 		private String attributeName;
 		private QueryClause queryClause;
-		private String aliasName;
+		private AliasNames aliasNames;
+		//private String aliasName;		// Removed because a query attribute can have multiple aliases
 		private NestingLevel nestingLevel;
 		private String rawData;			// Taken from the SQL during parsing. could be schema.table.attribute, table.attribute, or just attribute
 		public String getRawData() {return rawData;}
 		public String toString() {
-			return (schemaName.length() > 0? schemaName + ".":"") + (tableName.length() > 0 ? tableName + "." : "") + attributeName + (aliasName.length() > 0 ? " AS " + aliasName:"");
+			return (schemaName.length() > 0? schemaName + ".":"") + (tableName.length() > 0 ? tableName + "." : "") + attributeName + (aliasNames.toString().length() > 0 ? " AS " + aliasNames.toString():"");
 		}
 		public String getAttributeName() {return attributeName;}
 		public String getTableName() {return tableName;}
@@ -37,12 +38,12 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			schemaName = "";
 			tableName = "";
 			attributeName = "";
-			aliasName = "";
+			aliasNames = new AliasNames();
 			queryClause = new QueryClauseUndefined();
 		}
-		public String getAliasName() {return aliasName;}
-		public void setAliasName(String aliasName) {
-			this.aliasName = aliasName;
+		public AliasNames getAliasNames() {return aliasNames;}
+		public void addAliasName(AliasNameClass aliasName) {
+			this.aliasNames.addAliasName(aliasName);
 		}
 		/**
 		 * Start with a string formatted like schemaName.TableName.AttributeName and extract the parts into a structure.
@@ -88,7 +89,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		 * @param queryDefinition The target QueryDefinition
 		 */
 		public void copyIntoQueryDefinition(QueryDefinition queryDefinition) {
-			queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(schemaName, tableName, attributeName, new AliasNameClass(aliasName), queryClause));
+			queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(schemaName, tableName, attributeName, aliasNames, queryClause));
 		}
 		/**
 		 * Set the nesting level of this attribute

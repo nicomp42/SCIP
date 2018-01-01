@@ -5,6 +5,14 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 public class AliasNameClass {
 	private String aliasName;
 
+	/**
+	 * Copy constructor
+	 * @param aliasName
+	 */
+	public AliasNameClass(AliasNameClass aliasName) {
+		this.aliasName = aliasName.getAliasName(); 
+	}
+	
 	public AliasNameClass(String aliasName) {
 		setAliasName(aliasName);
 	}
