@@ -43,7 +43,7 @@ public class Antlr4MySQLQueryParser_test {
 	}
 	private static void testSelect() throws Exception {
 		QueryDefinition qd = null;
-		qd = simpleParseTest(selectTests[14]);
+		qd = simpleParseTest(selectTests[16]);
 		qd.print(System.out, false);		
 	}
 	private static void testCreate() throws Exception {
@@ -108,6 +108,10 @@ public class Antlr4MySQLQueryParser_test {
 		"SELECT `a`, `tt`.`aa`, `sss`.`ttt`.`aaa`, `a1` AS `alias1`, `tt1`.`aa1` AS `alias2`, `sss1`.`ttt1`.`aaa1` AS `alias3` from `t` `talias1` join `tt` `talias2` join `ttt` `talias2` WHERE `aFilter`=\"12345\" ORDER BY `aOrderBy` + `bOrderBy` + SUM(`cOrderBy`) ;",
 		// 14. myView11: An attribute with two aliases
 		"SELECT `mytable01`.`myAttribute01` AS `myAlias01`, `mytable01`.`myAttribute01` AS `myAlias01a` FROM `mytable01`",
+		// 15. myView12: A simple select that includes a function call. The point is that the expression does not need a table to complete the provenance
+		"SELECT `mytable01`.`myAttribute01` AS `myAlias01`, `mytable01`.`myAttribute02` AS `myAttribute02`, CURDATE() AS `myCurDate` FROM `mytable01`",
+		// 16. myView12a: A view that references a calculated field in another view. The provenance of the calculated field reference does not include a table
+		"SELECT `myview12`.`myCurDate` AS `myCurDate` FROM `myview12`",
 		};
 	
 	private static String dropTests[] = {

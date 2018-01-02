@@ -22,16 +22,22 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		//private String aliasName;		// Removed because a query attribute can have multiple aliases
 		private NestingLevel nestingLevel;
 		private String rawData;			// Taken from the SQL during parsing. could be schema.table.attribute, table.attribute, or just attribute
-		public String getRawData() {return rawData;}
-		public String toString() {
-			return (schemaName.length() > 0? schemaName + ".":"") + (tableName.length() > 0 ? tableName + "." : "") + attributeName + (aliasNames.toString().length() > 0 ? " AS " + aliasNames.toString():"");
+		/**
+		 * Create a FullColumnName object with just the raw data taken from the query parser
+		 * @param rawData
+		 */
+		public FullColumnName(String rawData) {
+			setRawData(rawData);
 		}
+		public String setRawData(String rawData) {this.rawData = rawData.trim(); return this.rawData;}
+		public String getRawData() {return rawData;}
+		public String toString() {return (schemaName.length() > 0? schemaName + ".":"") + (tableName.length() > 0 ? tableName + "." : "") + attributeName + (aliasNames.toString().length() > 0 ? " AS " + aliasNames.toString():"");}
 		public String getAttributeName() {return attributeName;}
 		public String getTableName() {return tableName;}
 		public String getSchemaName() {return schemaName;}
 		public FullColumnName(String rawData, NestingLevel nestingLevel) {
 			init();
-			this.rawData = rawData;
+			setRawData(rawData);
 			setNestingLevel(nestingLevel);			
 		}
 		public void init() {
@@ -42,9 +48,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			queryClause = new QueryClauseUndefined();
 		}
 		public AliasNames getAliasNames() {return aliasNames;}
-		public void addAliasName(AliasNameClass aliasName) {
-			this.aliasNames.addAliasName(aliasName);
-		}
+		public void addAliasName(AliasNameClass aliasName) {this.aliasNames.addAliasName(aliasName);}
 		/**
 		 * Start with a string formatted like schemaName.TableName.AttributeName and extract the parts into a structure.
 		 * Beware: A table name and an attribute name CAN have a . (period in it) Yikes.
