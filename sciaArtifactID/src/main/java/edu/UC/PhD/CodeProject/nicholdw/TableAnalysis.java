@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import lib.MySQL;
 import lib.SQLUtils;
 
@@ -138,7 +139,7 @@ public class TableAnalysis {
 				System.out.println();
 			}
 		} catch (Exception ex) {
-			System.out.println("TableAnalysis.ProcessIndices() " + ex.getMessage());
+			Log.logError("TableAnalysis.ProcessIndices() " + ex.getMessage());
 		}
 		return indexes;
 	}
@@ -249,10 +250,10 @@ public class TableAnalysis {
 				//		System.out.println(i + ": " + tmp);
 				//	}
 				//} catch (Exception ex) {} finally {System.out.println("================");}
-				Config.getConfig().Debug("Table_Constraints: Constraint name = " + tableConstraintsResultSet.getString(3) + "\n");
+				Log.logProgress("TableAnalysis.ProcessReferentialConstraints() Constraint name = " + tableConstraintsResultSet.getString(3) + "\n");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Log.logProgress("TableAnalysis.ProcessReferentialConstraints(): " + e.getLocalizedMessage());
 		}
 	}
 }

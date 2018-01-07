@@ -125,7 +125,6 @@ public class Antlr4MySQLQueryParser_test {
 		"DROP TEMPORARY TABLE IF EXISTS tTable99, tTable98",
 		"DROP TEMPORARY TABLE IF EXISTS tTable99, tTable98 RESTRICT",
 		"DROP TEMPORARY TABLE IF EXISTS tTable99, tTable98 CASCADE",
-				
 		};
 	
 	private static String createTests[] = {
@@ -143,8 +142,6 @@ public class Antlr4MySQLQueryParser_test {
 	private static String createTables[] = {
 		// Create myyTable01
 		"CREATE TABLE `mytable01` (`myAttribute01` int(11) NOT NULL, `myAttribute02` varchar(45) DEFAULT NULL,  `myAttribute03` varchar(45) DEFAULT NULL,  PRIMARY KEY (`myAttribute01`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
-
-		
 	};
 }
 

@@ -23,7 +23,24 @@ public class Table {
 	private final String auto_increment = "1";	// http://dev.mysql.com/doc/refman/5.7/en/example-auto-increment.html
 	private boolean alreadyHasSurrogateKey;
 	private String dBInstanceName;
-
+	
+	/**
+	 * Test some stuff
+	 * @param args
+	 */
+	public void main(String[] args) {
+		Log.logProgress("Table.main()...");
+		Table myFlightTable = new Table("flight", "tFlight");
+		Table myPilotTable = new Table("flight", "tPilot");
+		myFlightTable.setAttributes(Table.readAttributesFromTableDefinition(myFlightTable.getSchemaName(), myFlightTable.getTableName()));
+		
+		myPilotTable.setAttributes(Table.readAttributesFromTableDefinition(myPilotTable.getSchemaName(), myPilotTable.getTableName()));
+		
+		
+	}
+	
+	
+	
 	public String getComment() {return comment;}
 	public void setComment(String comment) {this.comment = comment;}
 	/**
