@@ -1,6 +1,7 @@
 /*
  * Entry point for the GUI
  * See http://www.iconarchive.com for icons
+ * Thousands of lines of awesomeness
  */
 package gui;
 
