@@ -103,6 +103,10 @@ public class Attribute {
 	public void addForeignKeyRef(String referencedTableName, String foreignKeyName, String referencedAttributeName) {
 		foreignKeyRefs.add(new ForeignKey(null, null, referencedTableName, foreignKeyName, referencedAttributeName));
 	}
+	/**
+	 * Get the foreign key references
+	 * @return A reference to the list of foreign key references. Not a clone. Be careful.
+	 */
 	public ArrayList<ForeignKey> GetForeignKeyRefs() {return foreignKeyRefs;}
 
 	/**
@@ -111,9 +115,25 @@ public class Attribute {
 	 */
 	public boolean isForeignKey() {return foreignKeyRefs.size() > 0 ? true: false;}
 
+	/**
+	 * Is the attribute nullable?
+	 * @return True if nullable, false otherwise
+	 */
 	public enumNullableCheck getNullableCheck() {return nullableCheck;}
+	
+	/**
+	 * Define if the attribute is nullable
+	 * @param nullableCheck True is the attribute is nullable, false otherwise
+	 * @return Whatever you passed in.
+	 */
 	public enumNullableCheck setNullableCheck(enumNullableCheck nullableCheck) {this.nullableCheck = nullableCheck; return nullableCheck;}
 
+	/**
+	 * Map the type of attribute as a string to the enumerated data type
+	 * @param type The attribute as a string
+	 * @return The corresponding value of the enumerated data type
+	 * @throws Exception if type cannot be mapped.
+	 */
 	public static Attribute.enumType mapType(String type) throws Exception {
 		Attribute.enumType myEnumType = Attribute.enumType.intType;
 		boolean notFound = false;
