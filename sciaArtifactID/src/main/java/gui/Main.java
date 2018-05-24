@@ -85,7 +85,7 @@ public class Main extends Application {
 	@FXML private TabPane tpnProject;
 	@FXML private CheckBox cbOperationalSchemaCSVFiles, cbETLCSVFiles, cbDWCSVFiles;
 	@FXML private MenuBar mbrMainMenu;
-	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout, mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology;
+	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout, mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL;
 	@FXML private WebView wbNeo4j;
 	@FXML private ImageView imgNeo4jReminder;
 	@FXML void lvOperationalSchemaNames_OnClicked(MouseEvent event) {txtOperationalSchemaName.setText(lvOperationalSchemaNames.getSelectionModel().getSelectedItem());}
@@ -96,6 +96,7 @@ public class Main extends Application {
 	@FXML void mnuFileExit_OnAction(ActionEvent event) {Platform.exit();}
 	@FXML void mnuEditClearNeo4jDB_OnAction(ActionEvent event) {clearNeo4jDB();}
 	@FXML void mnuToolsGenerateSchemaTopology_OnClick(ActionEvent event) {openSchemaTopologyWindow();}
+	@FXML void mnuEditSubmitSQL_OnAction(ActionEvent event) {openSubmitSQLWindow();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
 		Log.logProgress("main.mnuFileSaveProject_OnAction(): Saving scip...");
@@ -628,6 +629,27 @@ public class Main extends Application {
 			}
 		} catch (Exception ex) {
 			Log.logError("mnuFileNew_OnAction:" + ex.getLocalizedMessage());
+		}
+	}
+	private void openSubmitSQLWindow() {
+		try {
+			FXMLLoader fxmlLoader = null;
+			// Open the New Project Window
+			fxmlLoader = new FXMLLoader(getClass().getResource("submitSQL.fxml"));
+			Parent root = fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.initModality(Modality.NONE);
+			stage.setOpacity(1);
+			stage.setTitle("Submit SQL");
+			Scene scene = new Scene(root);		//, 700, 450);
+	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {public void handle(WindowEvent we) {}});
+			stage.setScene(scene);
+			SubmitSQLController ssqlc = fxmlLoader.getController();
+			ssqlc.setScene(scene);
+			ssqlc.setStage(stage);
+			stage.show();
+		} catch (Exception ex) {
+			Log.logError("Main.openSubmitSQLWindow():" + ex.getLocalizedMessage());
 		}
 	}
 	private void openSchemaTopologyWindow() {

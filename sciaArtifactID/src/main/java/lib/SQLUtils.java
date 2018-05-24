@@ -1,8 +1,28 @@
 package lib;
 
+import java.sql.SQLException;
+
+import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+
 //import com.mysql.jdbc.PreparedStatement;
 
 public class SQLUtils {
+	public static java.sql.ResultSet executeQuery(String hostName, String loginName, String password, String sql) {
+	    java.sql.ResultSet resultSet = null;
+		java.sql.Connection connection = null;
+		connection = new MySQL().connectToDatabase(hostName, "World", loginName, password);		// ToDo: Do we really need a databaseName here? 
+	    java.sql.PreparedStatement preparedStatement = null;
+	    try {
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+		} catch (SQLException e) {
+			Log.logError("SQLUtils.executeQuery(): " + e.getLocalizedMessage());
+//			System.out.println("SQLUtils.executeQuery(): " + e.getLocalizedMessage());
+		}
+	    try {/*connection.close();*/}catch(Exception ex) {}
+	    return resultSet;
+	}
 	public static Object MyDLookup(String pTarget, String pDomain, String pCriteria, String pAggregate, String pGroupBy, java.sql.Connection connection)
     {
         String criteria;

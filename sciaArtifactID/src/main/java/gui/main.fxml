@@ -72,6 +72,11 @@
                         <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                 </MenuItem>
+	            <MenuItem fx:id="mnuSubmitSQL" mnemonicParsing="false" onAction="#mnuEditSubmitSQL_OnAction" text="Submit SQL">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                </MenuItem>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
