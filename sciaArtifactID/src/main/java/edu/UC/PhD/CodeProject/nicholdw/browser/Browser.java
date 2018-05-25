@@ -5,10 +5,13 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * Manage the browser windows that will display Neo4j graphs
  * @author nicomp
@@ -84,7 +87,7 @@ public class Browser {
 	public void loginToNeo4j() {
 		Log.logProgress("Browser.LoginToNeo4j()");
 		try {
-			eventDriver.findElement(By.xpath("//input[@type='password']")).sendKeys("Danger42");
+			eventDriver.findElement(By.xpath("//input[@type='password']")).sendKeys("Danger42");		// ToDo: need to generalize the password
 			eventDriver.findElement(By.cssSelector("button.gcQmAh")).click();
 		} catch (Exception ex) {
 			Log.logError("Browser.LoginToNeo4j(): " + ex.getLocalizedMessage());
@@ -110,18 +113,29 @@ public class Browser {
 		}
 
 	}
+	/***
+	 * Submit a cypher statement to the Neo4j engine
+	 * @param cypherStatement The cypher statement to be submitted
+	 */
 	public void submitCypherStatement(String cypherStatement) {
 		Log.logProgress("Browser.submitCypherStatement()");
 		try {
-			 List<WebElement> we;
-			 // type the content of chpterStatement into the text area
-			 we = eventDriver.findElements(By.className("hHDPGA"));
-			 we.get(0).click();
-			 we.get(0).sendKeys(cypherStatement);
+			 WebElement we;
+			 // See https://stackoverflow.com/questions/50529985/how-to-select-this-textarea/50530037?noredirect=1#comment88072905_50530037 for how I got this to work
+			 WebElement element = eventDriver.findElement(By.cssSelector("div.CodeMirror textarea"));
+			 JavascriptExecutor jse = ((JavascriptExecutor)eventDriver);
+			 jse.executeScript("arguments[0].click()", element);
+					 
+			 eventDriver.findElement(By.cssSelector("textarea")).sendKeys(cypherStatement);
 
-			 // Click the Play button to run what we put in the text area
-			 we = eventDriver.findElements(By.className("bputMa"));
-			 we.get(0).click();
+			 // type the content of chpterStatement into the text area
+//			 we = eventDriver.findElements(By.className("hHDPGA"));	// ToDo: This is risky. It could change with every release.
+//			 we.get(0).click();
+//			 we.get(0).sendKeys(cypherStatement);
+
+			 // Click the Play button to run what we put in the text area. If this stops working, this might need to be fixed to look like the above logic. 
+			 we = eventDriver.findElement(By.className("bputMa"));
+			 we.click();
 		} catch (Exception ex) {
 			Log.logError("Browser.submitCypherStatement(): " + ex.getLocalizedMessage());
 		}

@@ -25,7 +25,7 @@ public class SchemaTopologyResults {
 	public String toString() {
 		String result = "undefined";
 		try {
-			result = "Results from topology generation: total queries = " + totalQueries + ", total tables = " + totalTables + ", total attributes = " + totalAttributes + ", total query attributes = " + totalQueryAttributes;
+			result = "Results from graph generation: total queries = " + totalQueries + ", total tables = " + totalTables + ", total attributes = " + totalAttributes + ", total query attributes = " + totalQueryAttributes;
 		} catch (Exception ex) {}
 		return result;
 	}

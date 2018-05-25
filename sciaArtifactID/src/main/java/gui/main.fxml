@@ -57,7 +57,7 @@
                         <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                 </MenuItem>
-              <MenuItem fx:id="mnuToolsGenerateSchemaTopology" mnemonicParsing="false" onAction="#mnuToolsGenerateSchemaTopology_OnClick" text="Generate Schema Topology">
+              <MenuItem fx:id="mnuToolsGenerateSchemaTopology" mnemonicParsing="false" onAction="#mnuToolsGenerateSchemaTopology_OnClick" text="Generate DB Graph">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>

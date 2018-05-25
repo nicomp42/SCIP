@@ -30,10 +30,10 @@ public class SchemaTopology {
 	private static final String queryNodeLabel = "Query";
 	private static final String tableNodeLabel = "Table";
 	private static final String attributeNodeLabel = "Attribute";
-	private static final String tableToAttributeLabel = "contains";
-	private static final String queryToAttributeLabel = "references";
-	private static final String schemaToTableLabel = "has";
-	private static final String schemaToQueryLabel = "encloses";
+	private static final String tableToAttributeLabel = "contains_attribute";
+	private static final String queryToAttributeLabel = "references_attribute";
+	private static final String schemaToTableLabel = "contains_table";
+	private static final String schemaToQueryLabel = "contains_query";
 
 	public static void main(String[] args) {
 		Log.logProgress("SchemaTopology.main(): working...");

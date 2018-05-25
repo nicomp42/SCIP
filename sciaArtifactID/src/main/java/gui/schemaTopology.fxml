@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="apSchemaTopology" fx:id="apSchemaTopology" prefHeight="698.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SchemaTopologyController">
+<AnchorPane id="apSchemaTopology" fx:id="apSchemaTopology" prefHeight="698.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SchemaTopologyController">
    <padding>
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
@@ -29,9 +29,11 @@
          </children>
       </Pane>
       <Pane fx:id="pneQuickGraphs" layoutX="5.0" layoutY="584.0" prefHeight="103.0" prefWidth="548.0" style="-fx-background-color: #DCDCDC;">
-            <Button fx:id="btnAttributesInQueries" layoutX="183.0" layoutY="74.0" mnemonicParsing="false" onAction="#btnAttributesInQueries_OnClick" text="Attributes In Queries" />
-            <Button fx:id="btnAttributesNotInQueries" layoutX="183.0" layoutY="46.0" mnemonicParsing="false" onAction="#btnAttributesNotInQueries_OnClick" text="Attributes Not In Queries" />
-         	<Label layoutX="14.0" layoutY="11.0" text="Quick Graphs" />
+         <children>
+               <Button fx:id="btnAttributesInQueries" layoutX="183.0" layoutY="74.0" mnemonicParsing="false" onAction="#btnAttributesInQueries_OnClick" text="Attributes In Queries" />
+               <Button fx:id="btnAttributesNotInQueries" layoutX="183.0" layoutY="46.0" mnemonicParsing="false" onAction="#btnAttributesNotInQueries_OnClick" text="Attributes Not In Queries" />
+            	<Label layoutX="14.0" layoutY="11.0" text="Quick Graphs" />
+         </children>
       </Pane>
       <MenuBar fx:id="mbrMainMenu" layoutX="5.0">
         <menus>
@@ -52,19 +54,19 @@
       </MenuBar>
                         <Label layoutX="14.0" layoutY="30.0" text="Database Hostname" />
                         <TextField id="txtHostName" fx:id="txtHostName" layoutX="189.0" layoutY="26.0" prefHeight="25.0" prefWidth="249.0" text="localhost" />
-                        <Label layoutX="14.0" layoutY="55.0" text="Login Name" />
-                        <Label layoutX="14.0" layoutY="80.0" text="Password" />
-                        <TextField id="txtLoginName" fx:id="txtLoginName" layoutX="189.0" layoutY="51.0" text="root" />
-                        <TextField id="txtPassword" fx:id="txtPassword" layoutX="189.0" layoutY="76.0" text="Danger42" />
-                        <Button id="btnLoadSchemaNames" fx:id="btnLoadSchemaNames" layoutX="189.0" layoutY="104.0" mnemonicParsing="false" onAction="#btnLoadSchemaNames_OnClick" text="Load from Host" textFill="OLIVE" />
+                        <Label layoutX="14.0" layoutY="63.0" text="Login Name" />
+                        <Label layoutX="14.0" layoutY="91.0" text="Password" />
+                        <TextField id="txtLoginName" fx:id="txtLoginName" layoutX="189.0" layoutY="59.0" text="root" />
+                        <TextField id="txtPassword" fx:id="txtPassword" layoutX="189.0" layoutY="87.0" text="Danger42" />
+                        <Button id="btnLoadSchemaNames" fx:id="btnLoadSchemaNames" layoutX="189.0" layoutY="117.0" mnemonicParsing="false" onAction="#btnLoadSchemaNames_OnClick" text="Load from Host" textFill="OLIVE" />
     	                <TreeView id="tvSchemas" fx:id="tvSchemas" layoutX="557.0" layoutY="29.0" onMouseClicked="#tvSchemas_OnClicked" prefHeight="659.0" prefWidth="228.0" />
                         <Label fx:id="lblSchemaToProcess" layoutX="14.0" layoutY="154.0" text="Schema to Process" />
                         <TextField id="txtSchemaName" fx:id="txtSchemaName" layoutX="189.0" layoutY="150.0" prefHeight="25.0" prefWidth="257.0" AnchorPane.leftAnchor="189.0" />
     	                <Label fx:id="lblContentsOfDatabaseHost" layoutX="557.0" layoutY="11.0" prefHeight="17.0" prefWidth="173.0" text="Contents of Database Host" />
-                        <Button id="btnProcessSchema" fx:id="btnProcessSchema" layoutX="452.0" layoutY="150.0" mnemonicParsing="false" onAction="#btnProcessSchema_OnClick" text="Process Schema" textFill="TEAL" />
+                        <Button id="btnProcessSchema" fx:id="btnProcessSchema" layoutX="452.0" layoutY="150.0" mnemonicParsing="false" onAction="#btnProcessSchema_OnClick" text="Go" textFill="TEAL" />
       <Label fx:id="lblResults" layoutX="14.0" layoutY="279.0" text="Results" />
-      <CheckBox fx:id="cbClearDB" contentDisplay="RIGHT" layoutX="191.0" layoutY="183.0" mnemonicParsing="false" text="Clear DB before generating topology" />
-      <CheckBox fx:id="cbIncludeSchemaNodes" contentDisplay="RIGHT" layoutX="191.0" layoutY="207.0" mnemonicParsing="false" text="Include schema node in topology" />
+      <CheckBox fx:id="cbClearDB" contentDisplay="RIGHT" layoutX="191.0" layoutY="183.0" mnemonicParsing="false" text="Clear graph before generating" />
+      <CheckBox fx:id="cbIncludeSchemaNodes" contentDisplay="RIGHT" layoutX="191.0" layoutY="207.0" mnemonicParsing="false" text="Include schema node in graph" />
       <TextArea fx:id="taResults" layoutX="188.0" layoutY="279.0" prefHeight="200.0" prefWidth="365.0" wrapText="true" />
       <CheckBox fx:id="cbOpenInBrowser" contentDisplay="RIGHT" layoutX="191.0" layoutY="232.0" mnemonicParsing="false" text="Open graph in browser after processing" />
       <Label fx:id="lblWorking" layoutX="241.0" layoutY="352.0" rotate="-45.0" text="Working..." textFill="#64ff64">
