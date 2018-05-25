@@ -7,7 +7,7 @@ import org.apache.lucene.queryparser.surround.parser.QueryParser;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
-import gudusoft.gsqlparser.TGSqlParser;
+//import gudusoft.gsqlparser.TGSqlParser;
 
 /***
  * List of QueryDefinition objects
