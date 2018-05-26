@@ -13,14 +13,17 @@ public class AttributeParts {
 	private String tableName;
 	private String attributeName;
 	private String dataType;
+	private String aliasName;
 	/**
-	 * Split this string: schemaName.TableName.AttributeName (dataType) into the component parts of an attribute
+	 * Split this string: schemaName.TableName.AttributeName AS alias (dataType) into the component parts of an attribute
 	 * @param attributeString The string to be parsed.
 	 * @return Nothing. The attributes of the object are populated.
 	 */
 	public void split(String attributeString) {
 		try {
-			String tmp1[] = attributeString.split("AS");
+			String tmp1[] = attributeString.split(" AS ");	// tmp1[0] = schemaName.TableName.AttributeName tmp1[1] = alias (dataType)
+			String tmp2[] = tmp1[1].split(" ");
+			this.setAliasName(tmp2[0]);
 			String tmp[] = tmp1[0].split(":");
 			this.setSchemaName(tmp[0]);
 			this.setTableName(tmp[1]);
@@ -39,4 +42,6 @@ public class AttributeParts {
 	public void setAttributeName(String attributeName) {this.attributeName = attributeName;}
 	public String getDataType() {return dataType;}
 	public void setDataType(String dataType) {this.dataType = dataType;}
+	public void setAliasName(String aliasName) {this.aliasName = aliasName;}
+	public String getAliasName() {return aliasName;}
 }

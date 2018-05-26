@@ -39,8 +39,6 @@ public class Table {
 		
 	}
 	
-	
-	
 	public String getComment() {return comment;}
 	public void setComment(String comment) {this.comment = comment;}
 	/**
@@ -211,7 +209,7 @@ public class Table {
 					dataType = trimDataType(dataType);
 					// That's it. That's the list. No more descriptors.
 					// ToDo: The IsPrimary key argument is defaulted to false because it comes from another table.
-					Attribute myAttribute = new Attribute(name, tableName, false, dataType, nullable, key, theDefault, extra, length);
+					Attribute myAttribute = new Attribute(name, tableName, false, dataType, nullable, key, theDefault, extra, length, (Aliases)null);
 
 					myAttributeList.addAttribute(myAttribute);
 
@@ -276,7 +274,7 @@ public class Table {
 	 * Add a surrogate key to the table
 	 */
 	public void addSurrogateKey() {
-		Attribute a = new Attribute(getTableName() + "ID", this.tableName, true, "int", "no", "yes", "", "", 1 );
+		Attribute a = new Attribute(getTableName() + "ID", this.tableName, true, "int", "no", "yes", "", "", 1, (Aliases)null );
 		a.setAutoIncrement(true);
 		attributes.addAttribute(a);
 		setAlreadyHasSurrogateKey(true);

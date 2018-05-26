@@ -37,7 +37,7 @@ public class Attribute {
 	private int length;
 	private boolean isPrimaryKey;
 	protected String tableName;		// This is redundant if the attribute is contained in the Attributes collection contained in a table object.
-
+	private Aliases aliases;		// A table attribute won't have aliases but a query attribute will
 	public boolean getAutoIncrement() {return autoIncrement;}
 	public void setAutoIncrement(boolean autoIncrement) {this.autoIncrement = autoIncrement;}
 	public int getLength() {return length;}
@@ -60,6 +60,7 @@ public class Attribute {
 		foreignKeyRefs = new ArrayList<ForeignKey>();
 		nullableCheck = enumNullableCheck.notCheckedYet;
 		setAutoIncrement(false);
+		aliases = new Aliases();
 	}
 
 	/***
@@ -72,7 +73,7 @@ public class Attribute {
 	 * @param theDefault default
 	 * @param extra extra
 	 */
-	public Attribute(String name, String tableName, Boolean isPrimaryKey, String type, String nullable, String key, String theDefault, String extra, int length ) {
+	public Attribute(String name, String tableName, Boolean isPrimaryKey, String type, String nullable, String key, String theDefault, String extra, int length, Aliases aliases ) {
 		this.attributeName = name;
 		this.type = type;
 		this.nullable = nullable;
@@ -85,6 +86,7 @@ public class Attribute {
 		setAutoIncrement(false);
 		this.isPrimaryKey = isPrimaryKey;
 		this.tableName = tableName;
+		this.aliases = Aliases.clone(aliases);
 	}
 	public boolean isTypeUnknown() {return type.equals(typeUnknown) ? true:false;}
 	public String getAttributeName() {return attributeName;}
