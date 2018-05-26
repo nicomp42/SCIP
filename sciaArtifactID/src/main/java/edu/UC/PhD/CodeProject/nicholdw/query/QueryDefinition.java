@@ -416,37 +416,53 @@ public class QueryDefinition {
 	 * @param qd Query Definition that we are processing
 	 * @param schemaName Schema Name associated with the attribute
 	 * @param tableName Table Name associated with the attribute 
-	 * @param attributeName Attribute Name
+	 * @param aliasName Attribute Name
 	 * @return The ordered list of tables that define the provenance of the attribute
 	 */
-	public static QueryTables buildProvenance(QueryDefinition qd, String schemaName, String tableName, String attributeName) {
-		String currentAttributeName = attributeName;
-		Log.logProgress("QueryDefinition.buildProvenance(): query = " + qd.getSchemaName() + "." + qd.getQueryName() + ", attribute = " + schemaName + "." + tableName + "." + attributeName );
+	public static QueryTables buildProvenance(QueryDefinition qd, String aliasName) {
+		String currentAliasName = aliasName;
+		String currentAttributeName = null;
+		QueryDefinition qdTmp = qd;
+		Log.logProgress("QueryDefinition.buildProvenance(): query = " + qd.getSchemaName() + "." + qd.getQueryName() + ", attribute alias = " + aliasName );
 		QueryTables queryTablesProvenance = new QueryTables();
-		try { 
-			// We were given schema.table.attribute so we need to search the query definition for the query table containing that attribute
-			QueryTable qt = qd.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(schemaName, tableName, currentAttributeName, (AliasNameClass)null, null));
-			//queryTablesProvenance.addQueryTable(qt);
-			// if this is a table, we're done. If it's not a table, it's a query and we need to find that query in the children collection for this Query Definition
-			while (true) {
-				// Retrieve the query by schemaName.QueryName that has the attribute in it. 
-				QueryDefinition qdTmp = qd.children.findQueryDefinitionBySchemaAndTableName(qt.getSchemaName(), qt.getTableName());
-				
+		boolean keepGoing = true;
+		QueryTable queryTableProvenance = null;
+		QueryAttribute queryAttributeProvenance = null;
+		QueryTable qt = null;
+		while (keepGoing) {
+			try {
 				if (qdTmp != null) {	// We found the underlying query that provides the attribute
-					queryTablesProvenance.addQueryTable(new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClass(""), null));
+
+				// We were given the alias so we need to get that table from the table collection of this query definition
+				QueryAttribute queryAttribute = qdTmp.getQueryAttributes().findAttribute(currentAliasName);
+				currentAttributeName = queryAttribute.getAttributeName();
+				qt = qdTmp.getQueryTables().lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getTableName());
+				// if this is a table, we're done. If it's not a table, it's a query and we need to find that query in the children collection for this Query Definition
+				queryTableProvenance = null;
+				queryAttributeProvenance = null;
+				// Retrieve the query by schemaName.QueryName that has the attribute in it. 
+//				QueryDefinition qdTmp = qd.children.findQueryDefinitionBySchemaAndTableName(qt.getSchemaName(), qt.getTableName());
+
+					Log.logProgress("QueryDefinition.buildProvenance(): found it in " + qt.getSchemaName() + "." + qt.getTableName());
+					queryTableProvenance = new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClass(""), null);
+					queryAttributeProvenance = qdTmp.getQueryAttributes().findAttribute(currentAliasName);
+					queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
+					queryTablesProvenance.addQueryTable(queryTableProvenance);
 					Log.logProgress("QueryDefinition.buildProvenance(): table added to provenance: " + qdTmp.getSchemaName() + "." + qdTmp.getQueryName());
-					QueryAttribute queryAttribute = qdTmp.getQueryAttributes().findAttribute(currentAttributeName);
-					currentAttributeName = queryAttribute.getAttributeName();		// We need the attribute name used in this query
-					qt = qdTmp.getQueryTables().findQueryOrTableContainingAttribute(new QueryAttribute(queryAttribute.getSchemaName(), queryAttribute.getTableName(), queryAttribute.getAttributeName(), (AliasNameClass)null, null));
-					qd = qdTmp;
+					currentAliasName = queryAttributeProvenance.getAttributeName();		// We need the attribute name used in this query
+					Log.logProgress("QueryDefinition.buildProvenance(): searching for table/query with attribute: " + queryAttributeProvenance.getSchemaName() + "." +  queryAttributeProvenance.getTableName() + "." +  queryAttributeProvenance.getAttributeName() );
+					qdTmp = qdTmp.children.findQueryDefinitionBySchemaAndTableName(queryAttribute.getSchemaName(), queryAttribute.getTableName());
 				} else {
 					// Add the last item to the provenance, which must be a table not a query. Use the schema name and table name that we didn't find in the children collection.
-					queryTablesProvenance.addQueryTable(new QueryTable(qt.getSchemaName(), qt.getTableName(), new AliasNameClass(""), null));
-					break;
+					queryTableProvenance = new QueryTable(qt.getSchemaName(), qt.getTableName(), new AliasNameClass(""), null );
+					queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
+					Log.logProgress("QueryDefinition.buildProvenance(): adding last item to provenance: " + queryAttributeProvenance.getSchemaName() + "." +  queryAttributeProvenance.getTableName() + "." +  queryAttributeProvenance.getAttributeName() );
+					queryTablesProvenance.addQueryTable(queryTableProvenance);
+					keepGoing = false;;
 				}
+			} catch (Exception ex) {
+				Log.logError("QueryDefinition.buildProvenance(): " + ex.getLocalizedMessage() );
 			}
-		} catch (Exception ex) {
-			Log.logError("QueryDefinition.buildProvenance(): " + ex.getLocalizedMessage() );
 		}
 		return queryTablesProvenance;
 	}
@@ -557,5 +573,5 @@ public class QueryDefinition {
 	public QueryVariables getQueryVariables() {return queryVariables;}
 	public void setQueryVariables(QueryVariables queryVariables) {this.queryVariables = queryVariables;}
 	public QueryTerminalSymbols getQueryTerminalSymbols() {return queryTerminalSymbols;}
-	public void setQueryTerminalSymbols(QueryTerminalSymbols queryTerminalSymbols) {this.queryTerminalSymbols = queryTerminalSymbols;}	
+	public void setQueryTerminalSymbols(QueryTerminalSymbols queryTerminalSymbols) {this.queryTerminalSymbols = queryTerminalSymbols;}
 }

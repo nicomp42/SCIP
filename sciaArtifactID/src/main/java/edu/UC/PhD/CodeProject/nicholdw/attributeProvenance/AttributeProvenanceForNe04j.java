@@ -40,7 +40,7 @@ public class AttributeProvenanceForNe04j {
 
 	public static boolean exportCSVFiles(AttributeParts attributeParts, QueryDefinition qd, String filePath) {
 		String fileName = Utils.formatPath(Utils.cleanPath(filePath)) + Config.getConfig().getNeo4jSuffix() + attributeProvenanceFileSuffix + Config.getConfig().getCSVFileExtension();
-		QueryTables queryTables = QueryDefinition.buildProvenance(qd, attributeParts.getSchemaName(), attributeParts.getTableName(), attributeParts.getAttributeName());
+		QueryTables queryTables = QueryDefinition.buildProvenance(qd, attributeParts.getAliasName());
 		return writeAttributeProvenanceCSVFile(fileName, qd, queryTables, attributeParts);
 	}
 	/**

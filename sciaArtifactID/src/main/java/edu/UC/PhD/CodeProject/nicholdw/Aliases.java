@@ -76,8 +76,10 @@ public class Aliases implements Iterable<Alias> {
 	 */
 	public static Aliases clone(Aliases aliases) {
 		Aliases aliasesClone = new Aliases();
-		for (Alias alias: aliases) {
-			aliasesClone.addAlias(new Alias(alias));
+		if (aliases != null) {
+			for (Alias alias: aliases) {
+				aliasesClone.addAlias(new Alias(alias));
+			}
 		}
 		return aliasesClone;
 	}

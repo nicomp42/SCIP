@@ -13,6 +13,13 @@ public class QueryTable extends Table {
 	private Boolean isQuery;		// If true, this is a query, else it's a table
 	private Boolean isProcessed;
 	private String containingQueryName;
+	private QueryAttribute queryAttributeProvenance;
+	public QueryAttribute getQueryAttributeProvenance() {
+		return queryAttributeProvenance;
+	}
+	public void setQueryAttributeProvenance(QueryAttribute queryAttributeProvenance) {
+		this.queryAttributeProvenance = queryAttributeProvenance;
+	}	
 
 	public QueryTable(String schemaName, String tableName, AliasNameClass aliasNameClass, QueryClause queryClause) {
 		super(tableName, schemaName);

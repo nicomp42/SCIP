@@ -21,6 +21,26 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			queryTables = new ArrayList<QueryTable>();
 		}
 
+		public QueryTable lookupBySchemaAndTable(String schemaName, String tableName) {
+			QueryTable queryTableResult = null;
+			Log.logProgress("QueryTables.lookUpBySchemaAndTable(): Looking for " + schemaName + "." + tableName);
+			try {
+				// Look through all the tables
+				for (QueryTable queryTable: queryTables) {
+					// Check the schema name first or skip it if the attribute has no schema name
+					if (Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), schemaName) == true) {
+						// Check the table name for a match or skip if it the attribute has no table name
+						if (Config.getConfig().compareTableNames(queryTable.getTableName(), tableName) == true) {
+								queryTableResult = queryTable;
+								break;
+						}
+					}
+				}
+			} catch (Exception ex) {Log.logError("QueryTables.lookUpBySchemaAndTable(): " + ex.getLocalizedMessage());}
+			Log.logProgress("QueryTables.lookUpBySchemaAndTable(): " + ((queryTableResult != null) ? "Table found: " + queryTableResult.toString(): "Table not found"));
+			return queryTableResult;
+		}
+		
 		/**
 		 * Retrieve the list of tables in this Index List
 		 * @return A reference to the table list in the current object.
