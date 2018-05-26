@@ -122,6 +122,8 @@ public class AttributeProvenanceController /* extends Application */ {
 	private void exportCSVToNeo4j() {
 		// If the user selected the check box, clear the current Neo4j DB before exporting
 		if (cbClearNeo4jBeforeExport.isSelected()) {
+			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+			Neo4jUtils.getDriver();
 			Neo4jUtils.clearDB();
 		}
 		AttributeProvenanceForNe04j.executeCypherQueries( txaCSVFolder.getText());

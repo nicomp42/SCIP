@@ -19,8 +19,8 @@ import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopology;
-import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopologyConfig;
-import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopologyResults;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphConfig;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphResults;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -41,11 +41,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class SchemaTopologyController /* extends Application */ {
+public class DatabaseGraphController {
 	private Scene myScene;
 	private Stage myStage;
 	SchemaTopology schemaTopology;
-	SchemaTopologyResults schemaTopologyResults;
+	DatabaseGraphResults schemaTopologyResults;
 	@FXML	private Pane pneFilter, pneQuickGraphs;
 	@FXML	private AnchorPane apSchemaTopology;
 	@FXML	private TextField txtHostName, txtLoginName, txtPassword, txtSchemaName;
@@ -110,11 +110,11 @@ public class SchemaTopologyController /* extends Application */ {
 			ArrayList<String> schemaNames = Schemas.loadSchemaNamesFromDatabaseServer(hostName, loginName, password);
 //			java.net.URL imgURL = SchemaTopologyController.class.getClassLoader().getResource("images/Places-network-server-database-icon24px.png");
 //			Image icon  = new Image("../../images/Places-network-server-database-icon24px.png");
-			Node rootIcon = new ImageView(new Image(SchemaTopologyController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
+			Node rootIcon = new ImageView(new Image(DatabaseGraphController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
 			TreeItem<String> rootItem = new TreeItem<String>(hostName, rootIcon);
 			rootItem.setExpanded(true);
 			for (String schemaName : schemaNames) {
-				Node schemaIcon = new ImageView(new Image(SchemaTopologyController.class.getClassLoader().getResourceAsStream("images/database-iconSilver24px.png")));
+				Node schemaIcon = new ImageView(new Image(DatabaseGraphController.class.getClassLoader().getResourceAsStream("images/database-iconSilver24px.png")));
 				TreeItem<String> schemaItem = new TreeItem<String>(schemaName, schemaIcon);
 				rootItem.getChildren().add(schemaItem);
 			}
@@ -173,8 +173,8 @@ public class SchemaTopologyController /* extends Application */ {
 	}
 	private void ProcessSchema() {
  		if ( txtSchemaName.getText().trim().length() > 0) {
-			schemaTopologyResults = new SchemaTopologyResults();
-			SchemaTopologyConfig schemaTopologyConfig = new SchemaTopologyConfig();
+			schemaTopologyResults = new DatabaseGraphResults();
+			DatabaseGraphConfig schemaTopologyConfig = new DatabaseGraphConfig();
 			// Here is some stuff we want to run in another thread so the window has time to update itself.
 			 Task<Void> runnable = new Task<Void>() {		// https://docs.oracle.com/javafx/2/threads/jfxpub-threads.htm
 				 // This thread cannot write to JavaFX controls, even in the Debug window.

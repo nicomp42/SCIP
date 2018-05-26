@@ -20,12 +20,12 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
  * @author nicomp
  */
 public class SchemaTopology {
-	private SchemaTopologyResults schemaTopologyResults;
+	private DatabaseGraphResults schemaTopologyResults;
 	private String hostName, userName, password;
 	private String schemaName;
 	private QueryDefinitions queryDefinitions;
 	private Schema schema;
-	private SchemaTopologyConfig schemaTopologyConfig;
+	private DatabaseGraphConfig schemaTopologyConfig;
 	private static final String schemaNodeLabel = "Schema";
 	private static final String queryNodeLabel = "Query";
 	private static final String tableNodeLabel = "Table";
@@ -41,7 +41,7 @@ public class SchemaTopology {
 		Neo4jUtils.setNeo4jConnectionParameters( Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 		Neo4jUtils.getDriver();
 		Neo4jUtils.clearDB();
-		SchemaTopologyConfig schemaTopologyConfig = new SchemaTopologyConfig();
+		DatabaseGraphConfig schemaTopologyConfig = new DatabaseGraphConfig();
 		schemaTopologyConfig.setIncludeSchemaInGraph(false);
 		schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
 
@@ -62,16 +62,16 @@ public class SchemaTopology {
 	 * @param schemaName
 	 * @param queryDefinitions The list of query definitions to be processed, or {null or zero-length} for all queries in the schema.
 	 */
-	public SchemaTopology(SchemaTopologyConfig schemaTopologyConfig, String hostName, String userName, String password, String schemaName, QueryDefinitions queryDefinitions) {
+	public SchemaTopology(DatabaseGraphConfig schemaTopologyConfig, String hostName, String userName, String password, String schemaName, QueryDefinitions queryDefinitions) {
 		this.hostName = hostName;
 		this.userName = userName;
 		this.password = password;
 		this.schemaName = schemaName;
 		this.queryDefinitions = queryDefinitions;
 		this.schemaTopologyConfig = schemaTopologyConfig;
-		this.schemaTopologyResults = new SchemaTopologyResults();
+		this.schemaTopologyResults = new DatabaseGraphResults();
 	}
-	public SchemaTopologyResults generateGraph() throws Exception {
+	public DatabaseGraphResults generateGraph() throws Exception {
 		boolean status = true;		// Hope for the best
 		schema = new Schema(schemaName);
 		schema.loadTables(hostName, userName, password);			// Load the tables for the schema

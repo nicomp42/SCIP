@@ -502,8 +502,8 @@ public class QueryDefinition {
 			Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): checking " + queryAttribute.getSchemaName() +  queryAttribute.getTableName() + "." + queryAttribute.getAttributeName() );
 			// We only want attributes that are in the originating table, or are a constant because a query can define a constant.
 			if (!isItAQuery || queryAttribute.isConstant())  {
-				Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): adding " + queryAttribute.getSchemaName() + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName() );
-				attributes.put(queryAttribute.getAttributeName(), queryAttribute);
+				Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): adding " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName() );
+				attributes.put(queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName(), queryAttribute);
 			}
 		}
 		for (QueryDefinition qdChild: qd.children) {

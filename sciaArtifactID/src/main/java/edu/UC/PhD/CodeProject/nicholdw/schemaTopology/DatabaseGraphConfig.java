@@ -1,6 +1,6 @@
 package edu.UC.PhD.CodeProject.nicholdw.schemaTopology;
 
-public class SchemaTopologyConfig {
+public class DatabaseGraphConfig {
 	private boolean includeSchemaInGraph;	// if false, don't include th schema node or the relationships to that node. It does clutter the graph.
 	private boolean useFriendlyNameAsDisplayName;	// If true, use the local name of the table/query rathe than a fully qualified name that includes the schema name, etc.
 
@@ -13,7 +13,7 @@ public class SchemaTopologyConfig {
 	}
 
 	/**
-	 * If false, don't include th schema node or the relationships to that node. It does clutter the graph.
+	 * If false, don't include the schema node or the relationships to that node. It does clutter the graph.
 	 * @param includeSchemaInGraph True or false
 	 */
 	public void setIncludeSchemaInGraph(boolean includeSchemaInGraph) {

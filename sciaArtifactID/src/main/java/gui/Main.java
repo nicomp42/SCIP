@@ -95,7 +95,7 @@ public class Main extends Application {
 	@FXML void mnuEditDebug_OnAction(ActionEvent event) {openDebugWindow();}
 	@FXML void mnuFileExit_OnAction(ActionEvent event) {Platform.exit();}
 	@FXML void mnuEditClearNeo4jDB_OnAction(ActionEvent event) {clearNeo4jDB();}
-	@FXML void mnuToolsGenerateSchemaTopology_OnClick(ActionEvent event) {openSchemaTopologyWindow();}
+	@FXML void mnuToolsGenerateSchemaTopology_OnClick(ActionEvent event) {openDatabaseGraphWindow();}
 	@FXML void mnuEditSubmitSQL_OnAction(ActionEvent event) {openSubmitSQLWindow();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
@@ -652,20 +652,20 @@ public class Main extends Application {
 			Log.logError("Main.openSubmitSQLWindow():" + ex.getLocalizedMessage());
 		}
 	}
-	private void openSchemaTopologyWindow() {
+	private void openDatabaseGraphWindow() {
 		try {
 			FXMLLoader fxmlLoader = null;
 			// Open the New Project Window
-			fxmlLoader = new FXMLLoader(getClass().getResource("schemaTopology.fxml"));
+			fxmlLoader = new FXMLLoader(getClass().getResource("databaseGraph.fxml"));
 			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();
 			stage.initModality(Modality.NONE);
 			stage.setOpacity(1);
-			stage.setTitle("Schema Topology");
+			stage.setTitle("Generate DB Graph");
 			Scene scene = new Scene(root);		//, 700, 450);
 	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {public void handle(WindowEvent we) {}});
 			stage.setScene(scene);
-			SchemaTopologyController stc = fxmlLoader.getController();
+			DatabaseGraphController stc = fxmlLoader.getController();
 			stc.setScene(scene);
 			stc.setStage(stage);
 			stage.show();

@@ -35,7 +35,8 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
 public class AttributeProvenanceForNe04j {
 
 	private static final String attributeProvenanceFileSuffix = "AttributeProvenance";
-	private static final String provenanceRealationName = "Provenance";
+//	private static final String provenanceRealationName = "Provenance";
+	private static final String provenanceRealationName = "Impacts";
 
 	public static boolean exportCSVFiles(AttributeParts attributeParts, QueryDefinition qd, String filePath) {
 		String fileName = Utils.formatPath(Utils.cleanPath(filePath)) + Config.getConfig().getNeo4jSuffix() + attributeProvenanceFileSuffix + Config.getConfig().getCSVFileExtension();
@@ -190,6 +191,7 @@ public class AttributeProvenanceForNe04j {
 	));
 	public static final ArrayList<String> cypherQueriesStep2 = new ArrayList<String>(Arrays.asList(
 			// Draw the relations between nodes we just added.
-			"MATCH (first), (second) WHERE first.Key = second.PreviousKey MERGE (first)-[:" + provenanceRealationName + "]->(second)"
+//			"MATCH (first), (second) WHERE first.Key = second.PreviousKey MERGE (first)-[:" + provenanceRealationName + "]->(second)"
+			"MATCH (first), (second) WHERE first.Key = second.PreviousKey MERGE (second)-[:" + provenanceRealationName + "]->(first)"
 	));
 }
