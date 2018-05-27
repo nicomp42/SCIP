@@ -1,5 +1,6 @@
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 /**
@@ -131,6 +132,14 @@ public class QueryAttribute extends QueryComponent  {
 		}
 		if (aliasNames.size() > 1) { result.insert(0, "{").append("}"); }
 		return result.toString();
+	}
+	/**
+	 * Build a reference to this attribute that will be unique in the query. 
+	 * This is useful because sometimes an attribute will not have an alias in the original SQL taken from the RDBMS.
+	 * @return
+	 */
+	public String getUniqueAttributeName() {
+		return  getSchemaName() + "#" + getTableName() + "#" + getAttributeName();
 	}
 	/**
 	 * Build the name of the attribute with schema name and table name for display purposes.

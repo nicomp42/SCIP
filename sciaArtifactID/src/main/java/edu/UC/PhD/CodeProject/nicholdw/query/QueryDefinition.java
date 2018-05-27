@@ -392,10 +392,26 @@ public class QueryDefinition {
 		    reconcileAttributes();
 		    processNestedQueries(this);
 			traverseQueryDefinitions(this);
+			reconcileAliases(this);
 		} catch (Exception ex) {
 			Log.logError("QueryDefinition.crunchIt(): " + ex.getLocalizedMessage());
 		}
 	}
+	/***
+	 * Make sure each attribute in the query definition and in its' children has an alias. 
+	 * @param qd The Query Definition to be processed. Children of qd will also be processed.
+	 */
+	public static void reconcileAliases(QueryDefinition qd) {
+		for (QueryAttribute queryAttribute : qd.getQueryAttributes()) {
+			if (queryAttribute.getAliasNames() == null || queryAttribute.getAliasNames().size() == 0) {
+				queryAttribute.getAliasNames().addAliasName(new AliasNameClass(queryAttribute.getUniqueAttributeName()));
+			}
+		}
+		for (QueryDefinition queryDefinition : qd.children) {
+			reconcileAliases(queryDefinition);
+		}
+	}
+	
 	/**
 	 * Eventually this method should find that all query definitions are either without children or are marked final
 	 * @param queryDefinition

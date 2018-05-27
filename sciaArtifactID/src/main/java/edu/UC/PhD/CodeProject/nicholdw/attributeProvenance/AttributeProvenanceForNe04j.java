@@ -101,8 +101,7 @@ public class AttributeProvenanceForNe04j {
 			Log.logProgress("AttributeProvenance.writeAttributeProvenanceCSVFile(): writing attributes");
 			// The first row in the file is the attribute for which we are writing the provenance.
 			// It should be a different type than all the other nodes just so the visual presentation is improved.
-			writer.append("RootNode");
-			writer.append(",");
+/*			writer.append(",");
 			writer.append(qd.getSchemaName().trim() + "." + qd.getQueryName().trim() + "." + attributeParts.getAttributeName().trim());
 			writer.append(",");
 			writer.append(qd.getSchemaName().trim());
@@ -116,8 +115,13 @@ public class AttributeProvenanceForNe04j {
 			writer.append(previousKey.trim());
 			writer.append('\n');
 			previousKey = qd.getSchemaName().trim() + "." + qd.getQueryName().trim() + "." + attributeParts.getAttributeName().trim();
+*/			int nodeCount = 1;
 			for (QueryTable queryTable : queryTables) {
-				writer.append("SubNode");
+				if (nodeCount == 1) {
+					writer.append("RootNode");
+				} else {
+					writer.append("SubNode");
+				}
 				writer.append(",");
 				writer.append(queryTable.getSchemaName().trim() + "." + queryTable.getTableName().trim() + "." + attributeParts.getAttributeName().trim());
 				writer.append(",");
@@ -125,13 +129,16 @@ public class AttributeProvenanceForNe04j {
 				writer.append(",");
 				writer.append(queryTable.getTableName().trim());
 				writer.append(",");
-				writer.append( attributeParts.getAttributeName().trim());
+				String aliasName;
+				aliasName = queryTable.getQueryAttributeProvenance().getAliasNames().toString();
+				writer.append(aliasName);
 				writer.append(",");
 				writer.append(attributeParts.getDataType().trim());
 				writer.append(",");
 				writer.append(previousKey.trim());
 				writer.append('\n');
 				previousKey = queryTable.getSchemaName().trim() + "." + queryTable.getTableName().trim() + "." + attributeParts.getAttributeName().trim();
+				nodeCount++;
 			}
 			writer.flush();
 			writer.close();

@@ -162,6 +162,7 @@ public class AttributeProvenanceController /* extends Application */ {
 	 * Send all the artifacts in the drop-down list to CSV files then on to the active Neo4j DB
 	 */
 	private void processEverything() {
+		Log.logProgress("AttributeProvenanceController.processEverything()");
 		try {
 			String CSVFolder = txaCSVFolder.getText().trim();
 			if (CSVFolder.length() != 0) {
@@ -198,7 +199,7 @@ public class AttributeProvenanceController /* extends Application */ {
 			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem());
 			QueryTables qt = QueryDefinition.buildProvenance(queryDefinition, attributeParts.getAliasName());
 			TreeItem<String> rootItem = null;
-			int nodeCount = 1;	// We just added the root node
+			int nodeCount = 1;
 			for (QueryTable queryTable: qt) {
 				if (nodeCount == 1) {
 					Node rootIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
