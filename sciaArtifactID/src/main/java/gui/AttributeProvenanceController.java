@@ -196,20 +196,28 @@ public class AttributeProvenanceController /* extends Application */ {
 			// This is more hinkey because the full provenance is not in the structure returned by buildProvenance. 
 			AttributeParts attributeParts = new AttributeParts();
 			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem());
-			Node rootIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
-			TreeItem<String> rootItem = new TreeItem<String> (queryDefinition.getSchemaName() + "." + queryDefinition.getQueryName() + "." + attributeParts.getAliasName(), rootIcon);
-			rootItem.setExpanded(true);
-			tvAttributeProvenance.setRoot(rootItem);
 			QueryTables qt = QueryDefinition.buildProvenance(queryDefinition, attributeParts.getAliasName());
+			TreeItem<String> rootItem = null;
 			int nodeCount = 1;	// We just added the root node
 			for (QueryTable queryTable: qt) {
-//				if (nodeCount == 1) {continue;}		// We added the root node above the loop
-				Node schemaIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/database-iconSilver24px.png")));
-//				TreeItem<String> schemaItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + attributeParts.getAttributeName(), schemaIcon);  2018=05-26
-				TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + queryTable.getQueryAttributeProvenance().getAttributeName(), schemaIcon);
-				rootItem.getChildren().add(provenanceItem);
-				rootItem = provenanceItem;
-				rootItem.setExpanded(true);
+				if (nodeCount == 1) {
+					Node rootIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
+//					TreeItem<String> rootItem = new TreeItem<String> (queryDefinition.getSchemaName() + "." + queryDefinition.getQueryName() + "." + attributeParts.getAliasName(), rootIcon);
+					String aliasName;
+					aliasName = queryTable.getQueryAttributeProvenance().getAliasNames().toString();
+					rootItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + aliasName, rootIcon);
+					rootItem.setExpanded(true);
+					tvAttributeProvenance.setRoot(rootItem);
+				} else {
+					Node schemaIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/database-iconSilver24px.png")));
+	//				TreeItem<String> schemaItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + attributeParts.getAttributeName(), schemaIcon);  2018=05-26
+					String aliasName;
+					aliasName = queryTable.getQueryAttributeProvenance().getAliasNames().toString();
+					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + aliasName, schemaIcon);
+					rootItem.getChildren().add(provenanceItem);
+					rootItem = provenanceItem;
+					rootItem.setExpanded(true);
+				}
 				nodeCount++;
 			}
 		} catch (Exception ex) {
