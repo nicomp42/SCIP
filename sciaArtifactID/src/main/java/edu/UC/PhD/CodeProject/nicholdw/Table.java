@@ -3,7 +3,7 @@ package edu.UC.PhD.CodeProject.nicholdw;
 import java.sql.SQLException;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClass;
+import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClassOLD;
 import lib.MySQL;
 
 /***

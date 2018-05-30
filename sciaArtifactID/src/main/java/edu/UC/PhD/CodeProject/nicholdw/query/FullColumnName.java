@@ -18,7 +18,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		private String tableName;
 		private String attributeName;
 		private QueryClause queryClause;
-		private AliasNames aliasNames;
+		private AliasNamesOLD aliasNames;
 		//private String aliasName;		// Removed because a query attribute can have multiple aliases
 		private NestingLevel nestingLevel;
 		private String rawData;			// Taken from the SQL during parsing. could be schema.table.attribute, table.attribute, or just attribute
@@ -44,11 +44,11 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			schemaName = "";
 			tableName = "";
 			attributeName = "";
-			aliasNames = new AliasNames();
+			aliasNames = new AliasNamesOLD();
 			queryClause = new QueryClauseUndefined();
 		}
-		public AliasNames getAliasNames() {return aliasNames;}
-		public void addAliasName(AliasNameClass aliasName) {this.aliasNames.addAliasName(aliasName);}
+		public AliasNamesOLD getAliasNames() {return aliasNames;}
+		public void addAliasName(AliasNameClassOLD aliasName) {this.aliasNames.addAliasName(aliasName);}
 		/**
 		 * Start with a string formatted like schemaName.TableName.AttributeName and extract the parts into a structure.
 		 * Beware: A table name and an attribute name CAN have a . (period in it) Yikes.

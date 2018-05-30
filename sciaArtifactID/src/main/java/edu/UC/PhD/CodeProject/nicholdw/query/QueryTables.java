@@ -101,7 +101,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 						}
 						if (foundTable == false) {
 							// No match in the table names? Perhaps the table name in the queryAttribute is an alias
-							for (AliasNameClass aliasNameClass : queryTable.getAliasNames()) {
+							for (AliasNameClassOLD aliasNameClass : queryTable.getAliasNames()) {
 								if (Config.getConfig().compareAliasNames(aliasNameClass.getAliasName(), queryAttribute.getTableName()) == true) {
 									if (queryTable.findAttribute(queryAttribute.getAttributeName()) != null) {
 										Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): found the attribute in table using alias " + queryTable.toString());

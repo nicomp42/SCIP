@@ -9,30 +9,30 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
  * @author nicomp
  *
  */
-public class AliasNames implements Iterable<AliasNameClass> {
-	private ArrayList<AliasNameClass> aliasNames;
+public class AliasNamesOLD implements Iterable<AliasNameClassOLD> {
+	private ArrayList<AliasNameClassOLD> aliasNames;
 
 	/**
 	 * Constructor
 	 */
-	public AliasNames() {
-		aliasNames = new ArrayList<AliasNameClass>();
+	public AliasNamesOLD() {
+		aliasNames = new ArrayList<AliasNameClassOLD>();
 	}
 
 	@Override
-	public Iterator<AliasNameClass> iterator() {
-		Iterator<AliasNameClass> iprof = aliasNames.iterator();
+	public Iterator<AliasNameClassOLD> iterator() {
+		Iterator<AliasNameClassOLD> iprof = aliasNames.iterator();
         return iprof;
     }
 	public int size() {return aliasNames.size();}
 
-	public void addAliasName(AliasNameClass aliasNameClass) {
+	public void addAliasName(AliasNameClassOLD aliasNameClass) {
 		if (aliasNameClass.getAliasName().length() > 0) {
-			if (!this.contains(aliasNameClass) ) {aliasNames.add(new AliasNameClass(aliasNameClass));}
+			if (!this.contains(aliasNameClass) ) {aliasNames.add(new AliasNameClassOLD(aliasNameClass));}
 		}
 	}
-	public void addAliasNames(AliasNames aliasNames) {
-		for (AliasNameClass aliasName : aliasNames) {
+	public void addAliasNames(AliasNamesOLD aliasNames) {
+		for (AliasNameClassOLD aliasName : aliasNames) {
 			addAliasName(aliasName);
 		}
 	}
@@ -41,9 +41,9 @@ public class AliasNames implements Iterable<AliasNameClass> {
 	 * @param aliasNameClassTarget
 	 * @return True if aliasNameClassTarget is in the collection, false otherwise
 	 */
-	public Boolean contains(AliasNameClass aliasNameClassTarget) {
+	public Boolean contains(AliasNameClassOLD aliasNameClassTarget) {
 		Boolean result = false;
-		for (AliasNameClass aliasNameClass: aliasNames) {
+		for (AliasNameClassOLD aliasNameClass: aliasNames) {
 			if (Config.getConfig().compareAliasNames(aliasNameClass.getAliasName(), aliasNameClassTarget.getAliasName())) {
 				result = true;
 				break;
@@ -57,7 +57,7 @@ public class AliasNames implements Iterable<AliasNameClass> {
 	public String toString() {
 		StringBuilder result = new StringBuilder("");
 		String comma = "";
-		for (AliasNameClass aliasNameClass : aliasNames) {
+		for (AliasNameClassOLD aliasNameClass : aliasNames) {
 			result.append(comma);
 			result.append(aliasNameClass.toString());
 			comma = ", ";

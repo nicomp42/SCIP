@@ -133,7 +133,7 @@ public class QueryDefinition {
 				result = queryTable;
 				break;
 			}
-			for (AliasNameClass aliasName : queryTable.getAliasNames()) {
+			for (AliasNameClassOLD aliasName : queryTable.getAliasNames()) {
 				if (Config.getConfig().compareAliasNames(aliasName.getAliasName(),  tableName) == true) {
 					matchFound = true;
 					result = queryTable;
@@ -404,7 +404,7 @@ public class QueryDefinition {
 	public static void reconcileAliases(QueryDefinition qd) {
 		for (QueryAttribute queryAttribute : qd.getQueryAttributes()) {
 			if (queryAttribute.getAliasNames() == null || queryAttribute.getAliasNames().size() == 0) {
-				queryAttribute.getAliasNames().addAliasName(new AliasNameClass(queryAttribute.getUniqueAttributeName()));
+				queryAttribute.getAliasNames().addAliasName(new AliasNameClassOLD(queryAttribute.getUniqueAttributeName()));
 			}
 		}
 		for (QueryDefinition queryDefinition : qd.children) {
@@ -459,7 +459,7 @@ public class QueryDefinition {
 				queryAttributeProvenance = null;
 
 					Log.logProgress("QueryDefinition.buildProvenance(): found next table = " + qt.getSchemaName() + "." + qt.getTableName());
-					queryTableProvenance = new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClass(""), null);
+					queryTableProvenance = new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClassOLD(""), null);
 					queryAttributeProvenance = qdTmp.getQueryAttributes().findAttribute(currentAliasName);
 					queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
 					queryTablesProvenance.addQueryTable(queryTableProvenance);
@@ -469,9 +469,9 @@ public class QueryDefinition {
 					currentAliasName = currentAttributeName;		// We need the attribute name used in this query
 				} else {
 					// Add the last item to the provenance, which must be a table not a query. Use the schema name and table name that we didn't find in the children collection.
-					queryTableProvenance = new QueryTable(qt.getSchemaName(), qt.getTableName(), new AliasNameClass(""), null );
+					queryTableProvenance = new QueryTable(qt.getSchemaName(), qt.getTableName(), new AliasNameClassOLD(""), null );
 					// ToDo: This is hinkey: A table attribute dressed up as a query attribute so it will fit into the queryTableProvenance data structure
-					queryAttributeProvenance = new QueryAttribute(qt.getSchemaName(), qt.getTableName(), currentAliasName, new AliasNameClass(currentAliasName), null);
+					queryAttributeProvenance = new QueryAttribute(qt.getSchemaName(), qt.getTableName(), currentAliasName, new AliasNameClassOLD(currentAliasName), null);
 					queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
 					Log.logProgress("QueryDefinition.buildProvenance(): adding last item to provenance: " + queryAttributeProvenance.getSchemaName() + "." +  queryAttributeProvenance.getTableName() + "." +  queryAttributeProvenance.getAttributeName() );
 					queryTablesProvenance.addQueryTable(queryTableProvenance);

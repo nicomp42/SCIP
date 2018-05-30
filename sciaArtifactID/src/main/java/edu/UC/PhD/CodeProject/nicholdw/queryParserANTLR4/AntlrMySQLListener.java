@@ -15,7 +15,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClass;
+import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClassOLD;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAlias;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAliases;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
@@ -947,7 +947,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			}
 			compoundAliases.addCompoundAlias(compoundAlias);
 		} else {
-			fullColumnNames.get(fullColumnNames.size()-1).addAliasName(new AliasNameClass(node.getParent().getChild(2).getText().replace("`", "")));
+			fullColumnNames.get(fullColumnNames.size()-1).addAliasName(new AliasNameClassOLD(node.getParent().getChild(2).getText().replace("`", "")));
 		}
 		lastTerminalNode = "AS";
 	}
@@ -1038,7 +1038,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			}
 		}
 		public void copyIntoQueryDefinition(QueryDefinition queryDefinition) {
-			queryDefinition.getQueryTables().addQueryTable(new QueryTable(schemaName, tableName, new AliasNameClass(aliasName), queryClause));
+			queryDefinition.getQueryTables().addQueryTable(new QueryTable(schemaName, tableName, new AliasNameClassOLD(aliasName), queryClause));
 		}
 	}
 }

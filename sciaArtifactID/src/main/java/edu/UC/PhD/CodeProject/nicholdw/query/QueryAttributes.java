@@ -30,7 +30,7 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 				qa.getSchemaName().trim().toLowerCase().equals(queryAttribute.getSchemaName().trim().toLowerCase()) &&
 				qa.getTableName().trim().toLowerCase().equals(queryAttribute.getTableName().trim().toLowerCase())) {
 				// We found a match. If the alias doesn't already exist, add that to the matching Query Attribute. Otherwise we're done.
-				for (AliasNameClass aliasName: queryAttribute.getAliasNames()) {
+				for (AliasNameClassOLD aliasName: queryAttribute.getAliasNames()) {
 					if (!qa.getAliasNames().contains(aliasName)) {
 						qa.addAliasName(aliasName);
 						break;
@@ -80,7 +80,7 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 				break;
 			}
 			if (matchFound == false) {
-				for (AliasNameClass aliasName : queryAttribute.getAliasNames()) {
+				for (AliasNameClassOLD aliasName : queryAttribute.getAliasNames()) {
 					if (Config.getConfig().compareAliasNames(aliasName.getAliasName(), attributeOrAliasName) == true) {
 						result = queryAttribute;
 						matchFound = true;

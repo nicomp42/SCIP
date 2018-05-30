@@ -8,7 +8,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
  * @author nicomp
  */
 public class QueryAttribute extends QueryComponent  {
-	private AliasNames aliasNames;
+	private AliasNamesOLD aliasNames;
 	private String schemaName;		// Not necessarily redundant. A query can span multiple schemas
 	private QueryClause queryClause;
 	private String attributeName;
@@ -22,9 +22,9 @@ public class QueryAttribute extends QueryComponent  {
 	 * @param aliasName If you only have one alias for this QueryAttribute object
 	 * @param queryClause
 	 */
-	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClass aliasName, QueryClause queryClause) {
+	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause) {
 		this.setTableName(tableName);
-		aliasNames = new AliasNames();
+		aliasNames = new AliasNamesOLD();
 		this.addAliasName (aliasName);
 		this.setSchemaName(schemaName);
 		this.setQueryClause(queryClause);
@@ -38,9 +38,9 @@ public class QueryAttribute extends QueryComponent  {
 	 * @param aliasNames If you already have an AliasNames object for this QueryAttribute object
 	 * @param queryClause
 	 */
-	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNames aliasNames, QueryClause queryClause) {
+	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNamesOLD aliasNames, QueryClause queryClause) {
 		this.setTableName(tableName);
-		this.aliasNames = new AliasNames();
+		this.aliasNames = new AliasNamesOLD();
 		this.aliasNames.addAliasNames(aliasNames);
 		this.setSchemaName(schemaName);
 		this.setQueryClause(queryClause);
@@ -66,20 +66,20 @@ public class QueryAttribute extends QueryComponent  {
 	}
 	public String getTableName() {return this.tableName;}
 
-	public AliasNames getAliasNames() {return aliasNames;}
-	public void addAliasName(AliasNameClass aliasNameClass) {
+	public AliasNamesOLD getAliasNames() {return aliasNames;}
+	public void addAliasName(AliasNameClassOLD aliasNameClass) {
 		if (aliasNameClass != null) {
 			aliasNames.addAliasName(aliasNameClass);
 		}
 	}
-	public void addAliasNames(AliasNames aliasNames) {
-		for (AliasNameClass aliasName : aliasNames) {
+	public void addAliasNames(AliasNamesOLD aliasNames) {
+		for (AliasNameClassOLD aliasName : aliasNames) {
 			this.aliasNames.addAliasName(aliasName);
 		}
 	}
 	public Boolean hasAliasName(String aliasNameTarget) {
 		Boolean result = false;
-		for (AliasNameClass aliasName: aliasNames) {
+		for (AliasNameClassOLD aliasName: aliasNames) {
 			if (aliasName.equals(aliasNameTarget)) {
 				result = true;
 				break;
@@ -123,7 +123,7 @@ public class QueryAttribute extends QueryComponent  {
 		// There may be no attribute list, just return an empty string
 		String comma = "";
 		try {
-			for (AliasNameClass aliasName: aliasNames) {
+			for (AliasNameClassOLD aliasName: aliasNames) {
 				result.append(comma + aliasName.getAliasName());
 				comma = ", ";
 			}

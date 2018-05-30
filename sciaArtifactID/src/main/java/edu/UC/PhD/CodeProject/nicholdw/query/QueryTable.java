@@ -8,7 +8,7 @@ public class QueryTable extends Table {
 	 * If true, the query has a ".*" qualifier on this table in the SELECT clause. All attributes should be included.
 	 */
 	private boolean includeAllAttributes;
-	private AliasNames aliasNames;			// ToDo a table referenced in a query can have multiple alias names in the MySQL dialect. Yikes. 
+	private AliasNamesOLD aliasNames;			// ToDo a table referenced in a query can have multiple alias names in the MySQL dialect. Yikes. 
 	private QueryClause queryClause;
 	private Boolean isQuery;		// If true, this is a query, else it's a table
 	private Boolean isProcessed;
@@ -21,10 +21,10 @@ public class QueryTable extends Table {
 		this.queryAttributeProvenance = queryAttributeProvenance;
 	}	
 
-	public QueryTable(String schemaName, String tableName, AliasNameClass aliasNameClass, QueryClause queryClause) {
+	public QueryTable(String schemaName, String tableName, AliasNameClassOLD aliasNameClass, QueryClause queryClause) {
 		super(tableName, schemaName);
 		setIncludeAllAttributes(false);
-		aliasNames = new AliasNames();
+		aliasNames = new AliasNamesOLD();
 		addAliasName(aliasNameClass);
 		setQueryClause(queryClause);
 		setIsQuery(true);		// Assume it's a query. We will reconcile it later. See QueryDefinition.reconcileTables() 
@@ -41,8 +41,8 @@ public class QueryTable extends Table {
 	 * @param includeAllAttributes  True if this table has a ".*" in the SELECT clause
 	 */
 	public void setIncludeAllAttributes(boolean includeAllAttributes) {this.includeAllAttributes = includeAllAttributes;}
-	public AliasNames getAliasNames() {return aliasNames;}
-	public void addAliasName(AliasNameClass aliasNameClass) {
+	public AliasNamesOLD getAliasNames() {return aliasNames;}
+	public void addAliasName(AliasNameClassOLD aliasNameClass) {
 		if (aliasNameClass.getAliasName().length() > 0) {this.aliasNames.addAliasName(aliasNameClass);}
 	}
 	public QueryClause getQueryClause() {return queryClause;}

@@ -2,18 +2,18 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 
-public class AliasNameClass {
+public class AliasNameClassOLD {
 	private String aliasName;
 
 	/**
 	 * Copy constructor
 	 * @param aliasName
 	 */
-	public AliasNameClass(AliasNameClass aliasName) {
+	public AliasNameClassOLD(AliasNameClassOLD aliasName) {
 		this.aliasName = aliasName.getAliasName(); 
 	}
 	
-	public AliasNameClass(String aliasName) {
+	public AliasNameClassOLD(String aliasName) {
 		setAliasName(aliasName);
 	}
 	public String getAliasName() {return aliasName;}
@@ -30,7 +30,7 @@ public class AliasNameClass {
 	 * @param aliasNameClass
 	 * @return true if the names are lexically identical, false otherwise. 
 	 */
-	public Boolean equals(AliasNameClass aliasNameClass) {
+	public Boolean equals(AliasNameClassOLD aliasNameClass) {
 		Boolean result = false;
 		return (Config.getConfig().compareAliasNames(this.getAliasName(), aliasNameClass.getAliasName()));
 	}
