@@ -22,6 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.control.TextField;
 import lib.SQLUtils;
 
 /**
@@ -35,6 +36,7 @@ public class SubmitSQLController {
 	@FXML AnchorPane apSubmitSQL;
 	private Scene myScene;
 	private Stage myStage;
+	@FXML TextField txtDatabaseName;
 
 	public SubmitSQLController() {
 	}
@@ -56,12 +58,14 @@ public class SubmitSQLController {
 	public void btnSubmit_OnClick(ActionEvent event) {
 		java.sql.ResultSet resultSet = null;
 		resultSet = SQLUtils.executeQuery(Config.getConfig().getMySQLDefaultHostname(), 
+										 txtDatabaseName.getText(),
 				              			 Config.getConfig().getMySQLDefaultLoginName(), 
 				              			 Config.getConfig().getMySQLDefaultPassword(), 
 				              			 txaSQL.getText());
 		try {
 			ResultSetMetaData rsmd = resultSet.getMetaData();
-			int columnCount = rsmd.getColumnCount();		    while (resultSet.next()) {
+			int columnCount = rsmd.getColumnCount();
+			while (resultSet.next()) {
 		    	for (int i = 1; i <= columnCount; i++) {
 		    		String text = resultSet.getString(i);
 		    		txaResults.appendText(text + " ");
@@ -71,6 +75,7 @@ public class SubmitSQLController {
 		    resultSet.close();
 		} catch (Exception ex) {
 			Log.logError("SubmitSQLController.btnSubmit_OnClick(): " + ex.getLocalizedMessage()); 
+			txaResults.appendText(ex.getLocalizedMessage());
 		}
 	}
 	public void btnCancel_OnClick(ActionEvent event) {

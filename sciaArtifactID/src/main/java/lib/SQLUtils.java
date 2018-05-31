@@ -8,10 +8,10 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 //import com.mysql.jdbc.PreparedStatement;
 
 public class SQLUtils {
-	public static java.sql.ResultSet executeQuery(String hostName, String loginName, String password, String sql) {
+	public static java.sql.ResultSet executeQuery(String hostName, String databaseName, String loginName, String password, String sql) {
 	    java.sql.ResultSet resultSet = null;
 		java.sql.Connection connection = null;
-		connection = new MySQL().connectToDatabase(hostName, "World", loginName, password);		// ToDo: Do we really need a databaseName here? 
+		connection = new MySQL().connectToDatabase(hostName, databaseName, loginName, password);		// ToDo: Do we really need a databaseName here? 
 	    java.sql.PreparedStatement preparedStatement = null;
 	    try {
 			preparedStatement = connection.prepareStatement(sql);

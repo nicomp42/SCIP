@@ -17,8 +17,10 @@
    <children>
       <Label layoutX="17.0" layoutY="4.0" text="SQL to Submit" />
       <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnCancel" layoutX="734.0" layoutY="304.0" mnemonicParsing="false" onAction="#btnCancel_OnClick" text="Cancel" />
-      <TextArea fx:id="txaSQL" layoutX="17.0" layoutY="27.0" prefHeight="265.0" prefWidth="781.0" promptText="Enter the the SQL Statement" />
+      <TextArea fx:id="txaSQL" layoutX="17.0" layoutY="35.0" prefHeight="265.0" prefWidth="781.0" promptText="Enter the the SQL Statement" />
       <Button fx:id="btnSubmitSQL" layoutX="17.0" layoutY="304.0" mnemonicParsing="false" onAction="#btnSubmit_OnClick" text="Submit" />
       <TextArea fx:id="txaResults" layoutX="17.0" layoutY="340.0" prefHeight="200.0" prefWidth="781.0" />
+      <TextField fx:id="txtDatabaseName" layoutX="611.0" layoutY="2.0" />
+      <Label layoutX="495.0" layoutY="7.0" text="Database Name" />
    </children>
 </AnchorPane>
