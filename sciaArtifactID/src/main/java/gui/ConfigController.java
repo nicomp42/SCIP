@@ -35,7 +35,7 @@ public class ConfigController /* extends Application */ {
 	@FXML Button btnSave, btnBrowseForCSVFolder;
 	@FXML TextField txtNeo4jDefaultUser, txtNeo4jDefaultPassword, txtNeo4jTableToAttributeRelationName, txtNeo4jQueryToTableRelationName, txtMySQLDefaultLoginName,
 				    txtMySQLDefaultPassword, txtMySQLDefaultHostname;
-	@FXML TextArea txaCSVFolder, txaGrassURL;
+	@FXML TextArea txaCSVFolder, txaGrassURL, txaUserHomeDirectory;
 	@FXML CheckBox cbUseTestData, cbSupressOutputToConsole;
 	private Scene myScene;
 	private Stage myStage;
@@ -129,6 +129,7 @@ public class ConfigController /* extends Application */ {
 			cbSupressOutputToConsole.setSelected(Config.getConfig().getSupressOutputToConsole());
 			txaCSVFolder.setText(Config.getConfig().getNeo4jDefaultImportFilePath());
 			txaGrassURL.setText(Config.getConfig().getGrassStyleSheetURL());
+			txaUserHomeDirectory.setText(Config.getConfig().getUserHomeDirectory());
 		} catch (Exception ex) {
 			status = false;
 			Log.logError("ConfigController.scatter(): " + ex.getLocalizedMessage());

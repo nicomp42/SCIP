@@ -158,7 +158,7 @@ public class Main extends Application {
 					mnuFileSaveProject.setDisable(false);
 				} else {keepGoing = false;}
 			} catch (java.lang.IllegalArgumentException e) {
-				startingDirectory = Config.getConfig().getUserHome();		// "./";
+				startingDirectory = Config.getConfig().getUserHomeDirectory();		// "./";
 			} catch(Exception ex) {
 				Log.logError("Main.mnuFileOpenProject_OnAction:" + ex.getLocalizedMessage(), ex);
 				keepGoing = false;

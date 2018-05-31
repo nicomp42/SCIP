@@ -50,7 +50,9 @@ public class Config implements Serializable {
 	/**
 	 * A private constructor will prevent the class from being instantiated. It's a Singleton. Not sure if this works.
 	 */
-	private Config() {}
+	private Config() {
+		setInitialDirectory(System.getProperty("user.home"));
+	}
 	private final String version = "0.04";
 	private final int mySQLDefaultPort = 3306;
 	private final Boolean useCaseSensitiveAttributeNameComparison = false;
@@ -70,7 +72,7 @@ public class Config implements Serializable {
 	private String Neo4jTableToAttributeRelationName = "defines";
 	private String Neo4jQueryToTableRelationName = "refers";
 	private Boolean useTestData = false;
-	private String initialDirectory = "c:/SCIP/Test/";	// TODO generalize this
+	private String initialDirectory = "";
 	private String neo4jDBDefaultUser = "neo4j";
 	private String neo4jDBDefaultPassword = "Danger42";
 	private SchemaChangeImpactProject currentSchemaChangeImpactProject = new SchemaChangeImpactProject();		// null;
@@ -130,17 +132,17 @@ public class Config implements Serializable {
 	 * Get the Windows configuration setting for HOMEPATH
 	 * @return Home directory for the current user
 	 */
-	public String getUserHome() {
-		String userHome;
-    	userHome = System.getProperty("user.home");
-    	return userHome;
+	public String getUserHomeDirectory() {
+		String userHomeDirectory;
+    	userHomeDirectory = System.getProperty("user.home");
+    	return userHomeDirectory;
 	}
 	/**
 	 * Get the location of the Neo4j configuration file
 	 * @return
 	 */
 	public String getNeo4jConfigurationFilePath() {
-		return getUserHome() + "\\AppData\\Roaming\\" + "Neo4j Community Edition";
+		return getUserHomeDirectory() + "\\AppData\\Roaming\\" + "Neo4j Community Edition";
 	}
 	/**
 	 * Get the full path and file name of the Neo4j configuration file
