@@ -14,45 +14,113 @@
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
    <children>
-      <MenuBar fx:id="mbrMainMenu" layoutY="1.0" visible="false">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-				<MenuItem fx:id="mnuFileSave" mnemonicParsing="false" text="Save">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-	            <MenuItem fx:id="mnuFileExit" mnemonicParsing="false" onAction="#mnuFileExit_OnAction" text="Exit">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <TextField id="txtNeo4jDefaultUser" fx:id="txtNeo4jDefaultUser" layoutX="249.0" layoutY="37.0" prefHeight="25.0" prefWidth="174.0" />
-      <TextField id="txtNeo4jDefaultPassword" fx:id="txtNeo4jDefaultPassword" layoutX="249.0" layoutY="64.0" prefHeight="25.0" prefWidth="174.0" />
-      <Label layoutX="22.0" layoutY="37.0" text="Neo4j Default User" />
-      <Label layoutX="22.0" layoutY="68.0" text="Neo4j Default Password" />
-      <Button fx:id="btnSave" layoutX="537.0" layoutY="432.0" mnemonicParsing="false" onAction="#btnSave_OnClick" text="Save" />
-      <TextField fx:id="txtNeo4jTableToAttributeRelationName" layoutX="249.0" layoutY="91.0" prefHeight="25.0" prefWidth="174.0" />
-      <TextField fx:id="txtNeo4jQueryToTableRelationName" layoutX="249.0" layoutY="118.0" prefHeight="25.0" prefWidth="174.0" />
-      <Label layoutX="22.0" layoutY="95.0" text="Neo4j Table to Attribute Label" />
-      <Label layoutX="22.0" layoutY="122.0" text="Neo4j Query To Table Label" />
-      <TextField fx:id="txtMySQLDefaultLoginName" layoutX="249.0" layoutY="211.0" prefHeight="25.0" prefWidth="174.0" />
-      <TextField fx:id="txtMySQLDefaultPassword" layoutX="249.0" layoutY="238.0" prefHeight="25.0" prefWidth="174.0" />
-      <Label layoutX="22.0" layoutY="215.0" text="mySQL Default User Name" />
-      <Label layoutX="22.0" layoutY="242.0" text="mySQL Default Password" />
-      <TextField fx:id="txtMySQLDefaultHostname" layoutX="249.0" layoutY="266.0" prefHeight="25.0" prefWidth="174.0" />
-      <Label layoutX="22.0" layoutY="270.0" text="mySQL Default Hostname" />
-      <CheckBox fx:id="cbUseTestData" layoutX="250.0" layoutY="359.0" mnemonicParsing="false" text="Use test queries (be careful!)" />
-      <TextArea fx:id="txaCSVFolder" layoutX="249.0" layoutY="145.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the import folder of the default Neo4j DB." />
-      <Button fx:id="btnBrowseForCSVFolder" layoutX="512.0" layoutY="160.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
-      <Label fx:id="lblCSVFolder" layoutX="19.0" layoutY="148.0" prefHeight="42.0" prefWidth="167.0" text="Default Destination Folder for CSV Files" wrapText="true" />
-      <TextArea fx:id="txaGrassURL" layoutX="249.0" layoutY="298.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the URL of the GRASS file" />
-      <Label fx:id="lblGrassURL" layoutX="19.0" layoutY="301.0" prefHeight="42.0" prefWidth="167.0" text="URL for GRASS file (Style sheet)" wrapText="true" />
-      <CheckBox fx:id="cbSupressOutputToConsole" layoutX="250.0" layoutY="382.0" mnemonicParsing="false" text="Supress all output to the console" />
-      <TextArea fx:id="txaUserHomeDirectory" editable="false" layoutX="249.0" layoutY="411.0" prefHeight="42.0" prefWidth="257.0" />
-      <Label layoutX="22.0" layoutY="422.0" text="User Home Directory" />
+      <VBox layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MenuBar fx:id="mbrMainMenu" layoutY="1.0" visible="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+      				<MenuItem fx:id="mnuFileSave" mnemonicParsing="false" text="Save">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+      	            <MenuItem fx:id="mnuFileExit" mnemonicParsing="false" onAction="#mnuFileExit_OnAction" text="Exit">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <TabPane layoutY="39.0" prefHeight="396.0" prefWidth="588.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="34.0">
+              <tabs>
+                <Tab text="Main">
+                     <content>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="mySQL Default User Name" GridPane.rowIndex="0" GridPane.columnIndex="0" prefHeight="25.0"  />
+						      <TextField fx:id="txtMySQLDefaultLoginName"  GridPane.rowIndex="0" GridPane.columnIndex="1" prefHeight="25.0"  prefWidth="250.0"  />
+						      
+                              <Label text="mySQL Default Password"  GridPane.rowIndex="1" GridPane.columnIndex="0" prefHeight="25.0"  />
+                              <TextField fx:id="txtMySQLDefaultPassword"  GridPane.rowIndex="1" GridPane.columnIndex="1" prefHeight="25.0"  prefWidth="250.0" />
+
+                              <Label text="mySQL Default Hostname"  GridPane.rowIndex="2" GridPane.columnIndex="0" prefHeight="25.0"  />
+                              <TextField fx:id="txtMySQLDefaultHostname"  GridPane.rowIndex="2" GridPane.columnIndex="1" prefHeight="25.0"  prefWidth="250.0" />
+                              
+                              <CheckBox fx:id="cbSupressOutputToConsole" mnemonicParsing="false" text="Suppress all output to the console"  GridPane.rowIndex="3" GridPane.columnIndex="0" prefHeight="25.0"  />
+                              <CheckBox fx:id="cbUseTestData" mnemonicParsing="false" text="Use test queries (be careful!)"  GridPane.rowIndex="4" GridPane.columnIndex="0" prefHeight="25.0"  />
+                              
+                              <Label text="User Home Directory"  GridPane.rowIndex="5" GridPane.columnIndex="0" prefHeight="25.0"  />
+                              <TextArea fx:id="txaUserHomeDirectory" editable="false"  GridPane.rowIndex="5" GridPane.columnIndex="1" prefHeight="25.0"  prefWidth="250.0" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </Tab>
+                <Tab text="Neo4j">
+                     <content>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <TextField id="txtNeo4jDefaultPassword" fx:id="txtNeo4jDefaultPassword" layoutX="249.0" layoutY="64.0" prefHeight="25.0" prefWidth="174.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label layoutX="22.0" layoutY="37.0" text="Neo4j Default User" />
+                              <Label layoutX="22.0" layoutY="122.0" text="Neo4j Query To Table Label" GridPane.rowIndex="3" />
+                              <Label layoutX="22.0" layoutY="68.0" text="Neo4j Default Password" GridPane.rowIndex="1" />
+                              <Label layoutX="22.0" layoutY="95.0" text="Neo4j Table to Attribute Label" GridPane.rowIndex="2" />
+                              <TextField id="txtNeo4jDefaultUser" fx:id="txtNeo4jDefaultUser" layoutX="249.0" layoutY="37.0" prefHeight="25.0" prefWidth="174.0" GridPane.columnIndex="1" />
+                              <TextArea fx:id="txaGrassURL" layoutX="249.0" layoutY="298.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the URL of the GRASS file" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <TextField fx:id="txtNeo4jTableToAttributeRelationName" layoutX="249.0" layoutY="91.0" prefHeight="25.0" prefWidth="174.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtNeo4jQueryToTableRelationName" layoutX="249.0" layoutY="118.0" prefHeight="25.0" prefWidth="174.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <TextArea fx:id="txaCSVFolder" layoutX="249.0" layoutY="145.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the import folder of the default Neo4j DB." GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label fx:id="lblCSVFolder" layoutX="19.0" layoutY="148.0" prefHeight="42.0" prefWidth="167.0" text="Default Destination Folder for CSV Files" wrapText="true" GridPane.rowIndex="4" />
+                              <Button fx:id="btnBrowseForCSVFolder" layoutX="512.0" layoutY="160.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Label fx:id="lblGrassURL" layoutX="19.0" layoutY="301.0" prefHeight="42.0" prefWidth="167.0" text="URL for GRASS file (Style sheet)" wrapText="true" GridPane.rowIndex="8" />
+                           </children>
+                        </GridPane>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+            <Button fx:id="btnSave" layoutX="537.0" layoutY="432.0" mnemonicParsing="false" onAction="#btnSave_OnClick" text="Save" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

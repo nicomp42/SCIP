@@ -54,7 +54,8 @@ public class ConfigController /* extends Application */ {
 		Log.logProgress("ConfigController.Initialize() complete");
 	}
 	@FXML void mnuFileExit_OnAction(ActionEvent event) {
-
+		if (checkToDiscardData()) {
+			myStage.close();		}
 	}
 	private void setTheScene() {
 		dataIsDirty = false;
