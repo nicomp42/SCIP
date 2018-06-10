@@ -67,7 +67,7 @@ import javafx.scene.web.WebView;
 
 public class Main extends Application {
 	public static void main(String[] args) {
-		launch(args);
+		launch(args); 
 	}
 	private Stage myPrimaryStage;
 	private NewSchemaChangeImpactProject newSchemaChangeImpactProject;
@@ -85,7 +85,8 @@ public class Main extends Application {
 	@FXML private TabPane tpnProject;
 	@FXML private CheckBox cbOperationalSchemaCSVFiles, cbETLCSVFiles, cbDWCSVFiles;
 	@FXML private MenuBar mbrMainMenu;
-	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout, mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL;
+	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout;
+	@FXML private MenuItem mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL, mnuEditProjectManager;
 	@FXML private WebView wbNeo4j;
 	@FXML private ImageView imgNeo4jReminder;
 	@FXML void lvOperationalSchemaNames_OnClicked(MouseEvent event) {txtOperationalSchemaName.setText(lvOperationalSchemaNames.getSelectionModel().getSelectedItem());}
@@ -97,6 +98,7 @@ public class Main extends Application {
 	@FXML void mnuEditClearNeo4jDB_OnAction(ActionEvent event) {clearNeo4jDB();}
 	@FXML void mnuToolsGenerateSchemaTopology_OnClick(ActionEvent event) {openDatabaseGraphWindow();}
 	@FXML void mnuEditSubmitSQL_OnAction(ActionEvent event) {openSubmitSQLWindow();}
+	@FXML void mnuEditProjectManager_OnAction(ActionEvent event) {openProjectManagerWindow();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
 		Log.logProgress("main.mnuFileSaveProject_OnAction(): Saving scip...");
@@ -132,11 +134,11 @@ public class Main extends Application {
 		}
 	}
 	@FXML
-	void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {
+	private void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {
 		openBrowserWindow();
 	}
 	@FXML
-	void mnuFileOpenProject_OnAction(ActionEvent event) {
+	private void mnuFileOpenProject_OnAction(ActionEvent event) {
 		Log.logProgress("Main.mnuFileOpenProject_OnAction()");
 		boolean keepGoing = true;
 		String startingDirectory = Config.getConfig().getInitialDirectory();
@@ -606,7 +608,7 @@ public class Main extends Application {
 		}
 	}
 	@FXML
-	void mnuFileNew_OnAction(ActionEvent event) {
+	void mnuFileNewProject_OnAction(ActionEvent event) {
 		try {
 			// Open the New Project Window
 			FXMLLoader fxmlLoader = new FXMLLoader();
@@ -628,7 +630,28 @@ public class Main extends Application {
 				mnuFileSaveProject.setDisable(false);
 			}
 		} catch (Exception ex) {
-			Log.logError("mnuFileNew_OnAction:" + ex.getLocalizedMessage());
+			Log.logError("mnuFileNewProject_OnAction:" + ex.getLocalizedMessage());
+		}
+	}
+	private void openProjectManagerWindow() {
+		try {
+			FXMLLoader fxmlLoader = null;
+			// Open the New Project Window
+			fxmlLoader = new FXMLLoader(getClass().getResource("ProjectManager.fxml"));
+			Parent root = fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.initModality(Modality.NONE);
+			stage.setOpacity(1);
+			stage.setTitle("Project Manager");
+			Scene scene = new Scene(root);		//, 700, 450);
+	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {public void handle(WindowEvent we) {}});
+			stage.setScene(scene);
+			ProjectManagerController pmc = fxmlLoader.getController();
+			pmc.setScene(scene);
+			pmc.setStage(stage);
+			stage.show();
+		} catch (Exception ex) {
+			Log.logError("Main.openProjectManagerWindow():" + ex.getLocalizedMessage());
 		}
 	}
 	private void openSubmitSQLWindow() {

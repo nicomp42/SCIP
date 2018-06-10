@@ -24,6 +24,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 /**
  * Display debug messages in a dedicated window
@@ -35,8 +37,10 @@ public class ConfigController /* extends Application */ {
 	@FXML Button btnSave, btnBrowseForCSVFolder;
 	@FXML TextField txtNeo4jDefaultUser, txtNeo4jDefaultPassword, txtNeo4jTableToAttributeRelationName, txtNeo4jQueryToTableRelationName, txtMySQLDefaultLoginName,
 				    txtMySQLDefaultPassword, txtMySQLDefaultHostname;
-	@FXML TextArea txaCSVFolder, txaGrassURL, txaUserHomeDirectory;
+	@FXML TextArea txaCSVFolder, txaGrassURL, txaUserHomeDirectory, txaConfigFilePath;
 	@FXML CheckBox cbUseTestData, cbSupressOutputToConsole;
+	@FXML Tab tabMain, tabDatabase, tabNeo4j, tabFiles;
+	@FXML TabPane tbpConfig;
 	private Scene myScene;
 	private Stage myStage;
 	private Boolean dataIsDirty;
@@ -131,6 +135,7 @@ public class ConfigController /* extends Application */ {
 			txaCSVFolder.setText(Config.getConfig().getNeo4jDefaultImportFilePath());
 			txaGrassURL.setText(Config.getConfig().getGrassStyleSheetURL());
 			txaUserHomeDirectory.setText(Config.getConfig().getUserHomeDirectory());
+			txaConfigFilePath.setText(Config.getConfig().getAbsolutePathOfConfigFile());
 		} catch (Exception ex) {
 			status = false;
 			Log.logError("ConfigController.scatter(): " + ex.getLocalizedMessage());

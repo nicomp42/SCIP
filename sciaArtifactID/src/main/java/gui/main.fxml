@@ -5,7 +5,7 @@
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
-<?import java.lang.*?>
+<?import java.lang.*?> 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -19,7 +19,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-				<MenuItem fx:id="mnuFileNewProject" mnemonicParsing="false" onAction="#mnuFileNew_OnAction" text="New Project">
+				<MenuItem fx:id="mnuFileNewProject" mnemonicParsing="false" onAction="#mnuFileNewProject_OnAction" text="New Project">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
@@ -46,6 +46,11 @@
 	            <MenuItem fx:id="mnuEditDebug" mnemonicParsing="false" onAction="#mnuEditDebug_OnAction" text="Debug Window">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                </MenuItem>
+	            <MenuItem fx:id="mnuEditProjectManager" mnemonicParsing="false" onAction="#mnuEditProjectManager_OnAction" text="ProjectManager">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                 </MenuItem>
             </items>

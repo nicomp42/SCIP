@@ -2,7 +2,7 @@
  * See http://www.java2s.com/Tutorials/Java/JavaFX/1500__JavaFX_WebEngine.htm for interfacing to the WebBrowser control. Cool stuff
  *
  * https://github.com/mozilla/geckodriver/releases for Gecko Driver
- 
+
  */
 package gui;
 
