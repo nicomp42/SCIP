@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw;
 
 import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClassOLD;
