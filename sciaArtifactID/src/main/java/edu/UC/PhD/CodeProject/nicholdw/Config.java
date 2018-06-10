@@ -6,6 +6,7 @@
  */
 package edu.UC.PhD.CodeProject.nicholdw;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -212,6 +213,8 @@ public class Config implements Serializable {
 	 */
 	public static Boolean loadConfig(String fileName) {
 		Boolean result = false;
+		File tmpFile = new File(fileName);
+		String fileNameWithPath = tmpFile.getAbsolutePath();
 		Log.logProgress("Config.load()...");
 		try {
 	         FileInputStream fileIn = new FileInputStream(fileName);
@@ -222,12 +225,17 @@ public class Config implements Serializable {
 	         result = true;
 	 		Log.logProgress("Config.loadConfig() done.");
 		} catch (Exception ex) {
-			Log.logError("Config.loadConfig(): " + fileName + ": "  + ex.getLocalizedMessage());
+			Log.logError("Config.loadConfig(): " + fileNameWithPath + ": "  + ex.getLocalizedMessage());
 			Log.logProgress("Config.loadConfig(): creating new Config object from scratch.");
 			setConfig(new Config());
 		}
 		return result;
 	}
+	/***
+	 * Get the location of the configuration file. It will be nearby to wherever the app is stored in the file system
+	 * @return A path, with filename
+	 */
+	public String getAbsolutePathOfConfigFile() {return new File(configFilename).getAbsolutePath();}
 	public String getConfigFilename() {return configFilename;}
 	public String getCSVFileExtension() {return CSVFileExtension;}
 	public String getNeo4jSuffix() {
