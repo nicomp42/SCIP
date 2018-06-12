@@ -58,7 +58,7 @@ public class Config implements Serializable {
 	 */
 	private Config() {
 		setInitialDirectory(System.getProperty("user.home"));
-		systemDatabaseConnectionInformation = new SystemDatabaseConnectionInformation("localhost", "root", "Danger42");		
+		systemDatabaseConnectionInformation = new SystemDatabaseConnectionInformation("localhost", "root", "Danger42", "seq-am");		
 	}
 	private final String version = "0.05";
 	private final int mySQLDefaultPort = 3306;

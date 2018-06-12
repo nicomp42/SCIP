@@ -15,6 +15,7 @@ public abstract class ConnectionInformation  implements Serializable {
 	private String loginName;
 	private String password;
 	private String hostName;
+	private String schemaName;			// Or database name, depending on the DB engine we are talking to
 	public String getLoginName() {
 		return loginName;
 	}
@@ -39,10 +40,16 @@ public abstract class ConnectionInformation  implements Serializable {
 	 * @param loginName Login Name to access the database
 	 * @param password Password to access the database
 	 */
-	public ConnectionInformation(String hostName, String loginName, String password) {
+	public ConnectionInformation(String hostName, String loginName, String password, String schemaName) {
 		setLoginName(loginName);
 		setPassword(password);
 		setHostName(hostName);
+		setSchemaName(schemaName);
 	}
-	
+	public String getSchemaName() {
+		return schemaName;
+	}
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
 }

@@ -1,12 +1,19 @@
 package gui;
 
 import java.io.File;
+import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
+import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.database.SystemDatabaseConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,6 +22,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
@@ -24,6 +32,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import lib.SQLUtils;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
@@ -41,7 +50,8 @@ public class ConfigController /* extends Application */ {
 	@FXML CheckBox cbUseTestData, cbSupressOutputToConsole;
 	@FXML Tab tabMain, tabDatabase, tabNeo4j, tabFiles;
 	@FXML TabPane tbpConfig;
-	@FXML TextField txtSystemDatabaseLoginName, txtSystemDatabasePassword, txtSystemDatabaseHostName;
+	@FXML TextField txtSystemDatabaseLoginName, txtSystemDatabasePassword, txtSystemDatabaseHostName, txtSystemDatabaseSchemaName;
+	@FXML ListView<String> lvProjectsOnFile;
 	private Scene myScene;
 	private Stage myStage;
 	private Boolean dataIsDirty;
@@ -65,6 +75,7 @@ public class ConfigController /* extends Application */ {
 	private void setTheScene() {
 		dataIsDirty = false;
 		scatter();
+		loadListViewWithProjects(lvProjectsOnFile, Config.getConfig().getSystemDatabaseConnectionInformation());
 		displaySaveButton();
 		setUpChangeListeners();
 		myStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -140,6 +151,7 @@ public class ConfigController /* extends Application */ {
 			txtSystemDatabaseLoginName.setText(Config.getConfig().getSystemDatabaseConnectionInformation().getLoginName());
 			txtSystemDatabasePassword.setText(Config.getConfig().getSystemDatabaseConnectionInformation().getPassword());
 			txtSystemDatabaseHostName.setText(Config.getConfig().getSystemDatabaseConnectionInformation().getHostName());
+			txtSystemDatabaseSchemaName.setText(Config.getConfig().getSystemDatabaseConnectionInformation().getSchemaName());
 		} catch (Exception ex) {
 			status = false;
 			Log.logError("ConfigController.scatter(): " + ex.getLocalizedMessage());
@@ -165,6 +177,7 @@ public class ConfigController /* extends Application */ {
 			Config.getConfig().getSystemDatabaseConnectionInformation().setHostName(txtSystemDatabaseHostName.getText());
 			Config.getConfig().getSystemDatabaseConnectionInformation().setLoginName(txtSystemDatabaseLoginName.getText());
 			Config.getConfig().getSystemDatabaseConnectionInformation().setPassword(txtSystemDatabasePassword.getText());
+			Config.getConfig().getSystemDatabaseConnectionInformation().setSchemaName(txtSystemDatabaseSchemaName.getText());
 		} catch (Exception ex) {
 			status = false;
 			Log.logError("ConfigController.gather(): " + ex.getLocalizedMessage());
@@ -203,7 +216,7 @@ public class ConfigController /* extends Application */ {
 		txtSystemDatabaseLoginName.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
 		txtSystemDatabasePassword.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
 		txtSystemDatabaseHostName.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
-		
+		txtSystemDatabaseSchemaName.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});		
 	}
 
 	private void setDirty(Boolean dirty) {this.dataIsDirty = dirty; displaySaveButton();}
@@ -228,10 +241,37 @@ public class ConfigController /* extends Application */ {
 		if (checkToDiscardData()) {
 //    		removeListeners();
     		// The close will continue...
-        	Log.logProgress("ConfigController.checkToCloseWindow(): User confirmed that data should be discarded or no changes were made.");
+        	Log.logProgress("ConfigController.checkToCloseWindow(): User confirmed that data should be discarded or no changes were made since the last save.");
 		} else {
         	Log.logProgress("ConfigController.checkToCloseWindow(): User cancelled the close.");
 			event.consume();	// Stop the window from closing
 		}
+    }
+    /***
+     * Load existing projects from the system database
+     */
+    private void loadListViewWithProjects(ListView<String> listView, ConnectionInformation sdci) {
+    		ArrayList<String> arr = new ArrayList<>(10);
+    	// Connect to the database, execute the query, read records into the ListView
+		java.sql.ResultSet resultSet = null;
+		String sql = "SELECT * FROM `" + sdci.getSchemaName() + "`.tproject;";
+		resultSet = SQLUtils.executeQuery(sdci.getHostName(), 
+										 sdci.getSchemaName(),
+				              			 sdci.getLoginName(), 
+				              			 sdci.getPassword(), 
+				              			 sql);
+		try {
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			while (resultSet.next()) {
+				// Zero-based. Yikes.
+				arr.add(Utils.replaceNullWithEmpty(resultSet.getString(2)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(3)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(4)));
+		    }
+			ObservableList<String> list = FXCollections.observableArrayList(arr);
+			resultSet.close();
+			listView.setItems(list);
+		} catch (Exception ex) {
+			Log.logError("ConfigController.loadListViewWithProjects(): " + ex.getLocalizedMessage()); 
+		}
+    	
     }
 }

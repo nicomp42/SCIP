@@ -192,6 +192,9 @@
                               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <Label prefHeight="25.0" text="HostName" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -203,6 +206,12 @@
                               <Label prefHeight="25.0" text="Password" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                               <TextField fx:id="txtSystemDatabasePassword" prefHeight="25.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
+                              <Label prefHeight="25.0" text="Schema Name" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                              <TextField fx:id="txtSystemDatabaseSchemaName" prefHeight="25.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                              <Label prefHeight="25.0" text="Projects on File" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                              <ListView fx:id="lvProjectsOnFile" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+								
                            </children>
                         </GridPane>
                      </content>

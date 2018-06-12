@@ -157,4 +157,18 @@ public class Utils {
 	 * @return The string with back quotes removed
 	 */
 	public static String removeBackQuotes(String data) {return data.replace("`", "");}
+
+	/***
+	 * Map a null string to an empty string
+	 * @param s The string to be mapped
+	 * @return s or an empty string if s is null
+	 */
+	public static String replaceNullWithEmpty(String s) {
+		if (s == null) {
+			return "";
+		} else {
+			return s;
+		}
+	}
 }
+

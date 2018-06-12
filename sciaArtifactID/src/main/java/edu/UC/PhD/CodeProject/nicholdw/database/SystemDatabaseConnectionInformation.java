@@ -13,8 +13,8 @@ public class SystemDatabaseConnectionInformation extends ConnectionInformation  
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public SystemDatabaseConnectionInformation(String hostName, String loginName, String password) {
-		super(hostName, loginName, password);
+	public SystemDatabaseConnectionInformation(String hostName, String loginName, String password, String schemaName) {
+		super(hostName, loginName, password, schemaName);
 	}
 	
 
