@@ -41,6 +41,7 @@ public class ConfigController /* extends Application */ {
 	@FXML CheckBox cbUseTestData, cbSupressOutputToConsole;
 	@FXML Tab tabMain, tabDatabase, tabNeo4j, tabFiles;
 	@FXML TabPane tbpConfig;
+	@FXML TextField txtSystemDatabaseLoginName, txtSystemDatabasePassword, txtSystemDatabaseHostName;
 	private Scene myScene;
 	private Stage myStage;
 	private Boolean dataIsDirty;
@@ -136,6 +137,9 @@ public class ConfigController /* extends Application */ {
 			txaGrassURL.setText(Config.getConfig().getGrassStyleSheetURL());
 			txaUserHomeDirectory.setText(Config.getConfig().getUserHomeDirectory());
 			txaConfigFilePath.setText(Config.getConfig().getAbsolutePathOfConfigFile());
+			txtSystemDatabaseLoginName.setText(Config.getConfig().getSystemDatabaseConnectionInformation().getLoginName());
+			txtSystemDatabasePassword.setText(Config.getConfig().getSystemDatabaseConnectionInformation().getPassword());
+			txtSystemDatabaseHostName.setText(Config.getConfig().getSystemDatabaseConnectionInformation().getHostName());
 		} catch (Exception ex) {
 			status = false;
 			Log.logError("ConfigController.scatter(): " + ex.getLocalizedMessage());
@@ -158,6 +162,9 @@ public class ConfigController /* extends Application */ {
 			Config.getConfig().setSupressOutputToConsole(cbSupressOutputToConsole.isSelected());
 			Config.getConfig().setNeo4jDefaultImportFilePath(txaCSVFolder.getText());
 			Config.getConfig().setGrassStyleSheetURL(txaGrassURL.getText());
+			Config.getConfig().getSystemDatabaseConnectionInformation().setHostName(txtSystemDatabaseHostName.getText());
+			Config.getConfig().getSystemDatabaseConnectionInformation().setLoginName(txtSystemDatabaseLoginName.getText());
+			Config.getConfig().getSystemDatabaseConnectionInformation().setPassword(txtSystemDatabasePassword.getText());
 		} catch (Exception ex) {
 			status = false;
 			Log.logError("ConfigController.gather(): " + ex.getLocalizedMessage());
@@ -192,7 +199,12 @@ public class ConfigController /* extends Application */ {
 		txaGrassURL.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
 		cbSupressOutputToConsole.selectedProperty().addListener(new ChangeListener<Boolean>() {@Override public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {setDirty(true);}});
 		cbUseTestData.selectedProperty().addListener(new ChangeListener<Boolean>() {@Override public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {setDirty(true);}});
-		}
+
+		txtSystemDatabaseLoginName.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
+		txtSystemDatabasePassword.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
+		txtSystemDatabaseHostName.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
+		
+	}
 
 	private void setDirty(Boolean dirty) {this.dataIsDirty = dirty; displaySaveButton();}
 

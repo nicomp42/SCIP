@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
+import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.database.SystemDatabaseConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import gui.DebugController;
@@ -38,7 +40,9 @@ public class Config implements Serializable {
      * @returns The singleton object
      */
     public static synchronized Config getConfig() {
-        if (config == null) {config = new Config();} // If it's the first call, instantiate the object
+        if (config == null) {
+        	config = new Config(); // If it's the first call, instantiate the object
+        } 
         return config;
     }
     /**
@@ -50,11 +54,13 @@ public class Config implements Serializable {
     }
 	/**
 	 * A private constructor will prevent the class from being instantiated. It's a Singleton. Not sure if this works.
+	 * Defaults are used here because we don't know any better at this point in the execution of the program
 	 */
 	private Config() {
 		setInitialDirectory(System.getProperty("user.home"));
+		systemDatabaseConnectionInformation = new SystemDatabaseConnectionInformation("localhost", "root", "Danger42");		
 	}
-	private final String version = "0.04";
+	private final String version = "0.05";
 	private final int mySQLDefaultPort = 3306;
 	private final Boolean useCaseSensitiveAttributeNameComparison = false;
 	private final Boolean useCaseSensitiveAliasNameComparison = false;
@@ -89,6 +95,7 @@ public class Config implements Serializable {
 	private String neo4jSuffix = "Neo4j_";
 	private String grassStyleSheetURL = "https://raw.githubusercontent.com/nicomp42/scipGrass/master/grass.css";
 	private ArrayList<Browser> browsers;
+	private SystemDatabaseConnectionInformation systemDatabaseConnectionInformation;
 
 	public String getMySQLDefaultHostname() {return mySQLDefaultHostname;}
 	public String setMySQLDefaultHostname(String mySQLDefaultHostname) {this.mySQLDefaultHostname = mySQLDefaultHostname; return mySQLDefaultHostname;}
@@ -355,6 +362,12 @@ public class Config implements Serializable {
 	}
 	public Boolean getUseCaseSensitiveQueryNameComparison() {
 		return useCaseSensitiveQueryNameComparison;
+	}
+	public ConnectionInformation getSystemDatabaseConnectionInformation() {
+		return systemDatabaseConnectionInformation;
+	}
+	public void setSystemDatabaseConnectionInformation(SystemDatabaseConnectionInformation systemDatabaseConnectionInformation) {
+		this.systemDatabaseConnectionInformation = systemDatabaseConnectionInformation;
 	}
 }
 // List the static fields that should be serialized. In this class, that's all of them that are not marked final.
