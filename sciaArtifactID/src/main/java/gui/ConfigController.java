@@ -83,6 +83,17 @@ public class ConfigController /* extends Application */ {
             	checkToCloseWindow(we);
             }
         });
+		lvProjectsOnFile.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent click) {
+		        if (click.getClickCount() == 2) {
+		        	//Use ListView's getSelected Item
+		        	String currentSelectedItem = lvProjectsOnFile.getSelectionModel().getSelectedItem();
+		        	int projectID = Integer.valueOf(currentSelectedItem.split(" : ")[0]);
+		   			ProjectManagerController.openProjectManagerWindow(projectID);
+		        }
+		    }
+		});
 	}
 	private void displaySaveButton() {btnSave.setVisible(dataIsDirty);}
 	public void setScene(Scene scene) {
@@ -264,7 +275,7 @@ public class ConfigController /* extends Application */ {
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 			while (resultSet.next()) {
 				// Zero-based. Yikes.
-				arr.add(Utils.replaceNullWithEmpty(resultSet.getString(2)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(3)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(4)));
+				arr.add(Utils.replaceNullWithEmpty(resultSet.getString(1)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(2)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(3)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(4)));
 		    }
 			ObservableList<String> list = FXCollections.observableArrayList(arr);
 			resultSet.close();
@@ -272,6 +283,5 @@ public class ConfigController /* extends Application */ {
 		} catch (Exception ex) {
 			Log.logError("ConfigController.loadListViewWithProjects(): " + ex.getLocalizedMessage()); 
 		}
-    	
     }
 }

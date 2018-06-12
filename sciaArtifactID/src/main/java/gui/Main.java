@@ -634,25 +634,7 @@ public class Main extends Application {
 		}
 	}
 	private void openProjectManagerWindow() {
-		try {
-			FXMLLoader fxmlLoader = null;
-			// Open the New Project Window
-			fxmlLoader = new FXMLLoader(getClass().getResource("ProjectManager.fxml"));
-			Parent root = fxmlLoader.load();
-			Stage stage = new Stage();
-			stage.initModality(Modality.NONE);
-			stage.setOpacity(1);
-			stage.setTitle("Project Manager");
-			Scene scene = new Scene(root);		//, 700, 450);
-	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {public void handle(WindowEvent we) {}});
-			stage.setScene(scene);
-			ProjectManagerController pmc = fxmlLoader.getController();
-			pmc.setScene(scene);
-			pmc.setStage(stage);
-			stage.show();
-		} catch (Exception ex) {
-			Log.logError("Main.openProjectManagerWindow():" + ex.getLocalizedMessage());
-		}
+		ProjectManagerController.openProjectManagerWindow(0);
 	}
 	private void openSubmitSQLWindow() {
 		try {
