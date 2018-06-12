@@ -1,11 +1,17 @@
 package edu.UC.PhD.CodeProject.nicholdw.database;
 
+import java.io.Serializable;
+
 /**
  * Configuration information for a database connection
  * @author nicomp
  *
  */
-public abstract class ConnectionInformation {
+public abstract class ConnectionInformation  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String loginName;
 	private String password;
 	private String hostName;
