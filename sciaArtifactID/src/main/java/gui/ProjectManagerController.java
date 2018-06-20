@@ -57,6 +57,10 @@ public class ProjectManagerController /* extends Application */ {
 	public Stage getStage() {return myStage;}
 	public void setStage(Stage myStage) {this.myStage = myStage;}
 	
+	/***
+	 * Open an instance of the Project Manager window
+	 * @param projectID Project ID from tProject table in the SEQ-AM system database, or zero if you don't need one. 
+	 */
 	public static void openProjectManagerWindow(int projectID) {
 		try {
 			FXMLLoader fxmlLoader = null;
