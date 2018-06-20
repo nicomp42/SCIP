@@ -2,6 +2,8 @@ package edu.UC.PhD.CodeProject.nicholdw.evolutionOperators;
 
 import java.util.ArrayList;
 
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+
 public class EvolutionOperators {
 	private ArrayList<EvolutionOperator> evolutionOperators;
 	
@@ -30,15 +32,20 @@ public class EvolutionOperators {
 			this.addEvolutionOperator(eo);
 		}
 	}
-	
+
 	public void addEvolutionOperator(EvolutionOperator evolutionOperator) throws EvolutionOperatorException {
 		switch (evolutionOperator.getClass().getName()) {
-			case "edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.SchemaEvolutionOperator":
-				this.evolutionOperators.add(new SchemaEvolutionOperator(evolutionOperator));
+			case "edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.Schema":
+				this.evolutionOperators.add(new Schema((Schema)evolutionOperator));
 				break;	
+			case "edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.Mapping":
+				this.evolutionOperators.add(new Mapping((Mapping)evolutionOperator));
+				break;	
+			default:
+				Log.logError("EvolutionOperators.addEvolutionOperator(): + unidentified operator: " + evolutionOperator.getClass().getName()); 
 		}
 	}
-	
+
 	public String toString() {
 		String myString = "";
 		String comma = "";

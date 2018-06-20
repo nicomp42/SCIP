@@ -6,14 +6,19 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			SchemaEvolutionOperator seo = new SchemaEvolutionOperator("Schema Evolution Operator #1");
-			SchemaEvolutionOperator seo1 = new SchemaEvolutionOperator("Schema Evolution Operator #2");
+			Schema seo = new Schema("Rename Schema");
+			Schema seo1 = new Schema("Drop Schema");
+			Schema seo2 = new Schema("Add Schema");
+
+			Mapping m = new Mapping("Add Mapping");
+			Mapping m1 = new Mapping("Drop Mapping");
+			Mapping m2 = new Mapping("Alter Mapping");
 			
 			EvolutionOperators eos = new EvolutionOperators();
 
 			ArrayList<EvolutionOperator> eo = new ArrayList<EvolutionOperator>();
-			eo.add(seo);
-			eo.add(seo1);
+			eo.add(seo); eo.add(seo1); eo.add(seo2);
+			eo.add(m); eo.add(m1);eo.add(m2); 
 			
 			eos.setEvolutionOperators(eo);
 			
