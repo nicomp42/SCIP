@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="apLogFileReader" fx:id="apLogFileReader" prefHeight="554.0" prefWidth="812.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.LogFileReaderController">
+   <padding>
+      <Insets bottom="5.0" right="5.0" top="5.0" />
+   </padding>
+   <children>
+      <TextArea fx:id="txaLogFile" layoutX="68.0" layoutY="4.0" prefHeight="63.0" prefWidth="682.0" promptText="Enter the log file and path" />
+      <Button fx:id="btnRead" layoutX="14.0" layoutY="120.0" mnemonicParsing="false" onAction="#btnRead_OnClick" prefHeight="6.0" prefWidth="54.0" text="Submit" />
+      <TextArea fx:id="txaLog" layoutX="17.0" layoutY="157.0" prefHeight="383.0" prefWidth="781.0" />
+      <Label layoutX="20.0" layoutY="7.0" text="Log File" />
+      <Button fx:id="btnBrowse" layoutX="756.0" layoutY="23.0" mnemonicParsing="false" onAction="#btnBrowse_OnClick" text="..." />
+      <Label layoutX="68.0" layoutY="75.0" text="User Name" />
+      <Label layoutX="301.0" layoutY="75.0" text="Password" />
+      <TextField fx:id="txtUser" layoutX="136.0" layoutY="71.0" />
+      <TextField fx:id="txtPassword" layoutX="359.0" layoutY="71.0" />
+   </children>
+</AnchorPane>

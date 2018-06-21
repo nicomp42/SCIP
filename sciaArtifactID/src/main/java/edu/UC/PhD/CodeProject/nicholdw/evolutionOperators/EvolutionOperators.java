@@ -38,6 +38,18 @@ public class EvolutionOperators {
 			case "edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.Schema":
 				this.evolutionOperators.add(new Schema((Schema)evolutionOperator));
 				break;	
+			case "edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.Table":
+				this.evolutionOperators.add(new Table((Table)evolutionOperator));
+				break;	
+			case "edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.TableAttribute":
+				this.evolutionOperators.add(new TableAttribute((TableAttribute)evolutionOperator));
+				break;	
+			case "edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.Query":
+				this.evolutionOperators.add(new Query((Query)evolutionOperator));
+				break;	
+			case "edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.QueryAttribute":
+				this.evolutionOperators.add(new QueryAttribute((QueryAttribute)evolutionOperator));
+				break;	
 			case "edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.Mapping":
 				this.evolutionOperators.add(new Mapping((Mapping)evolutionOperator));
 				break;	
@@ -51,7 +63,7 @@ public class EvolutionOperators {
 		String comma = "";
 		for (EvolutionOperator eo: evolutionOperators) {
 			myString += comma + eo.getName().toString();
-			comma = " ,";
+			comma = ", ";
 		}
 		return myString;
 	}

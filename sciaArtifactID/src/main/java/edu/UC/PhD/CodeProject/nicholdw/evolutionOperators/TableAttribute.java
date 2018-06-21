@@ -5,11 +5,11 @@
 package edu.UC.PhD.CodeProject.nicholdw.evolutionOperators;
 
 /***
- * Model a Schema Evolution Operator
+ * Model a Table Attribute Evolution Operator
  * @author nicomp
  *
  */
-public class Schema extends EvolutionOperator {
+public class TableAttribute extends EvolutionOperator {
 	private String sql;
 	public String getSQL() {
 		return sql;
@@ -21,12 +21,12 @@ public class Schema extends EvolutionOperator {
 
 	/***
 	 * Constructor
-	 * @param SchemaEvolutionOperator The SchemaEvolutionOperator to clone
+	 * @param tableAttribute The tableAttribute to clone
 	 * @throws EvolutionOperatorException
 	 */
-	public Schema(Schema schema) throws EvolutionOperatorException {
-		super((EvolutionOperator)schema);
-		this.setSQL(schema.getSQL());
+	public TableAttribute(TableAttribute tableAttribute) throws EvolutionOperatorException {
+		super((EvolutionOperator)tableAttribute);
+		this.setSQL(tableAttribute.getSQL());
 	}
 	
 	/***
@@ -34,7 +34,7 @@ public class Schema extends EvolutionOperator {
 	 * @param name The name of the operator
 	 * @throws EvolutionOperatorException
 	 */
-	public Schema(String name, String sql) throws EvolutionOperatorException {
+	public TableAttribute(String name, String sql) throws EvolutionOperatorException {
 		super(name);
 		this.setSQL(sql);
 	}

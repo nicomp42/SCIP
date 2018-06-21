@@ -86,7 +86,7 @@ public class Main extends Application {
 	@FXML private CheckBox cbOperationalSchemaCSVFiles, cbETLCSVFiles, cbDWCSVFiles;
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout;
-	@FXML private MenuItem mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL, mnuEditProjectManager;
+	@FXML private MenuItem mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL, mnuEditProjectManager, mnuReadDBLog;
 	@FXML private WebView wbNeo4j;
 	@FXML private ImageView imgNeo4jReminder;
 	@FXML void lvOperationalSchemaNames_OnClicked(MouseEvent event) {txtOperationalSchemaName.setText(lvOperationalSchemaNames.getSelectionModel().getSelectedItem());}
@@ -99,6 +99,7 @@ public class Main extends Application {
 	@FXML void mnuToolsGenerateSchemaTopology_OnClick(ActionEvent event) {openDatabaseGraphWindow();}
 	@FXML void mnuEditSubmitSQL_OnAction(ActionEvent event) {openSubmitSQLWindow();}
 	@FXML void mnuEditProjectManager_OnAction(ActionEvent event) {openProjectManagerWindow();}
+	@FXML void mnuEditReadDBLog_OnAction(ActionEvent event) {openLogFileReaderWindow();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
 		Log.logProgress("main.mnuFileSaveProject_OnAction(): Saving scip...");
@@ -660,7 +661,6 @@ public class Main extends Application {
 	private void openDatabaseGraphWindow() {
 		try {
 			FXMLLoader fxmlLoader = null;
-			// Open the New Project Window
 			fxmlLoader = new FXMLLoader(getClass().getResource("databaseGraph.fxml"));
 			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();
@@ -682,6 +682,27 @@ public class Main extends Application {
 		Browser browser = new Browser(Browser.getNextBrowserSerialNumber().toString());
 		Config.getConfig().addBrowser(browser);
 		browser.initAndLoad(null);
+	}
+	private void openLogFileReaderWindow() {
+		try {
+			FXMLLoader fxmlLoader = null;
+			// Open the New Project Window
+			fxmlLoader = new FXMLLoader(getClass().getResource("LogFileReader.fxml"));
+			Parent root = fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.initModality(Modality.NONE);
+			stage.setOpacity(1);
+			stage.setTitle("Read Database Log");
+			Scene scene = new Scene(root);		//, 700, 450);
+	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {public void handle(WindowEvent we) {}});
+			stage.setScene(scene);
+			DatabaseGraphController stc = fxmlLoader.getController();
+			stc.setScene(scene);
+			stc.setStage(stage);
+			stage.show();
+		} catch (Exception ex) {
+			Log.logError("Main.openLogFileReaderWindow():" + ex.getLocalizedMessage());
+		}
 	}
 /*
 		try {

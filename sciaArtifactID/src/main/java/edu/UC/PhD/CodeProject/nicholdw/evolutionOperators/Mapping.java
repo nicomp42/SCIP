@@ -14,7 +14,7 @@ public class Mapping extends EvolutionOperator {
 
 	/***
 	 * Constructor
-	 * @param SchemaEvolutionOperator The SchemaEvolutionOperator to clone
+	 * @param mapping  The Mapping to clone
 	 * @throws EvolutionOperatorException
 	 */
 	public Mapping(Mapping mapping) throws EvolutionOperatorException {

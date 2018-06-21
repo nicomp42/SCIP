@@ -6,20 +6,23 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
-			Schema seo = new Schema("Rename Schema");
-			Schema seo1 = new Schema("Drop Schema");
-			Schema seo2 = new Schema("Add Schema");
-
+			
 			Mapping m = new Mapping("Add Mapping");
 			Mapping m1 = new Mapping("Drop Mapping");
 			Mapping m2 = new Mapping("Alter Mapping");
-			
+
 			EvolutionOperators eos = new EvolutionOperators();
 
 			ArrayList<EvolutionOperator> eo = new ArrayList<EvolutionOperator>();
-			eo.add(seo); eo.add(seo1); eo.add(seo2);
-			eo.add(m); eo.add(m1);eo.add(m2); 
+			eo.add(new Schema("Rename Schema", "RENAME SCHEMA S")); eo.add(new Schema("Drop Schema", "DROP SCHEMA S")); 
+			eo.add(new Table("Rename Table", "RENAME TABLE T T1")); eo.add(new Table("Drop Table", "DROP TABLE T")); 
+			eo.add(new TableAttribute("Rename Table Attribute", "")); eo.add(new TableAttribute("Drop Table Attribute", "")); eo.add(new TableAttribute("Change Table Attribute Data Type", ""));  
 			
+			eo.add(new Query("Rename Query", "RENAME QUERY Q Q1")); eo.add(new Query("Drop Query", "DROP QUERY Q")); 
+			eo.add(new QueryAttribute("Rename Query Attribute", "")); eo.add(new QueryAttribute("Drop Query Attribute", "")); 
+					
+			eo.add(new Mapping("Drop Mapping")); eo.add(new Mapping("Edit Mapping"));
+
 			eos.setEvolutionOperators(eo);
 			
 			System.out.println(eos.toString());

@@ -26,7 +26,6 @@ import javafx.scene.control.TextField;
 import lib.SQLUtils;
 
 /**
- * Display debug messages in a dedicated window
  * @author nicomp
  */
 public class SubmitSQLController {
