@@ -51,7 +51,8 @@ public class GeneralLogReader {
 	/***
 	 * Read records that we care about: SELECT queries that access tables in our databases
 	 */
-	public void readFromServer(String logFilePath, TextArea txaOutput) {
+	public int readFromServer(String logFilePath, TextArea txaOutput) {
+		int totalRecords = 0;
 		BufferedReader br = null;
 		try {
 			FileReader generalLogFile = new FileReader(logFilePath);
@@ -60,10 +61,12 @@ public class GeneralLogReader {
 //			br.readLine();
 //			br.readLine();
 //			br.readLine();
-			
+
 			String buffer;
 			while (true) {
 				buffer = br.readLine();
+				if (buffer == null) {break;}
+				totalRecords++;
 				//System.out.println(buffer);
 				MySQLGeneralLogEntry gle = new MySQLGeneralLogEntry(buffer); 
 				 
@@ -73,12 +76,13 @@ public class GeneralLogReader {
 						gle.setText(gle.getText() + " " + buffer.trim());
 					}
 					txaOutput.appendText(gle.toString() + "\n");
-					//System.out.println(gle.toString());
+					System.out.println(gle.toString());
 //				}
 			}
 		} catch (Exception ex) {
 			System.out.println("GeneralLogReader.readFromServer(): " + ex.getLocalizedMessage());
 		}
 		try {br.close();} catch (Exception ex) {}
+		return totalRecords;
 	}
 }

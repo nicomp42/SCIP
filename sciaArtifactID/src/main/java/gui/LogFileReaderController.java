@@ -35,13 +35,13 @@ import lib.SQLUtils;
  */
 public class LogFileReaderController {
 
-	@FXML TextArea txaLogFile;
+	@FXML TextArea txaLogFile, txaLog;
 	@FXML Button btnRead, btnBrowse;
 	private Scene myScene;
 	private Stage myStage;
 	@FXML TextField txtLoginName, txtPassword;
 	@FXML void btnRead_OnClick(ActionEvent event) {readLogFile();}
-	@FXML void btnBrowse_OnClick_OnClick(ActionEvent event) {browseForLogFile();}
+	@FXML void btnBrowse_OnClick(ActionEvent event) {browseForLogFile();}
 
 	public LogFileReaderController() {
 	} 
@@ -52,6 +52,8 @@ public class LogFileReaderController {
 		try {
 			setTheScene();
 			txaLogFile.setText("C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data\\device.log");
+			txtLoginName.setText(Config.getConfig().getMySQLDefaultLoginName());
+			txtPassword.setText(Config.getConfig().getMySQLDefaultPassword());
 		} catch (Exception e) {
 //			Log.logError("LogFileReaderController.Initialize(): " + e.getLocalizedMessage());
 		}
@@ -65,8 +67,9 @@ public class LogFileReaderController {
 	public void setStage(Stage myStage) {this.myStage = myStage;}
 	
 	public void readLogFile() {
-		GeneralLogReader demo = new GeneralLogReader();
-		demo.readFromServer(txaLogFile.getText());
+		txaLog.clear();
+		GeneralLogReader glr = new GeneralLogReader();
+		int totalRecords = glr.readFromServer(txaLogFile.getText(), txaLog);
 	}
 	public void browseForLogFile() {
 		FileChooser fileChooser = new FileChooser();

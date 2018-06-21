@@ -693,10 +693,10 @@ public class Main extends Application {
 			stage.initModality(Modality.NONE);
 			stage.setOpacity(1);
 			stage.setTitle("Read Database Log");
-			Scene scene = new Scene(root);		//, 700, 450);
+			Scene scene = new Scene(root);
 	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {public void handle(WindowEvent we) {}});
 			stage.setScene(scene);
-			DatabaseGraphController stc = fxmlLoader.getController();
+			LogFileReaderController stc = fxmlLoader.getController();
 			stc.setScene(scene);
 			stc.setStage(stage);
 			stage.show();
