@@ -44,7 +44,7 @@ public class LogFileReaderController {
 	@FXML void btnBrowse_OnClick_OnClick(ActionEvent event) {browseForLogFile();}
 
 	public LogFileReaderController() {
-	}
+	} 
 
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
