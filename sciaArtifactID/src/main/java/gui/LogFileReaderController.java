@@ -30,6 +30,7 @@ import javafx.scene.control.TextField;
 import lib.SQLUtils;
 
 /**
+ * GUI for reading the DB transaction log file
  * @author nicomp
  */
 public class LogFileReaderController {
