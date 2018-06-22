@@ -291,12 +291,16 @@ public class QueryDefinition {
 	 */
 	public void reconcileTables() {
 		// Make sure every table/query has a schema
-		for (QueryTable qt: this.getQueryTables()) {
-			if (qt.getSchemaName() == null || qt.getSchemaName().equals("")) {
-				qt.setSchemaName(this.getSchemaName());
+		try {
+			for (QueryTable qt: this.getQueryTables()) {
+				if (qt.getSchemaName() == null || qt.getSchemaName().equals("")) {
+					qt.setSchemaName(this.getSchemaName());
+				}
+				// Figure out if it's a table or a query
+				qt.setIsQuery(isItAQuery(qt.getSchemaName(), qt.getTableName(), this));
 			}
-			// Figure out if it's a table or a query
-			qt.setIsQuery(isItAQuery(qt.getSchemaName(), qt.getTableName(), this));
+		} catch (Exception ex) {
+			Log.logError("QueryDefinition.reconcileTables(): " + ex.getLocalizedMessage());
 		}
 	}
 	/**

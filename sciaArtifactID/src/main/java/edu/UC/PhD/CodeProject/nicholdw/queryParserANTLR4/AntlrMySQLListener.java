@@ -58,7 +58,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	private String lastTerminalNode;
 	CompoundAliases compoundAliases;
 	boolean firstVisit;
-	
+
 	public AntlrMySQLListener(QueryDefinition queryDefinition) {
 		System.out.println("AntlrMySQLListener.AntlrMySQLListener(qd)");
 		this.queryDefinition = queryDefinition;
@@ -516,7 +516,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	 */
 	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText() + " Parent Context = " + ctx.getParent().getClass());
-//		fullTableNames.add(new FullTableName(ctx.getText()));		moved to EnterAtomTableItem because the alias is not here. 
+		// This has to be here. Do not put it in EnterAtomTableItem because the "Left" in "Left Join" will mess it up
+		fullTableNames.add(new FullTableName(ctx.getText())); 
 	}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
@@ -826,6 +827,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		case "JOIN":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): JOIN found");
 			break;
+		case "LEFT":
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): LEFT found");
+			break;
 		// All the SELECT statement qualifiers
 		case "ALL": case "DISTINCT" : case "DISTINCTROW" : case "HIGH_PRIORITY" : case "STRAIGHT_JOIN" : case "SQL_SMALL_RESULT" : 
 		case "SQL_BIG_RESULT" : case "SQL_BUFFER_RESULT": case "SQL_CACHE" : case "SQL_NO_CACHE" : case "SQL_CALC_FOUND_ROWS":
@@ -849,16 +853,11 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText());
 	}
 	/**
-	 * This event has the alias appended to the table name. more useful thenEnterTableName() because that does not have the alias
+	 * This event will have the "LEFT" in "LEFT JOIN" tacked onto it. Yuk
 	 */
 	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText() + " parent = " + ctx.getParent().getClass());
-		fullTableNames.add(new FullTableName(ctx.getText()));
-		Object context = ctx.getParent().getPayload();
-// 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): ctx.getParent context = " + context.getClass());
-		//if (context instanceof org.Antlr4MySQLFromANTLRRepo.MySqlParser.AlterByDropColumnContext) {
-		//	Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): context = AlterByDropColumnContext");			
-		//}		
+//		fullTableNames.add(new FullTableName(ctx.getText()));
 	}
 	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAtomTableItem(): " + ctx.getText());

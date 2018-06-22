@@ -35,8 +35,8 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
 public class AttributeProvenanceForNe04j {
 
 	private static final String attributeProvenanceFileSuffix = "AttributeProvenance";
-//	private static final String provenanceRealationName = "Provenance";
-	private static final String provenanceRealationName = "Impacts";
+	private static final String provenanceRealationName = "Provenance";
+//	private static final String provenanceRealationName = "Impacts";
 
 	public static boolean exportCSVFiles(AttributeParts attributeParts, QueryDefinition qd, String filePath) {
 		String fileName = Utils.formatPath(Utils.cleanPath(filePath)) + Config.getConfig().getNeo4jSuffix() + attributeProvenanceFileSuffix + Config.getConfig().getCSVFileExtension();

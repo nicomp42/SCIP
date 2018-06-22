@@ -76,8 +76,8 @@ public class Config implements Serializable {
 	private final String CSVFileExtension = ".csv";
 	private final String neo4jFilePrefix = "Neo4j_";	// Used when creating file names for CSV in the import folder of a Neo4j DB instance and used when creating queries that reference those files
 	private final String SCIPFileExtension  = ".ser";	//  A SCIP file is a "Schema Change Impact Project" file. Refer to the SchemaChangeImpactProject class
-	private String Neo4jTableToAttributeRelationName = "defines";
-	private String Neo4jQueryToTableRelationName = "refers";
+	private String Neo4jTableToAttributeRelationName = "contains";
+	private String Neo4jQueryToTableRelationName = "contains";
 	private Boolean useTestData = false;
 	private String initialDirectory = "";
 	private String neo4jDBDefaultUser = "neo4j";

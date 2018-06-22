@@ -37,6 +37,7 @@ public class LogFileReaderController {
 
 	@FXML TextArea txaLogFile, txaLog;
 	@FXML Button btnRead, btnBrowse;
+	@FXML Label lblStatus;
 	private Scene myScene;
 	private Stage myStage;
 	@FXML TextField txtLoginName, txtPassword;
@@ -54,6 +55,7 @@ public class LogFileReaderController {
 			txaLogFile.setText("C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data\\device.log");
 			txtLoginName.setText(Config.getConfig().getMySQLDefaultLoginName());
 			txtPassword.setText(Config.getConfig().getMySQLDefaultPassword());
+			lblStatus.setText("");
 		} catch (Exception e) {
 //			Log.logError("LogFileReaderController.Initialize(): " + e.getLocalizedMessage());
 		}
@@ -70,6 +72,7 @@ public class LogFileReaderController {
 		txaLog.clear();
 		GeneralLogReader glr = new GeneralLogReader();
 		int totalRecords = glr.readFromServer(txaLogFile.getText(), txaLog);
+		lblStatus.setText(totalRecords + " record" + (totalRecords != 1 ? "s" : "") + " read.");
 	}
 	public void browseForLogFile() {
 		FileChooser fileChooser = new FileChooser();

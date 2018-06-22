@@ -76,7 +76,7 @@ public class GeneralLogReader {
 						gle.setText(gle.getText() + " " + buffer.trim());
 					}
 					txaOutput.appendText(gle.toString() + "\n");
-					System.out.println(gle.toString());
+					//System.out.println(gle.toString());
 //				}
 			}
 		} catch (Exception ex) {
