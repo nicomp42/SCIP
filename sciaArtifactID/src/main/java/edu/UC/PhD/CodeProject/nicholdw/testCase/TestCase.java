@@ -1,4 +1,4 @@
-package edu.UC.PhD.CodeProject.nicholdw.caseStudy;
+package edu.UC.PhD.CodeProject.nicholdw.testCase;
 
 public abstract class TestCase implements ITestCase {
 	private String title;
