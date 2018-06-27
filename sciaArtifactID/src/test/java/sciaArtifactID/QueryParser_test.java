@@ -31,7 +31,7 @@ public class QueryParser_test {
 */
     @Test
     public void parseQueryForAttributesAndTables() throws IOException {
-		String sql = "select A AAlias , B BAlias, E EAlias from TT TAlias inner join U UAlias";
+		String sql = "SELECT `talias`.`A` AS `AAlias`, `talias`.`B` AS `BAlias`,  `ualias`.`E` AS `EAlias` FROM (`junittestcases`.`tt` `talias`        JOIN `junittestcases`.`u` `ualias`)";
 		QueryDefinition qd = new QueryDefinition("","","", new QueryTypeSelect(), "qFoo", sql, "schemaName");
 		QueryParser qp = new QueryParser();
 		qp.parseQuery(qd);
@@ -41,7 +41,7 @@ public class QueryParser_test {
         assertEquals("Found two tables", 2, (qd.getQueryTables()).size());
         assertEquals("First attribute is \"A\"", "A", qd.getQueryAttributes().iterator().next().getAttributeName());
         assertEquals("First attribute alias is \"AAlias\"", "AAlias", qd.getQueryAttributes().iterator().next().getAliasNames().toString());
-        assertEquals("First table is \"TT\"", "TT", qd.getQueryTables().iterator().next().getTableName());
+        assertEquals("First table is \"TT\"", "TT", qd.getQueryTables().iterator().next().getTableName().toUpperCase());
         assertEquals("First table alias(s) are \"TAlias\"", "TAlias", qd.getQueryTables().iterator().next().getAliasNames().toString());
     }
 }
