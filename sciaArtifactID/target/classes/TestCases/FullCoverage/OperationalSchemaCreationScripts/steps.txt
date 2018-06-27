@@ -1,4 +1,5 @@
-AllSteps.sql
+CreateAll.sql
+//AllSteps.sql
 //createSchema.sql
 //createTables.sql
 //createQueries.sql
