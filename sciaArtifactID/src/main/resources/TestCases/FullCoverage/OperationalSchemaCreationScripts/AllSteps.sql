@@ -1,7 +1,5 @@
 create schema FullCoveragetestcase;
-
-use FullCoveragetestcase;
-CREATE TABLE `table01` (
+CREATE TABLE `FullCoveragetestcase.table01` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Field01` int(11) DEFAULT NULL,
   `Field02` varchar(45) DEFAULT NULL,
@@ -11,7 +9,7 @@ CREATE TABLE `table01` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 
-CREATE TABLE `table02` (
+CREATE TABLE `FullCoveragetestcase.table02` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Field01` int(11) DEFAULT NULL,
   `Field02` varchar(45) DEFAULT NULL,
