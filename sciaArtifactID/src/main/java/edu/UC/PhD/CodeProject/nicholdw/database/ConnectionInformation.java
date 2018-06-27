@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @author nicomp
  *
  */
-public abstract class ConnectionInformation  implements Serializable {
+public class ConnectionInformation  implements Serializable {
 	/**
 	 * 
 	 */
@@ -45,6 +45,16 @@ public abstract class ConnectionInformation  implements Serializable {
 		setPassword(password);
 		setHostName(hostName);
 		setSchemaName(schemaName);
+	}
+	/**
+	 * Copy Constructor
+	 * @param connectionInformation The object to be copied
+	 */
+	public ConnectionInformation(ConnectionInformation connectionInformation) {
+		setLoginName(connectionInformation.loginName);
+		setPassword(connectionInformation.password);
+		setHostName(connectionInformation.hostName);
+		setSchemaName(connectionInformation.schemaName);
 	}
 	public String getSchemaName() {
 		return schemaName;

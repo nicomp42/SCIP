@@ -6,8 +6,45 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 //import com.mysql.jdbc.PreparedStatement;
-
+/**
+ * Submit SQL to the database engine
+ * @author nicomp
+ * @param hostName
+ * @param databaseName
+ * @param loginName
+ * @param password
+ * @param sql
+ */
 public class SQLUtils {
+	/***
+	 * Execute an action query. The connection is opened and then closed. It will be slow.
+	 * @param hostName
+	 * @param databaseName
+	 * @param loginName
+	 * @param password
+	 * @param sql
+	 */
+	public static void executeActionQuery(String hostName, String databaseName, String loginName, String password, String sql) {
+	    java.sql.Connection connection = null;
+		connection = new MySQL().connectToDatabase(hostName, databaseName, loginName, password);		// ToDo: Do we really need a databaseName here? 
+	    java.sql.PreparedStatement preparedStatement = null;
+	    try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			Log.logError("SQLUtils.executeActionQuery(): " + e.getLocalizedMessage());
+		}
+	    try {connection.close();}catch(Exception ex) {}
+	}
+	/**
+	 * Execute a SELECT statement against the database
+	 * @param hostName
+	 * @param databaseName
+	 * @param loginName
+	 * @param password
+	 * @param sql
+	 * @return The ResultSet object that is the result of the SELECT statement
+	 */
 	public static java.sql.ResultSet executeQuery(String hostName, String databaseName, String loginName, String password, String sql) {
 	    java.sql.ResultSet resultSet = null;
 		java.sql.Connection connection = null;

@@ -10,5 +10,13 @@ public interface ITestCase {
 	 * Execute the test case from end-to-end
 	 * @return True if test case passed, false otherwise
 	 */
-	boolean run();
+	public boolean run();
+	
+	/**
+	 * Create the operational schemas in the database
+	 * @return True if success, false otherwise
+	 */
+	public boolean createOperationalSchemas();
+	
+	
 }
