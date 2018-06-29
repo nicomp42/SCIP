@@ -17,6 +17,12 @@ public interface ITestCase {
 	 * @return True if success, false otherwise
 	 */
 	public boolean createOperationalSchemas();
+
 	
+	/**
+	 * Submit select scripts to the database for the purpose of filling the transaction log
+	 * @return
+	 */
+	public boolean LoadTransactionLog();
 	
 }

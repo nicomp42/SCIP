@@ -95,4 +95,15 @@ public class FullCoverage extends TestCase {
 		    }
 		}
 	}
+	@Override
+	public boolean LoadTransactionLog() {
+    	Log.logProgress("FullCoverage.LoadTransactionLog(): starting...");
+    	try {
+    		
+    	} catch (Exception ex) {
+        	Log.logError("FullCoverage.LoadTransactionLog(): " + ex.getLocalizedMessage());
+    	}
+    	
+		return false;
+	}
 }
