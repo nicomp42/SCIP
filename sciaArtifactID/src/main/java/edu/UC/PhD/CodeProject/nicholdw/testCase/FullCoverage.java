@@ -34,6 +34,7 @@ public class FullCoverage extends TestCase {
 		Log.logProgress("FullCoverage.run(): starting...");
 		try {
 			createOperationalSchemas();
+			submitEvolutionOperators();
 		} catch (Exception ex) {
 			Log.logError("FullCoverage.run(): " + ex.getLocalizedMessage());
 		}finally {
@@ -106,4 +107,16 @@ public class FullCoverage extends TestCase {
     	
 		return false;
 	}
+	
+	/***
+	 * Run all the evolution operators against the operational schemas
+	 * @return
+	 */
+	public boolean submitEvolutionOperators() {
+		boolean status = true;
+		
+		
+		return status;
+	}
+	
 }

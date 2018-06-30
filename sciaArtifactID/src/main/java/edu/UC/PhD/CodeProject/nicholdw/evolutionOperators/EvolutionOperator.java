@@ -27,7 +27,7 @@ public abstract class EvolutionOperator {
 	}
 	/** 
 	 * Get name of the operation
-	 * @return
+	 * @return the name of the operation
 	 */
 	public String getName() {
 		return name;

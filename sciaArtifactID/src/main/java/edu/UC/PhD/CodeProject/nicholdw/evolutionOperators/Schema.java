@@ -38,4 +38,8 @@ public class Schema extends EvolutionOperator {
 		super(name);
 		this.setSQL(sql);
 	}
+	
+	public Schema() throws EvolutionOperatorException {super("?");}
+	
+	
 }
