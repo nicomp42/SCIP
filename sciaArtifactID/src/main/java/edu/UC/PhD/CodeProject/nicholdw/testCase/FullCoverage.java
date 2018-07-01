@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.mysql.jdbc.CallableStatement;
+
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -52,6 +54,9 @@ public class FullCoverage extends TestCase {
 		BufferedReader reader = null;
 		Log.logProgress("FullCoverage.createOperationalSchemas(): Starting...");
 		try {
+			
+			SQLUtils.callStoredProcedure(connectionInformation.getHostName(), "", connectionInformation.getLoginName(), connectionInformation.getPassword(), "{CALL `testcasecreationscripts`.`CreateFullCoverageTestCase`()}");
+/*			
 			// Execute all the scripts in the OperationalSchemaCreationScripts subdirectory. The resources folder is assumed. Do not put it in the path
 			String path = "/" + TestCase.root + "/" + getFilePath() + "/" + "OperationalSchemaCreationScripts/" + "steps.txt";
    	    	Log.logProgress("FullCoverage.createOperationalSchemas(): reading steps from `" + path + "`" );
@@ -72,10 +77,11 @@ public class FullCoverage extends TestCase {
 			   	    SQLInputStream.close();
 	   	    	}
 	   	    }
+*/
 		} catch (Exception ex) {
 			Log.logError("FullCoverage.createOperationalSchemas(): " + ex.getLocalizedMessage());
 		} finally {
-	   	    try {reader.close();} catch (IOException e) {}		
+//	   	    try {reader.close();} catch (IOException e) {}		
 		}
 		return status;
 	}

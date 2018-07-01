@@ -2,6 +2,8 @@ package lib;
 
 import java.sql.SQLException;
 
+import com.mysql.jdbc.CallableStatement;
+
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
@@ -16,6 +18,30 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
  * @param sql
  */
 public class SQLUtils {
+	/***
+	 * Call a stored procedure in the database 
+	 * @param hostName
+	 * @param databaseName
+	 * @param loginName
+	 * @param password
+	 * @param sql The SQL statement, all ready to submit. See https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-usagenotes-statements-callable.html
+	 * @return
+	 */
+	public static boolean callStoredProcedure(String hostName, String databaseName, String loginName, String password, String sql) {
+		boolean status = true;
+	    java.sql.Connection connection = null;
+	    try {
+	    	connection = new MySQL().connectToDatabase(hostName, databaseName, loginName, password);		// ToDo: Do we really need a databaseName here? 
+	    	java.sql.CallableStatement cStmt = connection.prepareCall(sql);
+	        cStmt.execute();
+	    } catch (Exception ex) {
+	    	status = false;
+			Log.logError("SQLUtils.callStoredProcedure(): " + ex.getLocalizedMessage());
+	    } finally {
+	    	try {connection.close();} catch (Exception ex) {}
+	    }
+		return status;
+	}
 	/***
 	 * Execute an action query. The connection is opened and then closed. It will be slow.
 	 * @param hostName
