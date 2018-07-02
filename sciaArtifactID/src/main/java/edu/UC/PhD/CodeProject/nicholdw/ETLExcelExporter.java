@@ -11,11 +11,10 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;;
 
 public class ETLExcelExporter {
 
-	public static void generateOutputStepsCsvFile(String sFileName,
-			List<OutputStep> steps) {
+	public static void generateOutputStepsCsvFile(String sFileName, List<OutputStep> steps) {
 		try {
 			boolean fileExists = false;
-			System.out.println("Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateOutputStepsCsvFile(): Exporting to Excel");
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
@@ -35,12 +34,9 @@ public class ETLExcelExporter {
 				writer.append("AttributeName");
 				writer.append('\n');
 			}
-
-			for (OutputStep stepObj : steps) {
-				System.out.println("ExcelExporter:" + stepObj);
-
+ 			for (OutputStep stepObj : steps) {
+				Log.logProgress("ETLExcelExporter.generateOutputStepsCsvFile(): " + stepObj);
 				for (int index = 0; index < stepObj.getAttributes().size(); index++) {
-
 					writer.append(stepObj.getTransName());
 					writer.append(',');
 					writer.append(stepObj.getStepName());
@@ -53,9 +49,7 @@ public class ETLExcelExporter {
 					writer.append(',');
 					writer.append(stepObj.getAttributes().get(index));
 					writer.append('\n');
-
 				}
-
 			}
 			writer.flush();
 			writer.close();
