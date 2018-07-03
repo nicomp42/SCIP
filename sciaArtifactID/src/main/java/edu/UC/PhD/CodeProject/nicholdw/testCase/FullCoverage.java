@@ -9,10 +9,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import com.mysql.jdbc.CallableStatement;
 
+import edu.UC.PhD.CodeProject.nicholdw.ETLExcelExporter;
+import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
+import edu.UC.PhD.CodeProject.nicholdw.XMLParser;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import lib.SQLUtils;
@@ -33,6 +38,16 @@ public class FullCoverage extends TestCase {
 	 */
 	@Override
 	public boolean run() {
+		
+		XMLParser xmlparser=new XMLParser();
+		List<OutputStep> outputSteps = xmlparser.parseXMLForOutputSteps("C:\\Users\\nicomp\\Google Drive\\PhD (1)\\TestCases\\FullCoverageTestCase\\FullCoverageTestCaseSalesMappingToReconciledSchema.ktr");
+		ETLExcelExporter.generateOutputStepsCsvFile("c:\\Temp\\fooo.csv", outputSteps);
+
+		List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps("C:\\Users\\nicomp\\Google Drive\\PhD (1)\\TestCases\\FullCoverageTestCase\\FullCoverageTestCaseSalesMappingToReconciledSchema.ktr");		
+		ETLExcelExporter.generateInputStepsCsvFile("c:\\Temp\\fooi.csv", inputSteps);
+
+		
+/*		
 		Log.logProgress("FullCoverage.run(): starting...");
 		try {
 			createOperationalSchemas();
@@ -42,6 +57,7 @@ public class FullCoverage extends TestCase {
 		}finally {
 			Log.logProgress("FullCoverage.run(): done.");
 		}
+*/
 		return false;
 	}
 	/**
