@@ -1,38 +1,68 @@
 package edu.UC.PhD.CodeProject.nicholdw.database;
 
+import java.io.File;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 /**
  * Configuration information for a database connection
  * @author nicomp
  *
  */
 public class ConnectionInformation  implements Serializable {
-	/**
-	 * 
-	 */
+	public static final String connectionNameLiteral = "connectionName", loginNameLiteral = "loginName", passwordLiteral = "password", hostNameLiteral = "hostName", schemaNameLiteral = "schemaName"; 
 	private static final long serialVersionUID = 1L;
-	private String loginName;
-	private String password;
-	private String hostName;
-	private String schemaName;			// Or database name, depending on the DB engine we are talking to
+	private Hashtable<String, String> settings;
+	//private String connectionName;			// Just a familiar name that the user can assign
+	//private String loginName;
+	//private String password;
+	//private String hostName;
+	//private String schemaName;			// Or database name, depending on the DB engine we are talking to
+	public String getConnectionName() {
+		return settings.get(connectionNameLiteral);
+	}
+	public void setConnectionName(String connectionName) {
+		//this.connectionName = connectionName;
+		settings.put(connectionNameLiteral, connectionName);
+	}	
 	public String getLoginName() {
-		return loginName;
+		return settings.get(loginNameLiteral);
 	}
 	public void setLoginName(String loginName) {
-		this.loginName = loginName;
+		//this.loginName = loginName;
+		settings.put(loginNameLiteral,  loginName);
 	}
 	public String getPassword() {
-		return password;
+		return settings.get(passwordLiteral);
 	}
 	public void setPassword(String password) {
-		this.password = password;
+		//this.password = password;
+		settings.put(passwordLiteral, password);
 	}
 	public String getHostName() {
-		return hostName;
+		return settings.get(hostNameLiteral);
 	}
 	public void setHostName(String hostName) {
-		this.hostName = hostName;
+		//this.hostName = hostName;
+		settings.put(hostNameLiteral, hostName);
+	}
+	public String getSchemaName() {
+		return settings.get(schemaNameLiteral);
+	}
+	public void setSchemaName(String schemaName) {
+		//this.schemaName = schemaName;
+		settings.put(schemaNameLiteral, schemaName);
 	}
 	/**
 	 * Create a ConnectionInformation object
@@ -40,7 +70,9 @@ public class ConnectionInformation  implements Serializable {
 	 * @param loginName Login Name to access the database
 	 * @param password Password to access the database
 	 */
-	public ConnectionInformation(String hostName, String loginName, String password, String schemaName) {
+	public ConnectionInformation(String connectionName, String hostName, String loginName, String password, String schemaName) {
+		settings = new Hashtable<String, String>();
+		setConnectionName(connectionName);
 		setLoginName(loginName);
 		setPassword(password);
 		setHostName(hostName);
@@ -51,15 +83,59 @@ public class ConnectionInformation  implements Serializable {
 	 * @param connectionInformation The object to be copied
 	 */
 	public ConnectionInformation(ConnectionInformation connectionInformation) {
-		setLoginName(connectionInformation.loginName);
-		setPassword(connectionInformation.password);
-		setHostName(connectionInformation.hostName);
-		setSchemaName(connectionInformation.schemaName);
+		settings = new Hashtable<String, String>();
+		setConnectionName(connectionInformation.getConnectionName());
+		setLoginName(connectionInformation.getLoginName());
+		setPassword(connectionInformation.getPassword());
+		setHostName(connectionInformation.getHostName());
+		setSchemaName(connectionInformation.getSchemaName());
 	}
-	public String getSchemaName() {
-		return schemaName;
-	}
-	public void setSchemaName(String schemaName) {
-		this.schemaName = schemaName;
+	
+	public static ConnectionInformations readXML() {
+		ConnectionInformations connectionInformations = new ConnectionInformations();
+      try {
+    	  String path = "/ConnectionInformation/ConnectionInformation.xml";		// The root is the resources folder in the project structure
+    	 InputStream res = ConnectionInformation.class.getResourceAsStream(path);
+         //File inputFile = new File(path);
+         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+         Document doc = dBuilder.parse(res);			//(inputFile);
+         doc.getDocumentElement().normalize();
+         //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+         NodeList nList = doc.getElementsByTagName("connectionInformation");
+         //System.out.println("----------------------------");
+         
+         for (int temp = 0; temp < nList.getLength(); temp++) {
+            Node nNode = nList.item(temp);
+            //System.out.println("\nCurrent Element :" + nNode.getNodeName());
+            
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+               Element eElement = (Element) nNode;
+               ConnectionInformation connectionInformation = new ConnectionInformation(eElement.getAttribute("name"),
+            		   																   eElement.getElementsByTagName("hostname").item(0).getTextContent(),
+            		   																   eElement.getElementsByTagName("loginname").item(0).getTextContent(),
+            		   																   eElement.getElementsByTagName("password").item(0).getTextContent(),
+            		   																   eElement.getElementsByTagName("schema").item(0).getTextContent());
+               connectionInformations.addConnectionInformation(connectionInformation);
+               /*
+               Log.logProgress("ConnectionInformation.readXML(): Connection Name : " + connectionInformation.getConnectionName());
+               Log.logProgress("ConnectionInformation..readXML(): Host Name : " + connectionInformation.getHostName());
+               Log.logProgress("ConnectionInformation.readXML(): Login Name : " + connectionInformation.getLoginName());
+               Log.logProgress("ConnectionInformation.readXML(): Password : "  + connectionInformation.getPassword());
+               Log.logProgress("ConnectionInformation.readXML(): Schema : "    + connectionInformation.getSchemaName());
+               */
+            }
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+      return connectionInformations;
+   }
+	public String toString() {
+		String result = "";
+		result = getConnectionName() + ", " + getHostName() + ", " + getLoginName() + ", " + getPassword() + ", " + getSchemaName();  
+		return result;
 	}
 }
+	
+

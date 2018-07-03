@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class>
+   <connectionInformation name = "localhost">
+      <hostname>localhost</hostname>
+      <loginname>root</loginname>
+      <password>Danger42</password>
+      <schema>someSchema</schema>
+   </connectionInformation>
+
+   <connectionInformation name = "DW">
+      <hostname>localhost</hostname>
+      <loginname>root</loginname>
+      <password>Danger42</password>
+      <schema>DW</schema>
+   </connectionInformation>
+   
+</class>

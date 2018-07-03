@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformations;
 import edu.UC.PhD.CodeProject.nicholdw.database.SystemDatabaseConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
@@ -114,6 +115,8 @@ public class Config implements Serializable {
 	public String getNeo4jFilePath() {return neo4jFilesPath_Relative;}
 	public String[] getETLLayers() {return ETLLayers;}
 	public String buildWindowBarTitleWithAProjectName() {return getApplicationTitle() + " : " + getCurrentSchemaChangeImpactProject().getProjectName();}
+	
+	private ConnectionInformations connectionInformations;
 
 	/**
 	 * The file extension for SCIP project files
@@ -368,6 +371,15 @@ public class Config implements Serializable {
 	}
 	public void setSystemDatabaseConnectionInformation(SystemDatabaseConnectionInformation systemDatabaseConnectionInformation) {
 		this.systemDatabaseConnectionInformation = systemDatabaseConnectionInformation;
+	}
+	public ConnectionInformations getConnectionInformations() {
+		if (connectionInformations == null) {
+			setConnectionInformations(ConnectionInformation.readXML());
+		}
+		return connectionInformations;
+	}
+	public void setConnectionInformations(ConnectionInformations connectionInformations) {
+		this.connectionInformations = connectionInformations;
 	}
 }
 // List the static fields that should be serialized. In this class, that's all of them that are not marked final.
