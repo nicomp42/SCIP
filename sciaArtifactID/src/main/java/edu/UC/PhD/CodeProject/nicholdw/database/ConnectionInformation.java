@@ -92,6 +92,7 @@ public class ConnectionInformation  implements Serializable {
 	}
 	
 	public static ConnectionInformations readXML() {
+		// https://www.tutorialspoint.com/java_xml/java_dom_parse_document.htm
 		ConnectionInformations connectionInformations = new ConnectionInformations();
       try {
     	  String path = "/ConnectionInformation/ConnectionInformation.xml";		// The root is the resources folder in the project structure
@@ -116,6 +117,17 @@ public class ConnectionInformation  implements Serializable {
             		   																   eElement.getElementsByTagName("loginname").item(0).getTextContent(),
             		   																   eElement.getElementsByTagName("password").item(0).getTextContent(),
             		   																   eElement.getElementsByTagName("schema").item(0).getTextContent());
+               // Here is how to read the elements without knowing their names in advance
+/*             NodeList children = eElement.getChildNodes();
+               Node current = null;
+               int count = children.getLength();
+               for (int i = 0; i < count; i++) {
+                 current = children.item(i);
+                 if (current.getNodeType() == Node.ELEMENT_NODE) {
+                   Element element = (Element) current;
+                   System.out.println(element.getTagName());
+                 }
+               } */
                connectionInformations.addConnectionInformation(connectionInformation);
                /*
                Log.logProgress("ConnectionInformation.readXML(): Connection Name : " + connectionInformation.getConnectionName());

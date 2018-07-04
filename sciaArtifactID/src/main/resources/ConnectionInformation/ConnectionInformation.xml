@@ -5,6 +5,7 @@
       <loginname>root</loginname>
       <password>Danger42</password>
       <schema>someSchema</schema>
+      <dummy>DUMMY</dummy>
    </connectionInformation>
 
    <connectionInformation name = "DW">
@@ -12,6 +13,7 @@
       <loginname>root</loginname>
       <password>Danger42</password>
       <schema>DW</schema>
+      <flurp>Flurp</flurp>
    </connectionInformation>
    
 </class>
