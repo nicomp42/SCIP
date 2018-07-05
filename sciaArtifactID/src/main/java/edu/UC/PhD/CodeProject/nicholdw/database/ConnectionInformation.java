@@ -3,6 +3,7 @@ package edu.UC.PhD.CodeProject.nicholdw.database;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -11,7 +12,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
@@ -147,6 +152,22 @@ public class ConnectionInformation  implements Serializable {
 		String result = "";
 		result = getConnectionName() + ", " + getHostName() + ", " + getLoginName() + ", " + getPassword() + ", " + getSchemaName();  
 		return result;
+	}
+	/***
+	 * Load the ListView with database connections
+	 * @param listView The ListView to be loaded
+	 * @param connectionInformations The set of database connections or null if you want to load from the XML file
+	 */
+	public static void loadListViewWithDatabaseConnections(ListView<String> listView, ConnectionInformations connectionInformations) {
+		if (connectionInformations == null) {
+			connectionInformations = readXML();
+		}
+   		ArrayList<String> arr = new ArrayList<>();
+   		for (ConnectionInformation ci : connectionInformations) {
+   			arr.add(Utils.replaceNullWithEmpty(ci.toString()));
+   		}
+		ObservableList<String> list = FXCollections.observableArrayList(arr);
+		listView.setItems(list);
 	}
 }
 	

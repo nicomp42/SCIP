@@ -34,14 +34,14 @@ public class Config implements Serializable {
 		Config config = new Config();
 		save(config);
 	} */
-	private static final long serialVersionUID = 1L;
+	private  final long serialVersionUID = 1L;
 	private static Config config;
     /**
      * Returns a reference to the singleton object
      * @returns The singleton object
      */
     public static synchronized Config getConfig() {
-        if (config == null) {
+      if (config == null) {
         	config = new Config(); // If it's the first call, instantiate the object
         } 
         return config;
@@ -50,7 +50,7 @@ public class Config implements Serializable {
      * Call this after loading the serialized Config object from a file
      * @param config
      */
-    public static synchronized void setConfig(Config config) {
+    public synchronized static void setConfig(Config config) {
     	Config.config = config;
     }
 	/**
@@ -58,8 +58,6 @@ public class Config implements Serializable {
 	 * Defaults are used here because we don't know any better at this point in the execution of the program
 	 */
 	private Config() {
-		setInitialDirectory(System.getProperty("user.home"));
-		systemDatabaseConnectionInformation = new SystemDatabaseConnectionInformation("localhost", "root", "Danger42", "seq-am");		
 	}
 	private final String version = "0.05";
 	private final int mySQLDefaultPort = 3306;
@@ -83,7 +81,7 @@ public class Config implements Serializable {
 	private String initialDirectory = "";
 	private String neo4jDBDefaultUser = "neo4j";
 	private String neo4jDBDefaultPassword = "Danger42";
-	private SchemaChangeImpactProject currentSchemaChangeImpactProject = new SchemaChangeImpactProject();		// null;
+	private SchemaChangeImpactProject currentSchemaChangeImpactProject = null;		// = new SchemaChangeImpactProject();
     private DebugController debugController = null;
     private String mySQLDefaultLoginName = "root";
     private String mySQLDefaultPassword = "Danger42";
@@ -130,14 +128,14 @@ public class Config implements Serializable {
 	 * The folder in which all the Graph DBs are stored. Each DB has its' own folder in here
 	 * @return The path. It has a slash at the end.
 	 */
-	public static String getNeo4jFilesPath_Absolute() {
+	public  String getNeo4jFilesPath_Absolute() {
 		//	org.neo4j.jmx.impl.ConfigurationBean
 		//String path = System.getenv("JAVA_HOME");
 		String path = "C:/Users/nicomp/Google Drive/PhD (1)/MyCode/SchemaChangeImpactAnalysis/neo4j/";	// TODO generalize this.
 		return path;
 	}
 	// The CSV files must be in the Neo4j environment or Neo4j will refuse to import them. Then we will build subfolders for each schema under that location.
-	//private static final String csvFilesPath =  getNeo4jGraphDBFolder();
+	//private  final String csvFilesPath =  getNeo4jGraphDBFolder();
 
 	/**
 	 * Get the Windows configuration setting for HOMEPATH
@@ -166,13 +164,21 @@ public class Config implements Serializable {
 	 * Get the reference to the current project
 	 * @return The reference to the current project
 	 */
-	public SchemaChangeImpactProject getCurrentSchemaChangeImpactProject() {return currentSchemaChangeImpactProject;}
+	public SchemaChangeImpactProject getCurrentSchemaChangeImpactProject() {
+		if (currentSchemaChangeImpactProject == null) {currentSchemaChangeImpactProject = new SchemaChangeImpactProject();}
+		return currentSchemaChangeImpactProject;
+		}
 	/**
 	 * Set the reference to the current project
 	 * @param currentSchemaChangeImpactProject The reference to the current project
 	 */
 	public void setCurrentSchemaChangeImpactProject(SchemaChangeImpactProject currentSchemaChangeImpactProject) {this.currentSchemaChangeImpactProject = currentSchemaChangeImpactProject;}
-	public String getInitialDirectory() {return initialDirectory;}
+	public String getInitialDirectory() {
+		if (initialDirectory == null) {
+			setInitialDirectory(getUserHomeDirectory());
+		}
+		return initialDirectory;
+		}
 	public void setInitialDirectory(String initialDirectory) {this.initialDirectory = initialDirectory;}
 	public String getApplicationTitle() {return applicationTitle;}
 	public String getNeo4jDBDefaultUser() {return neo4jDBDefaultUser;}
@@ -297,7 +303,7 @@ public class Config implements Serializable {
 
 	public boolean compareQueryNames(String queryName1, String queryName2) {
 		boolean result = false;
-		if (Config.getConfig().getUseCaseSensitiveQueryNameComparison() == true) {
+		if (this.getConfig().getUseCaseSensitiveQueryNameComparison() == true) {
 			if (queryName1.trim().equals(queryName2.trim())) {
 				result = true;
 			}
@@ -310,7 +316,7 @@ public class Config implements Serializable {
 	}
 	public boolean compareTableNames(String tableName1, String tableName2) {
 		boolean result = false;
-		if (Config.getConfig().getUseCaseSensitiveTableNameComparison() == true) {
+		if (this.getConfig().getUseCaseSensitiveTableNameComparison() == true) {
 			if (tableName1.trim().equals(tableName2.trim())) {
 				result = true;
 			}
@@ -323,7 +329,7 @@ public class Config implements Serializable {
 	}
 	public boolean compareAttributeNames(String attributeName1, String attributeName2) {
 		boolean result = false;
-		if (Config.getConfig().getUseCasesSensitiveAttributeNameComparison() == true) {
+		if (this.getConfig().getUseCasesSensitiveAttributeNameComparison() == true) {
 			if (attributeName1.trim().equals(attributeName2.trim())) {
 				result = true;
 			}
@@ -336,7 +342,7 @@ public class Config implements Serializable {
 	}
 	public boolean compareSchemaNames(String schemaName1, String schemaName2) {
 		boolean result = false;
-		if (Config.getConfig().getUseCaseSensitiveSchemaNameComparison() == true) {
+		if (this.getConfig().getUseCaseSensitiveSchemaNameComparison() == true) {
 			if (schemaName1.trim().equals(schemaName2.trim())) {
 				result = true;
 			}
@@ -349,7 +355,7 @@ public class Config implements Serializable {
 	}
 	public boolean compareAliasNames(String aliasName1, String aliasName2) {
 		boolean result = false;
-		if (Config.getConfig().getUseCaseSensitiveAliasNameComparison() == true) {
+		if (this.getConfig().getUseCaseSensitiveAliasNameComparison() == true) {
 			if (aliasName1.equals(aliasName2)) {
 				result = true;
 			}
@@ -367,11 +373,14 @@ public class Config implements Serializable {
 		return useCaseSensitiveQueryNameComparison;
 	}
 	public ConnectionInformation getSystemDatabaseConnectionInformation() {
+		if (systemDatabaseConnectionInformation == null) {
+			systemDatabaseConnectionInformation = new SystemDatabaseConnectionInformation("localhost", "root", "Danger42", "seq-am");
+		}		
 		return systemDatabaseConnectionInformation;
 	}
-	public void setSystemDatabaseConnectionInformation(SystemDatabaseConnectionInformation systemDatabaseConnectionInformation) {
-		this.systemDatabaseConnectionInformation = systemDatabaseConnectionInformation;
-	}
+//	public void setSystemDatabaseConnectionInformation(SystemDatabaseConnectionInformation systemDatabaseConnectionInformation) {
+//		this.systemDatabaseConnectionInformation = systemDatabaseConnectionInformation;
+//	}
 	public ConnectionInformations getConnectionInformations() {
 		if (connectionInformations == null) {
 			setConnectionInformations(ConnectionInformation.readXML());
@@ -382,9 +391,9 @@ public class Config implements Serializable {
 		this.connectionInformations = connectionInformations;
 	}
 }
-// List the static fields that should be serialized. In this class, that's all of them that are not marked final.
+// List the fields that should be serialized. In this class, that's all of them that are not marked final.
 // This does not work, an error is thrown on the writeObject statement.
-/*  private static final ObjectStreamField[] serialPersistentFields = {
+/*  private  final ObjectStreamField[] serialPersistentFields = {
 		new ObjectStreamField("Neo4jTableToAttributeRelationName", String.class),
 		new ObjectStreamField("Neo4jQueryToTableRelationName", String.class),
 		new ObjectStreamField("useTestData", Boolean.class),

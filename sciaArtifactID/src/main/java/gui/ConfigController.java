@@ -51,7 +51,7 @@ public class ConfigController /* extends Application */ {
 	@FXML Tab tabMain, tabDatabase, tabNeo4j, tabFiles;
 	@FXML TabPane tbpConfig;
 	@FXML TextField txtSystemDatabaseLoginName, txtSystemDatabasePassword, txtSystemDatabaseHostName, txtSystemDatabaseSchemaName;
-	@FXML ListView<String> lvProjectsOnFile;
+	@FXML ListView<String> lvProjectsOnFile, lvDatabaseConnections;
 	private Scene myScene;
 	private Stage myStage;
 	private Boolean dataIsDirty;
@@ -76,6 +76,7 @@ public class ConfigController /* extends Application */ {
 		dataIsDirty = false;
 		scatter();
 		loadListViewWithProjects(lvProjectsOnFile, Config.getConfig().getSystemDatabaseConnectionInformation());
+		ConnectionInformation.loadListViewWithDatabaseConnections(lvDatabaseConnections, null);
 		displaySaveButton();
 		setUpChangeListeners();
 		myStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -262,7 +263,7 @@ public class ConfigController /* extends Application */ {
      * Load existing projects from the system database
      */
     private void loadListViewWithProjects(ListView<String> listView, ConnectionInformation sdci) {
-    		ArrayList<String> arr = new ArrayList<>(10);
+   		ArrayList<String> arr = new ArrayList<>(10);
     	// Connect to the database, execute the query, read records into the ListView
 		java.sql.ResultSet resultSet = null;
 		String sql = "SELECT * FROM `" + sdci.getSchemaName() + "`.tproject;";

@@ -1,13 +1,14 @@
 package edu.UC.PhD.CodeProject.nicholdw.database;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /***
- * A set of CollectionInformation objects. I know the gramma is bogus
+ * A set of CollectionInformation objects. I know the spelling is bogus but if conforms to our standard for collections of our stuff.
  * @author nicomp
  *
  */
-public class ConnectionInformations {
+public class ConnectionInformations implements Iterable<ConnectionInformation> {
 	private ArrayList<ConnectionInformation> connectionInformations;
 	
 	public ConnectionInformations() {
@@ -29,8 +30,12 @@ public class ConnectionInformations {
 			result += crlf + ci.toString();
 			crlf = "\n";
 		}
-		
 		return result;
 	}
-	
+
+	@Override
+	public Iterator<ConnectionInformation> iterator() {
+		Iterator<ConnectionInformation> myIterator = connectionInformations.iterator();
+        return myIterator;
+	}
 }
