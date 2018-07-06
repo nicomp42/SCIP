@@ -229,7 +229,7 @@
                           </rowConstraints>
                            <children>
                               <Label prefHeight="25.0" text="Connections" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                              <ListView fx:id="lvDatabaseConnections" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />								
+                              <ListView fx:id="lvDatabaseConnections" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />								
                            </children>
                         </GridPane>
                      </content>

@@ -17,6 +17,12 @@ public interface ITestCase {
 	 * @return True if success, false otherwise
 	 */
 	public boolean createOperationalSchemas();
+	
+	/***
+	 * Create the action queries (as Stored Procedures) that will act upon the attributes in the data warehouse
+	 * @return True if success, false otherwise
+	 */
+	public boolean createAttributeOperationsAsStoredProcedures();
 
 	
 	/**

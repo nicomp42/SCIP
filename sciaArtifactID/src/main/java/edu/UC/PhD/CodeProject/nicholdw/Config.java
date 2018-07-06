@@ -303,7 +303,7 @@ public class Config implements Serializable {
 
 	public boolean compareQueryNames(String queryName1, String queryName2) {
 		boolean result = false;
-		if (this.getConfig().getUseCaseSensitiveQueryNameComparison() == true) {
+		if (Config.getConfig().getUseCaseSensitiveQueryNameComparison() == true) {
 			if (queryName1.trim().equals(queryName2.trim())) {
 				result = true;
 			}
@@ -316,7 +316,7 @@ public class Config implements Serializable {
 	}
 	public boolean compareTableNames(String tableName1, String tableName2) {
 		boolean result = false;
-		if (this.getConfig().getUseCaseSensitiveTableNameComparison() == true) {
+		if (Config.getConfig().getUseCaseSensitiveTableNameComparison() == true) {
 			if (tableName1.trim().equals(tableName2.trim())) {
 				result = true;
 			}
@@ -329,7 +329,7 @@ public class Config implements Serializable {
 	}
 	public boolean compareAttributeNames(String attributeName1, String attributeName2) {
 		boolean result = false;
-		if (this.getConfig().getUseCasesSensitiveAttributeNameComparison() == true) {
+		if (Config.getConfig().getUseCasesSensitiveAttributeNameComparison() == true) {
 			if (attributeName1.trim().equals(attributeName2.trim())) {
 				result = true;
 			}
@@ -342,7 +342,7 @@ public class Config implements Serializable {
 	}
 	public boolean compareSchemaNames(String schemaName1, String schemaName2) {
 		boolean result = false;
-		if (this.getConfig().getUseCaseSensitiveSchemaNameComparison() == true) {
+		if (Config.getConfig().getUseCaseSensitiveSchemaNameComparison() == true) {
 			if (schemaName1.trim().equals(schemaName2.trim())) {
 				result = true;
 			}
@@ -355,7 +355,7 @@ public class Config implements Serializable {
 	}
 	public boolean compareAliasNames(String aliasName1, String aliasName2) {
 		boolean result = false;
-		if (this.getConfig().getUseCaseSensitiveAliasNameComparison() == true) {
+		if (Config.getConfig().getUseCaseSensitiveAliasNameComparison() == true) {
 			if (aliasName1.equals(aliasName2)) {
 				result = true;
 			}

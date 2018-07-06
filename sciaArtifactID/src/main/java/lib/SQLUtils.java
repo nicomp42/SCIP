@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import com.mysql.jdbc.CallableStatement;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 //import com.mysql.jdbc.PreparedStatement;
@@ -42,6 +43,14 @@ public class SQLUtils {
 	    }
 		return status;
 	}
+	/***
+	 * Execute an action query. 
+	 * @param connectionInformation The connection information
+	 * @param sql the sql statement
+	 */
+	public static void executeActionQuery(ConnectionInformation connectionInformation, String sql) {
+		executeActionQuery(connectionInformation.getHostName(), connectionInformation.getSchemaName(), connectionInformation.getLoginName(), connectionInformation.getPassword(), sql);
+	}	
 	/***
 	 * Execute an action query. The connection is opened and then closed. It will be slow.
 	 * @param hostName

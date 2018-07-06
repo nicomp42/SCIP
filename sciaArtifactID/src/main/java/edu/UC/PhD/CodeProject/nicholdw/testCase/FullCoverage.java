@@ -140,5 +140,91 @@ public class FullCoverage extends TestCase {
 		
 		return status;
 	}
+	public boolean createAttributeOperationsAsStoredProcedures() {
+		// Rename a table attribute
+		String sql = "USE `dwattributeoperations`;\r\n" + 
+					 "DROP procedure IF EXISTS `renametableattribute`;\r\n" + 
+					 "\r\n" + 
+					 "DELIMITER $$\r\n" + 
+					 "USE `dwattributeoperations`$$\r\n" + 
+					 "CREATE PROCEDURE `renametableattribute` ()\r\n" + 
+					 "BEGIN\r\n" + 
+					 "	Alter table sales.transaction change   dateTimeOfTransaction    datestampoftransaction datetime  ;\r\n" + 
+					 "END;$$\r\n" + 
+					 "\r\n" + 
+					 "DELIMITER ;\r\n";
+		// rename a table
+		SQLUtils.executeActionQuery(connectionInformation, sql);
+		sql = "CREATE DEFINER=`root`@`localhost` PROCEDURE `renametable`()\r\n" + 
+				"BEGIN\r\n" + 
+				"RENAME TABLE `sales`.`transaction` TO `trans`;\r\n" + 
+				"END";
+		SQLUtils.executeActionQuery(connectionInformation, sql);
+		// delete a table
+		sql = "CREATE DEFINER=`root`@`localhost` PROCEDURE `deletetable`()\r\n" + 
+				"BEGIN\r\n" + 
+				"DROP TABLE `sales`.`transaction` ;\r\n" + 
+				"END";
+		SQLUtils.executeActionQuery(connectionInformation, sql);
+		// delete a query
+		sql = "CREATE DEFINER=`root`@`localhost` PROCEDURE `deletequery`()\r\n" + 
+				"BEGIN\r\n" + 
+				"-- *************************\r\n" + 
+				"-- Same as dropping a table\r\n" + 
+				"-- *************************\r\n" + 
+				"DROP TABLE `reconciled.mapping` ;\r\n" + 
+				"END";
+		SQLUtils.executeActionQuery(connectionInformation, sql);
+		// Rename a query attribute. This is just a replacement of the existing query
+		sql = "CREATE DEFINER=`root`@`localhost` PROCEDURE `renamequeryattribute`()\r\n" + 
+				"BEGIN\r\n" + 
+				"CREATE \r\n" + 
+				"     OR REPLACE ALGORITHM = UNDEFINED \r\n" + 
+				"    DEFINER = `root`@`localhost` \r\n" + 
+				"    SQL SECURITY DEFINER\r\n" + 
+				"VIEW `reconciled`.`mapping` AS\r\n" + 
+				"    SELECT \r\n" + 
+				"        `hr`.`employee`.`FirstName` AS `EmplFirstName`,\r\n" + 
+				"        `hr`.`employee`.`LastName` AS `EmployeeLastName`,\r\n" + 
+				"        `product`.`product`.`Description` AS `ProductDescription`,\r\n" + 
+				"        `product`.`unit`.`Unit` AS `Unit`,\r\n" + 
+				"        `product`.`product`.`SKU` AS `SKU`,\r\n" + 
+				"        `sales`.`transactiondetail`.`Qty` AS `Qty`,\r\n" + 
+				"        `product`.`product`.`UnitCost` AS `UnitCost`,\r\n" + 
+				"        `product`.`product`.`UnitPrice` AS `UnitPrice`,\r\n" + 
+				"        `product`.`manufacturer`.`Manufacturer` AS `Manufacturer`,\r\n" + 
+				"        `sales`.`transaction`.`EmployeeNumber` AS `EmployeeNumber`,\r\n" + 
+				"        `sales`.`transaction`.`LoyaltyNumber` AS `LoyaltyNumber`,\r\n" + 
+				"        `sales`.`transaction`.`StoreNumber` AS `StoreNumber`,\r\n" + 
+				"        CAST(`sales`.`transaction`.`DateTimeOfTransaction`\r\n" + 
+				"            AS DATE) AS `DateOfTransaction`,\r\n" + 
+				"        CAST(`sales`.`transaction`.`DateTimeOfTransaction`\r\n" + 
+				"            AS TIME) AS `TimeOfTransaction`,\r\n" + 
+				"        CAST(CAST(`sales`.`transaction`.`DateTimeOfTransaction`\r\n" + 
+				"                AS DATE)\r\n" + 
+				"            AS CHAR CHARSET UTF8) AS `DateOfTransactionString`,\r\n" + 
+				"        CAST(CAST(`sales`.`transaction`.`DateTimeOfTransaction`\r\n" + 
+				"                AS TIME)\r\n" + 
+				"            AS CHAR CHARSET UTF8) AS `TimeOfTransactionString`,\r\n" + 
+				"        WEEKDAY(`sales`.`transaction`.`DateTimeOfTransaction`) AS `WeekdayOfTransaction`,\r\n" + 
+				"        MONTH(`sales`.`transaction`.`DateTimeOfTransaction`) AS `MonthOfTransaction`,\r\n" + 
+				"        YEAR(`sales`.`transaction`.`DateTimeOfTransaction`) AS `YearOfTransaction`,\r\n" + 
+				"        DAYNAME(`sales`.`transaction`.`DateTimeOfTransaction`) AS `WeekdayNameOfTransaction`,\r\n" + 
+				"        MONTHNAME(`sales`.`transaction`.`DateTimeOfTransaction`) AS `MonthNameOfTransaction`,\r\n" + 
+				"        `sales`.`transactiondetail`.`TotalPrice` AS `TotalPrice`\r\n" + 
+				"    FROM\r\n" + 
+				"        (((((`sales`.`transaction`\r\n" + 
+				"        JOIN `sales`.`transactiondetail` ON ((`sales`.`transaction`.`TransactionID` = `sales`.`transactiondetail`.`TransactionID`)))\r\n" + 
+				"        JOIN `hr`.`employee` ON ((`hr`.`employee`.`EmployeeNumber` = `sales`.`transaction`.`EmployeeNumber`)))\r\n" + 
+				"        JOIN `product`.`product` ON ((`product`.`product`.`SKU` = `sales`.`transactiondetail`.`SKU`)))\r\n" + 
+				"        JOIN `product`.`unit` ON ((`product`.`product`.`UnitID` = `product`.`unit`.`UnitID`)))\r\n" + 
+				"        JOIN `product`.`manufacturer` ON ((`product`.`product`.`ManufacturerID` = `product`.`manufacturer`.`ManufacturerID`)));\r\n" + 
+				"\r\n" + 
+				"END";
+		SQLUtils.executeActionQuery(connectionInformation, sql);
+		
+		
+		return false;
+	}
 	
 }
