@@ -223,6 +223,31 @@ public class FullCoverage extends TestCase {
 				"END";
 		SQLUtils.executeActionQuery(connectionInformation, sql);
 		
+		// Drop a foreign key - MySQL also drops the corresponding index when you do this in MySQLWorkbench
+		sql = "CREATE DEFINER=`root`@`localhost` PROCEDURE `dropforeignkey`()\r\n" + 
+				"BEGIN\r\n" + 
+				"	ALTER TABLE `sales`.`transactiondetail` DROP FOREIGN KEY `TransactionID`; \r\n" + 
+				"	ALTER TABLE `sales`.`transactiondetail` DROP INDEX `TransactionID_idx`;\r\n" + 
+				"END";
+		SQLUtils.executeActionQuery(connectionInformation, sql);
+		
+		// Drop a natural key
+		sql = "USE `dwattributeoperations`;\r\n" + 
+				"DROP procedure IF EXISTS `dropNaturalKey`;\r\n" + 
+				"\r\n" + 
+				"DELIMITER $$\r\n" + 
+				"USE `dwattributeoperations`$$\r\n" + 
+				"CREATE DEFINER=`root`@`localhost` PROCEDURE `dropNaturalKey`()\r\n" + 
+				"BEGIN\r\n" + 
+				"ALTER TABLE `sales`.`transaction` \r\n" + 
+				"ADD UNIQUE INDEX `NaturalKey` (`DateTimeOfTransaction` ASC, `LoyaltyNumber` ASC, `StoreNumber` ASC, `EmployeeNumber` ASC);\r\n" + 
+				"END$$\r\n" + 
+				"\r\n" + 
+				"DELIMITER ;\r\n" + 
+				"\r\n";
+		SQLUtils.executeActionQuery(connectionInformation, sql);
+		
+		
 		
 		return false;
 	}
