@@ -35,12 +35,14 @@ import javafx.stage.WindowEvent;
 import lib.SQLUtils;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableView;
 
 /**
  * Display debug messages in a dedicated window
  * @author nicomp
  */
 public class ConfigController /* extends Application */ {
+//  <ListView fx:id="lvDatabaseConnections" prefHeight="100.0" prefWidth="450.0" GridPane.columnIndex="1" GridPane.rowIndex="0" /> 
 
 	@FXML AnchorPane apConfig;
 	@FXML Button btnSave, btnBrowseForCSVFolder;
@@ -51,7 +53,8 @@ public class ConfigController /* extends Application */ {
 	@FXML Tab tabMain, tabDatabase, tabNeo4j, tabFiles;
 	@FXML TabPane tbpConfig;
 	@FXML TextField txtSystemDatabaseLoginName, txtSystemDatabasePassword, txtSystemDatabaseHostName, txtSystemDatabaseSchemaName;
-	@FXML ListView<String> lvProjectsOnFile, lvDatabaseConnections;
+	@FXML ListView<String> lvProjectsOnFile;		//, lvDatabaseConnections;
+	@FXML TableView<gui.ConnectionInformation> tvDatabaseConnections;
 	private Scene myScene;
 	private Stage myStage;
 	private Boolean dataIsDirty;
@@ -76,7 +79,8 @@ public class ConfigController /* extends Application */ {
 		dataIsDirty = false;
 		scatter();
 		loadListViewWithProjects(lvProjectsOnFile, Config.getConfig().getSystemDatabaseConnectionInformation());
-		ConnectionInformation.loadListViewWithDatabaseConnections(lvDatabaseConnections, null);
+//		ConnectionInformation.loadListViewWithDatabaseConnections(lvDatabaseConnections, null);
+		ConnectionInformation.loadTableViewWithDatabaseConnections(tvDatabaseConnections, null);
 		displaySaveButton();
 		setUpChangeListeners();
 		myStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

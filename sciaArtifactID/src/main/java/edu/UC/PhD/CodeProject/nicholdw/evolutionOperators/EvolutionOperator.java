@@ -12,7 +12,6 @@ package edu.UC.PhD.CodeProject.nicholdw.evolutionOperators;
 public abstract class EvolutionOperator {
 	private String name;
 
-	
 	/**
 	 * Copy Constructor
 	 * @param evolutionOperator the thing to be copied 

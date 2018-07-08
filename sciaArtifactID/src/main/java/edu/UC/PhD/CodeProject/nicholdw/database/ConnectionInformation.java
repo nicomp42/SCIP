@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import javax.swing.text.TabableView;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -17,6 +18,8 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TreeView;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
@@ -169,6 +172,19 @@ public class ConnectionInformation  implements Serializable {
 		ObservableList<String> list = FXCollections.observableArrayList(arr);
 		listView.setItems(list);
 	}
+	/***
+	 * Load the TableView with database connections
+	 * @param tableView The TableView to be loaded
+	 * @param connectionInformations The set of database connections or null if you want to load from the XML file
+	 */
+	public static void loadTableViewWithDatabaseConnections(TableView<gui.ConnectionInformation> tableView, ConnectionInformations connectionInformations) {
+		if (connectionInformations == null) {
+			connectionInformations = readXML();
+		}
+        ObservableList<gui.ConnectionInformation> data = tableView.getItems();
+   		for (ConnectionInformation ci : connectionInformations) {
+   	        data.add(new gui.ConnectionInformation(ci.getConnectionName(), ci.getHostName(), ci.getLoginName(), ci.getPassword(), ci.getSchemaName()));
+//   	        data.add(new gui.ConnectionInformation(ci.getConnectionName(), ci.getHostName(), ci.getLoginName(), ci.toString(), ci.getSchemaName()));
+   		}
+    }		
 }
-	
-

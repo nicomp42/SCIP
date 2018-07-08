@@ -13,7 +13,7 @@ public class Mapping extends MappingBase {
 	public Mapping(Mapping mapping) {
 		super(mapping.getUniqueName());
 	}
-	
+
 	public Mapping(String uniqueName) {
 		super(uniqueName);
 	}
