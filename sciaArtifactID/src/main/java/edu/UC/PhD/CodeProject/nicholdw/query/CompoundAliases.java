@@ -41,7 +41,7 @@ public class CompoundAliases implements Iterable<CompoundAlias> {
 		}
 		if (!matchFound) {
 			result = true;
-			compoundAliases.add(compoundAlias);
+			compoundAliases.add(new CompoundAlias(compoundAlias));
 		}
 		return result;
 	}

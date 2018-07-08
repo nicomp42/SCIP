@@ -5,21 +5,16 @@ package edu.UC.PhD.CodeProject.nicholdw.mapping;
  * @author nicomp
  */
 public class Mapping extends MappingBase {
-	private String uniqueName;
 	
+	/***
+	 * Copy Constructor
+	 * @param mapping The Mapping object to be copied
+	 */
 	public Mapping(Mapping mapping) {
-		this.setUniqueName(mapping.getUniqueName());
+		super(mapping.getUniqueName());
 	}
 	
 	public Mapping(String uniqueName) {
-		setUniqueName(uniqueName);
-	}
-
-	public String getUniqueName() {
-		return uniqueName;
-	}
-
-	public void setUniqueName(String uniqueName) {
-		this.uniqueName = uniqueName;
+		super(uniqueName);
 	}
 }

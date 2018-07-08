@@ -11,6 +11,11 @@ public class CompoundAlias {
 
 	private ArrayList<FullColumnName> fullColumnNames;
 	private String aliasName;
+	@SuppressWarnings("unchecked")
+	public CompoundAlias(CompoundAlias compoundAlias) {
+		this.setAliasName(aliasName);
+		this.fullColumnNames = (ArrayList<FullColumnName>) compoundAlias.fullColumnNames.clone();
+	}
 	public CompoundAlias(String aliasName) {
 		fullColumnNames = new ArrayList<FullColumnName>();
 		this.setAliasName(aliasName);
