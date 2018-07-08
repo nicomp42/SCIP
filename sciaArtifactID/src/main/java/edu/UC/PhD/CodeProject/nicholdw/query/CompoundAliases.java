@@ -20,7 +20,8 @@ public class CompoundAliases implements Iterable<CompoundAlias> {
 	 * Retrieve the list of CompoundAliases in this CompoundAlias List
 	 * @return A reference to the CompoundAlias list in the current object.
 	 */
-	public ArrayList<CompoundAlias> getCompoundAliases (){return compoundAliases;}
+	@SuppressWarnings("unchecked")
+	public ArrayList<CompoundAlias> getCompoundAliases (){return (ArrayList<CompoundAlias>) compoundAliases.clone();}
 	public CompoundAlias getQueryAttribute(int i) {return compoundAliases.get(i);}
 
 	/**
