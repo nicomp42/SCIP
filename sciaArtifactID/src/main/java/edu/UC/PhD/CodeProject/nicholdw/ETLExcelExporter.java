@@ -1,3 +1,6 @@
+// Be sure to care about this: https://superuser.com/questions/52157/how-do-i-get-excel-to-import-a-csv-file-with-commas-in-some-of-the-content-field
+// The Excel parser can't handle spaces after commas in the CSV file!
+
 package edu.UC.PhD.CodeProject.nicholdw;
 import java.io.FileWriter;
 import java.io.File;
@@ -90,15 +93,16 @@ public class ETLExcelExporter {
 				qp.parseQuery(qd);
 
 				// After it's parsed, we need to store it somewhere in a CSV file, including each attribute.
-				writer.append(stepObj.getTransName());
+				writer.append(stepObj.getTransName().trim());
 				writer.append(',');
-				writer.append(stepObj.getStepName());
+				writer.append(stepObj.getStepName().trim());
 				writer.append(',');
 
-				writer.append(stepObj.getDbName());			// Schema name
+				writer.append(stepObj.getDbName().trim());			// Schema name
 				writer.append(',');
 				// TODO this SQL will need to be parsed. As it currently works, it doesn't work.
-				writer.append(stepObj.getSql().replaceAll("[\\t\\n\\r\\s]", " "));
+				String tmp = "\"" + stepObj.getSql().replaceAll("[\\t\\n\\r\\s]", " ").trim() + "\"";
+				writer.append(tmp);
 				writer.append('\n');
 			}
 			writer.flush();
@@ -135,18 +139,17 @@ public class ETLExcelExporter {
 			for (DBJoinStep stepObj : steps) {
 				// System.out.println("ExcelExporter:"+stepObj);
 
-				writer.append(stepObj.getTransName());
+				writer.append(stepObj.getTransName().trim());
 				writer.append(',');
-				writer.append(stepObj.getStepName());
+				writer.append(stepObj.getStepName().trim());
 				writer.append(',');
 				writer.append("DBJoin");
 				writer.append(',');
 
-				writer.append(stepObj.getDbName());
+				writer.append(stepObj.getDbName().trim());
 				writer.append(',');
 
-				writer.append(stepObj.getSql()
-						.replaceAll("[\\t\\n\\r\\s]", " "));
+				writer.append("\"" + stepObj.getSql().replaceAll("[\\t\\n\\r\\s]", " ").trim() + "\"");
 				writer.append('\n');
 
 			}

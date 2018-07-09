@@ -46,7 +46,6 @@ public class FullCoverage extends TestCase {
 		List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps("C:\\Users\\nicomp\\Google Drive\\PhD (1)\\TestCases\\FullCoverageTestCase\\FullCoverageTestCaseSalesMappingToReconciledSchema.ktr");		
 		ETLExcelExporter.generateInputStepsCsvFile("c:\\Temp\\fooi.csv", inputSteps);
 
-		
 /*		
 		Log.logProgress("FullCoverage.run(): starting...");
 		try {
