@@ -95,6 +95,27 @@ public class SQLUtils {
 	    try {/*connection.close();*/}catch(Exception ex) {}
 	    return resultSet;
 	}
+	/**
+	 * Execute a SELECT statement against the database
+	 * @param connectionInformation What's needed to access the DBMS
+	 * @param sql
+	 * @return The ResultSet object that is the result of the SELECT statement
+	 */
+	public static java.sql.ResultSet executeQuery(ConnectionInformation connectionInformation, String sql) {
+	    java.sql.ResultSet resultSet = null;
+		java.sql.Connection connection = null;
+		connection = new MySQL().connectToDatabase(connectionInformation.getHostName(), connectionInformation.getHostName(), connectionInformation.getLoginName(), connectionInformation.getPassword()); 
+	    java.sql.PreparedStatement preparedStatement = null;
+	    try {
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+		} catch (SQLException e) {
+			Log.logError("SQLUtils.executeQuery(): " + e.getLocalizedMessage());
+//			System.out.println("SQLUtils.executeQuery(): " + e.getLocalizedMessage());
+		}
+	    try {/*connection.close();*/}catch(Exception ex) {}
+	    return resultSet;
+	}
 	public static Object MyDLookup(String pTarget, String pDomain, String pCriteria, String pAggregate, String pGroupBy, java.sql.Connection connection)
     {
         String criteria;

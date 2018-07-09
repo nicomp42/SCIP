@@ -99,6 +99,14 @@ public class ConfigController /* extends Application */ {
 		        }
 		    }
 		});
+		tvDatabaseConnections.setOnMousePressed(new EventHandler<MouseEvent>() {
+		    @Override 
+		    public void handle(MouseEvent event) {
+		        if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+		        	processDatabaseConnectionsDoubleClick();                   
+		        }
+		    }
+		});	
 	}
 	private void displaySaveButton() {btnSave.setVisible(dataIsDirty);}
 	public void setScene(Scene scene) {
@@ -288,5 +296,12 @@ public class ConfigController /* extends Application */ {
 		} catch (Exception ex) {
 			Log.logError("ConfigController.loadListViewWithProjects(): " + ex.getLocalizedMessage()); 
 		}
+    }
+    private void processDatabaseConnectionsDoubleClick() {
+    	gui.ConnectionInformation connectionInformation = tvDatabaseConnections.getSelectionModel().getSelectedItem();
+    	// Connection Name is unique
+    	String connectionName = connectionInformation.getConnectionName();
+    	
+    	
     }
 }

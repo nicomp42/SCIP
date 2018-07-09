@@ -8,7 +8,9 @@ package edu.UC.PhD.CodeProject.nicholdw.mapping;
 public abstract class MappingBase {
 	private String uniqueName;
 
-	public MappingBase(String uniqueName2) {
+	abstract MappingBase clone(MappingBase mappingBase);
+	
+	public MappingBase(String uniqueName) {
 		setUniqueName(uniqueName);
 	}
 

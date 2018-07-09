@@ -35,13 +35,13 @@ public class AttributeParts {
 		}
 	}
 	public String getSchemaName() {return schemaName;}
-	public void setSchemaName(String schemaName) {this.schemaName = schemaName;}
+	public void setSchemaName(String schemaName) {this.schemaName = schemaName.trim();}
 	public String getTableName() {return tableName;}
-	public void setTableName(String tableName) {this.tableName = tableName;}
+	public void setTableName(String tableName) {this.tableName = tableName.trim();}
 	public String getAttributeName() {return attributeName;}
-	public void setAttributeName(String attributeName) {this.attributeName = attributeName;}
+	public void setAttributeName(String attributeName) {this.attributeName = attributeName.trim();}
 	public String getDataType() {return dataType;}
-	public void setDataType(String dataType) {this.dataType = dataType;}
-	public void setAliasName(String aliasName) {this.aliasName = aliasName;}
+	public void setDataType(String dataType) {this.dataType = dataType.trim();}
+	public void setAliasName(String aliasName) {this.aliasName = aliasName.trim();}
 	public String getAliasName() {return aliasName;}
 }
