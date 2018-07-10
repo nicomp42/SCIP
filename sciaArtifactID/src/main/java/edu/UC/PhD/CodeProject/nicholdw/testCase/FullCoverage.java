@@ -46,11 +46,11 @@ public class FullCoverage extends TestCase {
 		List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps("C:\\Users\\nicomp\\Google Drive\\PhD (1)\\TestCases\\FullCoverageTestCase\\FullCoverageTestCaseSalesMappingToReconciledSchema.ktr");		
 		ETLExcelExporter.generateInputStepsCsvFile("c:\\Temp\\fooi.csv", inputSteps);
 
-		// Run these Stored Procedures in this order
+		// 1. Run these Stored Procedures in this order
 		// `testcasecreationscripts`.`CreateFullCoverageTestCase`
-		// Run the Pentaho jobs
+		// 2. Run the Pentaho jobs
 		/// FullCoverageTestCaseSalesMappingToReconciledSchema.ktr
-		// Run these Stored Procedures in this order
+		// 3. Run these Stored Procedures in this order
 		// `testcasecreationscripts`.`UpdateDateFieldsInReconciledWeatherTable`
 		// `testcasecreationscripts`.`PopulateMonthlySalesByProductAndStore`
 		// 	`testcasecreationscripts`.`PopulateWeeklySalesByProductAndStore`

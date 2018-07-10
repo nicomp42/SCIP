@@ -121,10 +121,10 @@ public class ConnectionInformation  implements Serializable {
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                Element eElement = (Element) nNode;
                ConnectionInformation connectionInformation = new ConnectionInformation(eElement.getAttribute("name"),
-            		   																   eElement.getElementsByTagName("hostname").item(0).getTextContent(),
-            		   																   eElement.getElementsByTagName("loginname").item(0).getTextContent(),
-            		   																   eElement.getElementsByTagName("password").item(0).getTextContent(),
-            		   																   eElement.getElementsByTagName("schema").item(0).getTextContent());
+            		   																   eElement.getElementsByTagName("hostname").item(0).getNodeValue(),
+            		   																   eElement.getElementsByTagName("loginname").item(0).getNodeValue(),
+            		   																   eElement.getElementsByTagName("password").item(0).getNodeValue(),
+            		   																   eElement.getElementsByTagName("schema").item(0).getNodeValue());
                // Here is how to read the elements without knowing their names in advance
 /*             NodeList children = eElement.getChildNodes();
                Node current = null;
