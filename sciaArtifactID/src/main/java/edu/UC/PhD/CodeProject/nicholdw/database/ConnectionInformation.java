@@ -1,26 +1,20 @@
 package edu.UC.PhD.CodeProject.nicholdw.database;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.swing.text.TabableView;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
-import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TreeView;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 /**
@@ -111,20 +105,20 @@ public class ConnectionInformation  implements Serializable {
          Document doc = dBuilder.parse(res);			//(inputFile);
          doc.getDocumentElement().normalize();
          //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-         NodeList nList = doc.getElementsByTagName("connectionInformation");
+         NodeList nodeList = doc.getElementsByTagName("connectionInformation");
          //System.out.println("----------------------------");
          
-         for (int temp = 0; temp < nList.getLength(); temp++) {
-            Node nNode = nList.item(temp);
+         for (int i = 0; i < nodeList.getLength(); i++) {
+            Node nNode = nodeList.item(i);
             //System.out.println("\nCurrent Element :" + nNode.getNodeName());
             
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                Element eElement = (Element) nNode;
                ConnectionInformation connectionInformation = new ConnectionInformation(eElement.getAttribute("name"),
-            		   																   eElement.getElementsByTagName("hostname").item(0).getNodeValue(),
-            		   																   eElement.getElementsByTagName("loginname").item(0).getNodeValue(),
-            		   																   eElement.getElementsByTagName("password").item(0).getNodeValue(),
-            		   																   eElement.getElementsByTagName("schema").item(0).getNodeValue());
+            		   																   eElement.getElementsByTagName("hostname").item(0).getTextContent(),
+            		   																   eElement.getElementsByTagName("loginname").item(0).getTextContent(),
+            		   																   eElement.getElementsByTagName("password").item(0).getTextContent(),
+            		   																   eElement.getElementsByTagName("schema").item(0).getTextContent());
                // Here is how to read the elements without knowing their names in advance
 /*             NodeList children = eElement.getChildNodes();
                Node current = null;
