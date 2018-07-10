@@ -7,18 +7,35 @@ import com.mysql.jdbc.CallableStatement;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-
 //import com.mysql.jdbc.PreparedStatement;
-/**
- * Submit SQL to the database engine
+
+/***
+ * Database Utilities
  * @author nicomp
- * @param hostName
- * @param databaseName
- * @param loginName
- * @param password
- * @param sql
+ *
  */
 public class SQLUtils {
+	/**
+	 * Call a stored procedure in the database 
+	 * @param connectionInformation
+	 * @param sql
+	 */
+	public static boolean callStoredProcedure(ConnectionInformation connectionInformation, String sql) {
+    	boolean status = false;	
+    	try {
+    		callStoredProcedure(connectionInformation.getHostName(), 
+    							connectionInformation.getSchemaName(), 
+    							connectionInformation.getLoginName(), 
+    							connectionInformation.getPassword(),
+    							sql);
+
+	    } catch (Exception ex) {
+	    	status = false;
+			Log.logError("SQLUtils.callStoredProcedure(): " + ex.getLocalizedMessage());
+	    } finally {
+	    }
+		return status;
+	}
 	/***
 	 * Call a stored procedure in the database 
 	 * @param hostName

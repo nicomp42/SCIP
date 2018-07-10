@@ -11,6 +11,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
@@ -141,7 +142,7 @@ public class ConnectionInformation  implements Serializable {
             }
          }
       } catch (Exception e) {
-         e.printStackTrace();
+         Log.logError("ConnectionInformation.readXML(): "+ e.getLocalizedMessage());
       }
       return connectionInformations;
    }
