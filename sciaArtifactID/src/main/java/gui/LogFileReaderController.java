@@ -40,8 +40,9 @@ public class LogFileReaderController {
 	@FXML Label lblStatus;
 	private Scene myScene;
 	private Stage myStage;
+	@FXML TextField txtMaxlines;
 	@FXML TextField txtLoginName, txtPassword;
-	@FXML void btnRead_OnClick(ActionEvent event) {readLogFile();}
+	@FXML void btnRead_OnClick(ActionEvent event) {tryToReadLogFile();}
 	@FXML void btnBrowse_OnClick(ActionEvent event) {browseForLogFile();}
 
 	public LogFileReaderController() {
@@ -68,10 +69,17 @@ public class LogFileReaderController {
 	public Stage getStage() {return myStage;}
 	public void setStage(Stage myStage) {this.myStage = myStage;}
 	
-	public void readLogFile() {
+	private void tryToReadLogFile() {
+		try {
+			readLogFile(Integer.valueOf(txtMaxlines.getText()));
+		} catch (Exception ex) {
+			Log.logError("LogFileReaderController.tryToReadLogFile(): " + ex.getLocalizedMessage());
+		}
+	}
+	public void readLogFile(int maxLines) {
 		txaLog.clear();
 		GeneralLogReader glr = new GeneralLogReader();
-		int totalRecords = glr.readFromServer(txaLogFile.getText(), txaLog);
+		int totalRecords = glr.readFromServer(txaLogFile.getText(), txaLog, maxLines);
 		lblStatus.setText(totalRecords + " record" + (totalRecords != 1 ? "s" : "") + " read.");
 	}
 	public void browseForLogFile() {

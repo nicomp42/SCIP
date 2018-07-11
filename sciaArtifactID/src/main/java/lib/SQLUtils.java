@@ -28,7 +28,6 @@ public class SQLUtils {
     							connectionInformation.getLoginName(), 
     							connectionInformation.getPassword(),
     							sql);
-
 	    } catch (Exception ex) {
 	    	status = false;
 			Log.logError("SQLUtils.callStoredProcedure(): " + ex.getLocalizedMessage());

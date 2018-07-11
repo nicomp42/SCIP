@@ -25,5 +25,8 @@
       <TextField fx:id="txtUser" layoutX="136.0" layoutY="71.0" />
       <TextField fx:id="txtPassword" layoutX="359.0" layoutY="71.0" />
       <Label fx:id="lblStatus" layoutX="84.0" layoutY="124.0" prefHeight="17.0" prefWidth="221.0" />
+      <Label layoutX="529.0" layoutY="75.0" text="Max lines to read" />
+      <TextField fx:id="txtMaxlines" layoutX="631.0" layoutY="71.0" prefHeight="25.0" prefWidth="79.0" />
+      <Label layoutX="136.0" layoutY="124.0" text="MySQL tip: to clear the log, delete/rename the log file and restart the server" />
    </children>
 </AnchorPane>

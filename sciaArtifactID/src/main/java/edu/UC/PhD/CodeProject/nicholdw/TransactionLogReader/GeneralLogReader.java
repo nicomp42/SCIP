@@ -51,7 +51,7 @@ public class GeneralLogReader {
 	/***
 	 * Read records that we care about: SELECT queries that access tables in our databases
 	 */
-	public int readFromServer(String logFilePath, TextArea txaOutput) {
+	public int readFromServer(String logFilePath, TextArea txaOutput, int maxLines) {
 		int totalRecords = 0;
 		BufferedReader br = null;
 		try {
@@ -61,9 +61,9 @@ public class GeneralLogReader {
 //			br.readLine();
 //			br.readLine();
 //			br.readLine();
-
+			int lineCount = 0;
 			String buffer;
-			while (true) {
+			while (true && lineCount <= maxLines) {
 				buffer = br.readLine();
 				if (buffer == null) {break;}
 				totalRecords++;
@@ -76,6 +76,7 @@ public class GeneralLogReader {
 						gle.setText(gle.getText() + " " + buffer.trim());
 					}
 					txaOutput.appendText(gle.toString() + "\n");
+					lineCount++;
 					//System.out.println(gle.toString());
 //				}
 			}
