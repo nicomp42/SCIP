@@ -3,11 +3,13 @@ package gui;
 import java.io.File;
 import java.sql.ResultSetMetaData;
 import java.time.ZonedDateTime;
-
+import java.util.ArrayList;
+import java.util.Collections;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.GeneralLogReader;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryUtils;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -36,14 +38,15 @@ import lib.SQLUtils;
 public class LogFileReaderController {
 
 	@FXML TextArea txaLogFile, txaLog;
-	@FXML Button btnRead, btnBrowse;
+	@FXML Button btnRead, btnBrowse, btnFilterToAdHocOnly;
 	@FXML Label lblStatus;
 	private Scene myScene;
 	private Stage myStage;
-	@FXML TextField txtMaxlines;
+	@FXML TextField txtMaxLines;
 	@FXML TextField txtLoginName, txtPassword;
 	@FXML void btnRead_OnClick(ActionEvent event) {tryToReadLogFile();}
 	@FXML void btnBrowse_OnClick(ActionEvent event) {browseForLogFile();}
+	@FXML void btnFilterToAdHocOnly_OnClick(ActionEvent event) {filterToAdHocOnly();}
 
 	public LogFileReaderController() {
 	} 
@@ -53,12 +56,13 @@ public class LogFileReaderController {
 //		Log.logProgress("LogFileReaderController.Initialize() starting...");
 		try {
 			setTheScene();
-			txaLogFile.setText("C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data\\device.log");
+			txaLogFile.setText("C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data\\device.log");	// TODO: generalize this
 			txtLoginName.setText(Config.getConfig().getMySQLDefaultLoginName());
 			txtPassword.setText(Config.getConfig().getMySQLDefaultPassword());
+			txtMaxLines.setText("500");
 			lblStatus.setText("");
 		} catch (Exception e) {
-//			Log.logError("LogFileReaderController.Initialize(): " + e.getLocalizedMessage());
+			Log.logError("LogFileReaderController.initialize(): " + e.getLocalizedMessage());
 		}
 //		Log.logProgress("LogFileReaderController.Initialize() complete");
 	}
@@ -71,7 +75,7 @@ public class LogFileReaderController {
 	
 	private void tryToReadLogFile() {
 		try {
-			readLogFile(Integer.valueOf(txtMaxlines.getText()));
+			readLogFile(Integer.valueOf(txtMaxLines.getText()));
 		} catch (Exception ex) {
 			Log.logError("LogFileReaderController.tryToReadLogFile(): " + ex.getLocalizedMessage());
 		}
@@ -90,6 +94,20 @@ public class LogFileReaderController {
 		File file = fileChooser.showOpenDialog(stage);
 		if (file != null) {
 			txaLogFile.setText(file.getAbsolutePath());
+		}
+	}
+	public void filterToAdHocOnly() {
+		String[] rows = txaLog.getText().split("\n");
+		ArrayList<String> myArrayList = new ArrayList<String>();
+		Collections.addAll(myArrayList, rows);
+		txaLog.clear();
+		FilterOutEverythingButAdHocSelectQueries(myArrayList);
+	}
+	public void FilterOutEverythingButAdHocSelectQueries(ArrayList<String> lines) {
+		for (String s: lines) {
+			if (QueryUtils.isAdHocQuery(s) ) {
+				txaLog.appendText(s + "\n");
+			}
 		}
 	}
 }

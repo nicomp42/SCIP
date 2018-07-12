@@ -48,6 +48,7 @@ public class GeneralLogReader {
 		}
 		try {br.close();} catch (Exception ex) {}
 	}
+	
 	/***
 	 * Read records that we care about: SELECT queries that access tables in our databases
 	 */

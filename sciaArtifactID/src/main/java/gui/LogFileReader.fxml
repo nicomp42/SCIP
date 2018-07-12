@@ -22,11 +22,12 @@
       <Button fx:id="btnBrowse" layoutX="756.0" layoutY="23.0" mnemonicParsing="false" onAction="#btnBrowse_OnClick" text="..." />
       <Label layoutX="68.0" layoutY="75.0" text="User Name" />
       <Label layoutX="301.0" layoutY="75.0" text="Password" />
-      <TextField fx:id="txtUser" layoutX="136.0" layoutY="71.0" />
+      <TextField fx:id="txtLoginName" layoutX="136.0" layoutY="71.0" />
       <TextField fx:id="txtPassword" layoutX="359.0" layoutY="71.0" />
-      <Label fx:id="lblStatus" layoutX="84.0" layoutY="124.0" prefHeight="17.0" prefWidth="221.0" />
+      <Label fx:id="lblStatus" layoutX="87.0" layoutY="124.0" prefHeight="17.0" prefWidth="221.0" />
       <Label layoutX="529.0" layoutY="75.0" text="Max lines to read" />
-      <TextField fx:id="txtMaxlines" layoutX="631.0" layoutY="71.0" prefHeight="25.0" prefWidth="79.0" />
-      <Label layoutX="136.0" layoutY="124.0" text="MySQL tip: to clear the log, delete/rename the log file and restart the server" />
+      <TextField fx:id="txtMaxLines" layoutX="631.0" layoutY="71.0" prefHeight="25.0" prefWidth="79.0" text="100" />
+      <Label layoutX="136.0" layoutY="97.0" text="MySQL tip: to clear the log, delete/rename the log file and restart the server" />
+      <Button fx:id="btnFilterToAdHocOnly" layoutX="655.0" layoutY="120.0" mnemonicParsing="false" onAction="#btnFilterToAdHocOnly_OnClick" prefHeight="25.0" prefWidth="140.0" text="Filter to Ad-Hoc Only" />
    </children>
 </AnchorPane>
