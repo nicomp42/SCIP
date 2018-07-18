@@ -16,29 +16,34 @@ public class QueryUtils {
 	public static boolean isAdHocQuery(String sql, StringBuilder sqlReduced) {
 		boolean status = false;
 		String[] p = sql.split(" ");
-		if (p.length == 7) {
-			if (p[3].toUpperCase().equals("SELECT")) {
-				if (p[4].equals("*")) {
-					// Now we need to know if we are selecting from an existing query or something else
-					String t = p[6];
-					// If t is a query then this is not an ad-hoc query
-					if (isTable(t)) {
-						status = true;
-					} else {
-						status = false;
+		try {
+			if (p.length >= 7) {
+				if (p[3].toUpperCase().equals("SELECT")) {
+					if (p[4].trim().substring(0, 1).equals("*")) {
+						int i = 5;
+						while (!p[i].toUpperCase().equals("FROM")) {i++;}
+						i++;
+						// Now we need to know if we are selecting from an existing query or something else
+						String t = p[i];
+						// If t is a query then this is not an ad-hoc query
+						if (isTable(t)) {
+							status = true;
+						} else {
+							status = false;
+						}
+					}
+				}
+				if (status == true && sqlReduced != null) {
+					// Extract the SQL statement from the transaction log entry into sqlReduced
+					sqlReduced.setLength(0);
+					String space = "";
+					for (int i = 3; i < p.length; i++) {
+						sqlReduced.append(space + p[i]);
+						space = " ";
 					}
 				}
 			}
-			if (status == true && sqlReduced != null) {
-				// Extract the SQL statement from the transaction log entry into sqlReduced
-				sqlReduced.setLength(0);
-				String space = "";
-				for (int i = 3; i < p.length; i++) {
-					sqlReduced.append(space + p[i]);
-					space = " ";
-				}
-			}
-		}
+		} catch (Exception ex) {}
 		return status;
 	}
 	public static boolean isTable(String tableName) {
