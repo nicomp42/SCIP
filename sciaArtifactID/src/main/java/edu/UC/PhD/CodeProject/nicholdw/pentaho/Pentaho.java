@@ -13,8 +13,6 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 public class Pentaho {
 
 	public static void main(String[] arg) {
-		
-		// This doesn't work: "Couldn't find starting point in this job." 
 		(new Pentaho()).ExecuteJob("C:\\Users\\nicomp\\Google Drive\\PhD (1)\\TestCases\\FullCoverageTestCase\\FullCoverageTestCase.kjb");
 	}
 	/***
