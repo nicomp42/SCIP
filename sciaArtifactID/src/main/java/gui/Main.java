@@ -99,7 +99,7 @@ public class Main extends Application {
 	@FXML void mnuToolsGenerateSchemaTopology_OnClick(ActionEvent event) {openDatabaseGraphWindow();}
 	@FXML void mnuEditSubmitSQL_OnAction(ActionEvent event) {openSubmitSQLWindow();}
 	@FXML void mnuEditProjectManager_OnAction(ActionEvent event) {openProjectManagerWindow();}
-	@FXML void mnuEditReadDBLog_OnAction(ActionEvent event) {openLogFileReaderWindow();}
+	@FXML void mnuEditReadDBLog_OnAction(ActionEvent event) {openTransactionLogFileReaderWindow();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
 		Log.logProgress("main.mnuFileSaveProject_OnAction(): Saving scip...");
@@ -683,11 +683,11 @@ public class Main extends Application {
 		Config.getConfig().addBrowser(browser);
 		browser.initAndLoad(null);
 	}
-	private void openLogFileReaderWindow() {
+	private void openTransactionLogFileReaderWindow() {
 		try {
 			FXMLLoader fxmlLoader = null;
 			// Open the New Project Window
-			fxmlLoader = new FXMLLoader(getClass().getResource("LogFileReader.fxml"));
+			fxmlLoader = new FXMLLoader(getClass().getResource("TransactionLogFileReader.fxml"));
 			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();
 			stage.initModality(Modality.NONE);
@@ -696,12 +696,12 @@ public class Main extends Application {
 			Scene scene = new Scene(root);
 	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {public void handle(WindowEvent we) {}});
 			stage.setScene(scene);
-			LogFileReaderController stc = fxmlLoader.getController();
+			TransactionLogFileReaderController stc = fxmlLoader.getController();
 			stc.setScene(scene);
 			stc.setStage(stage);
 			stage.show();
 		} catch (Exception ex) {
-			Log.logError("Main.openLogFileReaderWindow():" + ex.getLocalizedMessage());
+			Log.logError("Main.openTransactionLogFileReaderWindow():" + ex.getLocalizedMessage());
 		}
 	}
 /*

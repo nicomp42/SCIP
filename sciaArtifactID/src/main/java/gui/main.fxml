@@ -77,7 +77,7 @@
                         <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                 </MenuItem>
-	            <MenuItem fx:id="mnuReadDBLog" mnemonicParsing="false" onAction="#mnuEditReadDBLog_OnAction" text="Read Database Log">
+	            <MenuItem fx:id="mnuReadDBLog" mnemonicParsing="false" onAction="#mnuEditReadDBLog_OnAction" text="Read Database Transaction Log">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>

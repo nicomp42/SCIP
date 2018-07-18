@@ -13,7 +13,7 @@ public class QueryUtils {
 	 * @param sql The SQL to check
 	 * @return True is sql contains an ad-hoc query, false otherwise
 	 */
-	public static boolean isAdHocQuery(String sql) {
+	public static boolean isAdHocQuery(String sql, StringBuilder sqlReduced) {
 		boolean status = false;
 		String[] p = sql.split(" ");
 		if (p.length == 7) {
@@ -27,6 +27,15 @@ public class QueryUtils {
 					} else {
 						status = false;
 					}
+				}
+			}
+			if (status == true && sqlReduced != null) {
+				// Extract the SQL statement from the transaction log entry into sqlReduced
+				sqlReduced.setLength(0);
+				String space = "";
+				for (int i = 3; i < p.length; i++) {
+					sqlReduced.append(space + p[i]);
+					space = " ";
 				}
 			}
 		}

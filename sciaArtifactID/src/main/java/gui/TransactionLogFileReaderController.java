@@ -9,7 +9,11 @@ import java.util.Collections;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.GeneralLogReader;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitions;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryUtils;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -35,20 +39,21 @@ import lib.SQLUtils;
  * GUI for reading the DB transaction log file
  * @author nicomp
  */
-public class LogFileReaderController {
+public class TransactionLogFileReaderController {
 
 	@FXML TextArea txaLogFile, txaLog;
-	@FXML Button btnRead, btnBrowse, btnFilterToAdHocOnly;
+	@FXML Button btnRead, btnBrowse, btnFilterToAdHocOnly, btnParse;
 	@FXML Label lblStatus;
 	private Scene myScene;
 	private Stage myStage;
 	@FXML TextField txtMaxLines;
-	@FXML TextField txtLoginName, txtPassword;
+	@FXML TextField txtHostName, txtLoginName, txtPassword;
 	@FXML void btnRead_OnClick(ActionEvent event) {tryToReadLogFile();}
 	@FXML void btnBrowse_OnClick(ActionEvent event) {browseForLogFile();}
 	@FXML void btnFilterToAdHocOnly_OnClick(ActionEvent event) {filterToAdHocOnly();}
+	@FXML void btnParse_OnClick(ActionEvent event) {ParseAdHocQuerys(getStringsFromTextArea());}
 
-	public LogFileReaderController() {
+	public TransactionLogFileReaderController() {
 	} 
 
 	@FXML
@@ -57,6 +62,7 @@ public class LogFileReaderController {
 		try {
 			setTheScene();
 			txaLogFile.setText("C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data\\device.log");	// TODO: generalize this
+			txtHostName.setText(Config.getConfig().getMySQLDefaultHostname());
 			txtLoginName.setText(Config.getConfig().getMySQLDefaultLoginName());
 			txtPassword.setText(Config.getConfig().getMySQLDefaultPassword());
 			txtMaxLines.setText("500");
@@ -96,19 +102,48 @@ public class LogFileReaderController {
 			txaLogFile.setText(file.getAbsolutePath());
 		}
 	}
-	public void filterToAdHocOnly() {
+	private ArrayList<String> getStringsFromTextArea() {
 		String[] rows = txaLog.getText().split("\n");
 		ArrayList<String> myArrayList = new ArrayList<String>();
 		Collections.addAll(myArrayList, rows);
+		return myArrayList;
+	}
+	public void filterToAdHocOnly() {
+		ArrayList<String> myArrayList = getStringsFromTextArea();
 		txaLog.clear();
 		FilterOutEverythingButAdHocSelectQueries(myArrayList);
 	}
 	public void FilterOutEverythingButAdHocSelectQueries(ArrayList<String> lines) {
 		for (String s: lines) {
-			if (QueryUtils.isAdHocQuery(s) ) {
+			if (QueryUtils.isAdHocQuery(s, null) ) {
 				txaLog.appendText(s + "\n");
 			}
 		}
+	}
+	public QueryDefinitions ParseAdHocQuerys(ArrayList<String> querys) {
+		QueryDefinitions queryDefinitions = new QueryDefinitions();
+		String adHocQueryName = "query";
+		int queryCounter = 1;
+		StringBuilder sqlReduced = new StringBuilder();
+		try {
+			for (String s: querys) {
+				if (QueryUtils.isAdHocQuery(s, sqlReduced) ) {
+					QueryDefinition queryDefinition = new QueryDefinition(txtHostName.getText(), 
+							                                              txtLoginName.getText(), 
+							                                              txtPassword.getText(), 
+							                                              new QueryTypeSelect(), 
+							                                              adHocQueryName + queryCounter,
+							                                              sqlReduced.toString(),
+							                                              "");
+					queryCounter++;
+					queryDefinition.crunchIt();
+					queryDefinitions.addQueryDefinition(queryDefinition);
+				}
+			}
+		} catch(Exception ex) {
+			Log.logError("TransactionLogFileReaderController.parseQuerys(): " + ex.getLocalizedMessage());
+		}
+		return queryDefinitions;
 	}
 }
 
