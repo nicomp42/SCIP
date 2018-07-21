@@ -20,9 +20,10 @@ public abstract class DatabaseEngine {
 
 	public abstract void setDatabaseSystemTables(ArrayList<DatabaseTable> databaseSystemTables);
 	
-	public abstract boolean isAdHocQuery(String sql, StringBuilder sqlReduced);
+//	public abstract boolean isAdHocQuery(String sql, StringBuilder sqlReduced);
+	public abstract boolean isAdHocQuery(String sql, StringBuilder sqlReduced, java.sql.Connection connection);
 
-	public abstract boolean isTable(String tableName);
+	public abstract boolean isTable(String tableName, java.sql.Connection connection);
 	
 	public abstract boolean isSystemTable(String tableName) throws DatabaseTableException;
 

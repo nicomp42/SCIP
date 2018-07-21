@@ -69,7 +69,7 @@ public class GeneralLogReader {
 				if (buffer == null) {break;}		// End of file
 				totalRecords++;
 				//System.out.println(buffer);
-				MySQLGeneralLogEntry gle = new MySQLGeneralLogEntry(buffer); 
+				MySQLGeneralLogEntry gle = new MySQLGeneralLogEntry(buffer);
 				 
 //				if (gle.doWeCare()) {
 					if (gle.getText().toUpperCase().startsWith("ALTER")) {
