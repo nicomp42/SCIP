@@ -55,6 +55,7 @@ public class TransactionLogFileReaderController {
 	@FXML void btnFilterToAdHocOnly_OnClick(ActionEvent event) {filterToAdHocOnly();}
 	@FXML void btnParse_OnClick(ActionEvent event) {ParseAdHocQuerys(getStringsFromTextArea());}
 	@FXML void btnCopyQueriesToProject_OnClick(ActionEvent event) {copyQuerysToProject(getStringsFromTextArea());}
+	@FXML void btnClearLogFileArea_OnClick(ActionEvent event) {clearLogFileArea();}
 
 	public TransactionLogFileReaderController() {
 	} 
@@ -125,9 +126,10 @@ public class TransactionLogFileReaderController {
 	}
 	public void FilterOutEverythingButAdHocSelectQueries(ArrayList<String> lines) {
 		MySQLDatabase mySQLDatabase = new MySQLDatabase();		// TODO generalize
-		StringBuilder sanitizedSQL = new StringBuilder();;
+		StringBuilder sanitizedSQL = new StringBuilder();
+		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""));
 		for (String s: lines) {
-			if (mySQLDatabase.isAdHocQuery(s, sanitizedSQL) ) {
+			if (mySQLDatabase.isAdHocQuery(s, sanitizedSQL, connection) ) {
 				txaLog.appendText(sanitizedSQL + "\n");
 			}
 		}
@@ -157,9 +159,10 @@ public class TransactionLogFileReaderController {
 		String adHocQueryName = "query";
 		int queryCounter = 1;
 		StringBuilder sqlReduced = new StringBuilder();
+		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""));
 		try {
 			for (String s: querys) {
-				if (mySQLDatabase.isAdHocQuery(s, sqlReduced) ) {
+				if (mySQLDatabase.isAdHocQuery(s, sqlReduced, connection) ) {
 					QueryDefinition queryDefinition = new QueryDefinition(txtHostName.getText(), 
 							                                              txtLoginName.getText(), 
 							                                              txtPassword.getText(), 
@@ -176,6 +179,9 @@ public class TransactionLogFileReaderController {
 			Log.logError("TransactionLogFileReaderController.parseQuerys(): " + ex.getLocalizedMessage());
 		}
 		return queryDefinitions;
+	}
+	private void clearLogFileArea() {
+		txaLog.clear();
 	}
 }
 

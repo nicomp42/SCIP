@@ -132,6 +132,36 @@ public class SQLUtils {
 	    try {/*connection.close();*/}catch(Exception ex) {}
 	    return resultSet;
 	}
+	/**
+	 * Execute a SELECT statement against the database
+	 * @param An open JDBC connection
+	 * @param sql
+	 * @return The ResultSet object that is the result of the SELECT statement
+	 */
+	public static java.sql.ResultSet executeQuery(java.sql.Connection connection, String sql) {
+	    java.sql.ResultSet resultSet = null;
+		//java.sql.Connection connection = null;
+		//connection = new MySQL().connectToDatabase(connectionInformation.getHostName(), connectionInformation.getHostName(), connectionInformation.getLoginName(), connectionInformation.getPassword()); 
+	    java.sql.PreparedStatement preparedStatement = null;
+	    try {
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+		} catch (SQLException e) {
+			Log.logError("SQLUtils.executeQuery(): " + e.getLocalizedMessage());
+//			System.out.println("SQLUtils.executeQuery(): " + e.getLocalizedMessage());
+		}
+	    try {/*connection.close();*/}catch(Exception ex) {}
+	    return resultSet;
+	}
+	public static java.sql.Connection openJDBCConnection(ConnectionInformation connectionInformation) {
+		java.sql.Connection connection = null;
+		try {
+			connection = new MySQL().connectToDatabase(connectionInformation.getHostName(), connectionInformation.getHostName(), connectionInformation.getLoginName(), connectionInformation.getPassword());
+		} catch (Exception ex) {
+			Log.logError("SQLUtils.openJDBCConnection(); " + ex.getLocalizedMessage());
+		}
+		return connection;
+	}
 	public static Object myDLookup(String pTarget, String pDomain, String pCriteria, String pAggregate, String pGroupBy, java.sql.Connection connection)
     {
         String criteria;

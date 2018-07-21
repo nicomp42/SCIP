@@ -24,7 +24,7 @@
       <Label layoutX="470.0" layoutY="75.0" text="Password" />
       <TextField fx:id="txtLoginName" layoutX="336.0" layoutY="71.0" prefHeight="25.0" prefWidth="119.0" />
       <TextField fx:id="txtPassword" layoutX="529.0" layoutY="71.0" prefHeight="25.0" prefWidth="98.0" />
-      <Label fx:id="lblStatus" layoutX="20.0" layoutY="538.0" prefHeight="17.0" prefWidth="221.0" />
+      <Label fx:id="lblStatus" layoutX="574.0" layoutY="538.0" prefHeight="17.0" prefWidth="221.0" />
       <Label layoutX="634.0" layoutY="75.0" text="Max lines to read" />
       <TextField fx:id="txtMaxLines" layoutX="740.0" layoutY="71.0" prefHeight="25.0" prefWidth="50.0" text="100" />
       <Label layoutX="77.0" layoutY="124.0" text="MySQL tip: to clear the log, delete/rename the log file and restart the server" />
@@ -32,7 +32,7 @@
       <Label layoutX="17.0" layoutY="75.0" text="Host Name" />
       <TextField fx:id="txtHostName" layoutX="87.0" layoutY="71.0" />
       <Button fx:id="btnParse" layoutX="529.0" layoutY="120.0" mnemonicParsing="false" onAction="#btnParse_OnClick" text="Parse" />
-      <Button fx:id="btnClearLogFileArea" layoutX="15.0" layoutY="534.0" mnemonicParsing="false" text="Clear the queries from the window" />
+      <Button fx:id="btnClearLogFileArea" layoutX="15.0" layoutY="534.0" mnemonicParsing="false" onAction="#btnClearLogFileArea_OnClick" text="Clear the Query Window" />
       <Button fx:id="btnCopyQueriesToProject" layoutX="239.0" layoutY="534.0" mnemonicParsing="false" onAction="#btnCopyQueriesToProject_OnClick" text="Save Queries to Project" />
    </children>
 </AnchorPane>

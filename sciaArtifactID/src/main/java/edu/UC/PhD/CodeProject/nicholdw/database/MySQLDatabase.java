@@ -52,7 +52,7 @@ public class MySQLDatabase extends DatabaseEngine {
 	 * @return True is sql contains an ad-hoc query, false otherwise
 	 */
 	@Override
-	public boolean isAdHocQuery(String sql, StringBuilder sqlReduced) {
+	public boolean isAdHocQuery(String sql, StringBuilder sqlReduced, java.sql.Connection connection) {
 		boolean status = false;
 		String[] p = sql.split(" ");
 		try {
@@ -66,7 +66,7 @@ public class MySQLDatabase extends DatabaseEngine {
 						String t = p[i];
 						// If t is a query then this is not an ad-hoc query
 						Log.logProgress("MySQLDatabase.isAdHocQuery(): Checking table \"" + t + "\" to see if we should keep it.");
-						if (isTable(t) && !isSystemTable(t)) {
+						if (isTable(t, connection) && !isSystemTable(t)) {
 							status = true;
 						} else {
 							status = false;
@@ -83,11 +83,13 @@ public class MySQLDatabase extends DatabaseEngine {
 					}
 				}
 			}
-		} catch (Exception ex) {}
+		} catch (Exception ex) {
+			Log.logError("MySQLDatabase.isAdHodQuery(): " + ex.getMessage());
+		}
 		return status;
 	}
 	@Override
-	public boolean isTable(String tableName) {
+	public boolean isTable(String tableName,  java.sql.Connection connection) {
 		boolean status = false;
 		String parts[] = tableName.split("\\.");
 		try {
@@ -100,11 +102,7 @@ public class MySQLDatabase extends DatabaseEngine {
 			             + " TABLE_TYPE = " + Utils.QuoteMeSingle("BASE TABLE");
 			
 			java.sql.ResultSet resultSet = null;
-			resultSet = SQLUtils.executeQuery(Config.getConfig().getMySQLDefaultHostname(), 
-											 "",
-					              			 Config.getConfig().getMySQLDefaultLoginName(), 
-					              			 Config.getConfig().getMySQLDefaultPassword(), 
-					              			 sql);
+			resultSet = SQLUtils.executeQuery(connection, sql);
 			if (resultSet.first() == true) {status = true;}
 		} catch (Exception e) {
 			Log.logError("QueryUtils.isTable(" + tableName + "): " + e.getLocalizedMessage());
