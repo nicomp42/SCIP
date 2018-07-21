@@ -25,7 +25,7 @@ public class MySQLGeneralLogEntry extends GeneralLogEntry {
 			setText("?");
 		}
 	}
-	
+
 	/***
 	 * Do we care about this log entry?
 	 * @return true if we care, false otherwise

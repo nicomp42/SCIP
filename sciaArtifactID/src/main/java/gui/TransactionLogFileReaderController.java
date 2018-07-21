@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.GeneralLogReader;
+import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitions;
@@ -114,20 +115,22 @@ public class TransactionLogFileReaderController {
 		FilterOutEverythingButAdHocSelectQueries(myArrayList);
 	}
 	public void FilterOutEverythingButAdHocSelectQueries(ArrayList<String> lines) {
+		MySQLDatabase mySQLDatabase = new MySQLDatabase();		// TODO generalize
 		for (String s: lines) {
-			if (QueryUtils.isAdHocQuery(s, null) ) {
+			if (mySQLDatabase.isAdHocQuery(s, null) ) {
 				txaLog.appendText(s + "\n");
 			}
 		}
 	}
 	public QueryDefinitions ParseAdHocQuerys(ArrayList<String> querys) {
+		MySQLDatabase mySQLDatabase = new MySQLDatabase();		// TODO generalize
 		QueryDefinitions queryDefinitions = new QueryDefinitions();
 		String adHocQueryName = "query";
 		int queryCounter = 1;
 		StringBuilder sqlReduced = new StringBuilder();
 		try {
 			for (String s: querys) {
-				if (QueryUtils.isAdHocQuery(s, sqlReduced) ) {
+				if (mySQLDatabase.isAdHocQuery(s, sqlReduced) ) {
 					QueryDefinition queryDefinition = new QueryDefinition(txtHostName.getText(), 
 							                                              txtLoginName.getText(), 
 							                                              txtPassword.getText(), 
