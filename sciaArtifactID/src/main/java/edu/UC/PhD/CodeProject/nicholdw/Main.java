@@ -125,10 +125,10 @@ public class Main {
 		Object foo ;
 		java.sql.Connection connection = new MySQL().connectToDatabase("Acme");
 
-		foo = SQLUtils.MyDLookup("BufferID", "tBuffer", "Attribute01 = \"keyboard\"", "Count", "", connection);
+		foo = SQLUtils.myDLookup("BufferID", "tBuffer", "Attribute01 = \"keyboard\"", "Count", "", connection);
 		System.out.println("BufferID = " + (Long)foo + " where Attribute01 = Keyboard");		// It's a Long, not an Integer
 
-		foo = SQLUtils.MyDLookup("BufferID", "tBuffer", "", "Count", "", connection);
+		foo = SQLUtils.myDLookup("BufferID", "tBuffer", "", "Count", "", connection);
 		System.out.println("Count of records in tBuffer = " + (Long)foo);		// It's a Long, not an Integer
 	}
 

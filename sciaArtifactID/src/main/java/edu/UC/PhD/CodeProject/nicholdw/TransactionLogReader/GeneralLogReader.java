@@ -64,9 +64,9 @@ public class GeneralLogReader {
 //			br.readLine();
 			int lineCount = 0;
 			String buffer;
-			while (true && lineCount <= maxLines) {
+			while (true) {
 				buffer = br.readLine();
-				if (buffer == null) {break;}
+				if (buffer == null) {break;}		// End of file
 				totalRecords++;
 				//System.out.println(buffer);
 				MySQLGeneralLogEntry gle = new MySQLGeneralLogEntry(buffer); 
@@ -78,6 +78,7 @@ public class GeneralLogReader {
 					}
 					txaOutput.appendText(gle.toString() + "\n");
 					lineCount++;
+					if (lineCount == maxLines) {break;}
 					//System.out.println(gle.toString());
 //				}
 			}

@@ -172,13 +172,13 @@ public class ConnectionInformation  implements Serializable {
 	 * @param tableView The TableView to be loaded
 	 * @param connectionInformations The set of database connections or null if you want to load from the XML file
 	 */
-	public static void loadTableViewWithDatabaseConnections(TableView<gui.ConnectionInformation> tableView, ConnectionInformations connectionInformations) {
+	public static void loadTableViewWithDatabaseConnections(TableView<gui.GUIConnectionInformation> tableView, ConnectionInformations connectionInformations) {
 		if (connectionInformations == null) {
 			connectionInformations = readXML();
 		}
-        ObservableList<gui.ConnectionInformation> data = tableView.getItems();
+        ObservableList<gui.GUIConnectionInformation> data = tableView.getItems();
    		for (ConnectionInformation ci : connectionInformations) {
-   	        data.add(new gui.ConnectionInformation(ci.getConnectionName(), ci.getHostName(), ci.getLoginName(), ci.getPassword(), ci.getSchemaName()));
+   	        data.add(new gui.GUIConnectionInformation(ci.getConnectionName(), ci.getHostName(), ci.getLoginName(), ci.getPassword(), ci.getSchemaName()));
 //   	        data.add(new gui.ConnectionInformation(ci.getConnectionName(), ci.getHostName(), ci.getLoginName(), ci.toString(), ci.getSchemaName()));
    		}
     }		

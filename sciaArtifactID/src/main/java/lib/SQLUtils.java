@@ -132,7 +132,7 @@ public class SQLUtils {
 	    try {/*connection.close();*/}catch(Exception ex) {}
 	    return resultSet;
 	}
-	public static Object MyDLookup(String pTarget, String pDomain, String pCriteria, String pAggregate, String pGroupBy, java.sql.Connection connection)
+	public static Object myDLookup(String pTarget, String pDomain, String pCriteria, String pAggregate, String pGroupBy, java.sql.Connection connection)
     {
         String criteria;
         boolean keepGoing;

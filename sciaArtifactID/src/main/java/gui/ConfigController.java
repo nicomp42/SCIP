@@ -54,7 +54,7 @@ public class ConfigController /* extends Application */ {
 	@FXML TabPane tbpConfig;
 	@FXML TextField txtSystemDatabaseLoginName, txtSystemDatabasePassword, txtSystemDatabaseHostName, txtSystemDatabaseSchemaName;
 	@FXML ListView<String> lvProjectsOnFile;		//, lvDatabaseConnections;
-	@FXML TableView<gui.ConnectionInformation> tvDatabaseConnections;
+	@FXML TableView<gui.GUIConnectionInformation> tvDatabaseConnections;
 	private Scene myScene;
 	private Stage myStage;
 	private Boolean dataIsDirty;
@@ -298,7 +298,7 @@ public class ConfigController /* extends Application */ {
 		}
     }
     private void processDatabaseConnectionsDoubleClick() {
-    	gui.ConnectionInformation connectionInformation = tvDatabaseConnections.getSelectionModel().getSelectedItem();
+    	gui.GUIConnectionInformation connectionInformation = tvDatabaseConnections.getSelectionModel().getSelectedItem();
     	// Connection Name is unique
     	String connectionName = connectionInformation.getConnectionName();
     	

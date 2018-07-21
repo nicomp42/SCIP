@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.GeneralLogReader;
 import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -43,7 +44,7 @@ import lib.SQLUtils;
 public class TransactionLogFileReaderController {
 
 	@FXML TextArea txaLogFile, txaLog;
-	@FXML Button btnRead, btnBrowse, btnFilterToAdHocOnly, btnParse;
+	@FXML Button btnRead, btnBrowse, btnFilterToAdHocOnly, btnParse, btnClearLogFileArea, btnCopyQueriesToProject;
 	@FXML Label lblStatus;
 	private Scene myScene;
 	private Stage myStage;
@@ -53,6 +54,7 @@ public class TransactionLogFileReaderController {
 	@FXML void btnBrowse_OnClick(ActionEvent event) {browseForLogFile();}
 	@FXML void btnFilterToAdHocOnly_OnClick(ActionEvent event) {filterToAdHocOnly();}
 	@FXML void btnParse_OnClick(ActionEvent event) {ParseAdHocQuerys(getStringsFromTextArea());}
+	@FXML void btnCopyQueriesToProject_OnClick(ActionEvent event) {copyQuerysToProject(getStringsFromTextArea());}
 
 	public TransactionLogFileReaderController() {
 	} 
@@ -62,19 +64,22 @@ public class TransactionLogFileReaderController {
 //		Log.logProgress("LogFileReaderController.Initialize() starting...");
 		try {
 			setTheScene();
-			txaLogFile.setText("C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data\\device.log");	// TODO: generalize this
-			txtHostName.setText(Config.getConfig().getMySQLDefaultHostname());
-			txtLoginName.setText(Config.getConfig().getMySQLDefaultLoginName());
-			txtPassword.setText(Config.getConfig().getMySQLDefaultPassword());
-			txtMaxLines.setText("500");
-			lblStatus.setText("");
 		} catch (Exception e) {
 			Log.logError("LogFileReaderController.initialize(): " + e.getLocalizedMessage());
 		}
 //		Log.logProgress("LogFileReaderController.Initialize() complete");
 	}
 	private void setTheScene() {
-
+		btnParse.setVisible(false);
+		btnFilterToAdHocOnly.setVisible(false);
+		btnClearLogFileArea.setVisible(false);
+		btnCopyQueriesToProject.setVisible(false);
+		txaLogFile.setText("C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data\\device.log");	// TODO: generalize this
+		txtHostName.setText(Config.getConfig().getMySQLDefaultHostname());
+		txtLoginName.setText(Config.getConfig().getMySQLDefaultLoginName());
+		txtPassword.setText(Config.getConfig().getMySQLDefaultPassword());
+		txtMaxLines.setText("500");
+		lblStatus.setText("");
 	}
 	public void setScene(Scene scene) {this.myScene = scene;}
 	public Stage getStage() {return myStage;}
@@ -83,6 +88,9 @@ public class TransactionLogFileReaderController {
 	private void tryToReadLogFile() {
 		try {
 			readLogFile(Integer.valueOf(txtMaxLines.getText()));
+			btnParse.setVisible(true);
+			btnFilterToAdHocOnly.setVisible(true);
+			btnClearLogFileArea.setVisible(true);
 		} catch (Exception ex) {
 			Log.logError("LogFileReaderController.tryToReadLogFile(): " + ex.getLocalizedMessage());
 		}
@@ -113,13 +121,34 @@ public class TransactionLogFileReaderController {
 		ArrayList<String> myArrayList = getStringsFromTextArea();
 		txaLog.clear();
 		FilterOutEverythingButAdHocSelectQueries(myArrayList);
+		btnCopyQueriesToProject.setVisible(true);
 	}
 	public void FilterOutEverythingButAdHocSelectQueries(ArrayList<String> lines) {
 		MySQLDatabase mySQLDatabase = new MySQLDatabase();		// TODO generalize
+		StringBuilder sanitizedSQL = new StringBuilder();;
 		for (String s: lines) {
-			if (mySQLDatabase.isAdHocQuery(s, null) ) {
-				txaLog.appendText(s + "\n");
+			if (mySQLDatabase.isAdHocQuery(s, sanitizedSQL) ) {
+				txaLog.appendText(sanitizedSQL + "\n");
 			}
+		}
+	}
+	public void copyQuerysToProject(ArrayList<String> querys) {
+		try {
+			int projectID = 0;
+			String currentProjectName = Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName();
+			// Look up the ProjectID of the current project name
+			if (currentProjectName.trim().length() > 0) {
+				try {
+					projectID = (int)SQLUtils.myDLookup("ProjectID", "Select ProjecID FROM `seq-am`.`tProject`", "ProjectName = " + Utils.QuoteMeSingle(currentProjectName), "", "", null);
+				} catch (Exception ex) {}
+			}
+			edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
+			for (String s: querys) {
+				// Write the string to the adhocquery table. if we have a project, write that too.
+				SQLUtils.executeActionQuery(connectionInformation, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeSingle(s) + ")");
+			}
+		} catch (Exception ex) {
+			Log.logError("TransactionLogFileReaderController.copyQuerysToProject(): " + ex.getLocalizedMessage());
 		}
 	}
 	public QueryDefinitions ParseAdHocQuerys(ArrayList<String> querys) {

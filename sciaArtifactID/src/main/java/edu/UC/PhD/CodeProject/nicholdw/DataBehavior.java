@@ -43,7 +43,7 @@ public class DataBehavior {
 			if (attribute.isNullable()) {
 				System.out.print("Attribute " + attribute.getAttributeName() + " can be null ");
 				// The table design says it can be null: are any of the values null?
-				long count = (long) SQLUtils.MyDLookup(attribute.getAttributeName(), table.getTableName(), attribute.getAttributeName() + " Is not null", "Count", "", connection);
+				long count = (long) SQLUtils.myDLookup(attribute.getAttributeName(), table.getTableName(), attribute.getAttributeName() + " Is not null", "Count", "", connection);
 				if (count > 0) {
 					System.out.println("  and there are null values in the table.");
 					attribute.setNullableCheck(enumNullableCheck.nullsFoundInTheData);

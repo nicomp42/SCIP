@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
  * @author nicomp
  *
  */
-public class ConnectionInformation {
+public class GUIConnectionInformation {
 	 
 	private final SimpleStringProperty connectionName = new SimpleStringProperty("");
 	private final SimpleStringProperty loginName = new SimpleStringProperty("");
@@ -14,11 +14,11 @@ public class ConnectionInformation {
 	private final SimpleStringProperty hostName = new SimpleStringProperty("");
 	private final SimpleStringProperty schemaName = new SimpleStringProperty("");
 
-	public ConnectionInformation() {
+	public GUIConnectionInformation() {
 	        this("", "", "","","");
     }
 
-    public ConnectionInformation(String connectionName, String hostName, String loginName, String password, String schemaName) {
+    public GUIConnectionInformation(String connectionName, String hostName, String loginName, String password, String schemaName) {
     	setConnectionName(connectionName);
     	setLoginName(loginName);
     	setPassword(password);
