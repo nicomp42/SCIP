@@ -1,6 +1,6 @@
-
-// Generated from MySqlParser.g4 by ANTLR 4.7.1
 package org.Antlr4MySQLFromANTLRRepo;
+// Generated from MySqlParser.g4 by ANTLR 4.7.1
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -2500,13 +2500,13 @@ public class MySqlParserBaseListener implements MySqlParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOrderByClause(MySqlParser.OrderByClauseContext ctx) { }
+	@Override public void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOrderByClause(MySqlParser.OrderByClauseContext ctx) { }
+	@Override public void exitOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -5483,18 +5483,6 @@ public class MySqlParserBaseListener implements MySqlParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDefaultValue(MySqlParser.DefaultValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCurrentTimestamp(MySqlParser.CurrentTimestampContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCurrentTimestamp(MySqlParser.CurrentTimestampContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

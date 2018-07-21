@@ -3,6 +3,8 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+
 /**
  * A collestion of CompoundAlias objects
  * @author nicomp
@@ -31,17 +33,21 @@ public class CompoundAliases implements Iterable<CompoundAlias> {
 	 */
 	public boolean addCompoundAlias(CompoundAlias compoundAlias) {
 		Boolean result = false;	// expect a duplicate
-		// Don't allow duplicates of the alias name
-		boolean matchFound = false;
-		for (CompoundAlias ca : compoundAliases) {
-			if (ca.getAliasName().trim().toLowerCase().equals(compoundAlias.getAliasName().trim().toLowerCase())) {
-				matchFound = true;
-				break;
+		try {
+			// Don't allow duplicates of the alias name
+			boolean matchFound = false;
+			for (CompoundAlias ca : compoundAliases) {
+				if (ca.getAliasName().trim().toLowerCase().equals(compoundAlias.getAliasName().trim().toLowerCase())) {
+					matchFound = true;
+					break;
+				}
 			}
-		}
-		if (!matchFound) {
-			result = true;
-			compoundAliases.add(new CompoundAlias(compoundAlias));
+			if (!matchFound) {
+				result = true;
+				compoundAliases.add(new CompoundAlias(compoundAlias));
+			}
+		} catch (Exception ex) {
+			Log.logError("ComnpoundAliases.AddCopmpoundAlias): " + ex.getMessage());
 		}
 		return result;
 	}

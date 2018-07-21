@@ -1,5 +1,5 @@
-// Generated from MySqlParser.g4 by ANTLR 4.7.1
 package org.Antlr4MySQLFromANTLRRepo;
+// Generated from MySqlParser.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -2316,15 +2316,17 @@ public interface MySqlParserListener extends ParseTreeListener {
 	 */
 	void exitMultipleUpdateStatement(MySqlParser.MultipleUpdateStatementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MySqlParser#orderByClause}.
+	 * Enter a parse tree produced by the {@code orderByClauseLabel}
+	 * labeled alternative in {@link MySqlParser#orderByClause}.
 	 * @param ctx the parse tree
 	 */
-	void enterOrderByClause(MySqlParser.OrderByClauseContext ctx);
+	void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MySqlParser#orderByClause}.
+	 * Exit a parse tree produced by the {@code orderByClauseLabel}
+	 * labeled alternative in {@link MySqlParser#orderByClause}.
 	 * @param ctx the parse tree
 	 */
-	void exitOrderByClause(MySqlParser.OrderByClauseContext ctx);
+	void exitOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MySqlParser#orderByExpression}.
 	 * @param ctx the parse tree
@@ -4993,16 +4995,6 @@ public interface MySqlParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDefaultValue(MySqlParser.DefaultValueContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MySqlParser#currentTimestamp}.
-	 * @param ctx the parse tree
-	 */
-	void enterCurrentTimestamp(MySqlParser.CurrentTimestampContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MySqlParser#currentTimestamp}.
-	 * @param ctx the parse tree
-	 */
-	void exitCurrentTimestamp(MySqlParser.CurrentTimestampContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MySqlParser#expressionOrDefault}.
 	 * @param ctx the parse tree

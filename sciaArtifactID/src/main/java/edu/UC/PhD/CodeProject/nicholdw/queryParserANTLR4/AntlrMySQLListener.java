@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import org.Antlr4MySQLFromANTLRRepo.NestingLevel;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByClauseContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -101,7 +102,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void enterSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText());
-
 	}
 	@Override public void exitSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText());
@@ -841,13 +841,15 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void visitErrorNode(ErrorNode node) {Log.logQueryParseProgress("AntlrMySQLListener.visitErrorNode()");}
 
-	@Override public void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterOrderByClauseLabel(): " + ctx.getText());
+//	@Override public void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
+	@Override public void enterOrderByClause(MySqlParser.OrderByClauseContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterOrderByClause(): " + ctx.getText());
 		// The third child will be the order by expression
 		MySqlParser.OrderByExpressionContext obec = (OrderByExpressionContext) ctx.getChild(2);
 	}
-	@Override public void exitOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitOrderByClauseLabel(): " + ctx.getText());
+//	@Override public void exitOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
+	@Override public void exitOrderByClause(OrderByClauseContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitOrderByClause(): " + ctx.getText());
 	}
 	@Override public void enterTableSourceBase(MySqlParser.TableSourceBaseContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText());
@@ -926,6 +928,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		}
 	}
 	private void processTerminalNodeAs(TerminalNode node) {
+		try {
 		// Add the alias to the last column name we processed. If we are not nested at all
 		if (lastTerminalNode.equals(Config.RT_BRACKET)) {
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): Found \"AS\" after \"" + Config.RT_BRACKET + "\"" + " NestingLevel = " + currentNestingLevel.toString());
@@ -949,6 +952,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			fullColumnNames.get(fullColumnNames.size()-1).addAliasName(new AliasNameClassOLD(node.getParent().getChild(2).getText().replace("`", "")));
 		}
 		lastTerminalNode = "AS";
+		} catch (Exception ex) {
+			Log.logError("AntlrMySQLListener.processTerminalNodeAs(): " + ex.getLocalizedMessage()); 
+		}
 	}
 	/**
 	 * A Terminal Node has been identified as "ALTER"
