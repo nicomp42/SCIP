@@ -100,9 +100,9 @@ public class SQLUtils {
 		} catch (SQLException e) {
 			Log.logError("SQLUtils.executeActionQuery(): " + e.getLocalizedMessage());
 		}
-	    try {connection.close();}catch(Exception ex) {}
+//	    try {connection.close();}catch(Exception ex) {}
 	}
-	
+
 	/**
 	 * Execute a SELECT statement against the database
 	 * @param hostName
@@ -172,7 +172,7 @@ public class SQLUtils {
 	public static java.sql.Connection openJDBCConnection(ConnectionInformation connectionInformation) {
 		java.sql.Connection connection = null;
 		try {
-			connection = new MySQL().connectToDatabase(connectionInformation.getHostName(), connectionInformation.getHostName(), connectionInformation.getLoginName(), connectionInformation.getPassword());
+			connection = new MySQL().connectToDatabase(connectionInformation.getHostName(), connectionInformation.getSchemaName(), connectionInformation.getLoginName(), connectionInformation.getPassword());
 		} catch (Exception ex) {
 			Log.logError("SQLUtils.openJDBCConnection(); " + ex.getLocalizedMessage());
 		}

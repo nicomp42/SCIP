@@ -9,6 +9,7 @@ import java.util.Collections;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.GeneralLogReader;
+import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
@@ -188,7 +189,7 @@ public class TransactionLogFileReaderController {
 		txaLog.clear();
 	}
 	/***
-	 * Read the log, filter down to Ad-hoc queries, write them into the datbase for the current project. Woo Hoo
+	 * Read the log, filter down to Ad-hoc queries, write them into the database for the current project. Woo Hoo
 	 */
 	private void checkToDoEverything() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -196,7 +197,7 @@ public class TransactionLogFileReaderController {
 		alert.setHeaderText("Read the entire transaction log, filter the ad-hoc queries, copy them to the database for this project. ");
 		alert.setContentText("Are you sure?");
 		alert.showAndWait().ifPresent(rs -> {
-		    if (rs == ButtonType.YES) {
+		    if (rs == ButtonType.OK) {
 		    	doEverything();
 		    }
 		});
@@ -205,8 +206,9 @@ public class TransactionLogFileReaderController {
 	 * Read the transaction file, filter the ad-hoc queries, write them to the system database
 	 */
 	private void doEverything() {
+		ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
 		GeneralLogReader.doEverything(txaLogFile.getText(),
-									  new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""), 
+									  connectionInformation, 
 									  Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName()));
 		
 	}

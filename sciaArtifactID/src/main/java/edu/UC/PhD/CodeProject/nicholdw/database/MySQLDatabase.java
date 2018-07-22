@@ -60,20 +60,20 @@ public class MySQLDatabase extends DatabaseEngine {
 		try {
 			if (p.length >= 7) {
 				if (p[3].toUpperCase().equals("SELECT")) {
-					if (p[4].trim().substring(0, 1).equals("*")) {
+					//if (p[4].trim().substring(0, 1).equals("*")) {
 						int i = 5;
 						while (!p[i].toUpperCase().equals("FROM")) {i++;}
 						i++;
 						// Now we need to know if we are selecting from an existing query or something else
 						String t = p[i];
 						// If t is a query then this is not an ad-hoc query
-						Log.logProgress("MySQLDatabase.isAdHocQuery(): Checking table \"" + t + "\" to see if we should keep it.");
+						//Log.logProgress("MySQLDatabase.isAdHocQuery(): Checking table \"" + t + "\" to see if we should keep it.");
 						if (isTable(t, connection) && !isSystemTable(t)) {
 							status = true;
 						} else {
 							status = false;
 						}
-					}
+					//}
 				}
 				if (status == true && sqlReduced != null) {
 					// Extract the SQL statement from the transaction log entry into sqlReduced
@@ -96,10 +96,10 @@ public class MySQLDatabase extends DatabaseEngine {
 		String parts[] = tableName.split("\\.");
 		try {
 			String sql = "SELECT * FROM information_schema.tables WHERE TABLE_NAME = " 
-			             + Utils.QuoteMeSingle(parts[1])
+			             + Utils.QuoteMeSingle(parts[1].replace("`", ""))
 			             + " AND " 
 			             + "TABLE_SCHEMA = "
-			             + Utils.QuoteMeSingle(parts[0])
+			             + Utils.QuoteMeSingle(parts[0].replaceAll("`", ""))
 			             + " AND " 
 			             + " TABLE_TYPE = " + Utils.QuoteMeSingle("BASE TABLE");
 			

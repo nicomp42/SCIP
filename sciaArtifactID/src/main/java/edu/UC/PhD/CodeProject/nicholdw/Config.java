@@ -399,19 +399,14 @@ public class Config implements Serializable {
 	public int getProjectID(String projectName) {
 		int projectID = 0;
 		try {
-			java.sql.Connection connection = SQLUtils.openJDBCConnection(new ConnectionInformation("", 
-																								   this.getSystemDatabaseConnectionInformation().getHostName(), 
-																								   this.getSystemDatabaseConnectionInformation().getLoginName(), 
-																								   this.getSystemDatabaseConnectionInformation().getPassword(),
-																								   ""));
+			java.sql.Connection connection = SQLUtils.openJDBCConnection(this.getSystemDatabaseConnectionInformation());
 			
-			projectID = (int)SQLUtils.myDLookup("ProjectID", "Select ProjecID FROM `seq-am`.`tProject`", "ProjectName = " + Utils.QuoteMeSingle(projectName.trim()), "", "", connection);
+			projectID = (int)SQLUtils.myDLookup("ProjectID", "Select ProjectID FROM `seq-am`.`tProject`", "Name = " + Utils.QuoteMeSingle(projectName.trim()), "", "", connection);
 		} catch (Exception ex) {
 			Log.logError("Config.getProjectID(): " + ex.getLocalizedMessage());
 		}
 		return projectID;
-	}
-	
+	}	
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.
 // This does not work, an error is thrown on the writeObject statement.

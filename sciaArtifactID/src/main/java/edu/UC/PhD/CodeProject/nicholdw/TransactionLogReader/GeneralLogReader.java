@@ -73,7 +73,6 @@ public class GeneralLogReader {
 		try {
 			FileReader generalLogFile = new FileReader(logFilePath);
 			br = new BufferedReader(generalLogFile);
-			int lineCount = 0;
 			String buffer;
 			while (true) {
 				buffer = br.readLine();
@@ -86,11 +85,10 @@ public class GeneralLogReader {
 						buffer= br.readLine();
 						gle.setText(gle.getText() + " " + buffer.trim());
 					}
-					if (mySQLDatabase.isAdHocQuery(gle.getText(), sanitizedSQL, connection) ) {
-						SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeSingle(gle.getText()) + ")");
-					}																																		
-					lineCount++;
-//					if (lineCount == maxLines) {break;}
+//					System.out.println(gle.getText());
+					if (mySQLDatabase.isAdHocQuery(gle.toString(), sanitizedSQL, connection) ) {
+						SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeSingle(sanitizedSQL.toString()) + ")");
+					}
 //				}
 			}
 		} catch (Exception ex) {
@@ -100,7 +98,7 @@ public class GeneralLogReader {
 		try {connection.close();} catch(Exception ex) {}
 		return totalRecords;
 	}
-	
+
 	/***
 	 * Read records that we care about: SELECT queries that access tables in our databases
 	 */
