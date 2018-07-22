@@ -34,5 +34,6 @@
       <Button fx:id="btnParse" layoutX="529.0" layoutY="120.0" mnemonicParsing="false" onAction="#btnParse_OnClick" text="Parse" />
       <Button fx:id="btnClearLogFileArea" layoutX="15.0" layoutY="534.0" mnemonicParsing="false" onAction="#btnClearLogFileArea_OnClick" text="Clear the Query Window" />
       <Button fx:id="btnCopyQueriesToProject" layoutX="239.0" layoutY="534.0" mnemonicParsing="false" onAction="#btnCopyQueriesToProject_OnClick" text="Save Queries to Project" />
+      <Button fx:id="btnDoEverything" layoutX="429.0" layoutY="534.0" mnemonicParsing="false" onAction="#btnDoEverything_OnClick" text="Do Everything" />
    </children>
 </AnchorPane>

@@ -25,7 +25,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
@@ -44,7 +47,7 @@ import lib.SQLUtils;
 public class TransactionLogFileReaderController {
 
 	@FXML TextArea txaLogFile, txaLog;
-	@FXML Button btnRead, btnBrowse, btnFilterToAdHocOnly, btnParse, btnClearLogFileArea, btnCopyQueriesToProject;
+	@FXML Button btnRead, btnBrowse, btnFilterToAdHocOnly, btnParse, btnClearLogFileArea, btnCopyQueriesToProject, btnDoEverything;
 	@FXML Label lblStatus;
 	private Scene myScene;
 	private Stage myStage;
@@ -56,6 +59,7 @@ public class TransactionLogFileReaderController {
 	@FXML void btnParse_OnClick(ActionEvent event) {ParseAdHocQuerys(getStringsFromTextArea());}
 	@FXML void btnCopyQueriesToProject_OnClick(ActionEvent event) {copyQuerysToProject(getStringsFromTextArea());}
 	@FXML void btnClearLogFileArea_OnClick(ActionEvent event) {clearLogFileArea();}
+	@FXML void btnDoEverything_OnClick(ActionEvent event) {checkToDoEverything();}
 
 	public TransactionLogFileReaderController() {
 	} 
@@ -141,7 +145,7 @@ public class TransactionLogFileReaderController {
 			// Look up the ProjectID of the current project name
 			if (currentProjectName.trim().length() > 0) {
 				try {
-					projectID = (int)SQLUtils.myDLookup("ProjectID", "Select ProjecID FROM `seq-am`.`tProject`", "ProjectName = " + Utils.QuoteMeSingle(currentProjectName), "", "", null);
+					projectID = Config.getConfig().getProjectID(currentProjectName);
 				} catch (Exception ex) {}
 			}
 			edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
@@ -182,6 +186,29 @@ public class TransactionLogFileReaderController {
 	}
 	private void clearLogFileArea() {
 		txaLog.clear();
+	}
+	/***
+	 * Read the log, filter down to Ad-hoc queries, write them into the datbase for the current project. Woo Hoo
+	 */
+	private void checkToDoEverything() {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Do Everything?");
+		alert.setHeaderText("Read the entire transaction log, filter the ad-hoc queries, copy them to the database for this project. ");
+		alert.setContentText("Are you sure?");
+		alert.showAndWait().ifPresent(rs -> {
+		    if (rs == ButtonType.YES) {
+		    	doEverything();
+		    }
+		});
+	}
+	/***
+	 * Read the transaction file, filter the ad-hoc queries, write them to the system database
+	 */
+	private void doEverything() {
+		GeneralLogReader.doEverything(txaLogFile.getText(),
+									  new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""), 
+									  Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName()));
+		
 	}
 }
 

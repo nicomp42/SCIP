@@ -21,6 +21,7 @@ import edu.UC.PhD.CodeProject.nicholdw.database.SystemDatabaseConnectionInformat
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import gui.DebugController;
+import lib.SQLUtils;
 
 /**
  * Configuration class. It's set up as a Singleton in a very cool way.
@@ -390,6 +391,27 @@ public class Config implements Serializable {
 	public void setConnectionInformations(ConnectionInformations connectionInformations) {
 		this.connectionInformations = connectionInformations;
 	}
+	/***
+	 * Look up a project ID based on a project name in the System database
+	 * @param projectName
+	 * @return The projectID or zero if no match
+	 */
+	public int getProjectID(String projectName) {
+		int projectID = 0;
+		try {
+			java.sql.Connection connection = SQLUtils.openJDBCConnection(new ConnectionInformation("", 
+																								   this.getSystemDatabaseConnectionInformation().getHostName(), 
+																								   this.getSystemDatabaseConnectionInformation().getLoginName(), 
+																								   this.getSystemDatabaseConnectionInformation().getPassword(),
+																								   ""));
+			
+			projectID = (int)SQLUtils.myDLookup("ProjectID", "Select ProjecID FROM `seq-am`.`tProject`", "ProjectName = " + Utils.QuoteMeSingle(projectName.trim()), "", "", connection);
+		} catch (Exception ex) {
+			Log.logError("Config.getProjectID(): " + ex.getLocalizedMessage());
+		}
+		return projectID;
+	}
+	
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.
 // This does not work, an error is thrown on the writeObject statement.

@@ -87,6 +87,22 @@ public class SQLUtils {
 		}
 	    try {connection.close();}catch(Exception ex) {}
 	}
+	/***
+	 * Execute an action query. The connection must alreadybe open and it is not closed by this method.
+	 * @param connection An open connection. It is not closed at the end of this method
+	 * @param sql The sql to be submitted to the DB Engine
+	 */
+	public static void executeActionQuery(java.sql.Connection connection, String sql) {
+	    java.sql.PreparedStatement preparedStatement = null;
+	    try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			Log.logError("SQLUtils.executeActionQuery(): " + e.getLocalizedMessage());
+		}
+	    try {connection.close();}catch(Exception ex) {}
+	}
+	
 	/**
 	 * Execute a SELECT statement against the database
 	 * @param hostName

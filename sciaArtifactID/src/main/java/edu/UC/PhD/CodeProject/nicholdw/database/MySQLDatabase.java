@@ -23,8 +23,10 @@ public class MySQLDatabase extends DatabaseEngine {
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.user"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.tables"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.db"));
-			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.tables_priv"));
+			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema.events_statements_current"));
+			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema.events_waits_history_long"));
+			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema.events_stages_history_long"));
 		} catch (Exception ex) {}
 	}
 
@@ -42,7 +44,7 @@ public class MySQLDatabase extends DatabaseEngine {
 	}
 
 	@Override
-	public boolean isSystemTable(DatabaseTable databaseTable) {
+	public boolean isSystemTable(DatabaseTable databaseTable) {		// TODO something
 		return false;
 	}
 
