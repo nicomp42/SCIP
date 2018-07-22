@@ -24,6 +24,7 @@ public class MySQLDatabase extends DatabaseEngine {
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.tables"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.db"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.tables_priv"));
+			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.func"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema.events_statements_current"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema.events_waits_history_long"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema.events_stages_history_long"));
@@ -49,40 +50,43 @@ public class MySQLDatabase extends DatabaseEngine {
 	}
 
 	/***
-	 * Check a SQL statement to see if it is an ad-hoc query
+	 * Check a SQL statement to see if it is an ad-hoc user query.
 	 * @param sql The SQL to check
-	 * @return True is sql contains an ad-hoc query, false otherwise
+	 * @return True is sql contains an ad-hoc query wihhout a system table, false otherwise
+	 * A query that is not ad-hoc must look like this:  SELECT * from {named query}
+	 *   everything else is ad-hoc.
 	 */
 	@Override
 	public boolean isAdHocQuery(String sql, StringBuilder sqlReduced, java.sql.Connection connection) {
-		boolean status = false;
+		boolean status = false;		// Assume it's ad-hoc unless we prove otherwise
 		String[] p = sql.split(" ");
 		try {
-			if (p.length >= 7) {
-				if (p[3].toUpperCase().equals("SELECT")) {
-					//if (p[4].trim().substring(0, 1).equals("*")) {
-						int i = 5;
-						while (!p[i].toUpperCase().equals("FROM")) {i++;}
-						i++;
-						// Now we need to know if we are selecting from an existing query or something else
-						String t = p[i];
-						// If t is a query then this is not an ad-hoc query
-						//Log.logProgress("MySQLDatabase.isAdHocQuery(): Checking table \"" + t + "\" to see if we should keep it.");
-						if (isTable(t, connection) && !isSystemTable(t)) {
-							status = true;
-						} else {
-							status = false;
-						}
-					//}
-				}
-				if (status == true && sqlReduced != null) {
-					// Extract the SQL statement from the transaction log entry into sqlReduced
-					sqlReduced.setLength(0);
-					String space = "";
-					for (int i = 3; i < p.length; i++) {
-						sqlReduced.append(space + p[i]);
-						space = " ";
+			if (p.length == 7) {
+				if (p[3].trim().toUpperCase().equals("SELECT") && p[4].trim().equals("*") && p[5].trim().toUpperCase().equals("FROM")) {
+					// Now we need to know if we are selecting from an existing query or something else
+					String t = p[6];
+					// If t is a named query then this is not an ad-hoc query
+					//Log.logProgress("MySQLDatabase.isAdHocQuery(): Checking table \"" + t + "\" to see if we should keep it.");
+					status = true;
+					if (!isTable(t, connection)) {status = false;}
+					if (isSystemTable(t)) {status = false;}			// We don't want queries with system tables, ad-hoc or not
+				} else {
+					status = false;
+				} 
+			} else {
+				if (p.length > 7) {
+					if (p[3].trim().toUpperCase().equals("SELECT")) {
+						status = true;
 					}
+				}
+			}	
+			if (sqlReduced != null) {
+				// Extract the SQL statement from the transaction log entry into sqlReduced
+				sqlReduced.setLength(0);
+				String space = "";
+				for (int i = 3; i < p.length; i++) {
+					sqlReduced.append(space + p[i]);
+					space = " ";
 				}
 			}
 		} catch (Exception ex) {

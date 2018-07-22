@@ -96,7 +96,10 @@ public class Config implements Serializable {
 	private String grassStyleSheetURL = "https://raw.githubusercontent.com/nicomp42/scipGrass/master/grass.css";
 	private ArrayList<Browser> browsers;
 	private SystemDatabaseConnectionInformation systemDatabaseConnectionInformation;
+	private String defaultTransactionLogFilePath = "C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data";
 
+	public String getDefaultTransactionLogFilePath() {return defaultTransactionLogFilePath;}
+	public void setDefaultTransactionLogFilePath(String defaultTransactionLogFilePath) {this.defaultTransactionLogFilePath = defaultTransactionLogFilePath;}	
 	public String getMySQLDefaultHostname() {return mySQLDefaultHostname;}
 	public String setMySQLDefaultHostname(String mySQLDefaultHostname) {this.mySQLDefaultHostname = mySQLDefaultHostname; return mySQLDefaultHostname;}
 	public String getMySQLDefaultLoginName() {return mySQLDefaultLoginName;}
@@ -401,12 +404,12 @@ public class Config implements Serializable {
 		try {
 			java.sql.Connection connection = SQLUtils.openJDBCConnection(this.getSystemDatabaseConnectionInformation());
 			
-			projectID = (int)SQLUtils.myDLookup("ProjectID", "Select ProjectID FROM `seq-am`.`tProject`", "Name = " + Utils.QuoteMeSingle(projectName.trim()), "", "", connection);
+			projectID = (int)SQLUtils.myDLookup("ProjectID", "Select ProjectID FROM `seq-am`.`tProject`", "Name = " + Utils.QuoteMeDouble(projectName.trim()), "", "", connection);
 		} catch (Exception ex) {
 			Log.logError("Config.getProjectID(): " + ex.getLocalizedMessage());
 		}
 		return projectID;
-	}	
+	}
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.
 // This does not work, an error is thrown on the writeObject statement.

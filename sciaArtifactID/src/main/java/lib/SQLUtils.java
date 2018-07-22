@@ -83,7 +83,7 @@ public class SQLUtils {
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			Log.logError("SQLUtils.executeActionQuery(): " + e.getLocalizedMessage());
+			Log.logError("SQLUtils.executeActionQuery(): " + e.getLocalizedMessage() + " (" + sql + ")");
 		}
 	    try {connection.close();}catch(Exception ex) {}
 	}
@@ -98,7 +98,7 @@ public class SQLUtils {
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
-			Log.logError("SQLUtils.executeActionQuery(): " + e.getLocalizedMessage());
+			Log.logError("SQLUtils.executeActionQuery(): " + e.getLocalizedMessage() + " (" + sql + ")");
 		}
 //	    try {connection.close();}catch(Exception ex) {}
 	}

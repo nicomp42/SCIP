@@ -80,7 +80,7 @@ public class TransactionLogFileReaderController {
 		btnFilterToAdHocOnly.setVisible(false);
 		btnClearLogFileArea.setVisible(false);
 		btnCopyQueriesToProject.setVisible(false);
-		txaLogFile.setText("C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data\\device.log");	// TODO: generalize this
+		txaLogFile.setText(Config.getConfig().getDefaultTransactionLogFilePath());
 		txtHostName.setText(Config.getConfig().getMySQLDefaultHostname());
 		txtLoginName.setText(Config.getConfig().getMySQLDefaultLoginName());
 		txtPassword.setText(Config.getConfig().getMySQLDefaultPassword());
@@ -109,7 +109,7 @@ public class TransactionLogFileReaderController {
 	}
 	public void browseForLogFile() {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		fileChooser.setInitialDirectory(new File(Config.getConfig().getDefaultTransactionLogFilePath()));
 		fileChooser.setTitle("Select the log file");
 		Stage stage = (Stage) this.btnBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
 		File file = fileChooser.showOpenDialog(stage);

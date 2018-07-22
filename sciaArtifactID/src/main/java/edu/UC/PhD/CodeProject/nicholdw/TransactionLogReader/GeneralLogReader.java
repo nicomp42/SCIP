@@ -55,7 +55,7 @@ public class GeneralLogReader {
 */
 	
 	/***
-	 * Read the transaction log, filter the ad-hoc queries, write all of them to the project database
+	 * Read the transaction log, filter the ad-hoc queries, write all of them to the project database ad-hoc query table
 	 * @param logFilePath 
 	 * @param connectionInformation What's needed to connect to the database
 	 * @param projectID the primary key of a project in tProject, or zero. No validation is performed here. 
@@ -69,6 +69,7 @@ public class GeneralLogReader {
 																																		connectionInformation.getHostName(), 
 																																		connectionInformation.getLoginName(),
 																																		connectionInformation.getPassword(),""));
+		SQLUtils.executeActionQuery(connection, "delete  FROM `seq-am`.tadhocquery;");		// Clear any queries already captured
 		BufferedReader br = null;
 		try {
 			FileReader generalLogFile = new FileReader(logFilePath);
@@ -87,7 +88,7 @@ public class GeneralLogReader {
 					}
 //					System.out.println(gle.getText());
 					if (mySQLDatabase.isAdHocQuery(gle.toString(), sanitizedSQL, connection) ) {
-						SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeSingle(sanitizedSQL.toString()) + ")");
+						SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(sanitizedSQL.toString()) + ")");
 					}
 //				}
 			}
