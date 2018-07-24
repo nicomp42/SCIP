@@ -17,7 +17,7 @@ public class DatabaseTable {
 		this.setName(databaseTable.getName());
 	}
 	public DatabaseTable(String name) throws DatabaseTableException {
-		setName(name);
+		setName(name.toLowerCase());
 	}
 	public String getName() {
 		return name;

@@ -1,10 +1,12 @@
 package lib;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.mysql.jdbc.CallableStatement;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 //import com.mysql.jdbc.PreparedStatement;
@@ -136,7 +138,7 @@ public class SQLUtils {
 	public static java.sql.ResultSet executeQuery(ConnectionInformation connectionInformation, String sql) {
 	    java.sql.ResultSet resultSet = null;
 		java.sql.Connection connection = null;
-		connection = new MySQL().connectToDatabase(connectionInformation.getHostName(), connectionInformation.getHostName(), connectionInformation.getLoginName(), connectionInformation.getPassword()); 
+		connection = new MySQL().connectToDatabase(connectionInformation.getHostName(), connectionInformation.getSchemaName(), connectionInformation.getLoginName(), connectionInformation.getPassword()); 
 	    java.sql.PreparedStatement preparedStatement = null;
 	    try {
 			preparedStatement = connection.prepareStatement(sql);
@@ -256,4 +258,43 @@ public class SQLUtils {
 	public static String DoubleQuoteMe(String me) {
 		return '"' + me + '"';
 	}
+	/***
+	 * Read the code in stored procedure
+	 * @param connectionInformation How to connect to the database
+	 * @param storedProcedureName The name of the stored procedure, including schema if necessary
+	 * @return
+	 */
+	public static ArrayList<String> readStoredProcedure(ConnectionInformation connectionInformation, String storedProcedureName) {
+		ArrayList<String> result = new ArrayList<String>();
+		java.sql.ResultSet resultSet;
+		String sql = "show create procedure " + storedProcedureName + ";";
+		try {
+			resultSet = SQLUtils.executeQuery(connectionInformation, sql);
+			while (true) {
+				if (!resultSet.next()) {break;};
+				result.add(resultSet.getString(3));		// Columns are 1-based.
+			}
+		} catch (Exception ex) {
+			Log.logError("SQLUtils.readStoredProcedure(" + storedProcedureName + ")"  + ex.getLocalizedMessage());
+		} finally {
+		}
+
+		return result;
+	}
+	public static int executeSELECTQueriesInStoredProcedure(ConnectionInformation connectionInformation, String storedProcedureName) {
+		int queryCount = 0;
+		try {
+			ArrayList<String> spCode = readStoredProcedure(connectionInformation, storedProcedureName);
+			String[] spCodeLines = spCode.get(0).split("\n");
+			for (String sql: spCodeLines) {
+				if (sql.trim().toLowerCase().startsWith("select")) {
+					SQLUtils.executeQuery(connectionInformation,sql);	// We don't care what it returns, we just want it in the transaction log
+				}
+			}
+		} catch (Exception ex) {
+			Log.logError("SQLUtils.executeSELECTQueriesInStoredProcedure(" + storedProcedureName + ")"  + ex.getLocalizedMessage());
+		}
+		return queryCount;
+	}
+	
 }

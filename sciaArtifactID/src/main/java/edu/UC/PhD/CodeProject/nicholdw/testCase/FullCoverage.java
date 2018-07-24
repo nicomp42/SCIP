@@ -39,13 +39,16 @@ public class FullCoverage extends TestCase {
 	@Override
 	public boolean run() {
 		
-		XMLParser xmlparser=new XMLParser();
+		SQLUtils.executeSELECTQueriesInStoredProcedure(connectionInformation, "`testcasecreationscripts`.`InsertAdHocQueriesIntoTransactionLog`");
+
+/*		XMLParser xmlparser=new XMLParser();
 		List<OutputStep> outputSteps = xmlparser.parseXMLForOutputSteps("C:\\Users\\nicomp\\Google Drive\\PhD (1)\\TestCases\\FullCoverageTestCase\\FullCoverageTestCaseSalesMappingToReconciledSchema.ktr");
 		ETLExcelExporter.generateOutputStepsCsvFile("c:\\Temp\\fooo.csv", outputSteps);
 
 		List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps("C:\\Users\\nicomp\\Google Drive\\PhD (1)\\TestCases\\FullCoverageTestCase\\FullCoverageTestCaseSalesMappingToReconciledSchema.ktr");		
 		ETLExcelExporter.generateInputStepsCsvFile("c:\\Temp\\fooi.csv", inputSteps);
-
+*/
+		
 		// 1. Run these Stored Procedures in this order
 		// `testcasecreationscripts`.`CreateFullCoverageTestCase`
 		// 2. Run the Pentaho jobs
@@ -55,12 +58,17 @@ public class FullCoverage extends TestCase {
 		// `testcasecreationscripts`.`PopulateMonthlySalesByProductAndStore`
 		// 	`testcasecreationscripts`.`PopulateWeeklySalesByProductAndStore`
 		// `testcasecreationscripts`.`PopulateStoreSalesByTemperature`
+		// 4. Clear the transaction log
+		// 5. Rename the transaction log to "DEVICE full coverage test case.log"  (our logic will process this file)
+		// 6. Run these stored procedures in this order
+		//  `testcasecreationscripts`.`InsertAdHocQueriesIntoTransactionLog`   to insert some queries into the transaction log
 		
 /*		
 		Log.logProgress("FullCoverage.run(): starting...");
 		try {
 			createOperationalSchemas();
 			submitEvolutionOperators();
+			initTransactionLog();
 		} catch (Exception ex) {
 			Log.logError("FullCoverage.run(): " + ex.getLocalizedMessage());
 		}finally {
@@ -128,13 +136,16 @@ public class FullCoverage extends TestCase {
 		}
 	}
 	@Override
-	public boolean LoadTransactionLog() {
-    	Log.logProgress("FullCoverage.LoadTransactionLog(): starting...");
+	public boolean initTransactionLog() {
+    	Log.logProgress("FullCoverage.initTransactionLog(): starting...");
     	try {
-    		
+    		SQLUtils.executeActionQuery(connectionInformation, "CALL `testcasecreationscripts`.`InsertAdHocQueriesIntoTransactionLog`();");
     	} catch (Exception ex) {
-        	Log.logError("FullCoverage.LoadTransactionLog(): " + ex.getLocalizedMessage());
+        	Log.logError("FullCoverage.initTransactionLog(): " + ex.getLocalizedMessage());
     	}
+    	SQLUtils.executeSELECTQueriesInStoredProcedure(connectionInformation, "`testcasecreationscripts`.`InsertAdHocQueriesIntoTransactionLog`");
+    	
+    	
     	
 		return false;
 	}

@@ -30,6 +30,22 @@ public class DatabaseTables {
 			}	
 		} catch (Exception ex) {}
 	}
+	/***
+	 * Look for a table name in the object
+	 * @param databaseTableName The name to look for
+	 * @return True if table name is in the object, false otherwise
+	 */
+	public boolean containsTableName(String databaseTableName) {
+		boolean result = false;
+		String tmp = databaseTableName.toLowerCase();
+		for (DatabaseTable dt: databaseTables) {
+			if (dt.getName().compareTo(tmp) == 0) {
+				result = true;
+				break;
+			}
+		}	
+		return result;
+	}
 	
 	/***
 	 * Look for a database table in the object

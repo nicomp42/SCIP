@@ -11,6 +11,8 @@ import java.io.FileReader;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import javafx.scene.control.TextArea;
 import lib.SQLUtils;
 
@@ -61,7 +63,7 @@ public class GeneralLogReader {
 	 * @param projectID the primary key of a project in tProject, or zero. No validation is performed here. 
 	 * @return The number of records written to the database
 	 */
-	public static int doEverything(String logFilePath, ConnectionInformation connectionInformation, int projectID) {
+	public static int doEverything(String logFilePath, ConnectionInformation connectionInformation, int projectID, boolean clearDatabaseFirst) {
 		int totalRecords = 0;
 		StringBuilder sanitizedSQL = new StringBuilder();
 		MySQLDatabase mySQLDatabase = new MySQLDatabase();		// TODO generalize
@@ -69,7 +71,7 @@ public class GeneralLogReader {
 																																		connectionInformation.getHostName(), 
 																																		connectionInformation.getLoginName(),
 																																		connectionInformation.getPassword(),""));
-		SQLUtils.executeActionQuery(connection, "delete  FROM `seq-am`.tadhocquery;");		// Clear any queries already captured
+		SQLUtils.executeActionQuery(connection, "delete  FROM `seq-am`.tadhocquery WHERE ProjectID = " + projectID + ";");		// Clear any queries already captured for this project
 		BufferedReader br = null;
 		try {
 			FileReader generalLogFile = new FileReader(logFilePath);
@@ -88,7 +90,11 @@ public class GeneralLogReader {
 					}
 //					System.out.println(gle.getText());
 					if (mySQLDatabase.isAdHocQuery(gle.toString(), sanitizedSQL, connection) ) {
-						SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(sanitizedSQL.toString()) + ")");
+						Log.logProgress("GeneraLogReader.doEverything(): " + sanitizedSQL.toString()); 
+						// It's an ad-hoc query but does it reference a system table? If so, we don't want it
+						if (!mySQLDatabase.checkForSystemTableInSQL(sanitizedSQL.toString())) {
+							SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(sanitizedSQL.toString()) + ")");
+						}
 					}
 //				}
 			}

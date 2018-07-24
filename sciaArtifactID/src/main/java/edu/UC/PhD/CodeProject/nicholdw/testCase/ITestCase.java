@@ -29,6 +29,9 @@ public interface ITestCase {
 	 * Submit select scripts to the database for the purpose of filling the transaction log
 	 * @return
 	 */
-	public boolean LoadTransactionLog();
+	public boolean initTransactionLog();
+
+	
+	
 	
 }

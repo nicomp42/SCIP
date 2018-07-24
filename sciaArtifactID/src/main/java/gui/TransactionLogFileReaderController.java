@@ -135,7 +135,9 @@ public class TransactionLogFileReaderController {
 		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""));
 		for (String s: lines) {
 			if (mySQLDatabase.isAdHocQuery(s, sanitizedSQL, connection) ) {
-				txaLog.appendText(sanitizedSQL + "\n");
+				if (!mySQLDatabase.checkForSystemTableInSQL(sanitizedSQL.toString())) {
+					txaLog.appendText(sanitizedSQL + "\n");
+				}
 			}
 		}
 	}
@@ -152,7 +154,7 @@ public class TransactionLogFileReaderController {
 			edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
 			for (String s: querys) {
 				// Write the string to the adhocquery table. if we have a project, write that too.
-				SQLUtils.executeActionQuery(connectionInformation, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeSingle(s) + ")");
+				SQLUtils.executeActionQuery(connectionInformation, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(s) + ")");
 			}
 		} catch (Exception ex) {
 			Log.logError("TransactionLogFileReaderController.copyQuerysToProject(): " + ex.getLocalizedMessage());
@@ -168,16 +170,18 @@ public class TransactionLogFileReaderController {
 		try {
 			for (String s: querys) {
 				if (mySQLDatabase.isAdHocQuery(s, sqlReduced, connection) ) {
-					QueryDefinition queryDefinition = new QueryDefinition(txtHostName.getText(), 
-							                                              txtLoginName.getText(), 
-							                                              txtPassword.getText(), 
-							                                              new QueryTypeSelect(), 
-							                                              adHocQueryName + queryCounter,
-							                                              sqlReduced.toString(),
-							                                              "");
-					queryCounter++;
-					queryDefinition.crunchIt();
-					queryDefinitions.addQueryDefinition(queryDefinition);
+					if (!mySQLDatabase.checkForSystemTableInSQL(sqlReduced.toString())) {
+						QueryDefinition queryDefinition = new QueryDefinition(txtHostName.getText(), 
+								                                              txtLoginName.getText(), 
+								                                              txtPassword.getText(), 
+								                                              new QueryTypeSelect(), 
+								                                              adHocQueryName + queryCounter,
+								                                              sqlReduced.toString(),
+								                                              "");
+						queryCounter++;
+						queryDefinition.crunchIt();
+						queryDefinitions.addQueryDefinition(queryDefinition);
+					}
 				}
 			}
 		} catch(Exception ex) {
@@ -198,19 +202,19 @@ public class TransactionLogFileReaderController {
 		alert.setContentText("Are you sure?");
 		alert.showAndWait().ifPresent(rs -> {
 		    if (rs == ButtonType.OK) {
-		    	doEverything();
+		    	performEndToEndProcessingOfTransactionLog();
 		    }
 		});
 	}
 	/***
 	 * Read the transaction file, filter the ad-hoc queries, write them to the system database
 	 */
-	private void doEverything() {
+	private void performEndToEndProcessingOfTransactionLog() {
 		ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
 		GeneralLogReader.doEverything(txaLogFile.getText(),
 									  connectionInformation, 
-									  Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName()));
-		
+									  Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName()),
+									  true);
 	}
 }
 

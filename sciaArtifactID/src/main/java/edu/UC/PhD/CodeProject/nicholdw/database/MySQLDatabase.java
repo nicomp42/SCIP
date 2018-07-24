@@ -20,6 +20,7 @@ public class MySQLDatabase extends DatabaseEngine {
 		databaseSystemTables = new DatabaseTables();
 		// Add the system tables that will show up in the transaction log. We will ignore them.
 		try {
+			// Name will be converted to lower case when the DatabaseTable object is created 
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.user"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.tables"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("mysql.db"));
@@ -28,9 +29,11 @@ public class MySQLDatabase extends DatabaseEngine {
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema.events_statements_current"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema.events_waits_history_long"));
 			databaseSystemTables.addDatabaseTable(new DatabaseTable("performance_schema.events_stages_history_long"));
+			databaseSystemTables.addDatabaseTable(new DatabaseTable("information_schema.tables"));
 		} catch (Exception ex) {}
 	}
 
+	
 	public ArrayList<DatabaseTable> getDatabaseSystemTables() {
 		return (ArrayList<DatabaseTable>) databaseSystemTables.getDatabaseTables();
 	}
@@ -124,5 +127,19 @@ public class MySQLDatabase extends DatabaseEngine {
 			result = true;
 		}
 		return result;
-	}	
+	}
+	/***
+	 * Does a SQL statement contain a reference to a system table? 
+	 * @param sql The SQL statement to check
+	 * @return True if the table immediately after the FROM keyword is a system table, false otherwise
+	 */
+	public boolean checkForSystemTableInSQL(String sql) {
+		boolean status = false;
+		String myParts[] = sql.toString().split(" ");
+		int i = 0;
+		while (!myParts[i].trim().toUpperCase().equals("FROM")) {i++;}
+		i++;
+		status = databaseSystemTables.containsTableName(myParts[i]);
+		return status;
+	}
 }

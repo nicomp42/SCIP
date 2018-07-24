@@ -92,7 +92,6 @@ public class QueryDefinition {
 				queryTable = traverseQueryDefinitionsForQueryTable(this, schemaName, tableName);
 			}
 			type = queryTable.getAttributeDataType(queryAttribute.getAttributeName());
-			// TODO: need to search children for the data type if the attribute originates in a nested query
 		} catch (Exception ex) {
 			Log.logError("QueryDefinition.getQueryAttributeType(" + queryAttribute.getAttributeName() + "): " + ex.getLocalizedMessage());
 			type = "UNDEFINED";

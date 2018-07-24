@@ -404,9 +404,9 @@ public class Config implements Serializable {
 		try {
 			java.sql.Connection connection = SQLUtils.openJDBCConnection(this.getSystemDatabaseConnectionInformation());
 			
-			projectID = (int)SQLUtils.myDLookup("ProjectID", "Select ProjectID FROM `seq-am`.`tProject`", "Name = " + Utils.QuoteMeDouble(projectName.trim()), "", "", connection);
+			projectID = (int)SQLUtils.myDLookup("ProjectID", "`seq-am`.`tProject`", "Name = " + Utils.QuoteMeDouble(projectName.trim()), "", "", connection);
 		} catch (Exception ex) {
-			Log.logError("Config.getProjectID(): " + ex.getLocalizedMessage());
+			Log.logError("Config.getProjectID(" + projectName + "): " + ex.getLocalizedMessage());
 		}
 		return projectID;
 	}
