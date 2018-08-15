@@ -76,6 +76,10 @@ public class Neo4jUtils {
 				            for (org.neo4j.graphdb.Label label: node.getLabels()) {
 				            	System.out.print(label.name() + " ");
 				            }
+				            Map<String, Object> properties = node.getAllProperties();
+				            for (Map.Entry<String, Object> entry: properties.entrySet()) {
+				            	System.out.print("(" + entry.getKey() + ", " + entry.getValue() + ")");
+				            }
 				            System.out.print(" : " );
 				            for (org.neo4j.graphdb.Relationship relationship: node.getRelationships()) {
 				            	System.out.print(relationship.getType() + " " + relationship.getEndNode().getLabels().iterator().next() + " ");
