@@ -8,8 +8,12 @@ package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.neo4j.cypher.internal.javacompat.ExecutionEngine;
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
@@ -19,11 +23,15 @@ import org.neo4j.driver.v1.StatementResult;
 import org.neo4j.driver.v1.Transaction;
 import org.neo4j.driver.v1.TransactionWork;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.io.fs.FileUtils;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import net.sourceforge.htmlunit.corejs.javascript.ast.Label;
 /***
  * Neo4j DB Utilities
  * Some of these require that the DB that is started and listening on a port.
@@ -42,6 +50,50 @@ public class Neo4jUtils {
 	public static final String filePrefix = "FILE:///";
 	public static final String OK = "OK";
 
+	public static ArrayList<String> readDatabase() {
+		ArrayList<String> db = new ArrayList<String>();
+		Result result = null;
+		ResourceIterator<Node> resultIterator = null;
+		try {
+			Neo4jUtils.createDB("C:\\SCIP\\Foo\\", false);
+			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+			String rows = "";
+			if (Neo4jUtils.getDriver() == null) {
+				Log.logError("Neo4jUtils.readDatabase(): Could not connect to Neo4j. Make sure that the database is *not* running.");
+			} else {
+				 String query = "MATCH (n) RETURN n;";
+				 try ( org.neo4j.graphdb.Transaction tx = getGraphDatabaseService().beginTx() )
+				 {
+					 result = getGraphDatabaseService().execute(query);
+					 while (result.hasNext()) {
+				        Map<String,Object> row = result.next();
+				        //for ( String key : result.columns() ) {System.out.printf( "%s = %s%n", key, row.get( key ) );}				        
+				        
+				        // Each column in the row
+				        for ( Entry<String,Object> column : row.entrySet()) {
+				            rows += column.getKey() + ": " + column.getValue() + "; ";
+				            Node node = (Node) column.getValue();
+				            for (org.neo4j.graphdb.Label label: node.getLabels()) {
+				            	System.out.print(label.name() + " ");
+				            }
+				            System.out.print(" : " );
+				            for (org.neo4j.graphdb.Relationship relationship: node.getRelationships()) {
+				            	System.out.print(relationship.getType() + " " + relationship.getEndNode().getLabels().iterator().next() + " ");
+				            }				            	
+				            System.out.println();
+				        }
+				        rows += "\n";			 
+				     }
+					 tx.success();
+					 System.out.println(rows);
+				 }
+			}
+		} catch (Exception ex) {
+	    	 Log.logError("Neo4jUtils.readDatabase(): " + ex.getLocalizedMessage(),ex.getStackTrace());
+		}
+		return db;
+	}
+
 	public static void closeConnection() {
 		try {driver.close();} catch (Exception ex) {}
 	}
@@ -57,7 +109,8 @@ public class Neo4jUtils {
 		}
 	}
 	/***
-	 * Create a Neo4j Database in a folder. The DB should not be started because, well, it doesn't exist, yet.
+	 * Create a Neo4j Database in a folder. The DB should not be started **even** if it already exists.
+	 * If the DB is already started you will get the error "Error starting org.neo4j.kernel.impl.factory.GraphDatabaseFacadeFactory"
 	 * @param dbPath The folder name where the DB will be created. Must end in a directory that exists.
 	 * @param eraseFirst If true, recursively delete the contents of the folder first
 	 * @throws Exception
@@ -215,7 +268,10 @@ public class Neo4jUtils {
 	  */
 	 public static void main( String[] args ) {
 
-		 MatchAttributeNodesWithOneRelationship();
+		 
+		 ArrayList<String> db = Neo4jUtils.readDatabase();
+		 
+//		 MatchAttributeNodesWithOneRelationship();
 //		 testCreateNewDatabase();
 /*
 		 Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
