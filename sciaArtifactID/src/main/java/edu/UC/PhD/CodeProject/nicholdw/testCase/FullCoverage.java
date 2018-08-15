@@ -39,7 +39,6 @@ public class FullCoverage extends TestCase {
 	@Override
 	public boolean run() {
 		
-		SQLUtils.executeSELECTQueriesInStoredProcedure(connectionInformation, "`testcasecreationscripts`.`InsertAdHocQueriesIntoTransactionLog`");
 
 /*		XMLParser xmlparser=new XMLParser();
 		List<OutputStep> outputSteps = xmlparser.parseXMLForOutputSteps("C:\\Users\\nicomp\\Google Drive\\PhD (1)\\TestCases\\FullCoverageTestCase\\FullCoverageTestCaseSalesMappingToReconciledSchema.ktr");
@@ -62,6 +61,7 @@ public class FullCoverage extends TestCase {
 		// 5. Rename the transaction log to "DEVICE full coverage test case.log"  (our logic will process this file)
 		// 6. Run these stored procedures in this order
 		//  `testcasecreationscripts`.`InsertAdHocQueriesIntoTransactionLog`   to insert some queries into the transaction log
+//		SQLUtils.executeSELECTQueriesInStoredProcedure(connectionInformation, "`testcasecreationscripts`.`InsertAdHocQueriesIntoTransactionLog`");
 		
 /*		
 		Log.logProgress("FullCoverage.run(): starting...");
