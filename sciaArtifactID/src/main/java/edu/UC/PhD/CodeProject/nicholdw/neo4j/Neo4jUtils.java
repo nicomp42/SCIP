@@ -50,14 +50,48 @@ public class Neo4jUtils {
 	public static final String filePrefix = "FILE:///";
 	public static final String OK = "OK";
 
-	public static ArrayList<String> readDatabase() {
+	/***
+	 * Process all the stuff in a row of a database
+	 * @param row The row to be processed
+	 */
+	public static void processRow(Map<String, Object> row) {
+		String buffer = "";
+        // Each column in the row
+        for (Entry<String,Object> column : row.entrySet()) {
+            buffer += column.getKey() + ": " + column.getValue() + "; ";
+            Node node = (Node) column.getValue();
+            for (org.neo4j.graphdb.Label label: node.getLabels()) {
+            	System.out.print(label.name() + " ");
+            }
+            Map<String, Object> properties = node.getAllProperties();
+            System.out.printf("%d properties: %n", properties.entrySet().size());
+            printNodeProperties(node);
+            System.out.println("\nRelationships:");
+            for (org.neo4j.graphdb.Relationship relationship: node.getRelationships()) {
+            	System.out.print(relationship.getType() + " " + relationship.getEndNode().getLabels().iterator().next() + " ");
+            	Node endNode = relationship.getEndNode();
+            	printNodeProperties(endNode);
+            }				            	
+            System.out.println();
+        }
+	}
+	/***
+	 * Print the name/value pairs for all the properties of a node
+	 * @param node The node to be processed
+	 */
+	public static void printNodeProperties(Node node) {
+        Map<String, Object> properties = node.getAllProperties();
+        for (Map.Entry<String, Object> entry: properties.entrySet()) {
+        	System.out.print("(" + entry.getKey() + ", " + entry.getValue() + ")");
+        }
+	}
+	public static ArrayList<String> readDatabase(String filePath) {
 		ArrayList<String> db = new ArrayList<String>();
 		Result result = null;
 		ResourceIterator<Node> resultIterator = null;
 		try {
-			Neo4jUtils.createDB("C:\\SCIP\\Foo\\", false);
+			Neo4jUtils.createDB(filePath, false);
 			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-			String rows = "";
 			if (Neo4jUtils.getDriver() == null) {
 				Log.logError("Neo4jUtils.readDatabase(): Could not connect to Neo4j. Make sure that the database is *not* running.");
 			} else {
@@ -67,29 +101,9 @@ public class Neo4jUtils {
 					 result = getGraphDatabaseService().execute(query);
 					 while (result.hasNext()) {
 				        Map<String,Object> row = result.next();
-				        //for ( String key : result.columns() ) {System.out.printf( "%s = %s%n", key, row.get( key ) );}				        
-				        
-				        // Each column in the row
-				        for ( Entry<String,Object> column : row.entrySet()) {
-				            rows += column.getKey() + ": " + column.getValue() + "; ";
-				            Node node = (Node) column.getValue();
-				            for (org.neo4j.graphdb.Label label: node.getLabels()) {
-				            	System.out.print(label.name() + " ");
-				            }
-				            Map<String, Object> properties = node.getAllProperties();
-				            for (Map.Entry<String, Object> entry: properties.entrySet()) {
-				            	System.out.print("(" + entry.getKey() + ", " + entry.getValue() + ")");
-				            }
-				            System.out.print(" : " );
-				            for (org.neo4j.graphdb.Relationship relationship: node.getRelationships()) {
-				            	System.out.print(relationship.getType() + " " + relationship.getEndNode().getLabels().iterator().next() + " ");
-				            }				            	
-				            System.out.println();
-				        }
-				        rows += "\n";			 
+				        processRow(row);
 				     }
 					 tx.success();
-					 System.out.println(rows);
 				 }
 			}
 		} catch (Exception ex) {
@@ -273,7 +287,7 @@ public class Neo4jUtils {
 	 public static void main( String[] args ) {
 
 		 
-		 ArrayList<String> db = Neo4jUtils.readDatabase();
+		 ArrayList<String> db = Neo4jUtils.readDatabase("C:\\SCIP\\TestCase01\\");
 		 
 //		 MatchAttributeNodesWithOneRelationship();
 //		 testCreateNewDatabase();
