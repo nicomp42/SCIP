@@ -7,18 +7,15 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 /***
- * Process a script of Cypher statements
+ * Process a script of Cypher statements and submit them one-by-one to the current DB
  * @author nicomp
- *
  */
 public class ProcessScript {
-
-	
 	/***
 	 * Read cypher commands from a text file and execute them one-by-one
 	 * @param fileName The text file
-	 * @param neo4jFilePath The Nro4j DB to be used. Must be closed. 
-	 * @return
+	 * @param neo4jFilePath The Neo4j DB to be used. Must be open. 
+	 * @return the number of commands submitted to the DB
 	 */
 	public int processScript(String fileName, String neo4jFilePath) {
 		Log.logProgress("ProcessScript.processScript() : executing commands from " + fileName + " against Neo4j Database " + neo4jFilePath);
@@ -31,8 +28,7 @@ public class ProcessScript {
 			if (Neo4jUtils.getDriver() == null) {
 				Neo4jUtils.setNeo4jConnectionParameters(Config	.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 				Neo4jUtils.getDriver();
-			}			
-			
+			}
 			fileReader = new FileReader(fileName);
 			bufferedReader = new BufferedReader(fileReader);
 			tmp = bufferedReader.readLine();
@@ -58,9 +54,15 @@ public class ProcessScript {
 	
 	public static void main(String[] args) {
 		ProcessScript ps = new ProcessScript();
-		int totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01a.txt", 
-				         					 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a\\");
-		System.out.println(totalCommands + " commands executed.");
-	}
+		int totalCommands = 0;
 
+		totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01.txt", 
+				         				 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01\\");
+		System.out.println(totalCommands + " commands executed.");
+
+		// The database needs to be stopped and the next database restarted!
+		//totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01a.txt", 
+		//		 						 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a\\");
+		//System.out.println(totalCommands + " commands executed.");
+	}
 }

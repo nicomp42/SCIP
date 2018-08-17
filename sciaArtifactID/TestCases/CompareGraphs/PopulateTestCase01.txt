@@ -6,6 +6,7 @@ CREATE (n:Person { name: 'Hannah', title: 'Attorney' }),
 (b:Person { name: 'Barry' , title: 'Loss Prevention' }),
 (c:Person { name: 'Perry' , title: 'Insurance Sales' }),
 (d:Cat    { name: 'Sirius', title: 'cat' }),
+(z:Cat    { name: 'Violet', title: 'cat' }),
 (e:Company { name: 'Cake Bakers for You' , title: 'Bakery' }),
 (f:Company { name: 'Flowers by Fred' , title: 'Florist' }),
 (g:Company { name: 'Knight Motors' , title: 'Automotive Sales' }),
@@ -42,4 +43,12 @@ CREATE (a)-[r:`Orders a Cake From` { name: a.name + ' orders a cake from ' + b.n
 MATCH (a:Company),(b:Person)
 WHERE a.name = 'Anderson Toyota' AND b.name = 'Perry'
 CREATE (a)-[r:`Buys Insurance From` { name: a.name + ' buys insurance from ' + b.name }]->(b);
+--
+MATCH (a:Cat),(b:Cat)
+WHERE a.name = 'Sirius' AND b.name = 'Violet'
+CREATE (a)-[r:`Fights With` { name: a.name + ' fights with ' + b.name }]->(b);
+--
+MATCH (a:Cat),(b:Cat)
+WHERE a.name = 'Sirius' AND b.name = 'Violet'
+CREATE (a)<-[r:`Fights With` { name: a.name + ' fights with ' + b.name }]-(b);
 --

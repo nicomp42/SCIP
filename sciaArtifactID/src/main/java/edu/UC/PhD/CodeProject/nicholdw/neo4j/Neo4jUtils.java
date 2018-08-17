@@ -9,7 +9,9 @@ package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,10 +26,13 @@ import org.neo4j.driver.v1.Transaction;
 import org.neo4j.driver.v1.TransactionWork;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.io.fs.FileUtils;
+
+import com.google.common.collect.HashMultiset;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -67,10 +72,20 @@ public class Neo4jUtils {
             System.out.printf("%d properties: %n", properties.entrySet().size());
             printNodeProperties(node);
             System.out.println("\nRelationships:");
+//            for (org.neo4j.graphdb.Relationship relationship: node.getRelationships(org.neo4j.graphdb.Direction.BOTH)) {
             for (org.neo4j.graphdb.Relationship relationship: node.getRelationships()) {
-            	System.out.print(relationship.getType() + " " + relationship.getEndNode().getLabels().iterator().next() + " ");
-            	Node endNode = relationship.getEndNode();
+            	System.out.print(" " + relationship.getType());
+            	if (relationship.getStartNodeId() == node.getId()) {
+            		// It's an outgoing relationship
+            		System.out.print("--->");
+            	} else {
+            		System.out.print("<---");
+            	}
+            	System.out.print(" [" + relationship.getEndNode().getLabels().iterator().next() + "]");
+            	RelationshipType rt = relationship.getType();
+            	Node endNode = relationship.getOtherNode(node);
             	printNodeProperties(endNode);
+            	System.out.println();
             }				            	
             System.out.println();
         }
@@ -81,12 +96,17 @@ public class Neo4jUtils {
 	 */
 	public static void printNodeProperties(Node node) {
         Map<String, Object> properties = node.getAllProperties();
-        for (Map.Entry<String, Object> entry: properties.entrySet()) {
-        	System.out.print("(" + entry.getKey() + ", " + entry.getValue() + ")");
+        for (Map.Entry<String, Object> property: properties.entrySet()) {
+        	System.out.print("(" + property.getKey() + "= " + property.getValue() + ")");
         }
 	}
-	public static ArrayList<String> readDatabase(String filePath) {
-		ArrayList<String> db = new ArrayList<String>();
+	/***
+	 * Read the database into something we can deal with
+	 * @param filePath The folder containing the database. Make sure it's not running. 
+	 * @return The data structure containing all the rows in the database.
+	 */
+	public static ArrayList<Map<String,Object> > readDatabase(String filePath) {
+		ArrayList<Map<String,Object> > db = new ArrayList<Map<String,Object> >();
 		Result result = null;
 		ResourceIterator<Node> resultIterator = null;
 		try {
@@ -101,6 +121,7 @@ public class Neo4jUtils {
 					 result = getGraphDatabaseService().execute(query);
 					 while (result.hasNext()) {
 				        Map<String,Object> row = result.next();
+				        db.add(MapUtils.clone(row));	// We need a deep copy here. We can't access the row outside the transaction or something like that. 
 				        processRow(row);
 				     }
 					 tx.success();
@@ -273,13 +294,74 @@ public class Neo4jUtils {
 	  * @return True if the logic thinks the pw was changed, false otherwise.
 	  * @throws Exception if something goes wrong.
 	  */
-	 	public static boolean changePassword() throws Exception {
-	 		boolean status = false;
-	 		if (status == false) {
-	 			throw new Exception ("Neo4jUtils.changePassword(): not implemented");	// TODO need to implement this
+ 	public static boolean changePassword() throws Exception {
+ 		boolean status = false;
+ 		if (status == false) {
+ 			throw new Exception ("Neo4jUtils.changePassword(): not implemented");	// TODO need to implement this
+ 		}
+ 		return status;
+ 	}
+	 	
+ 	public static boolean compareDatabases(String filePath01, String filePath02) {
+ 		Log.logProgress("Neo4jUtils.compareDatabases(): comparing " + filePath01 + " and " + filePath02);
+ 		boolean isEqual = true;
+ 		ArrayList<Map<String, Object>> db01, db02;
+ 		db01 = readDatabase(filePath01);
+ 		db02 = readDatabase(filePath02);
+ 		try (org.neo4j.graphdb.Transaction tx = graphDB.beginTx()) {
+	 		for (Map<String,Object> row: db01) {
+	 	        for (Entry<String,Object> column : row.entrySet()) {
+	 	            Node node = (Node) column.getValue();
+	 	            Node foundNode;
+	 	            foundNode = findNode(node, db02, getGraphDatabaseService());
+	 	            if (foundNode == null) {
+	 	            	Log.logProgress("Neo4jUtils.compareDatabases(): node " + node.toString() + " not found.");
+	 	            	isEqual = false;
+	 	            }
+	 	        }
 	 		}
-	 		return status;
-	 	}
+ 		} catch (Exception ex) {
+ 			Log.logError("Neo4jUtils.compareDatabases(): " + ex.getMessage());
+ 		}
+		return isEqual;
+	}
+ 	public static Node findNode(Node targetNode, ArrayList<Map<String, Object>> db, GraphDatabaseService graphDB) {
+ 		Node foundNode = null;
+ 		for (Map<String,Object> row: db) {
+ 	        for (Entry<String,Object> column : row.entrySet()) {
+ 	            Node node = (Node) column.getValue();
+ 	            if (compareNodes(targetNode, node, graphDB) == true) {foundNode = node; break;}
+ 	        }
+ 		}
+ 		return foundNode;
+ 	}
+ 	public static boolean compareNodes(Node n1, Node n2, GraphDatabaseService graphDB) {
+ 		Boolean isEqual = false;
+ 		try {
+	 		// Compare labels, if any
+			HashMultiset<org.neo4j.graphdb.Label> n1Labels = HashMultiset.create(n1.getLabels());
+			HashMultiset<org.neo4j.graphdb.Label> n2Labels = HashMultiset.create(n2.getLabels());
+	 		if (n1Labels.equals(n2Labels)) {
+	 	 		// Compare properties, if any
+	 			HashMultiset<Map<String, Object>> n1Properties = HashMultiset.create();
+	 			n1Properties.addAll((Collection<? extends Map<String, Object>>) n1.getAllProperties());
+	 		
+	 			HashMultiset<Map<String, Object>> n2Properties = HashMultiset.create();
+	 			n2Properties.addAll((Collection<? extends Map<String, Object>>) n2.getAllProperties());
+	
+	 			if (n1Properties.equals(n2Properties)) {
+	 	 	 		// Compare relationships
+	
+	 				
+	 				// If we get this far, the nodes are equal. Woo hoo
+	 	 			isEqual = true;
+	 			}
+	 		}
+ 		} catch (Exception ex) {
+ 			Log.logError("Neo4jUtils.compareNodes(): " + ex.getLocalizedMessage());
+ 		}
+ 		return isEqual;
+ 	}
 	 /**
 	  * Some test code
 	  * @param args
@@ -287,7 +369,10 @@ public class Neo4jUtils {
 	 public static void main( String[] args ) {
 
 		 
-		 ArrayList<String> db = Neo4jUtils.readDatabase("C:\\SCIP\\TestCase01\\");
+//		 ArrayList<Map<String, Object>> db = Neo4jUtils.readDatabase("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01");
+		 Boolean isEqual = compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01",
+				 							"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a");
+		 System.out.println("Result of comparison = " + isEqual);
 		 
 //		 MatchAttributeNodesWithOneRelationship();
 //		 testCreateNewDatabase();
@@ -316,4 +401,11 @@ public class Neo4jUtils {
 */
 		 System.out.println("Done.");
 	 }
+
+
+
+
 }
+
+
+
