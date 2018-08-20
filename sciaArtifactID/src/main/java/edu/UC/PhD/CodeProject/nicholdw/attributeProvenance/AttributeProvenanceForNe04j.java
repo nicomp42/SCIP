@@ -23,7 +23,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.attributeParts.AttributeParts;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitionFileProcessing;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
@@ -52,7 +52,7 @@ public class AttributeProvenanceForNe04j {
 		boolean status = true;	// Hope for the best
 		try {
 			Log.logProgress("AttributeProvenance.executeCypherQueries(" + filePath  + ")");
-			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+			Main.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 			// Run the queries that add the constraints
 			QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jSuffix(), AttributeProvenanceForNe04j.cypherQueriesStep1, Utils.formatPath(filePath));	// Folder defaults to the import folder in the Neo4j project structure
 
@@ -173,7 +173,7 @@ public class AttributeProvenanceForNe04j {
 				bw.write(data); bw.newLine();
 				bw.close();
 				// Invoke the apoc.load.csv/apoc.create.node script on this newly created CSV file with one line of data
-				Neo4jUtils.ExecActionQuery(query);
+				Main.ExecActionQuery(query);
 			}
 			br.close();
 

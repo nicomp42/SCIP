@@ -9,7 +9,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Tables;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitions;
@@ -38,9 +38,9 @@ public class SchemaTopology {
 	public static void main(String[] args) {
 		Log.logProgress("SchemaTopology.main(): working...");
 
-		Neo4jUtils.setNeo4jConnectionParameters( Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-		Neo4jUtils.getDriver();
-		Neo4jUtils.clearDB();
+		Main.setNeo4jConnectionParameters( Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+		Main.getDriver();
+		Main.clearDB();
 		DatabaseGraphConfig schemaTopologyConfig = new DatabaseGraphConfig();
 		schemaTopologyConfig.setIncludeSchemaInGraph(false);
 		schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
@@ -188,8 +188,8 @@ public class SchemaTopology {
 	private boolean submitNeo4jQuery(String query) {
 		boolean status = true;		// Hope for the best
 		try {
-			Neo4jUtils.getDriver();
-			Neo4jUtils.ExecActionQuery(query);
+			Main.getDriver();
+			Main.ExecActionQuery(query);
 		} catch (Exception ex) {
 			status = false;
 		}

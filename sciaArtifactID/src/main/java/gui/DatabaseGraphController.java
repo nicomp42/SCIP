@@ -17,7 +17,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schemas;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopology;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphConfig;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphResults;
@@ -181,9 +181,9 @@ public class DatabaseGraphController {
 				  public Void call() {
 					Log.logProgress("SchemaTopologyController.ProcessSchema(): entering local thread. ****************");
 //					try {Thread.sleep(2000);} catch (InterruptedException e) {}
-					Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-					Neo4jUtils.getDriver();
-					if (cbClearDB.isSelected()) {Neo4jUtils.clearDB();}
+					Main.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+					Main.getDriver();
+					if (cbClearDB.isSelected()) {Main.clearDB();}
 					schemaTopologyConfig.setIncludeSchemaInGraph(cbIncludeSchemaNodes.isSelected());
 					schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
 				    schemaTopology = new SchemaTopology(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), txtSchemaName.getText(), null);

@@ -36,7 +36,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 
 public class QueryDefinitionFileProcessing {
 	private static final String rootQuerySuffix = "RootQuery" + Config.getConfig().getCSVFileExtension();
@@ -60,7 +60,7 @@ public class QueryDefinitionFileProcessing {
 	public static void executeCypherQueries(String fileNamePrefix, ArrayList<String> myCypherQueries, String filePath) {
 		Log.logProgress("QueryDefinitionFileProcessing.executeCypherQueries()");
 		try {
-			Neo4jUtils.getDriver();
+			Main.getDriver();
 			for (String queryTemplate: myCypherQueries) {
 				String query;
 				query = queryTemplate.replace("$1", fileNamePrefix);
@@ -68,7 +68,7 @@ public class QueryDefinitionFileProcessing {
 				try {
 					// Submit the query to the Neo4J server. It will be executed against the currently open db instance. There'd better be a currently open db instance.
 					Log.logProgress("QueryDefinitionFileProcessing.executeCypherQueries(): Executing " + query);
-					Neo4jUtils.ExecActionQuery(query);
+					Main.ExecActionQuery(query);
 				} catch (Exception e) {
 					Log.logError("QueryDefinitionFileProcessing.executeCypherQueries(): " + e.getLocalizedMessage());}
 			}

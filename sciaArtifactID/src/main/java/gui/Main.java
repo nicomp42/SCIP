@@ -22,7 +22,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.importFromCSVIntoGraphDB.ImportFromCSVIntoGraphDB;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.DwhQueries;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.IdsDwh;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.Operational;
@@ -401,7 +401,7 @@ public class Main extends Application {
 		try {
 			String graphDBFilePath = Utils.formatPath(Utils.formatPath(txtProjectHomeDirectory.getText()) + txtProjectName.getText()) +  neo4jDBName;		// This is an absolute path. Do not let Neo4j see it.
 			try { new File(graphDBFilePath).mkdir();} catch (Exception ex) {}
-			graphDB = Neo4jUtils.createDB(graphDBFilePath, false);
+			graphDB = Main.createDB(graphDBFilePath, false);
 			registerShutdownHook(graphDB);
 			// Make the import folder where we will put the .csv files. Neo4j requires that folder and it doesn't get created when the DB is created.
 			try {new File(Utils.formatPath(graphDBFilePath) + "import").mkdirs();} catch (Exception ex) {
@@ -544,7 +544,7 @@ public class Main extends Application {
 			public void run()
 			{
 				try {
-					Neo4jUtils.getGraphDatabaseService().shutdown();
+					Main.getGraphDatabaseService().shutdown();
 				} catch (Exception ex) {
 					Log.logProgress("ShutdownHook() graphDb.shutdown(): " + ex.getLocalizedMessage());
 				}
@@ -577,11 +577,11 @@ public class Main extends Application {
 		Log.logProgress("Main.clearNeo4jDB()...");
 		try {
 		// If we are not connected to a DB, do it now. We are guessing the credentials from our default values in the Config class
-		if (Neo4jUtils.getDriver() == null) {
-			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-			Neo4jUtils.getDriver();
+		if (Main.getDriver() == null) {
+			Main.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+			Main.getDriver();
 		}
-		Neo4jUtils.clearDB();
+		Main.clearDB();
 		Log.logProgress("Main.clearNeo4jDB() done.");
 		} catch (Exception ex) {
 			Log.logError("Main.clearNeo4jDB(): " + ex.getLocalizedMessage());

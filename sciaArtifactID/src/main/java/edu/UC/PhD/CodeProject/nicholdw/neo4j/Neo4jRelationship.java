@@ -53,6 +53,6 @@ public class Neo4jRelationship {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String toString() {return name + ": " + properties.toString();}
+	public String toString() {return name + ": " + properties.toString() + " [" + getStartNodeID() + "]---[" + getEndNodeID() + "]";}
 	
 }

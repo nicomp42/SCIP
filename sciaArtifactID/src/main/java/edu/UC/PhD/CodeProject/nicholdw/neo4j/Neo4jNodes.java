@@ -38,4 +38,20 @@ public class Neo4jNodes {
 			neo4jNode.print(System.out);
 		}
 	}
+	/***
+	 * Write the contents to the log. Just a nice debugging tool
+	 */
+	public void log() {
+		for (Neo4jNode neo4jNode: getNeo4jNodes()) {
+			neo4jNode.log();
+		}
+	}
+ 	public static Neo4jNode findNode(Neo4jNode targetNode, Neo4jNodes db) {
+ 		Neo4jNode foundNode = null;
+ 		for (Neo4jNode neo4jNode: db.getNeo4jNodes()) {
+            if (Neo4jNode.compareNodes(targetNode, neo4jNode) == true) {foundNode = neo4jNode; break;}
+ 		}
+ 		return foundNode;
+ 	}
+	
 }

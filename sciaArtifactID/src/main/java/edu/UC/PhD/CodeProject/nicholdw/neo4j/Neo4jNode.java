@@ -86,8 +86,7 @@ public class Neo4jNode {
 	}
 	public void printRelationships(PrintStream device) {
 		for (Neo4jRelationship neo4jRelationship : this.getNeo4jRelationships().getNeo4jRelationships()) {
-			device.println(neo4jRelationship.getLabels().toString());
-			device.println(neo4jRelationship.getProperties().toString());
+			device.println(neo4jRelationship.toString());
 		}
 	}
 	/***
@@ -96,6 +95,7 @@ public class Neo4jNode {
 	 * @param neo4jNodes The collection to store the clone into
 	 */
 	public static void cloneNode(Node node, Neo4jNodes neo4jNodes) {
+		Log.logProgress("Neo4jNode.cloneNode(): Cloning Node ID " +  + node.getId() + " (" + node.getLabels().toString() + "), (" + node.getAllProperties().toString() + ")");
 		try {
 			Neo4jNode neo4jNode = new Neo4jNode();
 	        for (org.neo4j.graphdb.Label label: node.getLabels()) {
@@ -103,13 +103,11 @@ public class Neo4jNode {
 	        }
 	        Map<String, Object> properties = node.getAllProperties();
 	        for (Map.Entry<String, Object> property: properties.entrySet()) {
-//	        	System.out.println(property.getKey().toString());
-//	        	System.out.println(property.getValue().toString());
-	        	// property.getValue() could be an array
+//				property.getValue() could be an array
 //	        	if (property.getValue().getClass() == String[].class) {
 	        		
 //	        	} else {
-	        		neo4jNode.getProperties().put(property.getKey(), (String) property.getValue());
+	        		neo4jNode.getProperties().put(property.getKey(), property.getValue());
 //	        	}
 	        }
 	        neo4jNode.nodeID = node.getId();
@@ -121,6 +119,9 @@ public class Neo4jNode {
 	}
 	public String toString() {
 		String string = "Node[" + nodeID + "]: " + labels.toString() + " : " + properties.toString();
+		for (Neo4jRelationship neo4jRelationship: this.getNeo4jRelationships().getNeo4jRelationships() ) {
+			string += "\n\t\t" + neo4jRelationship.toString(); 
+		}
 		return string;
 	}
 	public long getNodeID() {return nodeID;}
@@ -130,6 +131,44 @@ public class Neo4jNode {
 		printProperties(device);
 		printRelationships(device);
 	}
-
+	/***
+	 * Write the node to the log. Just a nice debugging tool
+	 */
+	public void log() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Neo4jNode.log(): ");
+		sb.append(toString());
+		Log.logProgress(sb.toString());  
+	}
 	public Neo4jRelationships getNeo4jRelationships() {return neo4jRelationships;}
+ 	public static boolean compareNodes(Neo4jNode n1, Neo4jNode n2) {
+ 		Boolean isEqual = false;
+ 		try {
+ 			// Compare labels, if any 
+ 			// Do they have the same number of labels?
+ 			if (n1.getLabels().size() == n2.getLabels().size())
+ 			
+	 		// Compare properties, if any
+
+	 		// Compare relationships, if any
+	 				
+			// If we get this far, the nodes are equal. Woo hoo
+	 	 			isEqual = true;
+
+ 		} catch (Exception ex) {
+ 			Log.logError("Neo4jUtils.compareNodes(): " + ex.getLocalizedMessage());
+ 		}
+ 		return isEqual;
+ 	}
+	/***
+	 * Print the name/value pairs for all the properties of a node
+	 * @param node The node to be processed
+	 */
+	public static void printNodeProperties(Node node) {
+        Map<String, Object> properties = node.getAllProperties();
+        for (Map.Entry<String, Object> property: properties.entrySet()) {
+        	System.out.print("(" + property.getKey() + "= " + property.getValue() + ")");
+        }
+	}
+
 }

@@ -13,7 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Schemas;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
@@ -134,7 +134,7 @@ public class ProcessQueryController /* extends Application */ {
 		try {
 			String CSVFolder = txaCSVFolder.getText().trim();
 			if (CSVFolder.length() != 0) {
-				Neo4jUtils.setNeo4jConnectionParameters("neo4j", "Danger42");			// TODO generalize this
+				Main.setNeo4jConnectionParameters("neo4j", "Danger42");			// TODO generalize this
 				QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jFilePrefix(), QueryDefinitionFileProcessing.cypherQueries, "");	// Folder defaults to the import folder in the Neo4j project structure
 			} else {
 	    		Alert alert = new Alert(AlertType.ERROR);		// http://code.makery.ch/blog/javafx-dialogs-official/

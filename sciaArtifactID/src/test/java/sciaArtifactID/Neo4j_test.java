@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runners.Suite.SuiteClasses;
 
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 
 //@RunWith(Suite.class)
 @SuiteClasses({
@@ -30,7 +30,7 @@ public class Neo4j_test {
     	boolean status = false;
     	try {
 			exception = false;
-			status = Neo4jUtils.changePassword();
+			status = Main.changePassword();
 		} catch (Exception e) {
 			exception = true;
 		}

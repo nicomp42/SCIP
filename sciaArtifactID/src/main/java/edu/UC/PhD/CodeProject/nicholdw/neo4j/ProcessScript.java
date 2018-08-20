@@ -25,9 +25,9 @@ public class ProcessScript {
 		String command = "", tmp = "";
 		try {
 //			Neo4jUtils.createDB(neo4jFilePath, false);
-			if (Neo4jUtils.getDriver() == null) {
-				Neo4jUtils.setNeo4jConnectionParameters(Config	.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-				Neo4jUtils.getDriver();
+			if (Main.getDriver() == null) {
+				Main.setNeo4jConnectionParameters(Config	.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+				Main.getDriver();
 			}
 			fileReader = new FileReader(fileName);
 			bufferedReader = new BufferedReader(fileReader);
@@ -37,7 +37,7 @@ public class ProcessScript {
 					// It's a comment so we execute whatever we have to this point
 					if (command.trim().length() > 0) {
 						Log.logProgress("ProcessScript.processScript() : executing " + command);
-						Neo4jUtils.ExecActionQuery(command);
+						Main.ExecActionQuery(command);
 						totalCommands++;
 						command = "";
 					}
@@ -56,13 +56,13 @@ public class ProcessScript {
 		ProcessScript ps = new ProcessScript();
 		int totalCommands = 0;
 
-		//totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01.txt", 
-		//		         				 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01\\");
-		//System.out.println(totalCommands + " commands executed.");
+		totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01.txt", 
+				         				 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01\\");
+		System.out.println(totalCommands + " commands executed.");
 
 		// The database needs to be stopped and the next database restarted!
-		totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01a.txt", 
-				 						 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a\\");
-		System.out.println(totalCommands + " commands executed.");
+		//totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01a.txt", 
+		//		 						 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a\\");
+		//System.out.println(totalCommands + " commands executed.");
 	}
 }

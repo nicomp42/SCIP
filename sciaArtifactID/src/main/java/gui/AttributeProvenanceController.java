@@ -9,7 +9,7 @@ import edu.UC.PhD.CodeProject.nicholdw.attributeParts.AttributeParts;
 import edu.UC.PhD.CodeProject.nicholdw.attributeProvenance.AttributeProvenanceForNe04j;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jUtils;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -122,9 +122,9 @@ public class AttributeProvenanceController /* extends Application */ {
 	private void exportCSVToNeo4j() {
 		// If the user selected the check box, clear the current Neo4j DB before exporting
 		if (cbClearNeo4jBeforeExport.isSelected()) {
-			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-			Neo4jUtils.getDriver();
-			Neo4jUtils.clearDB();
+			Main.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+			Main.getDriver();
+			Main.clearDB();
 		}
 		AttributeProvenanceForNe04j.executeCypherQueries( txaCSVFolder.getText());
 	}
@@ -166,7 +166,7 @@ public class AttributeProvenanceController /* extends Application */ {
 		try {
 			String CSVFolder = txaCSVFolder.getText().trim();
 			if (CSVFolder.length() != 0) {
-				if (cbClearNeo4jBeforeExport.isSelected()) {Neo4jUtils.clearDB();}
+				if (cbClearNeo4jBeforeExport.isSelected()) {Main.clearDB();}
 				ObservableList<String> items = cbPqAttributes.getItems();
 				for (String s: items) {
 					AttributeParts attributeParts;
