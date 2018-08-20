@@ -33,6 +33,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.io.fs.FileUtils;
 
 import com.google.common.collect.HashMultiset;
+import com.google.gson.Gson;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -121,7 +122,16 @@ public class Neo4jUtils {
 					 result = getGraphDatabaseService().execute(query);
 					 while (result.hasNext()) {
 				        Map<String,Object> row = result.next();
-				        db.add(MapUtils.clone(row));	// We need a deep copy here. We can't access the row outside the transaction or something like that. 
+//****************************************************************************				        
+				        // See https://www.baeldung.com/java-deep-copy
+				        Gson gson = new Gson();
+				        RowWrapper rowWrapper = new RowWrapper(row);
+				        String json = gson.toJson(rowWrapper);
+				        RowWrapper rowWrapper2 = gson.fromJson(json, RowWrapper.class);
+				        Map<String,Object> row2 = rowWrapper2.getRow();
+				        
+				        db.add(MapUtils.clone(row2));	// We need a deep copy here. We can't access the row outside the transaction or something like that. 
+//****************************************************************************				        
 				        processRow(row);
 				     }
 					 tx.success();
@@ -401,10 +411,6 @@ public class Neo4jUtils {
 */
 		 System.out.println("Done.");
 	 }
-
-
-
-
 }
 
 
