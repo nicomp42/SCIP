@@ -55,7 +55,7 @@ public class Neo4jUtils {
 	public static GraphDatabaseService getGraphDatabaseService() {return graphDB;}
 	public static final String filePrefix = "FILE:///";
 	public static final String OK = "OK";
-	
+
 	/***
 	 * Process all the stuff in a row of a database
 	 * @param row The row to be processed
@@ -106,8 +106,8 @@ public class Neo4jUtils {
 	 * @param filePath The folder containing the database. Make sure it's not running. 
 	 * @return The data structure containing all the rows in the database.
 	 */
-	public static ArrayList<Neo4jNode> readDatabase(String filePath) {
-		ArrayList<Neo4jNode> db = new ArrayList<Neo4jNode>();
+	public static Neo4jNodes readDatabase(String filePath) {
+		Neo4jNodes db = new Neo4jNodes();
 		Result result = null;
 		try {
 			Neo4jUtils.createDB(filePath, false);
@@ -125,6 +125,7 @@ public class Neo4jUtils {
 				            Node node = (Node) column.getValue();
 				            Neo4jNode.cloneNode(node, db);
 				        }
+				        
 					 	tx.success();
 					 }
 				 } catch (Exception ex) {
@@ -305,17 +306,16 @@ public class Neo4jUtils {
  		}
  		return status;
  	}
-	 	
  	public static boolean compareDatabases(String filePath01, String filePath02) {
  		Log.logProgress("Neo4jUtils.compareDatabases(): comparing " + filePath01 + " and " + filePath02);
  		boolean isEqual = true;
- 		ArrayList<Neo4jNode> db01, db02;
+ 		Neo4jNodes db01, db02;
  		db01 = readDatabase(filePath01);
  		db02 = readDatabase(filePath02);
  		try (org.neo4j.graphdb.Transaction tx = graphDB.beginTx()) {
-	 		for (Neo4jNode neo4jNode: db01) {
+	 		for (Neo4jNode neo4jNode: db01.getNeo4jNodes()) {
 	 			Neo4jNode foundNode;
- 	            foundNode = findNode(neo4jNode, db02, getGraphDatabaseService());
+ 	            foundNode = findNode(neo4jNode, db02);
  	            if (foundNode == null) {
  	            	Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " not found.");
  	            	isEqual = false;
@@ -326,19 +326,21 @@ public class Neo4jUtils {
  		}
 		return isEqual;
 	}
- 	public static Neo4jNode findNode(Neo4jNode targetNode, ArrayList<Neo4jNode> db, GraphDatabaseService graphDB) {
+ 	public static Neo4jNode findNode(Neo4jNode targetNode, Neo4jNodes db) {
  		Neo4jNode foundNode = null;
- 		for (Neo4jNode neo4jNode: db) {
-            if (compareNodes(targetNode, neo4jNode, graphDB) == true) {foundNode = neo4jNode; break;}
+ 		for (Neo4jNode neo4jNode: db.getNeo4jNodes()) {
+            if (compareNodes(targetNode, neo4jNode) == true) {foundNode = neo4jNode; break;}
  		}
  		return foundNode;
  	}
- 	public static boolean compareNodes(Neo4jNode n1, Neo4jNode n2, GraphDatabaseService graphDB) {
+ 	public static boolean compareNodes(Neo4jNode n1, Neo4jNode n2) {
  		Boolean isEqual = false;
  		try {
- 			// Compare names, if any 
+ 			// Compare labels, if any 
+ 			// Do they have the same number of labels?
+ 			if (n1.getLabels().size() == n2.getLabels().size())
  			
-	 		// Compare labels, if any
+	 		// Compare properties, if any
 
 	 		// Compare relationships, if any
 	 				
@@ -361,7 +363,7 @@ public class Neo4jUtils {
 		 Boolean isEqual = compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01",
 				 							"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a");
 		 System.out.println("Result of comparison = " + isEqual);
-		 
+
 //		 MatchAttributeNodesWithOneRelationship();
 //		 testCreateNewDatabase();
 /*
