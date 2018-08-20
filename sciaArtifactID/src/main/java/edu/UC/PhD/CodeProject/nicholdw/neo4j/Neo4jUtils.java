@@ -33,11 +33,11 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.io.fs.FileUtils;
 
 import com.google.common.collect.HashMultiset;
-import com.google.gson.Gson;
-
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import net.sourceforge.htmlunit.corejs.javascript.ast.Label;
+import org.apache.commons.lang.SerializationUtils;
+
 /***
  * Neo4j DB Utilities
  * Some of these require that the DB that is started and listening on a port.
@@ -55,12 +55,12 @@ public class Neo4jUtils {
 	public static GraphDatabaseService getGraphDatabaseService() {return graphDB;}
 	public static final String filePrefix = "FILE:///";
 	public static final String OK = "OK";
-
+	
 	/***
 	 * Process all the stuff in a row of a database
 	 * @param row The row to be processed
 	 */
-	public static void processRow(Map<String, Object> row) {
+	public static void printRow(Map<String, Object> row) {
 		String buffer = "";
         // Each column in the row
         for (Entry<String,Object> column : row.entrySet()) {
@@ -106,10 +106,9 @@ public class Neo4jUtils {
 	 * @param filePath The folder containing the database. Make sure it's not running. 
 	 * @return The data structure containing all the rows in the database.
 	 */
-	public static ArrayList<Map<String,Object> > readDatabase(String filePath) {
-		ArrayList<Map<String,Object> > db = new ArrayList<Map<String,Object> >();
+	public static ArrayList<Neo4jNode> readDatabase(String filePath) {
+		ArrayList<Neo4jNode> db = new ArrayList<Neo4jNode>();
 		Result result = null;
-		ResourceIterator<Node> resultIterator = null;
 		try {
 			Neo4jUtils.createDB(filePath, false);
 			Neo4jUtils.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
@@ -117,24 +116,19 @@ public class Neo4jUtils {
 				Log.logError("Neo4jUtils.readDatabase(): Could not connect to Neo4j. Make sure that the database is *not* running.");
 			} else {
 				 String query = "MATCH (n) RETURN n;";
-				 try ( org.neo4j.graphdb.Transaction tx = getGraphDatabaseService().beginTx() )
-				 {
+				 try ( org.neo4j.graphdb.Transaction tx = getGraphDatabaseService().beginTx() ) {
 					 result = getGraphDatabaseService().execute(query);
 					 while (result.hasNext()) {
-				        Map<String,Object> row = result.next();
-//****************************************************************************				        
-				        // See https://www.baeldung.com/java-deep-copy
-				        Gson gson = new Gson();
-				        RowWrapper rowWrapper = new RowWrapper(row);
-				        String json = gson.toJson(rowWrapper);
-				        RowWrapper rowWrapper2 = gson.fromJson(json, RowWrapper.class);
-				        Map<String,Object> row2 = rowWrapper2.getRow();
-				        
-				        db.add(MapUtils.clone(row2));	// We need a deep copy here. We can't access the row outside the transaction or something like that. 
-//****************************************************************************				        
-				        processRow(row);
-				     }
-					 tx.success();
+				        Map<String, Object> row = result.next();
+//				        printRow(row);
+				        for (Entry<String, Object> column : row.entrySet()) {	// Each row should have one column but... just in case, we'll loop
+				            Node node = (Node) column.getValue();
+				            Neo4jNode.cloneNode(node, db);
+				        }
+					 	tx.success();
+					 }
+				 } catch (Exception ex) {
+			    	 Log.logError("Neo4jUtils.readDatabase(): " + ex.getLocalizedMessage(),ex.getStackTrace());
 				 }
 			}
 		} catch (Exception ex) {
@@ -315,58 +309,42 @@ public class Neo4jUtils {
  	public static boolean compareDatabases(String filePath01, String filePath02) {
  		Log.logProgress("Neo4jUtils.compareDatabases(): comparing " + filePath01 + " and " + filePath02);
  		boolean isEqual = true;
- 		ArrayList<Map<String, Object>> db01, db02;
+ 		ArrayList<Neo4jNode> db01, db02;
  		db01 = readDatabase(filePath01);
  		db02 = readDatabase(filePath02);
  		try (org.neo4j.graphdb.Transaction tx = graphDB.beginTx()) {
-	 		for (Map<String,Object> row: db01) {
-	 	        for (Entry<String,Object> column : row.entrySet()) {
-	 	            Node node = (Node) column.getValue();
-	 	            Node foundNode;
-	 	            foundNode = findNode(node, db02, getGraphDatabaseService());
-	 	            if (foundNode == null) {
-	 	            	Log.logProgress("Neo4jUtils.compareDatabases(): node " + node.toString() + " not found.");
-	 	            	isEqual = false;
-	 	            }
-	 	        }
+	 		for (Neo4jNode neo4jNode: db01) {
+	 			Neo4jNode foundNode;
+ 	            foundNode = findNode(neo4jNode, db02, getGraphDatabaseService());
+ 	            if (foundNode == null) {
+ 	            	Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " not found.");
+ 	            	isEqual = false;
+ 	            }
 	 		}
  		} catch (Exception ex) {
  			Log.logError("Neo4jUtils.compareDatabases(): " + ex.getMessage());
  		}
 		return isEqual;
 	}
- 	public static Node findNode(Node targetNode, ArrayList<Map<String, Object>> db, GraphDatabaseService graphDB) {
- 		Node foundNode = null;
- 		for (Map<String,Object> row: db) {
- 	        for (Entry<String,Object> column : row.entrySet()) {
- 	            Node node = (Node) column.getValue();
- 	            if (compareNodes(targetNode, node, graphDB) == true) {foundNode = node; break;}
- 	        }
+ 	public static Neo4jNode findNode(Neo4jNode targetNode, ArrayList<Neo4jNode> db, GraphDatabaseService graphDB) {
+ 		Neo4jNode foundNode = null;
+ 		for (Neo4jNode neo4jNode: db) {
+            if (compareNodes(targetNode, neo4jNode, graphDB) == true) {foundNode = neo4jNode; break;}
  		}
  		return foundNode;
  	}
- 	public static boolean compareNodes(Node n1, Node n2, GraphDatabaseService graphDB) {
+ 	public static boolean compareNodes(Neo4jNode n1, Neo4jNode n2, GraphDatabaseService graphDB) {
  		Boolean isEqual = false;
  		try {
+ 			// Compare names, if any 
+ 			
 	 		// Compare labels, if any
-			HashMultiset<org.neo4j.graphdb.Label> n1Labels = HashMultiset.create(n1.getLabels());
-			HashMultiset<org.neo4j.graphdb.Label> n2Labels = HashMultiset.create(n2.getLabels());
-	 		if (n1Labels.equals(n2Labels)) {
-	 	 		// Compare properties, if any
-	 			HashMultiset<Map<String, Object>> n1Properties = HashMultiset.create();
-	 			n1Properties.addAll((Collection<? extends Map<String, Object>>) n1.getAllProperties());
-	 		
-	 			HashMultiset<Map<String, Object>> n2Properties = HashMultiset.create();
-	 			n2Properties.addAll((Collection<? extends Map<String, Object>>) n2.getAllProperties());
-	
-	 			if (n1Properties.equals(n2Properties)) {
-	 	 	 		// Compare relationships
-	
+
+	 		// Compare relationships, if any
 	 				
-	 				// If we get this far, the nodes are equal. Woo hoo
+			// If we get this far, the nodes are equal. Woo hoo
 	 	 			isEqual = true;
-	 			}
-	 		}
+
  		} catch (Exception ex) {
  			Log.logError("Neo4jUtils.compareNodes(): " + ex.getLocalizedMessage());
  		}
