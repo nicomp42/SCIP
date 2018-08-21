@@ -22,7 +22,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.importFromCSVIntoGraphDB.ImportFromCSVIntoGraphDB;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.DwhQueries;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.IdsDwh;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.Operational;
@@ -86,7 +86,7 @@ public class Main extends Application {
 	@FXML private CheckBox cbOperationalSchemaCSVFiles, cbETLCSVFiles, cbDWCSVFiles;
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout;
-	@FXML private MenuItem mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL, mnuEditProjectManager, mnuReadDBLog;
+	@FXML private MenuItem mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL, mnuEditProjectManager, mnuReadDBLog, mnuProcessGraphDB;
 	@FXML private WebView wbNeo4j;
 	@FXML private ImageView imgNeo4jReminder;
 	@FXML void lvOperationalSchemaNames_OnClicked(MouseEvent event) {txtOperationalSchemaName.setText(lvOperationalSchemaNames.getSelectionModel().getSelectedItem());}
@@ -100,6 +100,7 @@ public class Main extends Application {
 	@FXML void mnuEditSubmitSQL_OnAction(ActionEvent event) {openSubmitSQLWindow();}
 	@FXML void mnuEditProjectManager_OnAction(ActionEvent event) {openProjectManagerWindow();}
 	@FXML void mnuEditReadDBLog_OnAction(ActionEvent event) {openTransactionLogFileReaderWindow();}
+	@FXML void mnuToolsProcessGraphDB_OnAction(ActionEvent event) {openProcessGraphDBWindow();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
 		Log.logProgress("main.mnuFileSaveProject_OnAction(): Saving scip...");
@@ -246,6 +247,22 @@ public class Main extends Application {
 		} else {
 			// The debug window is already open. Give it the focus.
 			Config.getConfig().getDebugController().getStage().toFront();
+		}
+	}
+	private void openProcessGraphDBWindow() {
+		try {
+			FXMLLoader fxmlLoader = null;
+			fxmlLoader = new FXMLLoader(getClass().getResource("processGraphDB.fxml"));
+			Parent root = fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.initModality(Modality.NONE);
+			stage.setOpacity(1);
+			stage.setTitle(Config.getConfig().getApplicationTitle() + " - Process a Graph Database");
+			stage.setResizable(false);
+			stage.setScene(new Scene(root, 988, 833));
+			stage.show();
+		} catch (Exception ex) {
+			Log.logError("Main.openProcessGraphDBWindow(): " + ex.getLocalizedMessage());
 		}
 	}
 	private void openProcessQueryWindow() {
@@ -401,7 +418,7 @@ public class Main extends Application {
 		try {
 			String graphDBFilePath = Utils.formatPath(Utils.formatPath(txtProjectHomeDirectory.getText()) + txtProjectName.getText()) +  neo4jDBName;		// This is an absolute path. Do not let Neo4j see it.
 			try { new File(graphDBFilePath).mkdir();} catch (Exception ex) {}
-			graphDB = Main.createDB(graphDBFilePath, false);
+			graphDB = Neo4jDB.createDB(graphDBFilePath, false);
 			registerShutdownHook(graphDB);
 			// Make the import folder where we will put the .csv files. Neo4j requires that folder and it doesn't get created when the DB is created.
 			try {new File(Utils.formatPath(graphDBFilePath) + "import").mkdirs();} catch (Exception ex) {
@@ -544,7 +561,7 @@ public class Main extends Application {
 			public void run()
 			{
 				try {
-					Main.getGraphDatabaseService().shutdown();
+					Neo4jDB.getGraphDatabaseService().shutdown();
 				} catch (Exception ex) {
 					Log.logProgress("ShutdownHook() graphDb.shutdown(): " + ex.getLocalizedMessage());
 				}
@@ -577,11 +594,11 @@ public class Main extends Application {
 		Log.logProgress("Main.clearNeo4jDB()...");
 		try {
 		// If we are not connected to a DB, do it now. We are guessing the credentials from our default values in the Config class
-		if (Main.getDriver() == null) {
-			Main.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-			Main.getDriver();
+		if (Neo4jDB.getDriver() == null) {
+			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+			Neo4jDB.getDriver();
 		}
-		Main.clearDB();
+		Neo4jDB.clearDB();
 		Log.logProgress("Main.clearNeo4jDB() done.");
 		} catch (Exception ex) {
 			Log.logError("Main.clearNeo4jDB(): " + ex.getLocalizedMessage());

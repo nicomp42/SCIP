@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="apSubmitSQL" fx:id="apProcessGraphDB" prefHeight="554.0" prefWidth="812.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessGraphDBController">
+   <padding>
+      <Insets bottom="5.0" right="5.0" top="5.0" />
+   </padding>
+   <children>
+      <Label layoutX="17.0" layoutY="4.0" text="Location of Graph DB" />
+      <TextArea fx:id="txaGraphDB01FilePath" layoutX="17.0" layoutY="35.0" prefHeight="80.0" prefWidth="781.0" />
+      <Button fx:id="btnDB01Submit" layoutX="17.0" layoutY="126.0" mnemonicParsing="false" onAction="#btnDB01Submit_OnClick" text="Submit" />
+      <TextArea fx:id="txaDB01Results" layoutX="17.0" layoutY="165.0" prefHeight="375.0" prefWidth="781.0" />
+      <Button fx:id="btnDB01Browse" layoutX="733.0" layoutY="126.0" mnemonicParsing="false" onAction="#btnDB01Browse_OnClick" text="Browse" />
+   </children>
+</AnchorPane>
