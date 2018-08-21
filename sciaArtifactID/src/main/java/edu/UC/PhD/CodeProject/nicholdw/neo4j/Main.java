@@ -46,10 +46,21 @@ public class Main {
 	  * @param args
 	  */
 	 public static void main( String[] args ) {
+//		 testCase01();
+		 testCase02();
+		 System.out.println("Done.");
+	 }
+	 private static void testCase01() {
 		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01",
 				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a",
 				 									true);
 		 System.out.println("Result of comparison = " + isEqual);
-		 System.out.println("Done.");
 	 }
+	 private static void testCase02() {
+		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase02",
+				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase02a",
+				 									true);
+		 System.out.println("Result of comparison = " + isEqual);
+	 }
+
 }

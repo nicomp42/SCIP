@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class Neo4jNodes {
 	private ArrayList<Neo4jNode> neo4jNodes;
-	
+
 	/***
 	 * Add a Neo4jNode to the object
 	 * @param neo4jNode The Neo4jNode to add
@@ -29,6 +29,11 @@ public class Neo4jNodes {
 	 */
 	public Neo4jNodes() {
 		neo4jNodes= new ArrayList<Neo4jNode>();
+	}
+	public void clearMatchedFlags() {
+		for (Neo4jNode neo4jNode : neo4jNodes) {
+			neo4jNode.setMatched(false);
+		}
 	}
 	/***
 	 * After a comparison of two graphs, count the number of unmatched nodes in the object.

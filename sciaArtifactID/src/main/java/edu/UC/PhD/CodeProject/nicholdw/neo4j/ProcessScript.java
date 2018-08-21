@@ -56,13 +56,19 @@ public class ProcessScript {
 		ProcessScript ps = new ProcessScript();
 		int totalCommands = 0;
 
-		totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01.txt", 
-				         				 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01\\");
-		System.out.println(totalCommands + " commands executed.");
+		//totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01.txt", 
+		//		         				 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01\\");
+		//System.out.println(totalCommands + " commands executed.");
 
 		// The database needs to be stopped and the next database restarted!
 		//totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase01a.txt", 
 		//		 						 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a\\");
 		//System.out.println(totalCommands + " commands executed.");
+
+		totalCommands = ps.processScript("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\PopulateTestCase02a.txt", 
+				 "C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase02a\\");
+		System.out.println(totalCommands + " commands executed.");
+
+	
 	}
 }

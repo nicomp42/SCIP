@@ -215,10 +215,10 @@ public class Neo4jNode {
 						n1.getNeo4jRelationships().clearMatchedFlags();
 						n2.getNeo4jRelationships().clearMatchedFlags();
 						for (Neo4jRelationship neo4jRelationship : n1.getNeo4jRelationships().getNeo4jRelationships()) {
-							Neo4jRelationship found = n2.getNeo4jRelationships().findRelationship(neo4jRelationship);
-							if (found != null) {
-								n1.setMatched(true);
-								found.setMatched(true);
+							Neo4jRelationship neo4jRelationshipFound = n2.getNeo4jRelationships().findRelationship(neo4jRelationship);
+							if (neo4jRelationshipFound != null) {
+								neo4jRelationship.setMatched(true);
+								neo4jRelationshipFound.setMatched(true);
 								Log.logProgress("Neo4jNode.CompareNodes(): found a relationship match.");
 							}
 						}

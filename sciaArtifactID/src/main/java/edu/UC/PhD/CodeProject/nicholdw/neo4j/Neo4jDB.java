@@ -95,14 +95,25 @@ public class Neo4jDB {
 			db01.log();
 			db02.log();
 		}
-		try (org.neo4j.graphdb.Transaction tx = graphDB.beginTx()) {
+//		try (org.neo4j.graphdb.Transaction tx = graphDB.beginTx()) {
+		try {
+			db01.clearMatchedFlags();
+			db02.clearMatchedFlags();
 			for (Neo4jNode neo4jNode : db01.getNeo4jNodes()) {
 				Neo4jNode foundNode;
 				foundNode = findNode(neo4jNode, db02);
 				if (foundNode == null) {
 					Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " not found.");
 					isEqual = false;
+				} else {
+					neo4jNode.setMatched(true);
+					foundNode.setMatched(true);
 				}
+			}
+			if (db01.countUnmatchedNodes() == 0 && db02.countUnmatchedNodes() == 0) {
+				Log.logProgress("Neo4jDB.compareDatabases(): No unmatched nodes"); 
+			} else {
+				Log.logProgress("Neo4jFB.compareDatabases(): " + db01.countUnmatchedNodes() + " unmatched nodes in first DB, " + db02.countUnmatchedNodes() + " unmatched nodes in second DB"); 
 			}
 		} catch (Exception ex) {
 			Log.logError("Neo4jUtils.compareDatabases(): " + ex.getMessage());
