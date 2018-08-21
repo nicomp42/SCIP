@@ -25,9 +25,9 @@ public class ProcessScript {
 		String command = "", tmp = "";
 		try {
 //			Neo4jUtils.createDB(neo4jFilePath, false);
-			if (Main.getDriver() == null) {
-				Main.setNeo4jConnectionParameters(Config	.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-				Main.getDriver();
+			if (Neo4jDB.getDriver() == null) {
+				Neo4jDB.setNeo4jConnectionParameters(Config	.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+				Neo4jDB.getDriver();
 			}
 			fileReader = new FileReader(fileName);
 			bufferedReader = new BufferedReader(fileReader);
@@ -37,7 +37,7 @@ public class ProcessScript {
 					// It's a comment so we execute whatever we have to this point
 					if (command.trim().length() > 0) {
 						Log.logProgress("ProcessScript.processScript() : executing " + command);
-						Main.ExecActionQuery(command);
+						Neo4jDB.ExecActionQuery(command);
 						totalCommands++;
 						command = "";
 					}

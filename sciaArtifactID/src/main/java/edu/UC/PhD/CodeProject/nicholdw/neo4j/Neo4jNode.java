@@ -25,13 +25,13 @@ public class Neo4jNode {
 	private String value;
 	private String key;
 	private ArrayList<String> labels;
-    private HashMap<String, Object> properties;
+    private HashMap<String, Neo4jPropertyValues> properties;
     private Neo4jRelationships neo4jRelationships;
     private long nodeID;			// The Node ID established by the GraphDB engine
 	
 	public Neo4jNode() {
 		labels = new ArrayList<String>();
-		properties = new HashMap<String, Object>();
+		properties = new HashMap<String, Neo4jPropertyValues>();
 		neo4jRelationships = new Neo4jRelationships();
 	}
 	
@@ -51,7 +51,13 @@ public class Neo4jNode {
 	        	// Get the key list for the properties and then read the properties by key, putting them into the abstracted Relationship object
 	        	Iterable<String> keys = relationship.getPropertyKeys();
 	        	for (String key : keys) {
-	        		r.getProperties().put(key, relationship.getProperty(key).toString());
+		        	if (relationship.getProperty(key).getClass() == String[].class) {
+		        		String[] valueList = (String[]) relationship.getProperty(key);
+		        		r.getProperties().put(key, new Neo4jPropertyValues(valueList));
+		        	} else {
+		           		String value = (String) relationship.getProperty(key);
+		        		r.getProperties().put(key, new Neo4jPropertyValues(value));
+		        	}
 	        	}
 	        	r.setName(relationship.getType().name());
 	        	neo4jRelationships.addRelationship(r);
@@ -65,16 +71,16 @@ public class Neo4jNode {
 		labels.add(label);
 	}
 	public void addProperty(String pkey, String value) {
-		properties.put(key, value);
+		properties.put(key, new Neo4jPropertyValues(value));
 	}
 	
 	public ArrayList<String> getLabels() {return labels;}
 	
-	public HashMap<String, Object> getProperties() {return properties;}
+	public HashMap<String, Neo4jPropertyValues> getProperties() {return properties;}
 	
 	public void printProperties(PrintStream device) {
-		for (Map.Entry<String, Object> p: properties.entrySet()) {
-			device.print("(" + p.getKey() + "= " + p.getValue() + ")");
+		for (Map.Entry<String, Neo4jPropertyValues> p: properties.entrySet()) {
+			device.print("(" + p.getKey() + "= [" + p.getValue().toString() + "])");
 		}
     }
 	public void printLabels(PrintStream device) {
@@ -103,12 +109,13 @@ public class Neo4jNode {
 	        }
 	        Map<String, Object> properties = node.getAllProperties();
 	        for (Map.Entry<String, Object> property: properties.entrySet()) {
-//				property.getValue() could be an array
-//	        	if (property.getValue().getClass() == String[].class) {
-	        		
-//	        	} else {
-	        		neo4jNode.getProperties().put(property.getKey(), property.getValue());
-//	        	}
+//				property.getValue() could be an array of Strings or a single string. 
+	        	if (property.getValue().getClass() == String[].class) {
+	        		String[] valueList = (String[]) property.getValue();
+	        		neo4jNode.getProperties().put(property.getKey(), new Neo4jPropertyValues(valueList));
+	        	} else {
+	        		neo4jNode.getProperties().put(property.getKey(), new Neo4jPropertyValues((String)property.getValue()));
+	        	}
 	        }
 	        neo4jNode.nodeID = node.getId();
 	        neo4jNode.addRelationships(node.getRelationships());
@@ -167,8 +174,7 @@ public class Neo4jNode {
 	public static void printNodeProperties(Node node) {
         Map<String, Object> properties = node.getAllProperties();
         for (Map.Entry<String, Object> property: properties.entrySet()) {
-        	System.out.print("(" + property.getKey() + "= " + property.getValue() + ")");
+        	System.out.print("(" + property.getKey() + "= " + ((Neo4jPropertyValues)property.getValue()).toString() + ")");
         }
 	}
-
 }

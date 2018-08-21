@@ -2,8 +2,6 @@
  * CREATE CONSTRAINT ON (user:User) ASSERT user.name IS UNIQUE
  *
  */
-
-
 package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 
 import java.io.File;
@@ -39,10 +37,7 @@ import net.sourceforge.htmlunit.corejs.javascript.ast.Label;
 import org.apache.commons.lang.SerializationUtils;
 
 /***
- * Neo4j DB Utilities
- * Some of these require that the DB that is started and listening on a port.
  * @author nicomp
- *
  */
 public class Main {
 
@@ -52,8 +47,8 @@ public class Main {
 	  */
 	 public static void main( String[] args ) {
 		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01",
-				 							"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a",
-				 							true);
+				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a",
+				 									true);
 		 System.out.println("Result of comparison = " + isEqual);
 		 System.out.println("Done.");
 	 }

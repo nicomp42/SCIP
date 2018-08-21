@@ -11,12 +11,13 @@ public class Neo4jRelationship {
 	private long endNodeID;
 	private RelationshipType relationshipType;
 	private ArrayList<String> labels;
-    private HashMap<String, Object> properties;
+//    private HashMap<String, Object> properties;
+    private HashMap<String, Neo4jPropertyValues> properties;
     private String name;
 
 	public Neo4jRelationship() {
 		labels = new ArrayList<String>();
-		properties = new HashMap<String, Object>();
+		properties = new HashMap<String, Neo4jPropertyValues>();
 	}
     public long getStartNodeID() {
 		return startNodeID;
@@ -44,7 +45,7 @@ public class Neo4jRelationship {
 	public ArrayList<String> getLabels() {
 		return labels;
 	}
-	public HashMap<String, Object> getProperties() {
+	public HashMap<String, Neo4jPropertyValues> getProperties() {
 		return properties;
 	}
 	public String getName() {
