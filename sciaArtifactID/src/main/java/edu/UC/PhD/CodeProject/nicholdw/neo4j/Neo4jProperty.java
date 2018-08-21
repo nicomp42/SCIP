@@ -54,4 +54,17 @@ public class Neo4jProperty {
 	public void setMatched(boolean matched) {
 		this.matched = matched;
 	}
+	public String toString() {
+		String comma = "";
+		StringBuilder sb = new StringBuilder(getName() + "= {");
+		for (String s: neo4jPropertyValues.getPropertyValues()) {
+			sb.append(comma);
+			sb.append("[");
+			sb.append(s);
+			sb.append("]");
+			comma = ", ";
+		}
+		sb.append("}");
+		return sb.toString();
+	}
 }

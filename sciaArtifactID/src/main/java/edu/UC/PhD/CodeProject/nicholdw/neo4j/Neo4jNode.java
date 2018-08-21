@@ -146,8 +146,7 @@ public class Neo4jNode {
 	}
 
 	public String toString() {
-		String string = "Node[" + nodeID + "]: " + labels.toString() + " : "
-				+ getProperties().getNeo4jProperties().toString();
+		String string = "Node[" + nodeID + "]: " + labels.toString() + " : " + getProperties().toString();
 		for (Neo4jRelationship neo4jRelationship : this.getNeo4jRelationships().getNeo4jRelationships()) {
 			string += "\n\t\t" + neo4jRelationship.toString();
 		}

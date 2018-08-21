@@ -14,15 +14,15 @@ CREATE (n:Person:Female { name: 'Hannah', title: 'Attorney' }),
 --
 MATCH (a:Person),(b:Person)
 WHERE a.name = 'Hannah' AND b.name = 'Perry'
-CREATE (a)-[r:`Buys Insurance From` { name: a.name + ' buys insurance from' + b.name }]->(b);
+CREATE (a)-[r:`Buys Insurance From` { name: a.name + ' buys insurance from ' + b.name }]->(b);
 --
 MATCH (a:Person),(b:Person)
 WHERE a.name = 'Barry' AND b.name = 'Perry'
-CREATE (a)-[r:`Buys Insurance From` { name: a.name + ' buys insurance from' + b.name }]->(b);
+CREATE (a)-[r:`Buys Insurance From` { name: a.name + ' buys insurance from ' + b.name }]->(b);
 --
 MATCH (a:Person),(b:Person)
 WHERE a.name = 'Brenda' AND b.name = 'Perry'
-CREATE (a)-[r:`Buys Insurance From` { name: a.name + ' buys insurance from' + b.name }]->(b);
+CREATE (a)-[r:`Buys Insurance From` { name: a.name + ' buys insurance from ' + b.name }]->(b);
 --
 MATCH (a:Person),(b:Company)
 WHERE a.name = 'Hannah' AND b.name = 'Knight Motors'

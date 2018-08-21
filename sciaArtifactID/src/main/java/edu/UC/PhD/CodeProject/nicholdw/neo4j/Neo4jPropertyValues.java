@@ -32,13 +32,14 @@ public class Neo4jPropertyValues {
 	public String[] getPropertyValues() {return propertyValues.clone();}
 	
 	public String toString() {
-		StringBuilder s = new StringBuilder("");
+		StringBuilder sb = new StringBuilder("{"); 
 		String comma = "";
 		for (String p : propertyValues) {
-			s.append(comma);
-			s.append(p);
+			sb.append(comma);
+			sb.append(p);
 			comma = ", ";
 		}
-		return s.toString();
+		sb.append("}");
+		return sb.toString();
 	}
 }

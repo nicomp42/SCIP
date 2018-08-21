@@ -10,6 +10,18 @@ public class Neo4jProperties {
     	neo4jProperties = new HashMap<String, Neo4jProperty>();
     }
     
+    public String toString() {
+    	StringBuilder sb = new StringBuilder("(");
+    	String space = " ";
+    	for (Entry<String, Neo4jProperty> neo4jPropertyEntry : neo4jProperties.entrySet()) {
+    		sb.append(space);
+    		sb.append(((Neo4jProperty)neo4jPropertyEntry.getValue()).toString());
+    		space = " ";
+    	}
+    	sb.append(")");
+    	return sb.toString();
+    }
+
     /***
      * Add a property to the collection
      * Use the name of the property as the key
