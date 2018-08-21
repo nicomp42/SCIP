@@ -3,7 +3,7 @@ package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 public class Neo4jProperty {
 	private Neo4jPropertyValues neo4jPropertyValues;
 	private String name;
-	
+	private boolean matched;
 	/**
 	 * A constructor for a property that has only one value
 	 * @param name
@@ -11,6 +11,7 @@ public class Neo4jProperty {
 	 */
 	public Neo4jProperty(String name, String value) {
 		setName(name);
+		setMatched(false);
 		neo4jPropertyValues = new Neo4jPropertyValues(value);
 	}
 	/**
@@ -20,6 +21,7 @@ public class Neo4jProperty {
 	 */
 	public Neo4jProperty(String name, String[] values) {
 		setName(name);
+		setMatched(false);
 		neo4jPropertyValues = new Neo4jPropertyValues(values);
 	}
 	/***
@@ -45,5 +47,11 @@ public class Neo4jProperty {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public boolean isMatched() {
+		return matched;
+	}
+	public void setMatched(boolean matched) {
+		this.matched = matched;
 	}
 }
