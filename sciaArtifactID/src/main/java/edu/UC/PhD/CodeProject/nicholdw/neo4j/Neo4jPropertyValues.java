@@ -7,27 +7,34 @@ package edu.UC.PhD.CodeProject.nicholdw.neo4j;
  *
  */
 public class Neo4jPropertyValues {
-	private String[] properties;
+	private String[] propertyValues;
 	
-	public Neo4jPropertyValues(String property) {
-		properties = new String[1];
-		properties[0] = new String(property);
+	/***
+	 * A constructor for only one property, stored as a string
+	 * @param property The property
+	 */
+	public Neo4jPropertyValues(String propertyValue) {
+		propertyValues = new String[1];
+		propertyValues[0] = new String(propertyValue);
 	}
-	
-	public Neo4jPropertyValues(String[] properties) {
-		this.properties = new String[properties.length];
+	/***
+	 * A constructor for an array of properties
+	 * @param properties The array
+	 */
+	public Neo4jPropertyValues(String[] propertyValues) {
+		this.propertyValues = new String[propertyValues.length];
 		int i = 0;
-		for (String s: properties) {
-			this.properties[i] = new String(s);
+		for (String s: propertyValues) {
+			this.propertyValues[i] = new String(s);
 			i++;
 		}
 	}
-	public String[] getProperties() {return properties.clone();}
+	public String[] getPropertyValues() {return propertyValues.clone();}
 	
 	public String toString() {
 		StringBuilder s = new StringBuilder("");
 		String comma = "";
-		for (String p : properties) {
+		for (String p : propertyValues) {
 			s.append(comma);
 			s.append(p);
 			comma = ", ";

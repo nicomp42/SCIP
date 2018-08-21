@@ -56,4 +56,9 @@ public class Neo4jRelationship {
 	}
 	public String toString() {return name + ": " + properties.toString() + " [" + getStartNodeID() + "]---[" + getEndNodeID() + "]";}
 	
+	public static boolean compareRelationships(Neo4jRelationship n1, Neo4jRelationship n2) {
+		boolean match = false;
+		
+		return match;
+	}
 }

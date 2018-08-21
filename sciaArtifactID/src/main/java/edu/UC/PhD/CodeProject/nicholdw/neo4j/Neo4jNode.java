@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -25,14 +26,17 @@ public class Neo4jNode {
 	private String value;
 	private String key;
 	private ArrayList<String> labels;
-    private HashMap<String, Neo4jPropertyValues> properties;
+//    private HashMap<String, Neo4jPropertyValues> properties;
+    private Neo4jProperties neo4jProperties;
     private Neo4jRelationships neo4jRelationships;
     private long nodeID;			// The Node ID established by the GraphDB engine
+	private boolean matched;
 	
 	public Neo4jNode() {
 		labels = new ArrayList<String>();
-		properties = new HashMap<String, Neo4jPropertyValues>();
+		neo4jProperties = new Neo4jProperties(); 					// new HashMap<String, Neo4jPropertyValues>();
 		neo4jRelationships = new Neo4jRelationships();
+		matched = false;
 	}
 	
 	public void addRelationships(Iterable<Relationship> relationships) {
@@ -70,16 +74,16 @@ public class Neo4jNode {
 	public void addLabel (String label) {
 		labels.add(label);
 	}
-	public void addProperty(String pkey, String value) {
-		properties.put(key, new Neo4jPropertyValues(value));
-	}
+//	public void addProperty(String pkey, String value) {
+//		neo4jProperties.put(key, new Neo4jPropertyValues(value));
+//	}
 	
 	public ArrayList<String> getLabels() {return labels;}
 	
-	public HashMap<String, Neo4jPropertyValues> getProperties() {return properties;}
+	public Neo4jProperties getProperties() {return neo4jProperties;}
 	
 	public void printProperties(PrintStream device) {
-		for (Map.Entry<String, Neo4jPropertyValues> p: properties.entrySet()) {
+		for (Entry<String, Neo4jProperty> p: neo4jProperties.getNeo4jProperties().entrySet()) {
 			device.print("(" + p.getKey() + "= [" + p.getValue().toString() + "])");
 		}
     }
@@ -112,9 +116,9 @@ public class Neo4jNode {
 //				property.getValue() could be an array of Strings or a single string. 
 	        	if (property.getValue().getClass() == String[].class) {
 	        		String[] valueList = (String[]) property.getValue();
-	        		neo4jNode.getProperties().put(property.getKey(), new Neo4jPropertyValues(valueList));
+	        		neo4jNode.getProperties().addNeo4jProperty(property.getKey(), new Neo4jProperty(property.getKey(), valueList));
 	        	} else {
-	        		neo4jNode.getProperties().put(property.getKey(), new Neo4jPropertyValues((String)property.getValue()));
+	        		neo4jNode.getProperties().addNeo4jProperty(property.getKey(), new Neo4jProperty(property.getKey(), (String)property.getValue()));
 	        	}
 	        }
 	        neo4jNode.nodeID = node.getId();
@@ -125,7 +129,7 @@ public class Neo4jNode {
 		}
 	}
 	public String toString() {
-		String string = "Node[" + nodeID + "]: " + labels.toString() + " : " + properties.toString();
+		String string = "Node[" + nodeID + "]: " + labels.toString() + " : " + getProperties().getNeo4jProperties().toString();
 		for (Neo4jRelationship neo4jRelationship: this.getNeo4jRelationships().getNeo4jRelationships() ) {
 			string += "\n\t\t" + neo4jRelationship.toString(); 
 		}
@@ -148,20 +152,28 @@ public class Neo4jNode {
 		Log.logProgress(sb.toString());  
 	}
 	public Neo4jRelationships getNeo4jRelationships() {return neo4jRelationships;}
+	/***
+	 * Compare two nodes
+	 * @param n1
+	 * @param n2
+	 * @return True if the nodes have the same relationships, properties, and labels
+	 */
  	public static boolean compareNodes(Neo4jNode n1, Neo4jNode n2) {
  		Boolean isEqual = false;
  		try {
  			// Compare labels, if any 
- 			// Do they have the same number of labels?
- 			if (n1.getLabels().size() == n2.getLabels().size())
- 			
+ 			if (BagUtils.compareBags(n1.getLabels(), n2.getLabels())) {
+ 				
 	 		// Compare properties, if any
+ 				
 
 	 		// Compare relationships, if any
-	 				
+ 				for (Neo4jRelationship neo4jRelationship: n1.getNeo4jRelationships().getNeo4jRelationships()) {
+ 					
+ 				}
 			// If we get this far, the nodes are equal. Woo hoo
-	 	 			isEqual = true;
-
+ 	 			isEqual = true;
+ 			}
  		} catch (Exception ex) {
  			Log.logError("Neo4jUtils.compareNodes(): " + ex.getLocalizedMessage());
  		}
@@ -176,5 +188,13 @@ public class Neo4jNode {
         for (Map.Entry<String, Object> property: properties.entrySet()) {
         	System.out.print("(" + property.getKey() + "= " + ((Neo4jPropertyValues)property.getValue()).toString() + ")");
         }
+	}
+
+	public boolean isMatched() {
+		return matched;
+	}
+
+	public void setMatched(boolean matched) {
+		this.matched = matched;
 	}
 }

@@ -17,20 +17,30 @@ public class Neo4jNodes {
 	public void addNeo4jNode(Neo4jNode neo4jNode) {
 		neo4jNodes.add(neo4jNode);
 	}
-	
+
 	/***
 	 * Not the best solution because it returns a reference to a private class member
 	 * @return The reference to the list of Neo4j Nodes stored in the object
 	 */
 	public ArrayList<Neo4jNode> getNeo4jNodes() {return neo4jNodes;}
-	
+
 	/***
 	 * Constructor
 	 */
 	public Neo4jNodes() {
 		neo4jNodes= new ArrayList<Neo4jNode>();
 	}
-	
+	/***
+	 * After a comparison of two graphs, count the number of unmatched nodes in the object.
+	 * @return The count of unmatched nodes
+	 */
+	public int countUnmatchedNodes() {
+		int unmatchedNodes = 0;
+		for (Neo4jNode neo4jNode : neo4jNodes) {
+			if (!neo4jNode.isMatched()) {unmatchedNodes++;}
+		}
+		return unmatchedNodes;
+	}
 	public int size() {return neo4jNodes.size();}
 
 	public void print() {
@@ -50,6 +60,19 @@ public class Neo4jNodes {
  		Neo4jNode foundNode = null;
  		for (Neo4jNode neo4jNode: db.getNeo4jNodes()) {
             if (Neo4jNode.compareNodes(targetNode, neo4jNode) == true) {foundNode = neo4jNode; break;}
+ 		}
+ 		return foundNode;
+ 	}
+ 	/***
+ 	 * Look up a node based on the ID
+ 	 * @param nodeID The Node ID to look up
+ 	 * @param db The Graph DB with all the nodes
+ 	 * @return The node that was found, or null
+ 	 */
+ 	public static Neo4jNode findNode(long nodeID, Neo4jNodes db) {
+ 		Neo4jNode foundNode = null;
+ 		for (Neo4jNode neo4jNode: db.getNeo4jNodes()) {
+            if (nodeID == neo4jNode.getNodeID()) {foundNode = neo4jNode; break;}
  		}
  		return foundNode;
  	}
