@@ -113,7 +113,9 @@ public class Neo4jDB {
 			if (db01.countUnmatchedNodes() == 0 && db02.countUnmatchedNodes() == 0) {
 				Log.logProgress("Neo4jDB.compareDatabases(): No unmatched nodes"); 
 			} else {
-				Log.logProgress("Neo4jFB.compareDatabases(): " + db01.countUnmatchedNodes() + " unmatched nodes in first DB, " + db02.countUnmatchedNodes() + " unmatched nodes in second DB"); 
+				Log.logProgress("Neo4jFB.compareDatabases(): " + db01.countUnmatchedNodes() + " unmatched nodes in first DB, " + db02.countUnmatchedNodes() + " unmatched nodes in second DB");
+				db01.printUnmatchedNodes();
+				db02.printUnmatchedNodes();
 			}
 		} catch (Exception ex) {
 			Log.logError("Neo4jUtils.compareDatabases(): " + ex.getMessage());

@@ -2,6 +2,8 @@ package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 
 import java.util.ArrayList;
 
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+
 /***
  * A collection of Neo4jNode objects and some utilities to manipulate them
  * @author nicomp
@@ -81,5 +83,11 @@ public class Neo4jNodes {
  		}
  		return foundNode;
  	}
-	
+ 	public void printUnmatchedNodes() {
+		for (Neo4jNode neo4jNode : neo4jNodes) {
+			if (!neo4jNode.isMatched()) {
+				Log.logProgress("Neo4jNodes.printUnmatchedNodes()" + neo4jNode.toString());
+			}
+		}
+ 	}
 }
