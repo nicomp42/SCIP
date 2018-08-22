@@ -84,6 +84,12 @@ public class ProcessGraphDBController {
 		txaDB01Results.setVisible(visible);
 		txaDB02Results.setVisible(visible);
 	}
+	private void disableDBSelectionControls(boolean disable) {
+		txaGraphDB01FilePath.setDisable(disable);
+		txaGraphDB02FilePath.setDisable(disable);
+		btnDB01Browse.setDisable(disable);
+		btnDB02Browse.setDisable(disable);
+	}
 	@FXML private void btnDBSubmit_OnClick(ActionEvent event) {loadDB();}
 	@FXML private void btnDBCompare_OnClick(ActionEvent event) {CompareDB();}
 	
@@ -106,24 +112,27 @@ public class ProcessGraphDBController {
 		clearResults();
 		displayResultsControls(false);
 		lblWorking.setVisible(true);
+		disableDBSelectionControls(true);
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
 	        @Override public Void call() throws InterruptedException {
 	        	// Do not access any controls in here. An exception will be thrown. It's ugly.
 	    		try {
-	    			Boolean result = Neo4jDB.compareDatabases(txaGraphDB01FilePath.getText(), txaGraphDB02FilePath.getText(), false, neo4jNodes01, neo4jNodes02);
+	    			Neo4jDB.compareDatabases(txaGraphDB01FilePath.getText(), txaGraphDB02FilePath.getText(), false, neo4jNodes01, neo4jNodes02);
 	    		} catch (Exception ex) {
-	    			Log.logError("ProcessGraphDBController.CompareDB(): " + ex.getLocalizedMessage());
+	    			Log.logError("ProcessGraphDBController.CompareDB().Task: " + ex.getLocalizedMessage());
 	    		} finally {
 	    		}
 	        	return null;
 	        }
 	    };
 	    task.setOnSucceeded(e -> {
+	    	// This runs after the thread completes. 
 			lblWorking.setVisible(false);
 			displayResultsControls(true);
 			btnDBCompare.setVisible(true);
 			btnDBCompare.setDisable(false);
+			disableDBSelectionControls(false);
 			if (neo4jNodes01.countUnmatchedNodes() == 0 && neo4jNodes02.countUnmatchedNodes() == 0) {
 				//lblResults.setStyle("-fx-background-color:green; -fx-font-color:white;");
 				lblResults.setText("The graphs are equivalent.");
@@ -138,12 +147,10 @@ public class ProcessGraphDBController {
 				txaDB02Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
 			}
 	      });
-	    
-	    // Do the work in a separate thread
+	    // Do the comparison work in a separate thread
 	    Thread thread = new Thread(task);
 	    thread.setDaemon(true);
-	    thread.start();	    
-    
+	    thread.start();
 	}
 	@FXML
 	private void btnDBBrowse_OnClick(ActionEvent event) {
