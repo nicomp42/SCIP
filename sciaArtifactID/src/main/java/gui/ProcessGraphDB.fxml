@@ -54,6 +54,11 @@
                         <Label fx:id="lblDB02UnmatchedNodes" layoutX="23.0" layoutY="514.0" text="DB 2 Unmatched Nodes" />
 
 				      <TextArea fx:id="txaDB02Results" layoutX="19.0" layoutY="543.0" prefHeight="250.0" prefWidth="781.0" />
+                        <Label fx:id="lblWorking" layoutX="328.0" layoutY="423.0" rotate="-45.0" text="Working..." visible="false">
+                           <font>
+                              <Font size="36.0" />
+                           </font>
+                        </Label>
                   </children>
               </AnchorPane>
             </content>
