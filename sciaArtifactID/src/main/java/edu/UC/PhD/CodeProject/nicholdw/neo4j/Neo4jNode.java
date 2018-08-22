@@ -118,8 +118,8 @@ public class Neo4jNode {
 	 *            The collection to store the clone into
 	 */
 	public static void cloneNode(Node node, Neo4jNodes neo4jNodes) {
-		Log.logProgress("Neo4jNode.cloneNode(): Cloning Node ID " + +node.getId() + " (" + node.getLabels().toString()
-				+ "), (" + node.getAllProperties().toString() + ")");
+//		Log.logProgress("Neo4jNode.cloneNode(): Cloning Node ID " + +node.getId() + " (" + node.getLabels().toString() + "), (" + node.getAllProperties().toString() + ")");
+		Log.logProgress("Neo4jNode.cloneNode(): Cloning Node ID [" + +node.getId() + "]");
 		try {
 			Neo4jNode neo4jNode = new Neo4jNode();
 			for (org.neo4j.graphdb.Label label : node.getLabels()) {
@@ -130,11 +130,9 @@ public class Neo4jNode {
 				// property.getValue() could be an array of Strings or a single string.
 				if (property.getValue().getClass() == String[].class) {
 					String[] valueList = (String[]) property.getValue();
-					neo4jNode.getProperties().addNeo4jProperty(property.getKey(),
-							new Neo4jProperty(property.getKey(), valueList));
+					neo4jNode.getProperties().addNeo4jProperty(property.getKey(), new Neo4jProperty(property.getKey(), valueList));
 				} else {
-					neo4jNode.getProperties().addNeo4jProperty(property.getKey(),
-							new Neo4jProperty(property.getKey(), (String) property.getValue()));
+					neo4jNode.getProperties().addNeo4jProperty(property.getKey(), new Neo4jProperty(property.getKey(), (String) property.getValue()));
 				}
 			}
 			neo4jNode.nodeID = node.getId();

@@ -57,14 +57,11 @@ import javafx.stage.Stage;
 
 public class ProcessGraphDBController {
 
-	// test cases. 
-	private String qNestedQuery = "select testFieldATableC, testFieldATableD from qc join qd";
-	private String q01 = "select testString, testInt, testDateTime, testDouble, Widget, testfieldatablec, testfieldatabled, testfieldatablee, testfieldatablef from ttablea, ttableb, qc, qd, tWidget, qlevelaa";
-	private String qSimpleTable = "select testInt from ttablea";		// Can't be more simple!
-
 	@FXML	private AnchorPane apMainWindow;
-	@FXML	private TextArea txaGraphDB01FilePath, txaDB01Results;
-	@FXML	private Button btnDB01Submit, btnDB01Browse;
+	@FXML	private TextArea txaGraphDBFilePath, txaDBResults;
+	@FXML	private TextArea txaGraphDB01FilePath, txaDB01Results, txaGraphDB02FilePath, txaDB02Results;
+	@FXML	private Button btnDBSubmit, btnDBBrowse, btnDBCompare, btnDB01Browse, btnDB02Browse;
+	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults;
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessGraphDBController.Initialize() starting...");
@@ -76,25 +73,85 @@ public class ProcessGraphDBController {
 		Log.logProgress("ProcessGraphDBController.Initialize() complete");
 	}
 	private void setTheScene() {
-//		txtPqLoginName.setText(Config.getConfig().getMySQLDefaultLoginName());
-//		txtPqPassword.setText(Config.getConfig().getMySQLDefaultPassword());
+		displayResultsControls(false);
 	}
-	@FXML
-	private void btnDB01Submit_OnClick(ActionEvent event) {loadDB01();}
-	private void loadDB01() {
-		txaDB01Results.clear();
-		Neo4jNodes neo4jNodes = Neo4jDB.readDatabase(txaGraphDB01FilePath.getText());
+	private void displayResultsControls(boolean visible) {
+		lblDB01UnmatchedNodes.setVisible(visible);
+		lblDB02UnmatchedNodes.setVisible(visible);
+		lblResults.setVisible(visible);
+		txaDB01Results.setVisible(visible);
+		txaDB02Results.setVisible(visible);
+	}
+	@FXML private void btnDBSubmit_OnClick(ActionEvent event) {loadDB();}
+	@FXML private void btnDBCompare_OnClick(ActionEvent event) {CompareDB();}
+	
+	private void loadDB() {
+		txaDBResults.clear();
+		Neo4jNodes neo4jNodes = Neo4jDB.readDatabase(txaGraphDBFilePath.getText());
 		for (Neo4jNode neo4jNode: neo4jNodes.getNeo4jNodes()) {
+			txaDBResults.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+		}
+	}
+	private void clearResults() {
+		txaDB01Results.clear();
+		txaDB02Results.clear();
+	}
+	private void CompareDB() {
+		btnDBCompare.setVisible(false);
+		btnDBCompare.setDisable(true);
+		clearResults();
+		displayResultsControls(false);
+		try {
+		try {Thread.sleep(1000);} catch (Exception ex) {}
+		Neo4jNodes neo4jNodes01 = new Neo4jNodes();
+		Neo4jNodes neo4jNodes02 = new Neo4jNodes();
+		boolean result = Neo4jDB.compareDatabases(txaGraphDB01FilePath.getText(), txaGraphDB02FilePath.getText(), false, neo4jNodes01, neo4jNodes02);
+		if (result == true) {
+			//lblResults.setStyle("-fx-background-color:green; -fx-font-color:white;");
+			lblResults.setText("The graphs are equivalent.");
+		} else {
+			//lblResults.setStyle("-fx-background-color:red; -fx-font-color:white;");
+			lblResults.setText("The graphs are not equivalent.");
+		}
+		for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
 			txaDB01Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
 		}
+		for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
+			txaDB02Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+		}
+		} catch (Exception ex) {
+			Log.logError("ProcessGraphDBController.CompareDB(): " + ex.getLocalizedMessage());
+		} finally {
+			displayResultsControls(true);
+			btnDBCompare.setVisible(true);
+			btnDBCompare.setDisable(false);
+		}
+	}
+	@FXML
+	private void btnDBBrowse_OnClick(ActionEvent event) {
+		DirectoryChooser directoryChooser = new DirectoryChooser();
+		directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		directoryChooser.setTitle("Select Graph DB Directory");
+		Stage stage = (Stage) this.btnDBBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
+		File file = directoryChooser.showDialog(stage);
+		if (file != null) {txaGraphDBFilePath.setText(file.getAbsolutePath());}
 	}
 	@FXML
 	private void btnDB01Browse_OnClick(ActionEvent event) {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-		directoryChooser.setTitle("Select Graph DB Directory");
+		directoryChooser.setTitle("Select Graph DB 1 Directory");
 		Stage stage = (Stage) this.btnDB01Browse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
 		File file = directoryChooser.showDialog(stage);
 		if (file != null) {txaGraphDB01FilePath.setText(file.getAbsolutePath());}
+	}
+	@FXML
+	private void btnDB02Browse_OnClick(ActionEvent event) {
+		DirectoryChooser directoryChooser = new DirectoryChooser();
+		directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		directoryChooser.setTitle("Select Graph DB 2 Directory");
+		Stage stage = (Stage) this.btnDB02Browse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
+		File file = directoryChooser.showDialog(stage);
+		if (file != null) {txaGraphDB02FilePath.setText(file.getAbsolutePath());}
 	}
 }

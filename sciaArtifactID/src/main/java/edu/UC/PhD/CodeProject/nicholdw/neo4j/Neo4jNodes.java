@@ -38,6 +38,18 @@ public class Neo4jNodes {
 		}
 	}
 	/***
+	 * Call this after a comparison to get the list of unmatched nodes in this DB
+	 * @param neo4jNodes
+	 */
+	public void copyUnmatchedNodes(Neo4jNodes neo4jNodesUnmatched) {
+		for (Neo4jNode neo4jNode : neo4jNodes) {
+			if (!neo4jNode.isMatched()) {
+				neo4jNodesUnmatched.addNeo4jNode(neo4jNode);
+			}
+		}
+	}
+	
+	/***
 	 * After a comparison of two graphs, count the number of unmatched nodes in the object.
 	 * @return The count of unmatched nodes
 	 */

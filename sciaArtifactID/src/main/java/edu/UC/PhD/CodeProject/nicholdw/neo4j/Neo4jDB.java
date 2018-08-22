@@ -85,7 +85,7 @@ public class Neo4jDB {
 	 *            and processed. Make sure logging is turned on.
 	 * @return
 	 */
-	public static boolean compareDatabases(String filePath01, String filePath02, boolean writeToLog) {
+	public static boolean compareDatabases(String filePath01, String filePath02, boolean writeToLog, Neo4jNodes neo4jUnmatchedNodes01, Neo4jNodes neo4jUnmatchedNodes02) {
 		Log.logProgress("Neo4jUtils.compareDatabases(): comparing " + filePath01 + " and " + filePath02);
 		boolean isEqual = true;
 		Neo4jNodes db01, db02;
@@ -113,9 +113,12 @@ public class Neo4jDB {
 			if (db01.countUnmatchedNodes() == 0 && db02.countUnmatchedNodes() == 0) {
 				Log.logProgress("Neo4jDB.compareDatabases(): No unmatched nodes"); 
 			} else {
+				isEqual = false;
 				Log.logProgress("Neo4jFB.compareDatabases(): " + db01.countUnmatchedNodes() + " unmatched nodes in first DB, " + db02.countUnmatchedNodes() + " unmatched nodes in second DB");
 				db01.printUnmatchedNodes();
 				db02.printUnmatchedNodes();
+				if (neo4jUnmatchedNodes01 != null) {db01.copyUnmatchedNodes(neo4jUnmatchedNodes01);}
+				if (neo4jUnmatchedNodes02 != null) {db02.copyUnmatchedNodes(neo4jUnmatchedNodes02);}
 			}
 		} catch (Exception ex) {
 			Log.logError("Neo4jUtils.compareDatabases(): " + ex.getMessage());
@@ -133,13 +136,12 @@ public class Neo4jDB {
 	public static Neo4jNodes readDatabase(String filePath) {
 		Neo4jNodes db = new Neo4jNodes();
 		Result result = null;
+		GraphDatabaseService gds = null;
 		try {
-			Neo4jDB.createDB(filePath, false);
-			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),
-					Config.getConfig().getNeo4jDBDefaultPassword());
+			gds = Neo4jDB.createDB(filePath, false);
+			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 			if (Neo4jDB.getDriver() == null) {
-				Log.logError(
-						"Neo4jUtils.readDatabase(): Could not connect to Neo4j. Make sure that the database is *not* running.");
+				Log.logError("Neo4jUtils.readDatabase(): Could not connect to Neo4j. Make sure that the database is *not* running.");
 			} else {
 				String query = "MATCH (n) RETURN n;";
 				try (org.neo4j.graphdb.Transaction tx = getGraphDatabaseService().beginTx()) {
@@ -147,21 +149,28 @@ public class Neo4jDB {
 					while (result.hasNext()) {
 						Map<String, Object> row = result.next();
 						// printRow(row);
-						for (Entry<String, Object> column : row.entrySet()) { // Each row should have one column but...
-																				// just in case, we'll loop
+						for (Entry<String, Object> column : row.entrySet()) { // Each row should have one column but... just in case, we'll loop
 							Node node = (Node) column.getValue();
 							Neo4jNode.cloneNode(node, db);
 						}
-
-						tx.success();
 					}
+					tx.success();
+					tx.close();
+					Neo4jDB.getDriver().close();
 				} catch (Exception ex) {
 					Log.logError("Neo4jUtils.readDatabase(): " + ex.getLocalizedMessage(), ex.getStackTrace());
 				}
 			}
 		} catch (Exception ex) {
-			Log.logError("Neo4jUtils.readDatabase(): " + ex.getLocalizedMessage(), ex.getStackTrace());
+			Log.logError("Neo4jUtils.readDatabase(): " + ex.getLocalizedMessage());
+		} finally {
+			try {
+				gds.shutdown();
+			} catch (Exception ex) {
+				Log.logError("Neo4jUtils.readDatabase(): gds.shutdown(): " + ex.getLocalizedMessage());
+			}
 		}
+		
 		return db;
 	}
 
@@ -251,6 +260,7 @@ public class Neo4jDB {
 			// After it's started I can programmatically change the password and run other
 			// transactions.
 		} catch (Exception ex) {
+			Log.logProgress("Neo4jDB.GraphDatabaseService(); " + ex.getLocalizedMessage());
 			throw new Exception(ex);
 		}
 		return graphDB;

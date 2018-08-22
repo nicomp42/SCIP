@@ -1,0 +1,7 @@
+-- Populate TestCase03. See also populateTestCase03a.txt for the companion script
+-- This test compares two equivalent graphs. There is no difference between the two scripts
+MATCH (n) DETACH DELETE n;
+--
+CREATE (n:Animal:Vegetable:Mineral { name: ['Thing', 'Gizmo', 'Widget'], color:['Red','Green','Blue']});
+--
+
