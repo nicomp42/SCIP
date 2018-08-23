@@ -10,6 +10,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.dwQuery.QueryGraphController;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.DwhQueries;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.IdsDwh;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.Operational;
@@ -29,8 +30,8 @@ public class ImportFromCSVIntoGraphDB {
 				Log.logError("ImportFromCSVIntoGraphDB.ImportIntoGraphDB(): error accessing " + scip.getNeo4jGraphDBFilePath() + " Please export the schema information as CSV files first and try again");
 			} else {
 				OperationalSchemaGraphController operationalSchemaGraphController = new OperationalSchemaGraphController();
-				Main.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-				if (Main.getDriver() == null) {
+				Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+				if (Neo4jDB.getDriver() == null) {
 					Log.logError("GenerateGraphFromOperationalSchema.ImportIntoGraphDB(): Could not connect to Neo4j. Make sure that the database is running");
 				} else {
 					scip.copyDirectoryStructures();

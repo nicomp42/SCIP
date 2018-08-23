@@ -1,6 +1,8 @@
 package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -21,6 +23,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.io.fs.FileUtils;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.exception.NotImplementedException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class Neo4jDB {
@@ -48,7 +51,28 @@ public class Neo4jDB {
 		setFilePath(filePath);
 		neo4jNodes = new Neo4jNodes();
 	}
-
+	/***
+	 * Write the data to a CSV file
+	 * @param filePath The file 
+	 * @throws Exception 
+	 */
+	public boolean writeToCSV(String filePath) throws Exception {
+		throw new NotImplementedException("Neo4jDB.writeToCSV() not implemented");
+/*		boolean result = true;
+		try {
+			FileWriter fileWriter = new FileWriter(filePath);
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			for (Neo4jNode neo4jNode : neo4jNodes.getNeo4jNodes()) {
+				
+			}
+		} catch (Exception ex) {
+			Log.logError("Neo4jDB.writeToCSV(" + filePath + "): " + ex.getLocalizedMessage());
+			result = false;
+		}
+		return false;
+*/
+	}
+	
 	public Neo4jNodes getNeo4jNodes() {
 		return neo4jNodes;
 	}
