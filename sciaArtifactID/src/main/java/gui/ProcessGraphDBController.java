@@ -17,6 +17,7 @@ import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNode;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNodes;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jXML;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
@@ -59,10 +60,10 @@ import javafx.stage.Stage;
 public class ProcessGraphDBController {
 
 	@FXML	private AnchorPane apMainWindow;
-	@FXML	private TextArea txaGraphDBFilePath, txaDBResults;
+	@FXML	private TextArea txaGraphDBFilePath, txaDBResults, txaSaveToXMLFile;
 	@FXML	private TextArea txaGraphDB01FilePath, txaDB01Results, txaGraphDB02FilePath, txaDB02Results;
-	@FXML	private Button btnDBSubmit, btnDBBrowse, btnDBCompare, btnDB01Browse, btnDB02Browse;
-	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblWorking;
+	@FXML	private Button btnDBSubmit, btnDBBrowse, btnDBCompare, btnDB01Browse, btnDB02Browse, btnXMLBrowse;
+	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblWorking, lblSaveToXMLFile;
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessGraphDBController.Initialize() starting...");
@@ -76,6 +77,8 @@ public class ProcessGraphDBController {
 	private void setTheScene() {
 		displayResultsControls(false);
 		lblWorking.setVisible(false);
+		txaGraphDBFilePath.setText("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01");
+		txaSaveToXMLFile.setText("c:\\Temp\\foo.xml");
 	}
 	private void displayResultsControls(boolean visible) {
 		lblDB01UnmatchedNodes.setVisible(visible);
@@ -95,9 +98,13 @@ public class ProcessGraphDBController {
 	
 	private void loadDB() {
 		txaDBResults.clear();
-		Neo4jNodes neo4jNodes = Neo4jDB.readDatabase(txaGraphDBFilePath.getText());
+		Neo4jNodes neo4jNodes = Neo4jDB.readDatabase(txaGraphDBFilePath.getText().trim());
 		for (Neo4jNode neo4jNode: neo4jNodes.getNeo4jNodes()) {
 			txaDBResults.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+		}
+		if (txaSaveToXMLFile.getText().trim().length() > 0) {
+			Neo4jDB neo4jDB = new Neo4jDB("Neo4jDB", txaGraphDBFilePath.getText().trim(), neo4jNodes);
+			Neo4jXML.WriteGraphDBToXMLFile(txaSaveToXMLFile.getText().trim(), neo4jDB);
 		}
 	}
 	private void clearResults() {
@@ -160,6 +167,15 @@ public class ProcessGraphDBController {
 		Stage stage = (Stage) this.btnDBBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
 		File file = directoryChooser.showDialog(stage);
 		if (file != null) {txaGraphDBFilePath.setText(file.getAbsolutePath());}
+	}
+	@FXML
+	private void btnXMLBrowse_OnClick(ActionEvent event) {
+		DirectoryChooser directoryChooser = new DirectoryChooser();
+		directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		directoryChooser.setTitle("Select XML File Directory");
+		Stage stage = (Stage) this.btnXMLBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
+		File file = directoryChooser.showDialog(stage);
+		if (file != null) {txaSaveToXMLFile.setText(file.getAbsolutePath());}
 	}
 	@FXML
 	private void btnDB01Browse_OnClick(ActionEvent event) {

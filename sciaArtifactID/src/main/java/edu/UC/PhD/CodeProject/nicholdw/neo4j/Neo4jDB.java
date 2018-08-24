@@ -51,6 +51,11 @@ public class Neo4jDB {
 		setFilePath(filePath);
 		neo4jNodes = new Neo4jNodes();
 	}
+	public Neo4jDB(String name, String filePath, Neo4jNodes neo4jNodes) {
+		setName(name);
+		setFilePath(filePath);
+		this.neo4jNodes = neo4jNodes;
+	}
 	/***
 	 * Write the data to a CSV file
 	 * @param filePath The file 

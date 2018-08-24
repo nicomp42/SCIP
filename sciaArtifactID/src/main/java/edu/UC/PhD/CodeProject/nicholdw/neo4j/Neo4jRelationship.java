@@ -12,7 +12,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 public class Neo4jRelationship {
 	private long startNodeID;
 	private long endNodeID;
-	private RelationshipType relationshipType;
+	private RelationshipType relationshipType;	// TODO : this should be abstracted. It's currently a native artifact of the Neo4j ecosystem.
 	private ArrayList<String> labels;
 //    private HashMap<String, Neo4jPropertyValues> properties;
 	private Neo4jProperties neo4jProperties;
