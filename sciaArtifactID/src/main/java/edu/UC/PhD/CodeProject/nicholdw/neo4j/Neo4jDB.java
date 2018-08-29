@@ -154,16 +154,14 @@ public class Neo4jDB {
 		}
 		return isEqual;
 	}
-
 	/***
 	 * Read the database into something we can deal with
 	 * 
 	 * @param filePath
 	 *            The folder containing the database. Make sure it's not running.
-	 * @return The data structure containing all the rows in the database.
+	 * @param neo4jNodes the data structure containing the rows in the DB
 	 */
-	public static Neo4jNodes readDatabase(String filePath) {
-		Neo4jNodes db = new Neo4jNodes();
+	public static void readDatabase(String filePath, Neo4jNodes neo4jNodes) {
 		Result result = null;
 		GraphDatabaseService gds = null;
 		try {
@@ -180,7 +178,7 @@ public class Neo4jDB {
 						// printRow(row);
 						for (Entry<String, Object> column : row.entrySet()) { // Each row should have one column but... just in case, we'll loop
 							Node node = (Node) column.getValue();
-							Neo4jNode.cloneNode(node, db);
+							Neo4jNode.cloneNode(node, neo4jNodes);
 						}
 					}
 					tx.success();
@@ -199,8 +197,19 @@ public class Neo4jDB {
 				Log.logError("Neo4jUtils.readDatabase(): gds.shutdown(): " + ex.getLocalizedMessage());
 			}
 		}
-		
-		return db;
+	}
+
+	/***
+	 * Read the database into something we can deal with
+	 * 
+	 * @param filePath
+	 *            The folder containing the database. Make sure it's not running.
+	 * @return The data structure containing all the rows in the database.
+	 */
+	public static Neo4jNodes readDatabase(String filePath) {
+		Neo4jNodes neo4jNodes = new Neo4jNodes();
+		readDatabase(filePath, neo4jNodes);
+		return neo4jNodes;
 	}
 
 	/**

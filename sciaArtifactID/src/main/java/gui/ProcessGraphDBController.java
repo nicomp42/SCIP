@@ -63,7 +63,9 @@ public class ProcessGraphDBController {
 	@FXML	private TextArea txaGraphDBFilePath, txaDBResults, txaSaveToXMLFile;
 	@FXML	private TextArea txaGraphDB01FilePath, txaDB01Results, txaGraphDB02FilePath, txaDB02Results;
 	@FXML	private Button btnDBSubmit, btnDBBrowse, btnDBCompare, btnDB01Browse, btnDB02Browse, btnXMLBrowse;
-	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblWorking, lblSaveToXMLFile;
+	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblCompareWorking, lblSaveToXMLFile, lblContentsOfGraphDB;
+	@FXML	private Label lblLoadWorking;
+	@FXML	private Pane pneDBResults;
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessGraphDBController.Initialize() starting...");
@@ -75,12 +77,16 @@ public class ProcessGraphDBController {
 		Log.logProgress("ProcessGraphDBController.Initialize() complete");
 	}
 	private void setTheScene() {
-		displayResultsControls(false);
-		lblWorking.setVisible(false);
+		displayComparisonResultsControls(false);
+		lblCompareWorking.setVisible(false);
 		txaGraphDBFilePath.setText("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01");
 		txaSaveToXMLFile.setText("c:\\Temp\\foo.xml");
+		displayLoadGraphDBResults(false);
 	}
-	private void displayResultsControls(boolean visible) {
+	private void displayLoadGraphDBResults(boolean visible) {
+		pneDBResults.setVisible(visible);
+	}
+	private void displayComparisonResultsControls(boolean visible) {
 		lblDB01UnmatchedNodes.setVisible(visible);
 		lblDB02UnmatchedNodes.setVisible(visible);
 		lblResults.setVisible(visible);
@@ -97,16 +103,38 @@ public class ProcessGraphDBController {
 	@FXML private void btnDBCompare_OnClick(ActionEvent event) {CompareDB();}
 	
 	private void loadDB() {
+		displayLoadGraphDBResults(false);
+		lblLoadWorking.setVisible(true);
 		txaDBResults.clear();
-		Neo4jNodes neo4jNodes = Neo4jDB.readDatabase(txaGraphDBFilePath.getText().trim());
-		for (Neo4jNode neo4jNode: neo4jNodes.getNeo4jNodes()) {
-			txaDBResults.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
-		}
-		if (txaSaveToXMLFile.getText().trim().length() > 0) {
-			Neo4jDB neo4jDB = new Neo4jDB("Neo4jDB", txaGraphDBFilePath.getText().trim(), neo4jNodes);
-			Neo4jXML.WriteGraphDBToXMLFile(txaSaveToXMLFile.getText().trim(), neo4jDB);
-		}
-	}
+		Neo4jNodes neo4jNodes = new Neo4jNodes();
+		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
+	    Task <Void> task = new Task<Void>() {
+	        @Override public Void call() throws InterruptedException {
+	        	// Do not access any controls in here. An exception will be thrown. It's ugly.
+	    		try {
+	    			Neo4jDB.readDatabase(txaGraphDBFilePath.getText().trim(), neo4jNodes);
+	    		} catch (Exception ex) {
+	    			Log.logError("ProcessGraphDBController.loadDB().Task: " + ex.getLocalizedMessage());
+	    		} finally {
+	    		}
+	        	return null;
+	        }
+	    };
+	    task.setOnSucceeded(e -> {
+			lblLoadWorking.setVisible(false);
+			for (Neo4jNode neo4jNode: neo4jNodes.getNeo4jNodes()) {
+				txaDBResults.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+			}
+			if (txaSaveToXMLFile.getText().trim().length() > 0) {
+				Neo4jDB neo4jDB = new Neo4jDB("Neo4jDB", txaGraphDBFilePath.getText().trim(), neo4jNodes);
+				Neo4jXML.WriteGraphDBToXMLFile(txaSaveToXMLFile.getText().trim(), neo4jDB);
+			}
+			displayLoadGraphDBResults(true);
+	      });
+	    Thread thread = new Thread(task);
+	    thread.setDaemon(true);
+	    thread.start();
+	    }
 	private void clearResults() {
 		txaDB01Results.clear();
 		txaDB02Results.clear();
@@ -117,8 +145,8 @@ public class ProcessGraphDBController {
 		btnDBCompare.setVisible(false);
 		btnDBCompare.setDisable(true);
 		clearResults();
-		displayResultsControls(false);
-		lblWorking.setVisible(true);
+		displayComparisonResultsControls(false);
+		lblCompareWorking.setVisible(true);
 		disableDBSelectionControls(true);
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
@@ -135,8 +163,8 @@ public class ProcessGraphDBController {
 	    };
 	    task.setOnSucceeded(e -> {
 	    	// This runs after the thread completes. 
-			lblWorking.setVisible(false);
-			displayResultsControls(true);
+			lblCompareWorking.setVisible(false);
+			displayComparisonResultsControls(true);
 			btnDBCompare.setVisible(true);
 			btnDBCompare.setDisable(false);
 			disableDBSelectionControls(false);

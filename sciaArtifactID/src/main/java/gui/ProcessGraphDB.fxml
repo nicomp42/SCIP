@@ -15,23 +15,30 @@
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
    <children>
-
       <TabPane prefHeight="837.0" prefWidth="864.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Read Graph DB">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
+              	<children>
 			      <Label layoutX="17.0" layoutY="4.0" text="Location of Graph DB" />
 			      <TextArea fx:id="txaGraphDBFilePath" layoutX="17.0" layoutY="31.0" prefHeight="54.0" prefWidth="781.0" />
-			      <Button fx:id="btnDBSubmit" layoutX="17.0" layoutY="95.0" mnemonicParsing="false" onAction="#btnDBSubmit_OnClick" text="Submit" />
-			      <TextArea fx:id="txaDBResults" layoutX="17.0" layoutY="165.0" prefHeight="343.0" prefWidth="781.0" />
 			      <Button fx:id="btnDBBrowse" layoutX="730.0" layoutY="95.0" mnemonicParsing="false" onAction="#btnDBBrowse_OnClick" text="Browse" />
-                        <Label fx:id="lblSaveToXMLFile" layoutX="17.0" layoutY="520.0" text="Save to XML File" />
-                        <TextArea fx:id="txaSaveToXMLFile" layoutX="138.0" layoutY="520.0" prefHeight="88.0" prefWidth="663.0" />
-                        <Button fx:id="btnXMLBrowse" layoutX="733.0" layoutY="616.0" mnemonicParsing="false" onAction="#btnXMLBrowse_OnClick" text="Browse" />
-                     </children>
-                  </AnchorPane>
+                  <Label fx:id="lblSaveToXMLFile" layoutX="17.0" layoutY="110.0" text="Save to XML File (leave blank for none)" />
+                  <TextArea fx:id="txaSaveToXMLFile" layoutX="17.0" layoutY="137.0" prefHeight="88.0" prefWidth="781.0" />
+                  <Button fx:id="btnXMLBrowse" layoutX="732.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnXMLBrowse_OnClick" text="Browse" />
+    		      <Button fx:id="btnDBSubmit" layoutX="17.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnDBSubmit_OnClick" text="Submit" />
+                  <Pane fx:id="pneDBResults" layoutX="1.0" layoutY="258.0" prefHeight="384.0" prefWidth="780.0">
+	                <Label fx:id="lblContentsOfGraphDB" layoutX="17.0" layoutY="5.0" text="Contents of Graph DB" />
+			      	<TextArea fx:id="txaDBResults" layoutX="17.0" layoutY="25.0" prefHeight="343.0" prefWidth="780.0" />
+                  </Pane>
+                  <Label fx:id="lblLoadWorking" layoutX="328.0" layoutY="423.0" rotate="-45.0" text="Working..." visible="false">
+                       <font>
+                          <Font size="36.0" />
+                       </font>
+                  </Label>
+                </children>
+              </AnchorPane>
             </content>
           </Tab>
           <Tab text="Compare Graph DBs">
@@ -57,7 +64,7 @@
                         <Label fx:id="lblDB02UnmatchedNodes" layoutX="23.0" layoutY="514.0" text="DB 2 Unmatched Nodes" />
 
 				      <TextArea fx:id="txaDB02Results" layoutX="19.0" layoutY="543.0" prefHeight="250.0" prefWidth="781.0" />
-                        <Label fx:id="lblWorking" layoutX="328.0" layoutY="423.0" rotate="-45.0" text="Working..." visible="false">
+                        <Label fx:id="lblCompareWorking" layoutX="328.0" layoutY="423.0" rotate="-45.0" text="Working..." visible="false">
                            <font>
                               <Font size="36.0" />
                            </font>
