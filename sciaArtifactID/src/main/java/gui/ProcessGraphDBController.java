@@ -65,7 +65,7 @@ public class ProcessGraphDBController {
 	@FXML	private Button btnDBSubmit, btnDBBrowse, btnDBCompare, btnDB01Browse, btnDB02Browse, btnXMLBrowse;
 	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblCompareWorking, lblSaveToXMLFile, lblContentsOfGraphDB;
 	@FXML	private Label lblLoadWorking;
-	@FXML	private Pane pneDBResults;
+	@FXML	private Pane pneDBResults, pneDBLoad;
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessGraphDBController.Initialize() starting...");
@@ -99,11 +99,16 @@ public class ProcessGraphDBController {
 		btnDB01Browse.setDisable(disable);
 		btnDB02Browse.setDisable(disable);
 	}
+	private void disableDBLoadSelectionControls(boolean disable) {
+		pneDBLoad.setDisable(disable);
+	}
 	@FXML private void btnDBSubmit_OnClick(ActionEvent event) {loadDB();}
 	@FXML private void btnDBCompare_OnClick(ActionEvent event) {CompareDB();}
 	
 	private void loadDB() {
+		Log.logProgress("ProcessGraphDBController.loadDB() " + txaGraphDBFilePath.getText().trim());
 		displayLoadGraphDBResults(false);
+		disableDBLoadSelectionControls(true);
 		lblLoadWorking.setVisible(true);
 		txaDBResults.clear();
 		Neo4jNodes neo4jNodes = new Neo4jNodes();
@@ -130,6 +135,7 @@ public class ProcessGraphDBController {
 				Neo4jXML.WriteGraphDBToXMLFile(txaSaveToXMLFile.getText().trim(), neo4jDB);
 			}
 			displayLoadGraphDBResults(true);
+			disableDBLoadSelectionControls(false);
 	      });
 	    Thread thread = new Thread(task);
 	    thread.setDaemon(true);
@@ -140,6 +146,7 @@ public class ProcessGraphDBController {
 		txaDB02Results.clear();
 	}
 	private void CompareDB() {
+		Log.logProgress("ProcessGraphDB.CompareDB(): " + txaGraphDB01FilePath.getText().trim() + ", " + txaGraphDB02FilePath.getText().trim());
 		Neo4jNodes neo4jNodes01 = new Neo4jNodes();
 		Neo4jNodes neo4jNodes02 = new Neo4jNodes();
 		btnDBCompare.setVisible(false);
@@ -153,7 +160,7 @@ public class ProcessGraphDBController {
 	        @Override public Void call() throws InterruptedException {
 	        	// Do not access any controls in here. An exception will be thrown. It's ugly.
 	    		try {
-	    			Neo4jDB.compareDatabases(txaGraphDB01FilePath.getText(), txaGraphDB02FilePath.getText(), false, neo4jNodes01, neo4jNodes02);
+	    			Neo4jDB.compareDatabases(txaGraphDB01FilePath.getText().trim(), txaGraphDB02FilePath.getText().trim(), false, neo4jNodes01, neo4jNodes02);
 	    		} catch (Exception ex) {
 	    			Log.logError("ProcessGraphDBController.CompareDB().Task: " + ex.getLocalizedMessage());
 	    		} finally {

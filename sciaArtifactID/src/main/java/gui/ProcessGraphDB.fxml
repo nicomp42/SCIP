@@ -10,27 +10,33 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="apSubmitSQL" fx:id="apProcessGraphDB" prefHeight="837.0" prefWidth="869.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessGraphDBController">
+<AnchorPane id="apSubmitSQL" fx:id="apProcessGraphDB" prefHeight="837.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessGraphDBController">
    <padding>
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
    <children>
-      <TabPane prefHeight="837.0" prefWidth="864.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Read Graph DB">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               	<children>
-			      <Label layoutX="17.0" layoutY="4.0" text="Location of Graph DB" />
-			      <TextArea fx:id="txaGraphDBFilePath" layoutX="17.0" layoutY="31.0" prefHeight="54.0" prefWidth="781.0" />
-			      <Button fx:id="btnDBBrowse" layoutX="730.0" layoutY="95.0" mnemonicParsing="false" onAction="#btnDBBrowse_OnClick" text="Browse" />
-                  <Label fx:id="lblSaveToXMLFile" layoutX="17.0" layoutY="110.0" text="Save to XML File (leave blank for none)" />
-                  <TextArea fx:id="txaSaveToXMLFile" layoutX="17.0" layoutY="137.0" prefHeight="88.0" prefWidth="781.0" />
-                  <Button fx:id="btnXMLBrowse" layoutX="732.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnXMLBrowse_OnClick" text="Browse" />
-    		      <Button fx:id="btnDBSubmit" layoutX="17.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnDBSubmit_OnClick" text="Submit" />
-                  <Pane fx:id="pneDBResults" layoutX="1.0" layoutY="258.0" prefHeight="384.0" prefWidth="780.0">
-	                <Label fx:id="lblContentsOfGraphDB" layoutX="17.0" layoutY="5.0" text="Contents of Graph DB" />
-			      	<TextArea fx:id="txaDBResults" layoutX="17.0" layoutY="25.0" prefHeight="343.0" prefWidth="780.0" />
+                  <Pane fx:id="pneDBLoad" layoutX="1.0" layoutY="1.0" prefHeight="384.0" prefWidth="780.0">
+                     <children>
+   				      <Label layoutX="17.0" layoutY="9.0" text="Location of Graph DB" />
+   	                  <Button fx:id="btnXMLBrowse" layoutX="284.0" layoutY="105.0" mnemonicParsing="false" onAction="#btnXMLBrowse_OnClick" text="Browse..." />
+   				      <TextArea fx:id="txaGraphDBFilePath" layoutX="17.0" layoutY="39.0" prefHeight="54.0" prefWidth="781.0" />
+   				      <Button fx:id="btnDBBrowse" layoutX="174.0" layoutY="4.0" mnemonicParsing="false" onAction="#btnDBBrowse_OnClick" text="Browse..." />
+   	                  <Label fx:id="lblSaveToXMLFile" layoutX="17.0" layoutY="110.0" text="Save to XML File (leave blank for none)" />
+   	                  <TextArea fx:id="txaSaveToXMLFile" layoutX="17.0" layoutY="140.0" prefHeight="88.0" prefWidth="781.0" />
+   	    		      <Button fx:id="btnDBSubmit" layoutX="17.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnDBSubmit_OnClick" text="Submit" />
+                     </children>
+                  </Pane>
+                  <Pane fx:id="pneDBResults" layoutX="1.0" layoutY="278.0" prefHeight="384.0" prefWidth="780.0">
+                     <children>
+   	                <Label fx:id="lblContentsOfGraphDB" layoutX="17.0" layoutY="5.0" text="Contents of Graph DB" />
+   			      	<TextArea fx:id="txaDBResults" layoutX="17.0" layoutY="25.0" prefHeight="343.0" prefWidth="780.0" />
+                     </children>
                   </Pane>
                   <Label fx:id="lblLoadWorking" layoutX="328.0" layoutY="423.0" rotate="-45.0" text="Working..." visible="false">
                        <font>
