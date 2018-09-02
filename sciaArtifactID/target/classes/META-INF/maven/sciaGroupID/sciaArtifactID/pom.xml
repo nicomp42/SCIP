@@ -165,5 +165,11 @@
          <version>${junit.vintage.version}</version>
          <scope>test</scope>
       </dependency>
+<!-- https://mvnrepository.com/artifact/stax/stax -->
+	<dependency>
+    	<groupId>stax</groupId>
+    	<artifactId>stax</artifactId>
+    	<version>1.2.0</version>
+    </dependency>
     </dependencies>
 </project>

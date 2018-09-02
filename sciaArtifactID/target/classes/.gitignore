@@ -1,9 +1,10 @@
-/ConnectionInformation/
-/TestCases/
 /edu/
-/images/
+/gui/
 /lib/
 /org/
+/stax/
 /test/
-/gui/
+/ConnectionInformation/
 /META-INF/
+/TestCases/
+/images/
