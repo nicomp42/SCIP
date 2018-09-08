@@ -17,8 +17,7 @@ public class TableInputStep {
 				+ stepName + ", dbName=" + dbName + ", sql=" + sql + "]";
 	}
 
-	public TableInputStep(String transName, String stepName, String dbName,
-			String sql) {
+	public TableInputStep(String transName, String stepName, String dbName,	String sql) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;

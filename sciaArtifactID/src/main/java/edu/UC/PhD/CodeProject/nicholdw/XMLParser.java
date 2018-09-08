@@ -19,8 +19,20 @@ import org.xml.sax.SAXException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class XMLParser {
-
 	public static Document dom;
+	
+	public static void main(String[] args) {
+		Log.logProgress("XMLParser.main(): ");
+		try {
+			XMLParser myXNMLParser = new XMLParser();
+			List<OutputStep> os = myXNMLParser.parseXMLForOutputSteps("c:\\temp\\foop.xml");
+			List<TableInputStep> is = myXNMLParser.parseXMLForInputSteps("c:\\temp\\foop.xml");
+			List<DBJoinStep> js = myXNMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml");
+			Log.logProgress("XMLParser.main(): parsing complete.");
+		} catch (Exception ex) {
+			Log.logError("XMLParser.main(): " + ex.getLocalizedMessage());
+		}
+	}
 
 	public List<OutputStep> parseXMLForOutputSteps(String xmlFilePath){
 		Log.logProgress("XMLParser.parseXMLForOutputSteps(" + xmlFilePath + ")");
@@ -151,7 +163,6 @@ public class XMLParser {
 				dbjoinstep=DBJoinStepParser.parseXMLByStepName(doc, xpath, stepname);
 				dbjoinsteps.add(dbjoinstep);
 			}
-
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			Log.logError("XMLParser.parseXMLForDBJoinSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}

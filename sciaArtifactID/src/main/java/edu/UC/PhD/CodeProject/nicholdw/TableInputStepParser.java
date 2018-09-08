@@ -7,8 +7,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Document;
 
 public class TableInputStepParser {
-	public static TableInputStep parseXMLByStepName(Document doc, XPath xpath,
-			String stepname) {
+	public static TableInputStep parseXMLByStepName(Document doc, XPath xpath, String stepname) {
 
 		TableInputStep stepObject = null;
 		String transname = getTransformationName(doc, xpath);
@@ -18,19 +17,15 @@ public class TableInputStepParser {
 		return stepObject;
 	}
 
-	private static String getDatabaseName(Document doc, XPath xpath,
-			String stepname) {
+	private static String getDatabaseName(Document doc, XPath xpath, String stepname) {
 		String connectionname = null;
 		String dbname = null;
 		try {
 			// create XPathExpression object
-			XPathExpression expr = xpath.compile("/transformation/step[name=\'"
-					+ stepname + "\']/connection/text()");
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/connection/text()");
 			connectionname = (String) expr.evaluate(doc, XPathConstants.STRING);
 
-			XPathExpression dbexpr = xpath
-					.compile("/transformation/connection[name='"
-							+ connectionname + "']/database/text()");
+			XPathExpression dbexpr = xpath.compile("/transformation/connection[name='" + connectionname + "']/database/text()");
 			dbname = (String) dbexpr.evaluate(doc, XPathConstants.STRING);
 
 		} catch (XPathExpressionException e) {

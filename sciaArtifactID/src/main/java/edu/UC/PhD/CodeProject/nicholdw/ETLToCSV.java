@@ -53,7 +53,10 @@ public class ETLToCSV {
 		generateDimensionLookupUpdateStepCsvData(  Utils.formatPath(csv_path) + "dimlookupupdate_steps.csv");
 		generateCombinationLookupUpdateStepCsvData(Utils.formatPath(csv_path) + "comblookupupdate_steps.csv");
 	}
-	// Parses XML and generate CSV for Output step types - Insert/Update and TableOutput.
+	/***
+	 * Parses XML and generate CSV for Output step types - Insert/Update and TableOutput.
+	 * @param csvPath Where to put the CSV files
+	 */
 	public void generateOutputStepsCsvData(String csvPath){
 		XMLParser xmlparser=new XMLParser();
 		File folder = new File(pentahoProjectDirectory);
@@ -62,6 +65,35 @@ public class ETLToCSV {
 			if (listOfFiles[i].isFile()) {
 				List<OutputStep> outputSteps = xmlparser.parseXMLForOutputSteps(pentahoProjectDirectory+"/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateOutputStepsCsvFile(csvPath, outputSteps);
+			}
+		}
+	}
+	/***
+	 * Generate CSV files from Pentaho Project XML files. You don't need a Pentaho project, just the location of the XML files
+	 * Parses XML and generate CSV for Output step types - Insert/Update and TableOutput.
+	 * @param csvPath Where to put the CSV files
+	 * @param pentahoProjectDirectory Where to fund the Pentaho Project XML files
+	 */
+	public static void generateOutputStepsCsvData(String csvPath, String pentahoProjectDirectory){
+		XMLParser xmlparser=new XMLParser();
+		File folder = new File(pentahoProjectDirectory);
+		File[] listOfFiles = folder.listFiles();
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()) {
+				List<OutputStep> outputSteps = xmlparser.parseXMLForOutputSteps(pentahoProjectDirectory+"/" + listOfFiles[i].getName());
+				ETLExcelExporter.generateOutputStepsCsvFile(csvPath, outputSteps);
+			}
+		}
+	}
+	public void generateInputStepsCsvData(String csvPath, String pentahoProjectDirectory){
+		XMLParser xmlparser=new XMLParser();
+		File folder = new File(pentahoProjectDirectory);
+		File[] listOfFiles = folder.listFiles();
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()) {
+				//One transformation can be read from multiple data sources
+				List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps(pentahoProjectDirectory+"/" + listOfFiles[i].getName());
+				ETLExcelExporter.generateInputStepsCsvFile(csvPath, inputSteps);
 			}
 		}
 	}
