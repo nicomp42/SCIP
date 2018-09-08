@@ -86,7 +86,7 @@ public class Main extends Application {
 	@FXML private CheckBox cbOperationalSchemaCSVFiles, cbETLCSVFiles, cbDWCSVFiles;
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout;
-	@FXML private MenuItem mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL, mnuEditProjectManager, mnuReadDBLog, mnuProcessGraphDB;
+	@FXML private MenuItem mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL, mnuEditProjectManager, mnuReadDBLog, mnuProcessGraphDB, mnuProcessETL;
 	@FXML private WebView wbNeo4j;
 	@FXML private ImageView imgNeo4jReminder;
 	@FXML void lvOperationalSchemaNames_OnClicked(MouseEvent event) {txtOperationalSchemaName.setText(lvOperationalSchemaNames.getSelectionModel().getSelectedItem());}
@@ -101,6 +101,7 @@ public class Main extends Application {
 	@FXML void mnuEditProjectManager_OnAction(ActionEvent event) {openProjectManagerWindow();}
 	@FXML void mnuEditReadDBLog_OnAction(ActionEvent event) {openTransactionLogFileReaderWindow();}
 	@FXML void mnuToolsProcessGraphDB_OnAction(ActionEvent event) {openProcessGraphDBWindow();}
+	@FXML void mnuToolsProcessETL_OnAction(ActionEvent event) {openProcessETLWindow();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
 		Log.logProgress("main.mnuFileSaveProject_OnAction(): Saving scip...");
@@ -263,6 +264,22 @@ public class Main extends Application {
 			stage.show();
 		} catch (Exception ex) {
 			Log.logError("Main.openProcessGraphDBWindow(): " + ex.getLocalizedMessage());
+		}
+	}
+	private void openProcessETLWindow() {
+		try {
+			FXMLLoader fxmlLoader = null;
+			fxmlLoader = new FXMLLoader(getClass().getResource("processETLDB.fxml"));
+			Parent root = fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.initModality(Modality.NONE);
+			stage.setOpacity(1);
+			stage.setTitle(Config.getConfig().getApplicationTitle() + " - Process an ETL Job");
+			stage.setResizable(false);
+			stage.setScene(new Scene(root, 988, 833));
+			stage.show();
+		} catch (Exception ex) {
+			Log.logError("Main.openProcessETLWindow(): " + ex.getLocalizedMessage());
 		}
 	}
 	private void openProcessQueryWindow() {

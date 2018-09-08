@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="apSubmitSQL" fx:id="apProcessETLB" prefHeight="837.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessGraphDBController">
+   <padding>
+      <Insets bottom="5.0" right="5.0" top="5.0" />
+   </padding>
+   <children>
+      <TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Read Graph DB">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              	<children>
+                  <Pane fx:id="pneETLLoad" layoutX="1.0" layoutY="1.0" prefHeight="384.0" prefWidth="780.0">
+                     <children>
+   				      <Label layoutX="17.0" layoutY="9.0" text="Location of Graph DB" />
+   	                  <Button fx:id="btnETLBrowse" layoutX="284.0" layoutY="105.0" mnemonicParsing="false" onAction="#btnETLBrowse_OnClick" text="Browse..." />
+   				      <TextArea fx:id="txaETLFilePath" layoutX="17.0" layoutY="39.0" prefHeight="54.0" prefWidth="781.0" />
+                     </children>
+                  </Pane>
+                  <Pane fx:id="pneETLResults" layoutX="1.0" layoutY="278.0" prefHeight="384.0" prefWidth="780.0">
+                     <children>
+   	                <Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL Job" />
+   			      	<TextArea fx:id="txaETLResults" layoutX="17.0" layoutY="25.0" prefHeight="343.0" prefWidth="780.0" />
+                     </children>
+                  </Pane>
+                  <Label fx:id="lblWorking" layoutX="328.0" layoutY="423.0" rotate="-45.0" text="Working..." visible="false">
+                       <font>
+                          <Font size="36.0" />
+                       </font>
+                  </Label>
+                </children>
+              </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

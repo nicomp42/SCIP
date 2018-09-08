@@ -33,15 +33,18 @@ public class XMLParser {
 			Log.logError("XMLParser.main(): " + ex.getLocalizedMessage());
 		}
 	}
-
 	public List<OutputStep> parseXMLForOutputSteps(String xmlFilePath){
+		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
+		parseXMLForOutputSteps(xmlFilePath, outputSteps);
+		return outputSteps;
+	}
+	public void parseXMLForOutputSteps(String xmlFilePath, List<OutputStep> outputSteps) {
 		Log.logProgress("XMLParser.parseXMLForOutputSteps(" + xmlFilePath + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
 		Document doc = null;
 		OutputStep outputStep=null;
-		List<OutputStep> outputsteps=new ArrayList<OutputStep>();
 		try {
 			builder = factory.newDocumentBuilder();
 			doc = builder.parse(xmlFilePath);
@@ -55,11 +58,11 @@ public class XMLParser {
 				switch(stepType){
 				case 0:
 					outputStep = InsertUpdateStepParser.parseXMLForInsertUpdateStep(doc, xpath, step);
-					outputsteps.add(outputStep);
+					outputSteps.add(outputStep);
 					break;
 				case 1:
 					outputStep = TableOutputStepParser.parseXMLForTableOutputStep(doc, xpath, step);
-					outputsteps.add(outputStep);
+					outputSteps.add(outputStep);
 					break;
 				default: break;
 				}
@@ -67,7 +70,7 @@ public class XMLParser {
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			Log.logError("XMLParser.parseXMLForOutputSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
-		return outputsteps;
+		//return outputSteps;
 	}
 
 	public List<TableInputStep> parseXMLForInputSteps(String xmlFilePath){

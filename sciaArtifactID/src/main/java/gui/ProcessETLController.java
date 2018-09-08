@@ -1,0 +1,136 @@
+// ":style reset" to reset the colors in an existing graph
+
+package gui;
+
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
+import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.Schema;
+import edu.UC.PhD.CodeProject.nicholdw.Schemas;
+import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
+import edu.UC.PhD.CodeProject.nicholdw.XMLParser;
+import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNode;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNodes;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jXML;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitionFileProcessing;
+import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchema;
+import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchemas;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
+import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
+import javafx.application.Application;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+public class ProcessETLController {
+
+	@FXML	private AnchorPane apMainWindow;
+	@FXML	private TextArea txaETLFilePath, txaETLResults;
+	@FXML	private Button btnDBSubmit, btnETLBrowse;
+	@FXML 	private Label lblContentsOfETL;
+	@FXML	private Label lblLoadWorking;
+	@FXML	private Pane pneETLResults, pneETLLoad;
+	@FXML private void btnDBSubmit_OnClick(ActionEvent event) {loadETL();}
+	@FXML
+	private void initialize() { // Automagically called by JavaFX
+		Log.logProgress("ProcessETLController.Initialize() starting...");
+		try {
+			setTheScene();
+		} catch (Exception e) {
+			Log.logError("ProcessETLController.Initialize(): " + e.getLocalizedMessage());
+		}
+		Log.logProgress("ProcessETLController.Initialize() complete");
+	}
+	private void setTheScene() {
+
+	}
+	private void displayLoadETLResults(boolean visible) {
+		pneETLResults.setVisible(visible);
+	}
+	private void disableETLLoadSelectionControls(boolean disable) {
+		pneETLLoad.setDisable(disable);
+	}
+	private void loadETL() {
+		Log.logProgress("ProcessETLController.loadDB() " + txaETLFilePath.getText().trim());
+		displayLoadETLResults(false);
+		disableETLLoadSelectionControls(true);
+		lblLoadWorking.setVisible(true);
+		txaETLResults.clear();
+		List<OutputStep> os = new ArrayList<OutputStep>();
+		List<TableInputStep> is = new ArrayList<TableInputStep>();
+		List<DBJoinStep> js = new ArrayList<DBJoinStep>();
+		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
+	    Task <Void> task = new Task<Void>() {
+	        @Override public Void call() throws InterruptedException {
+	        	// Do not write to any controls in here. An exception will be thrown. It's ugly.
+	    		try {
+	    			try {
+	    				XMLParser myXNMLParser = new XMLParser();
+	    				myXNMLParser.parseXMLForOutputSteps("c:\\temp\\foop.xml", os);
+	    				//myXNMLParser.parseXMLForInputSteps("c:\\temp\\foop.xml", is);
+	    				//myXNMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml", js);
+	    				Log.logProgress("ProcessETLController.loadETL(): parsing complete.");
+	    			} catch (Exception ex) {
+	    				Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());
+	    			}
+	    		} catch (Exception ex) {
+	    			Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());
+	    		} finally {
+	    		}
+	        	return null;
+	        }
+	    };
+	    task.setOnSucceeded(e -> {
+			lblLoadWorking.setVisible(false);
+			for (OutputStep outputStep: os) {
+				txaETLResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
+			}
+			displayLoadETLResults(true);
+			disableETLLoadSelectionControls(false);
+	      });
+	    Thread thread = new Thread(task);
+	    thread.setDaemon(true);
+	    thread.start();
+	    }
+	}
+

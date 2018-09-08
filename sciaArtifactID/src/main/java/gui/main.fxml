@@ -92,6 +92,11 @@
                         <KeyCodeCombination alt="UP" code="G" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                 </MenuItem>
+	            <MenuItem fx:id="mnuProcessETL" mnemonicParsing="false" onAction="#mnuToolsProcessETL_OnAction" text="Process ETL Job">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                </MenuItem>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">

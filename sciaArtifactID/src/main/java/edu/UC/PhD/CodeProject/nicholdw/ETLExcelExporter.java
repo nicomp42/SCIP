@@ -23,7 +23,6 @@ public class ETLExcelExporter {
 
 			FileWriter writer = new FileWriter(sFileName, true);
 			if (!fileExists) {
-
 				writer.append("TransformationName");
 				writer.append(',');
 				writer.append("StepName");
