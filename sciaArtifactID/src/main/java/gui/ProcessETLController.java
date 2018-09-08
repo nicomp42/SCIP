@@ -59,6 +59,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -68,9 +69,10 @@ public class ProcessETLController {
 	@FXML	private TextArea txaETLFilePath, txaETLResults;
 	@FXML	private Button btnDBSubmit, btnETLBrowse;
 	@FXML 	private Label lblContentsOfETL;
-	@FXML	private Label lblLoadWorking;
+	@FXML	private Label lblWorking;
 	@FXML	private Pane pneETLResults, pneETLLoad;
-	@FXML private void btnDBSubmit_OnClick(ActionEvent event) {loadETL();}
+	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETL();}
+	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessETLController.Initialize() starting...");
@@ -84,6 +86,14 @@ public class ProcessETLController {
 	private void setTheScene() {
 
 	}
+	private void browseETL() {
+		DirectoryChooser directoryChooser = new DirectoryChooser();
+		directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		directoryChooser.setTitle("Select ETL Directory");
+		Stage stage = (Stage) this.btnETLBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
+		File file = (new FileChooser()).showOpenDialog(stage);
+		if (file != null) {txaETLFilePath.setText(file.getAbsolutePath());}	
+	}
 	private void displayLoadETLResults(boolean visible) {
 		pneETLResults.setVisible(visible);
 	}
@@ -94,7 +104,7 @@ public class ProcessETLController {
 		Log.logProgress("ProcessETLController.loadDB() " + txaETLFilePath.getText().trim());
 		displayLoadETLResults(false);
 		disableETLLoadSelectionControls(true);
-		lblLoadWorking.setVisible(true);
+		lblWorking.setVisible(true);
 		txaETLResults.clear();
 		List<OutputStep> os = new ArrayList<OutputStep>();
 		List<TableInputStep> is = new ArrayList<TableInputStep>();
@@ -121,7 +131,7 @@ public class ProcessETLController {
 	        }
 	    };
 	    task.setOnSucceeded(e -> {
-			lblLoadWorking.setVisible(false);
+	    	lblWorking.setVisible(false);
 			for (OutputStep outputStep: os) {
 				txaETLResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
 			}
