@@ -16,8 +16,7 @@ public class DBJoinStep {
 
 	@Override
 	public String toString() {
-		return "DBJoinStep [transName=" + transName + ", stepName=" + stepName
-				+ ", dbName=" + dbName + ", sql=" + sql + "]";
+		return "DBJoinStep [transName=" + transName + ", stepName=" + stepName + ", dbName=" + dbName + ", sql=" + sql + "]";
 	}
 
 	public String getTransName() {

@@ -35,13 +35,25 @@
 				      <TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
         				<tabs>
           					<Tab text="Output Steps">
-		   			      		<TextArea fx:id="txaOutputStepResults" layoutX="1.0" layoutY="1.0" prefHeight="200" prefWidth="600" />
+					            <content>
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
+   		   			      				<TextArea fx:id="txaOutputStepResults" layoutX="5.0" layoutY="5.0"  />
+   		   			      			</AnchorPane>
+   		   			      		</content>
 		   			      	</Tab>
           					<Tab text="Input Steps">
-		   			      		<TextArea fx:id="txaInputStepResults" layoutX="1.0" layoutY="1.0" prefHeight="200" prefWidth="600" />
+					            <content>
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
+   		   			      				<TextArea fx:id="txaInputStepResults" layoutX="5.0" layoutY="5.0"  />
+   		   			      			</AnchorPane>
+   		   			      		</content>
 		   			      	</Tab>
           					<Tab text="Join Steps">
-		   			      		<TextArea fx:id="txaJoinStepResults" layoutX="1.0" layoutY="1.0" prefHeight="200" prefWidth="600" />
+					            <content>
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
+   		   			      				<TextArea fx:id="txaJoinStepResults" layoutX="5.0" layoutY="5.0"  />
+   		   			      			</AnchorPane>
+   		   			      		</content>
 		   			      	</Tab>
 	   			      	</tabs>
    			      	</TabPane>
