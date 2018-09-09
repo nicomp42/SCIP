@@ -72,8 +72,12 @@ public class XMLParser {
 		}
 		//return outputSteps;
 	}
-
 	public List<TableInputStep> parseXMLForInputSteps(String xmlFilePath){
+		ArrayList<TableInputStep> inputSteps = new ArrayList<TableInputStep>();
+		parseXMLForInputSteps(xmlFilePath, inputSteps);
+		return inputSteps;
+	}
+	public void parseXMLForInputSteps(String xmlFilePath, ArrayList<TableInputStep> inputSteps){
 		Log.logProgress("XMLParser.parseXMLForInputSteps(" + xmlFilePath + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -81,7 +85,6 @@ public class XMLParser {
 		Document doc = null;
 		String steptype="TableInput";
 		TableInputStep tableinputStep=null;
-		List<TableInputStep> inputsteps=new ArrayList<TableInputStep>();
 		try {
 			builder = factory.newDocumentBuilder();
 			doc = builder.parse(xmlFilePath);
@@ -92,13 +95,12 @@ public class XMLParser {
 
 			for(String stepname:listOfAllStepNames){
 				tableinputStep=TableInputStepParser.parseXMLByStepName(doc, xpath, stepname);
-				inputsteps.add(tableinputStep);
+				inputSteps.add(tableinputStep);
 			}
 
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			Log.logError("XMLParser.parseXMLForInputSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
-		return inputsteps;
 	}
 
 	private List<String> getStepNamesByType(XPath xpath, Document doc, String steptype){
@@ -144,8 +146,13 @@ public class XMLParser {
 		}
 		return dblookupsteps;
 	}
-
 	public List<DBJoinStep> parseXMLForDBJoinSteps(String xmlFilePath){
+		ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
+		parseXMLForDBJoinSteps(xmlFilePath, dbJoinSteps);
+		return dbJoinSteps;
+	}
+
+	public void parseXMLForDBJoinSteps(String xmlFilePath, ArrayList<DBJoinStep> dbJoinSteps){
 		Log.logProgress("XMLParser.parseXMLForDBJoinSteps(" + xmlFilePath + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -153,7 +160,6 @@ public class XMLParser {
 		Document doc = null;
 		String steptype="DBJoin";
 		DBJoinStep dbjoinstep=null;
-		List<DBJoinStep> dbjoinsteps=new ArrayList<DBJoinStep>();
 		try {
 			builder = factory.newDocumentBuilder();
 			doc = builder.parse(xmlFilePath);
@@ -164,12 +170,11 @@ public class XMLParser {
 
 			for(String stepname:listOfAllStepNames){
 				dbjoinstep=DBJoinStepParser.parseXMLByStepName(doc, xpath, stepname);
-				dbjoinsteps.add(dbjoinstep);
+				dbJoinSteps.add(dbjoinstep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			Log.logError("XMLParser.parseXMLForDBJoinSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
-		return dbjoinsteps;
 	}
 
 	public List<DimLookupUpdateStep> parseXMLForDimLookupUpdateSteps(String xmlFilePath){

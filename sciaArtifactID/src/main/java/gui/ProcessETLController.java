@@ -66,7 +66,7 @@ import javafx.stage.Stage;
 public class ProcessETLController {
 
 	@FXML	private AnchorPane apMainWindow;
-	@FXML	private TextArea txaETLFilePath, txaETLResults;
+	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults;
 	@FXML	private Button btnDBSubmit, btnETLBrowse;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
@@ -105,10 +105,12 @@ public class ProcessETLController {
 		displayLoadETLResults(false);
 		disableETLLoadSelectionControls(true);
 		lblWorking.setVisible(true);
-		txaETLResults.clear();
-		List<OutputStep> os = new ArrayList<OutputStep>();
-		List<TableInputStep> is = new ArrayList<TableInputStep>();
-		List<DBJoinStep> js = new ArrayList<DBJoinStep>();
+		txaOutputStepResults.clear();
+		txaInputStepResults.clear();
+		txaJoinStepResults.clear();
+		ArrayList<OutputStep> os = new ArrayList<OutputStep>();
+		ArrayList<TableInputStep> is = new ArrayList<TableInputStep>();
+		ArrayList<DBJoinStep> js = new ArrayList<DBJoinStep>();
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
 	        @Override public Void call() throws InterruptedException {
@@ -117,8 +119,8 @@ public class ProcessETLController {
 	    			try {
 	    				XMLParser myXNMLParser = new XMLParser();
 	    				myXNMLParser.parseXMLForOutputSteps("c:\\temp\\foop.xml", os);
-	    				//myXNMLParser.parseXMLForInputSteps("c:\\temp\\foop.xml", is);
-	    				//myXNMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml", js);
+	    				myXNMLParser.parseXMLForInputSteps("c:\\temp\\foop.xml", is);
+	    				myXNMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml", js);
 	    				Log.logProgress("ProcessETLController.loadETL(): parsing complete.");
 	    			} catch (Exception ex) {
 	    				Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());
@@ -133,7 +135,13 @@ public class ProcessETLController {
 	    task.setOnSucceeded(e -> {
 	    	lblWorking.setVisible(false);
 			for (OutputStep outputStep: os) {
-				txaETLResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
+				txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
+			}
+			for (TableInputStep inputStep: is) {
+				txaInputStepResults.appendText(inputStep.toString() + System.getProperty("line.separator"));
+			}
+			for (DBJoinStep joinStep: js) {
+				txaJoinStepResults.appendText(joinStep.toString() + System.getProperty("line.separator"));
 			}
 			displayLoadETLResults(true);
 			disableETLLoadSelectionControls(false);

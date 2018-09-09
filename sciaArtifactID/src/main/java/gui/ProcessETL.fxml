@@ -31,8 +31,20 @@
                   </Pane>
                   <Pane fx:id="pneETLResults" layoutX="1.0" layoutY="278.0" prefHeight="384.0" prefWidth="780.0">
                      <children>
-   	                <Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL Job" />
-   			      	<TextArea fx:id="txaETLResults" layoutX="17.0" layoutY="25.0" prefHeight="343.0" prefWidth="780.0" />
+	   	                <Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL Job" />
+				      <TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+        				<tabs>
+          					<Tab text="Output Steps">
+		   			      		<TextArea fx:id="txaOutputStepResults" layoutX="1.0" layoutY="1.0" prefHeight="200" prefWidth="600" />
+		   			      	</Tab>
+          					<Tab text="Input Steps">
+		   			      		<TextArea fx:id="txaInputStepResults" layoutX="1.0" layoutY="1.0" prefHeight="200" prefWidth="600" />
+		   			      	</Tab>
+          					<Tab text="Join Steps">
+		   			      		<TextArea fx:id="txaJoinStepResults" layoutX="1.0" layoutY="1.0" prefHeight="200" prefWidth="600" />
+		   			      	</Tab>
+	   			      	</tabs>
+   			      	</TabPane>
                      </children>
                   </Pane>
                   <Label fx:id="lblWorking" layoutX="328.0" layoutY="423.0" rotate="-45.0" text="Working..." visible="false">
