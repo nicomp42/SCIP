@@ -27,7 +27,7 @@ public class XMLParser {
 			XMLParser myXNMLParser = new XMLParser();
 			List<OutputStep> os = myXNMLParser.parseXMLForOutputSteps("c:\\temp\\foop.xml");
 			List<TableInputStep> is = myXNMLParser.parseXMLForInputSteps("c:\\temp\\foop.xml");
-			List<DBJoinStep> js = XMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml");
+			List<DBJoinStep> js = myXNMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml");
 			Log.logProgress("XMLParser.main(): parsing complete.");
 		} catch (Exception ex) {
 			Log.logError("XMLParser.main(): " + ex.getLocalizedMessage());
