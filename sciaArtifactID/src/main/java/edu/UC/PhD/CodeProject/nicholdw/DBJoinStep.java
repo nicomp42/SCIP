@@ -43,8 +43,7 @@ public class DBJoinStep {
 		this.dbName = dbName;
 	}
 
-	public DBJoinStep(String transName, String stepName, String dbName,
-			String sql) {
+	public DBJoinStep(String transName, String stepName, String dbName,	String sql) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;

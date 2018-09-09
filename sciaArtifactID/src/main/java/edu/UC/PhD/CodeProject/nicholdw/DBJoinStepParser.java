@@ -66,6 +66,4 @@ public class DBJoinStepParser {
 
 	        return name;
 	    }
-	 
-		 
 }

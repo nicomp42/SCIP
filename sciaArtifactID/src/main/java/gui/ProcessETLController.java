@@ -101,6 +101,7 @@ public class ProcessETLController {
 		pneETLLoad.setDisable(disable);
 	}
 	private void loadETL() {
+		String filePath = txaETLFilePath.getText().trim();
 		Log.logProgress("ProcessETLController.loadDB() " + txaETLFilePath.getText().trim());
 		displayLoadETLResults(false);
 		disableETLLoadSelectionControls(true);
@@ -118,9 +119,9 @@ public class ProcessETLController {
 	    		try {
 	    			try {
 	    				XMLParser myXNMLParser = new XMLParser();
-	    				myXNMLParser.parseXMLForOutputSteps("c:\\temp\\foop.xml", os);
-	    				myXNMLParser.parseXMLForInputSteps("c:\\temp\\foop.xml", is);
-	    				myXNMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml", js);
+	    				myXNMLParser.parseXMLForOutputSteps(filePath, os);
+	    				myXNMLParser.parseXMLForInputSteps(filePath, is);
+	    				myXNMLParser.parseXMLForDBJoinSteps(filePath, js);
 	    				Log.logProgress("ProcessETLController.loadETL(): parsing complete.");
 	    			} catch (Exception ex) {
 	    				Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());

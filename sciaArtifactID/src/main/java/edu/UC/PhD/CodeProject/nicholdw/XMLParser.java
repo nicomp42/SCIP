@@ -159,6 +159,7 @@ public class XMLParser {
 		DocumentBuilder builder;
 		Document doc = null;
 		String steptype="DBJoin";
+//		String steptype="MergeJoin";
 		DBJoinStep dbjoinstep=null;
 		try {
 			builder = factory.newDocumentBuilder();
