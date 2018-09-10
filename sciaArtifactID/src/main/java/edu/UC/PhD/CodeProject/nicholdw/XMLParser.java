@@ -257,7 +257,30 @@ public class XMLParser {
 		}
 		return stepType;
 	}
-
+	/***
+	 * Read the complete list of steps in the job
+	 * @param xmlFilePath The location of the XML file, as exported from Pentaho
+	 * @return The list of step names
+	 */
+	public void getStepNames(String xmlFilePath, ArrayList<String> listOfAllSteps) {
+		Log.logProgress("XMLParser.getStepNames(" + xmlFilePath + ")");
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(xmlFilePath);
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			/* One transformation is composed of several steps */
+			List<String> tmpListOfAllSteps;
+			tmpListOfAllSteps = (ArrayList<String>) getStepNames(xpath,doc);
+			for (String s: tmpListOfAllSteps) {listOfAllSteps.add(s);}
+			} catch (Exception ex) {
+				Log.logProgress("XMLParser.getStepNames(): " + ex.getLocalizedMessage());
+			}
+	}
 	private List<String> getStepNames(XPath xpath, Document doc){
 		Log.logProgress("XMLParser.getStepNames(" + xpath + ")");
 		List<String> stepNames=new ArrayList<String>();

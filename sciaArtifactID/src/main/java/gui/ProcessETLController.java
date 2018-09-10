@@ -66,7 +66,7 @@ import javafx.stage.Stage;
 public class ProcessETLController {
 
 	@FXML	private AnchorPane apMainWindow;
-	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults;
+	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults;
 	@FXML	private Button btnDBSubmit, btnETLBrowse;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
@@ -106,12 +106,11 @@ public class ProcessETLController {
 		displayLoadETLResults(false);
 		disableETLLoadSelectionControls(true);
 		lblWorking.setVisible(true);
-		txaOutputStepResults.clear();
-		txaInputStepResults.clear();
-		txaJoinStepResults.clear();
+		clearResultsControls();
 		ArrayList<OutputStep> os = new ArrayList<OutputStep>();
 		ArrayList<TableInputStep> is = new ArrayList<TableInputStep>();
 		ArrayList<DBJoinStep> js = new ArrayList<DBJoinStep>();
+		ArrayList<String> stepNames = new ArrayList<String>();
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
 	        @Override public Void call() throws InterruptedException {
@@ -119,6 +118,7 @@ public class ProcessETLController {
 	    		try {
 	    			try {
 	    				XMLParser myXNMLParser = new XMLParser();
+	    				myXNMLParser.getStepNames(filePath, stepNames);
 	    				myXNMLParser.parseXMLForOutputSteps(filePath, os);
 	    				myXNMLParser.parseXMLForInputSteps(filePath, is);
 	    				myXNMLParser.parseXMLForDBJoinSteps(filePath, js);
@@ -135,6 +135,9 @@ public class ProcessETLController {
 	    };
 	    task.setOnSucceeded(e -> {
 	    	lblWorking.setVisible(false);
+			for (String stepName: stepNames) {
+				txaStepNamesResults.appendText(stepName + System.getProperty("line.separator"));
+			}
 			for (OutputStep outputStep: os) {
 				txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
 			}
@@ -151,5 +154,12 @@ public class ProcessETLController {
 	    thread.setDaemon(true);
 	    thread.start();
 	    }
+	
+		private void clearResultsControls() {
+			txaOutputStepResults.clear();
+			txaInputStepResults.clear();
+			txaJoinStepResults.clear();
+			txaStepNamesResults.clear();
+		}
 	}
 

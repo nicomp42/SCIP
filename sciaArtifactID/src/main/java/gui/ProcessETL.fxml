@@ -34,6 +34,13 @@
 	   	                <Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL Job" />
 				      <TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
         				<tabs>
+          					<Tab text="Step Names">
+					            <content>
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
+   		   			      				<TextArea fx:id="txaStepNamesResults" layoutX="5.0" layoutY="5.0"  />
+   		   			      			</AnchorPane>
+   		   			      		</content>
+		   			      	</Tab>
           					<Tab text="Output Steps">
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
