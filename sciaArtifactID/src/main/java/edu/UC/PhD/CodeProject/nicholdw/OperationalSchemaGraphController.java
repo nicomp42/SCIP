@@ -2,6 +2,7 @@ package edu.UC.PhD.CodeProject.nicholdw;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 
 /**
@@ -44,7 +45,7 @@ public class OperationalSchemaGraphController {
 		//, "file:///" + scip.getProjectName() + "\\\\");		// Yes. it's supposed to be file:///   --> three slashes.
 		try {
 			Log.logProgress("SchemaGraphController: ********Generating schema nodes***********");
-			Main.ExecActionQuery("MERGE(m:Schema{name:'" + scip.getOperational().getOperationalSchemaName() + "',type:'" + "Operational" + "'})");
+			Neo4jDB.ExecActionQuery("MERGE(m:Schema{name:'" + scip.getOperational().getOperationalSchemaName() + "',type:'" + "Operational" + "'})");
 
 		} catch (Exception ex) {
 			Log.logError("SchemaGraphController.generateSchemaNodes(): ", ex.getStackTrace());
@@ -56,8 +57,8 @@ public class OperationalSchemaGraphController {
 	 */
 	public void generateRelationNodes(SchemaChangeImpactProject scip) {
 		try {
-			Main.ExecActionQuery("LOAD CSV WITH HEADERS FROM \"" +
-									   Main.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory)  + "tables.csv\" AS line " +
+			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \"" +
+									   Neo4jDB.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory)  + "tables.csv\" AS line " +
 									   "MERGE (r:Relation{name:line.table_name, schema:line.schema_name})");
 		} catch (Exception ex) {
 			Log.logError("SchemaGraphController.generateRelationNodes(): ", ex.getStackTrace());
@@ -65,8 +66,8 @@ public class OperationalSchemaGraphController {
 	}
 	public void generateAttributeNodes(SchemaChangeImpactProject scip) {
 		try {
-			Main.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-							+ Main.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "attributes.csv\" AS line "
+			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
+							+ Neo4jDB.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "attributes.csv\" AS line "
 							+ "MERGE (a:Attribute{name: line.column_name, datatype: line.data_type, "
 							+ "relation:line.table_name, schema: line.table_schema, isKey: line.is_Key})");
 
@@ -76,8 +77,8 @@ public class OperationalSchemaGraphController {
 	}
 	public void generateEntityintegrityRelationships(SchemaChangeImpactProject scip) {
 		try {
-			Main.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Main.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "attributes.csv\" AS line "
+			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
+								+ Neo4jDB.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "attributes.csv\" AS line "
 								+ "MATCH (src:Attribute{name: line.column_name, datatype: line.data_type, "
 								+ "relation:line.table_name, schema: line.table_schema, isKey: line.is_Key})"
 								+ "MATCH (to:Relation {name: line.table_name, schema: line.table_schema})"
@@ -90,8 +91,8 @@ public class OperationalSchemaGraphController {
 	}
 	public void generateRelationAttributeRelationships(SchemaChangeImpactProject scip) {
 		try {
-			Main.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Main.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "attributes.csv\" AS line "
+			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
+								+ Neo4jDB.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "attributes.csv\" AS line "
 								+ "MATCH (to:Attribute{name: line.column_name, datatype: line.data_type, "
 								+ "relation:line.table_name, schema: line.table_schema, isKey: line.is_Key})"
 								+ "MATCH (src:Relation {name: line.table_name, schema: line.table_schema})"
@@ -104,8 +105,8 @@ public class OperationalSchemaGraphController {
 	}
 	public void generateReferentialIntegrityRelationships(SchemaChangeImpactProject scip) {
 		try {
-			Main.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Main.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "foreignKeys.csv\" AS line "
+			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
+								+ Neo4jDB.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "foreignKeys.csv\" AS line "
 								+ "MATCH (to:Attribute{name: line.attr_name, relation: line.relation_name, "
 								+ "schema:'"
 								+ scip.getOperational().getOperationalSchemaName() + "'})"
@@ -120,8 +121,8 @@ public class OperationalSchemaGraphController {
 	}
 	public void generateSchemaRelationRelationships(SchemaChangeImpactProject scip) {
 		try {
-			Main.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Main.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "tables.csv\" AS line MATCH (src:Schema {name: line.schema_name}) "
+			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
+								+ Neo4jDB.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory) + "tables.csv\" AS line MATCH (src:Schema {name: line.schema_name}) "
 								+ "MATCH (to:Relation {name: line.table_name, schema:line.schema_name})"
 								+ " where src.name=to.schema MERGE (src)-[:Impacts]->(to)");
 
@@ -135,7 +136,7 @@ public class OperationalSchemaGraphController {
 		try {
 			Log.logProgress("********Generating relation nodes***********");
 			// Not sure if both are needed and not sure how much is actually deleted.
-			Main.ExecActionQuery("MATCH (n) DETACH DELETE n");
+			Neo4jDB.ExecActionQuery("MATCH (n) DETACH DELETE n");
 			//stmt.executeQuery("MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r");
 		} catch (Exception ex) {
 			Log.logError("SchemaGraphController.deleteSchema(): ", ex.getStackTrace());

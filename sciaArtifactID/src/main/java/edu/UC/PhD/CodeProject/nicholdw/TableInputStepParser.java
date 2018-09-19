@@ -6,6 +6,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+
 public class TableInputStepParser {
 	public static TableInputStep parseXMLByStepName(Document doc, XPath xpath, String stepname) {
 
@@ -21,15 +23,16 @@ public class TableInputStepParser {
 		String connectionname = null;
 		String dbname = null;
 		try {
-			// create XPathExpression object
+			// Look up the connection name for this step
 			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/connection/text()");
 			connectionname = (String) expr.evaluate(doc, XPathConstants.STRING);
 
+			// Use the connection name from above to look up the database name that this step will use
 			XPathExpression dbexpr = xpath.compile("/transformation/connection[name='" + connectionname + "']/database/text()");
 			dbname = (String) dbexpr.evaluate(doc, XPathConstants.STRING);
 
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+		} catch (XPathExpressionException ex) {
+			Log.logError("TableInputStepParser.getDatabaseName(); : " + ex.getLocalizedMessage());
 		}
 		return dbname;
 	}
@@ -39,12 +42,11 @@ public class TableInputStepParser {
 
 		try {
 			// create XPathExpression object
-			XPathExpression expr = xpath.compile("/transformation/step[name=\'"
-					+ stepname + "\']/sql/text()");
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/sql/text()");
 			sql = (String) expr.evaluate(doc, XPathConstants.STRING);
 
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+		} catch (XPathExpressionException ex) {
+			Log.logError("TableInputStepParser.getSQL(); : " + ex.getLocalizedMessage());
 		}
 		return sql;
 	}

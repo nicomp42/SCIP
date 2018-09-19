@@ -13,13 +13,13 @@ import java.util.List;
 
 import com.mysql.jdbc.CallableStatement;
 
-import edu.UC.PhD.CodeProject.nicholdw.ETLExcelExporter;
 import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
-import edu.UC.PhD.CodeProject.nicholdw.XMLParser;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLExcelExporter;
+import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
 import lib.SQLUtils;
 
 /**

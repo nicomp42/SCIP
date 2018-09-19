@@ -6,7 +6,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 
-
 public class DBJoinStepParser {
 	
 	public static DBJoinStep parseXMLByStepName(Document doc, XPath xpath, String stepname){
@@ -25,12 +24,10 @@ public class DBJoinStepParser {
         String dbname=null;
         try {
             //create XPathExpression object
-            XPathExpression expr = xpath.compile("/transformation/step[name=\'"+stepname+"\']"
-            		              + "/connection/text()");
+            XPathExpression expr = xpath.compile("/transformation/step[name=\'"+stepname+"\']" + "/connection/text()");
             connectionname = (String) expr.evaluate(doc, XPathConstants.STRING);
          
-            XPathExpression dbexpr = xpath.compile("/transformation/"
-            		+ "connection[name='"+connectionname+"']/database/text()");
+            XPathExpression dbexpr = xpath.compile("/transformation/" + "connection[name='"+connectionname+"']/database/text()");
             dbname = (String) dbexpr.evaluate(doc, XPathConstants.STRING);
                        
         } catch (XPathExpressionException e) {

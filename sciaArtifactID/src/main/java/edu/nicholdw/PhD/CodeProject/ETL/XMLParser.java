@@ -1,4 +1,4 @@
-package edu.UC.PhD.CodeProject.nicholdw;
+package edu.nicholdw.PhD.CodeProject.ETL;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import edu.UC.PhD.CodeProject.nicholdw.CombinationLookupStepParser;
+import edu.UC.PhD.CodeProject.nicholdw.CombinationLookupUpdateStep;
+import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
+import edu.UC.PhD.CodeProject.nicholdw.DBJoinStepParser;
+import edu.UC.PhD.CodeProject.nicholdw.DBLookupStep;
+import edu.UC.PhD.CodeProject.nicholdw.DBLookupStepParser;
+import edu.UC.PhD.CodeProject.nicholdw.DimLookupUpdateStep;
+import edu.UC.PhD.CodeProject.nicholdw.DimensionLookupStepParser;
+import edu.UC.PhD.CodeProject.nicholdw.InsertUpdateStepParser;
+import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableInputStepParser;
+import edu.UC.PhD.CodeProject.nicholdw.TableOutputStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class XMLParser {
@@ -296,4 +309,10 @@ public class XMLParser {
 		}
 		return stepNames;
 	}
+	public void megaParser(String stepType) {
+		switch (stepType) {
+		case 
+		}
+	}
+	
 }

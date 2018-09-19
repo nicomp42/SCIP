@@ -1,12 +1,18 @@
 // Be sure to care about this: https://superuser.com/questions/52157/how-do-i-get-excel-to-import-a-csv-file-with-commas-in-some-of-the-content-field
 // The Excel parser can't handle spaces after commas in the CSV file!
 
-package edu.UC.PhD.CodeProject.nicholdw;
+package edu.nicholdw.PhD.CodeProject.ETL;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import edu.UC.PhD.CodeProject.nicholdw.CombinationLookupUpdateStep;
+import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
+import edu.UC.PhD.CodeProject.nicholdw.DBLookupStep;
+import edu.UC.PhD.CodeProject.nicholdw.DimLookupUpdateStep;
+import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
