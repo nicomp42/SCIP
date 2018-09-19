@@ -1,8 +1,12 @@
 package edu.nicholdw.PhD.CodeProject.ETL;
-
+/***
+ * A step in the ETL process. Abstracted, but modeled on Pentaho for now.
+ * @author nicomp
+ *
+ */
 public class ETLStep {
 	private String stepType;
-	private String
+
 	
 	
 	

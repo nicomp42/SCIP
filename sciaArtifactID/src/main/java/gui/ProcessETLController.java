@@ -8,6 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
 import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
@@ -101,7 +108,7 @@ public class ProcessETLController {
 		pneETLLoad.setDisable(disable);
 	}
 	private void loadETL() {
-		String filePath = txaETLFilePath.getText().trim();
+		String xmlFilePath = txaETLFilePath.getText().trim();
 		Log.logProgress("ProcessETLController.loadDB() " + txaETLFilePath.getText().trim());
 		displayLoadETLResults(false);
 		disableETLLoadSelectionControls(true);
@@ -117,11 +124,11 @@ public class ProcessETLController {
 	        	// Do not write to any controls in here. An exception will be thrown. It's ugly.
 	    		try {
 	    			try {
-	    				XMLParser myXNMLParser = new XMLParser();
-	    				myXNMLParser.getStepNames(filePath, stepNames);
-	    				myXNMLParser.parseXMLForOutputSteps(filePath, os);
-	    				myXNMLParser.parseXMLForInputSteps(filePath, is);
-	    				myXNMLParser.parseXMLForDBJoinSteps(filePath, js);
+	    				XMLParser myXMLParser = new XMLParser();
+	    				myXMLParser.getStepNames(xmlFilePath, stepNames);
+	    				myXMLParser.parseXMLForOutputSteps(xmlFilePath, os);
+	    				myXMLParser.parseXMLForInputSteps(xmlFilePath, is);
+	    				myXMLParser.parseXMLForDBJoinSteps(xmlFilePath, js);
 	    				Log.logProgress("ProcessETLController.loadETL(): parsing complete.");
 	    			} catch (Exception ex) {
 	    				Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());
@@ -135,20 +142,40 @@ public class ProcessETLController {
 	    };
 	    task.setOnSucceeded(e -> {
 	    	lblWorking.setVisible(false);
-			for (String stepName: stepNames) {
-				txaStepNamesResults.appendText(stepName + System.getProperty("line.separator"));
+			XMLParser myXMLParser = new XMLParser();
+			//myXMLParser.getStepNames(xmlFilePath, stepNames);
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			DocumentBuilder builder;
+			Document doc = null;
+			try {
+				builder = factory.newDocumentBuilder();
+				doc = builder.parse(xmlFilePath);
+				XPathFactory xpathFactory = XPathFactory.newInstance();
+				XPath xpath = xpathFactory.newXPath();
+				int counter = 0;
+				for (String stepName: stepNames) {
+					String tmp;
+					counter++;
+					tmp = String.valueOf(counter) + ": ";
+					tmp += stepName;
+					tmp += " (" + myXMLParser.getStepTypeAsString(xpath, doc, stepName) +  ")";
+					txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
+				}
+				for (OutputStep outputStep: os) {
+					txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
+				}
+				for (TableInputStep inputStep: is) {
+					txaInputStepResults.appendText(inputStep.toString() + System.getProperty("line.separator"));
+				}
+				for (DBJoinStep joinStep: js) {
+					txaJoinStepResults.appendText(joinStep.toString() + System.getProperty("line.separator"));
+				}
+				displayLoadETLResults(true);
+				disableETLLoadSelectionControls(false);
+			} catch (Exception ex) {
+				Log.logError("ProcessETLController.loadETL(): " + ex.getLocalizedMessage());
 			}
-			for (OutputStep outputStep: os) {
-				txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
-			}
-			for (TableInputStep inputStep: is) {
-				txaInputStepResults.appendText(inputStep.toString() + System.getProperty("line.separator"));
-			}
-			for (DBJoinStep joinStep: js) {
-				txaJoinStepResults.appendText(joinStep.toString() + System.getProperty("line.separator"));
-			}
-			displayLoadETLResults(true);
-			disableETLLoadSelectionControls(false);
 	      });
 	    Thread thread = new Thread(task);
 	    thread.setDaemon(true);

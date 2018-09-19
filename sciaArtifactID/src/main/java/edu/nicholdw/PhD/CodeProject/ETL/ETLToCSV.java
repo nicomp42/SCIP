@@ -147,7 +147,7 @@ public class ETLToCSV {
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
-				System.out.println("**********File " + listOfFiles[i].getName());
+//				System.out.println("**********File " + listOfFiles[i].getName());
 				List<CombinationLookupUpdateStep> combinationlookupupdatesteps=
 						xmlparser.parseXMLForCombinationLookupUpdateSteps(pentahoProjectDirectory + "/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateCombLookupUpdateCsvFile(csvPath, combinationlookupupdatesteps);

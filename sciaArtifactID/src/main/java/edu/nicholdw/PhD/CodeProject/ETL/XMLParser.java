@@ -110,12 +110,10 @@ public class XMLParser {
 				tableinputStep=TableInputStepParser.parseXMLByStepName(doc, xpath, stepname);
 				inputSteps.add(tableinputStep);
 			}
-
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			Log.logError("XMLParser.parseXMLForInputSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
 	}
-
 	private static List<String> getStepNamesByType(XPath xpath, Document doc, String steptype){
 		Log.logProgress("XMLParser.getStepNamesByType(" + xpath.toString() + ")");
 		List<String> stepNames=new ArrayList<String>();
@@ -131,7 +129,6 @@ public class XMLParser {
 		}
 		return stepNames;
 	}
-
 	public List<DBLookupStep> parseXMLForDBLookupSteps(String xmlFilePath){
 		Log.logProgress("XMLParser.parseXMLForDBLookupSteps(" + xmlFilePath + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -219,10 +216,8 @@ public class XMLParser {
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			Log.logError("XMLParser.parseXMLForDimLookupUpdateSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
-
 		return dimlookupupdatesteps;
 	}
-
 	public List<CombinationLookupUpdateStep> parseXMLForCombinationLookupUpdateSteps(String xmlFilePath){
 		Log.logProgress("XMLParser.parseXMLForCombinationLookupUpdateSteps(" + xmlFilePath + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -249,6 +244,18 @@ public class XMLParser {
 			Log.logError("XMLParser.parseXMLForCombinationLookupUpdateSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
 		return comblookupupdatesteps;
+	}
+	public String getStepTypeAsString(XPath xpath, Document doc, String stepname) {
+		Log.logProgress("XMLParser.getStepType(" + xpath.toString() + ")");
+		String stepType = "Error";
+		String cleanStepName=stepname.replace("'", "");
+		try {
+			XPathExpression expr = xpath.compile("/transformation/step[name='"+cleanStepName+"']/type/text()");
+			stepType = (String) expr.evaluate(doc, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			Log.logError("XMLParser.getStepType(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+		return stepType;
 	}
 
 	private int getStepType(XPath xpath, Document doc, String stepname) {
@@ -311,7 +318,7 @@ public class XMLParser {
 	}
 	public void megaParser(String stepType) {
 		switch (stepType) {
-		case 
+		 
 		}
 	}
 	
