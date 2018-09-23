@@ -245,15 +245,47 @@ public class XMLParser {
 		}
 		return comblookupupdatesteps;
 	}
+	/***
+	 * Read the value of some attribute from a step in the XML file
+	 * @param xpath
+	 * @param doc
+	 * @param stepname The step to read from
+	 * @param thing The thing to read
+	 * @return The value of the thing that was read
+	 */
+	public String getSomething(XPath xpath, Document doc, String stepname, String thing) {
+		Log.logProgress("XMLParser.getSomething(" + xpath.toString() + ")");
+		String sql = "Error";
+		String cleanStepName=stepname.replace("'", "");
+		try {
+			XPathExpression expr = xpath.compile("/transformation/step[name='"+cleanStepName+"']/" + thing + "/text()");
+			sql = (String) expr.evaluate(doc, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			Log.logError("XMLParser.getSomething(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+		return sql;
+	}
+	public String getSQL(XPath xpath, Document doc, String stepname) {
+		Log.logProgress("XMLParser.getSQL(" + xpath.toString() + ")");
+		String sql = "Error";
+		String cleanStepName=stepname.replace("'", "");
+		try {
+			XPathExpression expr = xpath.compile("/transformation/step[name='"+cleanStepName+"']/sql/text()");
+			sql = (String) expr.evaluate(doc, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			Log.logError("XMLParser.getSQL(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+		return sql;
+	}
 	public String getStepTypeAsString(XPath xpath, Document doc, String stepname) {
-		Log.logProgress("XMLParser.getStepType(" + xpath.toString() + ")");
+		Log.logProgress("XMLParser.getStepTypeAsString(" + xpath.toString() + ")");
 		String stepType = "Error";
 		String cleanStepName=stepname.replace("'", "");
 		try {
 			XPathExpression expr = xpath.compile("/transformation/step[name='"+cleanStepName+"']/type/text()");
 			stepType = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
-			Log.logError("XMLParser.getStepType(): " + e.getLocalizedMessage(), e.getStackTrace());
+			Log.logError("XMLParser.getStepTypeAsString(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
 		return stepType;
 	}

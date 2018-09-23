@@ -23,6 +23,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Schemas;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
+import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
@@ -39,6 +40,8 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
 import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -73,7 +76,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.TableView;
 
 public class ProcessETLController {
-	@FXML	private TableView<Label> tvwETLSteps;
+	@FXML	private TableView<GUIETLStep> tvETLSteps;
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults;
 	@FXML	private Button btnDBSubmit, btnETLBrowse;
@@ -93,8 +96,11 @@ public class ProcessETLController {
 		Log.logProgress("ProcessETLController.Initialize() complete");
 	}
 	private void setTheScene() {
-
+		loadTableViewWithETLSteps(new ETLSteps());		// Load nothing. 
 	}
+	private void loadTableViewWithETLSteps(ETLSteps etlSteps) {
+		ETLStep.loadTableViewWithETLSteps(tvETLSteps, etlSteps);
+	}	
 	private void browseETL() {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
@@ -143,6 +149,7 @@ public class ProcessETLController {
 	        }
 	    };
 	    task.setOnSucceeded(e -> {
+	    	ETLSteps etlSteps = new ETLSteps();
 	    	lblWorking.setVisible(false);
 			XMLParser myXMLParser = new XMLParser();
 			//myXMLParser.getStepNames(xmlFilePath, stepNames);
@@ -157,15 +164,17 @@ public class ProcessETLController {
 				XPath xpath = xpathFactory.newXPath();
 				int counter = 0;
 				for (String stepName: stepNames) {
-					String tmp;
+					String tmp, stepType, sql, table;
 					counter++;
 					tmp = String.valueOf(counter) + ": ";
 					tmp += stepName;
-					tmp += " (" + myXMLParser.getStepTypeAsString(xpath, doc, stepName) +  ")";
+					stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName);
+					sql = myXMLParser.getSQL(xpath, doc, stepName);
+					table = myXMLParser.getSomething(xpath, doc, stepName, "table");
+					tmp += " (" + stepType +  ")";
 					txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
-					
-			        ObservableList<Label> data = tvwETLSteps.getItems();
-			        data.add(new Label(stepName));	//, new Label(tmp));
+					// Add this new step to the collection of steps
+					etlSteps.addETLStep(new ETLStep(stepName, stepType, sql, table));
 				}
 				for (OutputStep outputStep: os) {
 					txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
@@ -176,10 +185,12 @@ public class ProcessETLController {
 				for (DBJoinStep joinStep: js) {
 					txaJoinStepResults.appendText(joinStep.toString() + System.getProperty("line.separator"));
 				}
+				// Copy the collection of steps to the table view control on the GUI
+				loadTableViewWithETLSteps(etlSteps);
 				displayLoadETLResults(true);
 				disableETLLoadSelectionControls(false);
 			} catch (Exception ex) {
-				Log.logError("ProcessETLController.loadETL(): " + ex.getLocalizedMessage());
+				Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 			}
 	      });
 	    Thread thread = new Thread(task);

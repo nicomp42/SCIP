@@ -280,10 +280,10 @@ public class ConfigController /* extends Application */ {
 		java.sql.ResultSet resultSet = null;
 		String sql = "SELECT * FROM `" + sdci.getSchemaName() + "`.tproject;";
 		resultSet = SQLUtils.executeQuery(sdci.getHostName(), 
-										 sdci.getSchemaName(),
-				              			 sdci.getLoginName(), 
-				              			 sdci.getPassword(), 
-				              			 sql);
+										  sdci.getSchemaName(),
+				              			  sdci.getLoginName(), 
+				              			  sdci.getPassword(), 
+				              			  sql);
 		try {
 //			ResultSetMetaData rsmd = resultSet.getMetaData();
 			while (resultSet.next()) {

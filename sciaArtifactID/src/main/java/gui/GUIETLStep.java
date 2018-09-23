@@ -16,39 +16,49 @@ public class GUIETLStep {
 
 	private final SimpleStringProperty stepName = new SimpleStringProperty("");
 	private final SimpleStringProperty stepType = new SimpleStringProperty("");
+	private final SimpleStringProperty sql = new SimpleStringProperty("");
+	private final SimpleStringProperty table = new SimpleStringProperty("");
 	
 	public GUIETLStep() {
-        this("", "");
+        this("", "", "", "");
 	}
 
-    public GUIETLStep(String stepName, String stepType) {
+    public GUIETLStep(String stepName, String stepType, String sql, String table) {
     	setStepName(stepName);
     	setStepType(stepType);
+    	setSQL(sql);
+    	setTable(table);
     }
 
-	public SimpleStringProperty getStepName() {
-		return stepName;
+	public String getStepName() {
+		return stepName.get();
 	}
 
-	public SimpleStringProperty getStepType() {
-		return stepType;
+	public String getStepType() {
+		return stepType.get();
 	}	
 	
 	public void setStepType(String stepType) {
 		this.stepType.set(stepType);
 	}
+	
 	public void setStepName(String stepName) {
 		this.stepName.set(stepName);
 	}
-	/***
-	 * Load the TableView with ETL Steps
-	 * @param tableView The TableView to be loaded
-	 * @param etlSteps The set of ETL steps
-	 */
-	public static void loadTableViewWithSteps(TableView<gui.GUIETLStep> tableView, ETLSteps etlSteps) {
-        ObservableList<gui.GUIETLStep> data = tableView.getItems();
-   		for (ETLStep etlStep : etlSteps) {
-   	        data.add(new gui.GUIETLStep(etlStep.getStepName(), etlStep.getStepType()));
-   		}
-    }		
+
+	public String getSql() {
+		return sql.get();
+	}
+	public void setSQL(String sql) {
+		this.sql.set(sql);
+	}
+
+	public String getTable() {
+		return table.get();
+	}
+	
+	public void setTable(String table) {
+		this.table.set(table);
+	}
+
 }

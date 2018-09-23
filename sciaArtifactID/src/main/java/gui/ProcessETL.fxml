@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.cell.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.effect.*?>
@@ -25,7 +26,7 @@
                   <Pane fx:id="pneETLLoad" layoutX="1.0" layoutY="1.0" prefHeight="384.0" prefWidth="780.0">
                      <children>
    				      <Label layoutX="17.0" layoutY="9.0" text="Location of ETL File" />
-   	                  <Button fx:id="btnETLBrowse" layoutX="284.0" layoutY="105.0" mnemonicParsing="false" onAction="#btnETLBrowse_OnClick" text="Browse..." />
+   	                  <Button fx:id="btnETLBrowse" layoutX="17.0" layoutY="104.0" mnemonicParsing="false" onAction="#btnETLBrowse_OnClick" text="Browse..." />
    				      <TextArea fx:id="txaETLFilePath" layoutX="17.0" layoutY="39.0" prefHeight="54.0" prefWidth="781.0" />
    	    		      <Button fx:id="btnETLSubmit" layoutX="17.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnETLSubmit_OnClick" text="Submit" />
                      </children>
@@ -35,49 +36,71 @@
 	   	                <Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL Job" />
 				      <TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
         				<tabs>
-          					<Tab text="Step Names Table">
+          					<Tab text="Steps">
 					            <content>
-              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
-   		   			      				<TableView fx:id="tvwETLSteps" layoutX="5.0" layoutY="5.0">  
-										     <columns>
-										          <TableColumn text="Step Name">
-												     <cellValueFactory><PropertyValueFactory property="stepName" />
-												     </cellValueFactory>
-												  </TableColumn>
-										          <TableColumn text="Step Type">
-												     <cellValueFactory><PropertyValueFactory property="stepType" />
-												     </cellValueFactory>
-										          </TableColumn>
-										     </columns>       		   			      				
-     									</TableView>
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="600">
+                 						<children>
+      		   			      				<TableView fx:id="tvETLSteps" layoutX="5.0" layoutY="5.0" prefHeight="400.0" prefWidth="793.0">  
+   										     <columns>
+   										          <TableColumn prefWidth="113.0" text="Step Name">
+   												     <cellValueFactory>
+                                                            <PropertyValueFactory property="stepName" />
+   												     </cellValueFactory>
+   												  </TableColumn>
+   										          <TableColumn prefWidth="137.0" text="Step Type">
+   												     <cellValueFactory>
+                                                            <PropertyValueFactory property="stepType" />
+   												     </cellValueFactory>
+   										          </TableColumn>
+   										          <TableColumn prefWidth="137.0" text="SQL">
+   												     <cellValueFactory>
+                                                            <PropertyValueFactory property="sql" />
+   												     </cellValueFactory>
+   										          </TableColumn>
+   										          <TableColumn prefWidth="137.0" text="SQL">
+   												     <cellValueFactory>
+                                                            <PropertyValueFactory property="table" />
+   												     </cellValueFactory>
+   										          </TableColumn>
+   										     </columns>       		   			      				
+        									</TableView>
+                 						</children>
    		   			      			</AnchorPane>
    		   			      		</content>
 		   			      	</Tab>
           					<Tab text="Step Names">
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
-   		   			      				<TextArea fx:id="txaStepNamesResults" layoutX="5.0" layoutY="5.0"  />
+                 <children>
+      		   			      				<TextArea fx:id="txaStepNamesResults" layoutX="5.0" layoutY="5.0" />
+                 </children>
    		   			      			</AnchorPane>
    		   			      		</content>
 		   			      	</Tab>
           					<Tab text="Output Steps">
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
-   		   			      				<TextArea fx:id="txaOutputStepResults" layoutX="5.0" layoutY="5.0"  />
+                 <children>
+      		   			      				<TextArea fx:id="txaOutputStepResults" layoutX="5.0" layoutY="5.0" />
+                 </children>
    		   			      			</AnchorPane>
    		   			      		</content>
 		   			      	</Tab>
           					<Tab text="Input Steps">
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
-   		   			      				<TextArea fx:id="txaInputStepResults" layoutX="5.0" layoutY="5.0"  />
+                 <children>
+      		   			      				<TextArea fx:id="txaInputStepResults" layoutX="5.0" layoutY="5.0" />
+                 </children>
    		   			      			</AnchorPane>
    		   			      		</content>
 		   			      	</Tab>
           					<Tab text="Join Steps">
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
-   		   			      				<TextArea fx:id="txaJoinStepResults" layoutX="5.0" layoutY="5.0"  />
+                 <children>
+      		   			      				<TextArea fx:id="txaJoinStepResults" layoutX="5.0" layoutY="5.0" />
+                 </children>
    		   			      			</AnchorPane>
    		   			      		</content>
 		   			      	</Tab>
