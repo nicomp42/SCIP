@@ -9,6 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.cell.PropertyValueFactory ?>
 
 <AnchorPane id="apSubmitSQL" fx:id="apProcessETL" prefHeight="837.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessETLController">
    <padding>
@@ -34,6 +35,24 @@
 	   	                <Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL Job" />
 				      <TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
         				<tabs>
+          					<Tab text="Step Names Table">
+					            <content>
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
+   		   			      				<TableView fx:id="tvwETLSteps" layoutX="5.0" layoutY="5.0">  
+										     <columns>
+										          <TableColumn text="Step Name">
+												     <cellValueFactory><PropertyValueFactory property="stepName" />
+												     </cellValueFactory>
+												  </TableColumn>
+										          <TableColumn text="Step Type">
+												     <cellValueFactory><PropertyValueFactory property="stepType" />
+												     </cellValueFactory>
+										          </TableColumn>
+										     </columns>       		   			      				
+     									</TableView>
+   		   			      			</AnchorPane>
+   		   			      		</content>
+		   			      	</Tab>
           					<Tab text="Step Names">
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">

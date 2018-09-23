@@ -285,7 +285,7 @@ public class ConfigController /* extends Application */ {
 				              			 sdci.getPassword(), 
 				              			 sql);
 		try {
-			ResultSetMetaData rsmd = resultSet.getMetaData();
+//			ResultSetMetaData rsmd = resultSet.getMetaData();
 			while (resultSet.next()) {
 				// Zero-based. Yikes.
 				arr.add(Utils.replaceNullWithEmpty(resultSet.getString(1)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(2)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(3)) + " : " + Utils.replaceNullWithEmpty(resultSet.getString(4)));
@@ -301,7 +301,5 @@ public class ConfigController /* extends Application */ {
     	gui.GUIConnectionInformation connectionInformation = tvDatabaseConnections.getSelectionModel().getSelectedItem();
     	// Connection Name is unique
     	String connectionName = connectionInformation.getConnectionName();
-    	
-    	
     }
 }

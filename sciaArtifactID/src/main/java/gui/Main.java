@@ -269,7 +269,7 @@ public class Main extends Application {
 	private void openProcessETLWindow() {
 		try {
 			FXMLLoader fxmlLoader = null;
-			fxmlLoader = new FXMLLoader(getClass().getResource("processETL.fxml"));
+			fxmlLoader = new FXMLLoader(getClass().getResource("ProcessETL.fxml"));
 			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();
 			stage.initModality(Modality.NONE);

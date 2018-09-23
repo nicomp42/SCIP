@@ -41,6 +41,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -69,9 +70,10 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.control.TableView;
 
 public class ProcessETLController {
-
+	@FXML	private TableView<Label> tvwETLSteps;
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults;
 	@FXML	private Button btnDBSubmit, btnETLBrowse;
@@ -161,6 +163,9 @@ public class ProcessETLController {
 					tmp += stepName;
 					tmp += " (" + myXMLParser.getStepTypeAsString(xpath, doc, stepName) +  ")";
 					txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
+					
+			        ObservableList<Label> data = tvwETLSteps.getItems();
+			        data.add(new Label(stepName));	//, new Label(tmp));
 				}
 				for (OutputStep outputStep: os) {
 					txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
