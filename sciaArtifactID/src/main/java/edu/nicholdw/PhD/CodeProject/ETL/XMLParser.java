@@ -253,18 +253,39 @@ public class XMLParser {
 	 * @param thing The thing to read
 	 * @return The value of the thing that was read
 	 */
-	public String getSomething(XPath xpath, Document doc, String stepname, String thing) {
+	public String getSomethingInAStep(XPath xpath, Document doc, String stepname, String thing) {
 		Log.logProgress("XMLParser.getSomething(" + xpath.toString() + ")");
-		String sql = "Error";
+		String result = "Error";
 		String cleanStepName=stepname.replace("'", "");
 		try {
 			XPathExpression expr = xpath.compile("/transformation/step[name='"+cleanStepName+"']/" + thing + "/text()");
-			sql = (String) expr.evaluate(doc, XPathConstants.STRING);
+			result = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			Log.logError("XMLParser.getSomething(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
-		return sql;
+		return result;
 	}
+	/***
+	 * Read the value of some attribute from a connection in the XML file
+	 * @param xpath
+	 * @param doc
+	 * @param connectionName The connection to read from
+	 * @param thing The thing to read
+	 * @return The value of the thing that was read
+	 */
+	public String getSomethingInAConnection(XPath xpath, Document doc, String connectionName, String thing) {
+		Log.logProgress("XMLParser.getSomethingInAConnection(" + xpath.toString() + ")");
+		String result = "Error";
+		String cleanConnectionName=connectionName.replace("'", "");
+		try {
+			XPathExpression expr = xpath.compile("/transformation/connection[name='"+cleanConnectionName+"']/" + thing + "/text()");
+			result = (String) expr.evaluate(doc, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			Log.logError("XMLParser.getSomethingInAConnection(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+		return result;
+	}
+
 	public String getSQL(XPath xpath, Document doc, String stepname) {
 		Log.logProgress("XMLParser.getSQL(" + xpath.toString() + ")");
 		String sql = "Error";
@@ -332,6 +353,26 @@ public class XMLParser {
 			} catch (Exception ex) {
 				Log.logProgress("XMLParser.getStepNames(): " + ex.getLocalizedMessage());
 			}
+	}
+	public void getConnectionNames(String xmlFilePath, List<String> connectionNames){
+		Log.logProgress("XMLParser.getConnectionNames(" + xmlFilePath + ")");
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(xmlFilePath);
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			XPathExpression expr = xpath.compile("/transformation/connection/name/text()");
+			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				connectionNames.add(nodes.item(i).getNodeValue());
+			}
+		}catch (Exception e) {
+			Log.logError("XMLParser.getConnectionNames(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
 	}
 	private List<String> getStepNames(XPath xpath, Document doc){
 		Log.logProgress("XMLParser.getStepNames(" + xpath + ")");

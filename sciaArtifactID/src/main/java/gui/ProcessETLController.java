@@ -40,6 +40,8 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLConnection;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLConnections;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
 import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
@@ -77,6 +79,7 @@ import javafx.scene.control.TableView;
 
 public class ProcessETLController {
 	@FXML	private TableView<GUIETLStep> tvETLSteps;
+	@FXML	private TableView<GUIETLConnection> tvETLConnections;
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults;
 	@FXML	private Button btnDBSubmit, btnETLBrowse;
@@ -126,6 +129,7 @@ public class ProcessETLController {
 		ArrayList<TableInputStep> is = new ArrayList<TableInputStep>();
 		ArrayList<DBJoinStep> js = new ArrayList<DBJoinStep>();
 		ArrayList<String> stepNames = new ArrayList<String>();
+		ArrayList<String> connectionNames = new ArrayList<String>();
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
 	        @Override public Void call() throws InterruptedException {
@@ -134,6 +138,7 @@ public class ProcessETLController {
 	    			try {
 	    				XMLParser myXMLParser = new XMLParser();
 	    				myXMLParser.getStepNames(xmlFilePath, stepNames);
+	    				myXMLParser.getConnectionNames(xmlFilePath, connectionNames);
 	    				myXMLParser.parseXMLForOutputSteps(xmlFilePath, os);
 	    				myXMLParser.parseXMLForInputSteps(xmlFilePath, is);
 	    				myXMLParser.parseXMLForDBJoinSteps(xmlFilePath, js);
@@ -170,11 +175,19 @@ public class ProcessETLController {
 					tmp += stepName;
 					stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName);
 					sql = myXMLParser.getSQL(xpath, doc, stepName);
-					table = myXMLParser.getSomething(xpath, doc, stepName, "table");
+					table = myXMLParser.getSomethingInAStep(xpath, doc, stepName, "table");
 					tmp += " (" + stepType +  ")";
 					txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
 					// Add this new step to the collection of steps
 					etlSteps.addETLStep(new ETLStep(stepName, stepType, sql, table));
+				}
+				ETLConnections etlConnections = new ETLConnections();
+				for (String connectionName: connectionNames) {
+					etlConnections.addETLConnection(new ETLConnection(connectionName,
+							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
+							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
+							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "userName")
+							                                         ));
 				}
 				for (OutputStep outputStep: os) {
 					txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
@@ -189,6 +202,7 @@ public class ProcessETLController {
 				loadTableViewWithETLSteps(etlSteps);
 				displayLoadETLResults(true);
 				disableETLLoadSelectionControls(false);
+				loadTableViewWithETLConnections(etlConnections);
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 			}
@@ -197,7 +211,9 @@ public class ProcessETLController {
 	    thread.setDaemon(true);
 	    thread.start();
 	    }
-	
+		private void loadTableViewWithETLConnections(ETLConnections etlConnections) {
+			ETLConnection.loadTableViewWithETLConnections(tvETLConnections, etlConnections);
+		}
 		private void clearResultsControls() {
 			txaOutputStepResults.clear();
 			txaInputStepResults.clear();

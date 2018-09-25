@@ -1,11 +1,6 @@
 package gui;
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformations;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
+
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.ObservableList;
-import javafx.scene.control.TableView;
 
 /***
  * ETL Step Names Information for the TableView control in the ProcessETL GUI
