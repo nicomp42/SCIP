@@ -17,8 +17,8 @@ public class ETLConnection {
 	}
 	public ETLConnection(ETLConnection etlConnection) {
 		this.setName(etlConnection.getName());
-		this.setDatabase(etlConnection.getDatabase());
 		this.setServer(etlConnection.getServer());
+		this.setDatabase(etlConnection.getDatabase());
 		this.setUserName(etlConnection.getUserName());
 	}
 	
@@ -51,10 +51,11 @@ public class ETLConnection {
 	}
 	public static void loadTableViewWithETLConnections(TableView<gui.GUIETLConnection> tableView, ETLConnections etlConnections) {
         ObservableList<gui.GUIETLConnection> data = tableView.getItems();
+        data.clear();
    		for (ETLConnection etlConnection : etlConnections) {
    	        data.add(new gui.GUIETLConnection(etlConnection.getName(), 
+                       						  etlConnection.getServer(), 
    	        		                          etlConnection.getDatabase(), 
-   	        		                          etlConnection.getServer(), 
    	        		                          etlConnection.getUserName()));
    		}
     }

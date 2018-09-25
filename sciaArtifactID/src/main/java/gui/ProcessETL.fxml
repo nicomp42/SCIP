@@ -113,7 +113,7 @@
    										     <columns>
    										          <TableColumn prefWidth="113.0" text="Connection Name">
    												     <cellValueFactory>
-                                                            <PropertyValueFactory property="connectionName" />
+                                                            <PropertyValueFactory property="name" />
    												     </cellValueFactory>
    												  </TableColumn>
    										          <TableColumn prefWidth="137.0" text="Server">
@@ -128,7 +128,7 @@
    										          </TableColumn>
    										          <TableColumn prefWidth="137.0" text="User name">
    												     <cellValueFactory>
-                                                            <PropertyValueFactory property="username" />
+                                                            <PropertyValueFactory property="userName" />
    												     </cellValueFactory>
    										          </TableColumn>
    										     </columns>       		   			      				

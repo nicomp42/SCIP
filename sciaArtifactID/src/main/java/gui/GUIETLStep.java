@@ -8,7 +8,10 @@ import javafx.beans.property.SimpleStringProperty;
  *
  */
 public class GUIETLStep {
-
+	// These field names must match the cellValueFactory names in the fxml file!
+//	<cellValueFactory>
+//        <PropertyValueFactory property="stepName" />
+//  </cellValueFactory>
 	private final SimpleStringProperty stepName = new SimpleStringProperty("");
 	private final SimpleStringProperty stepType = new SimpleStringProperty("");
 	private final SimpleStringProperty sql = new SimpleStringProperty("");

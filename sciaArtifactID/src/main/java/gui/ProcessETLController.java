@@ -183,10 +183,10 @@ public class ProcessETLController {
 				}
 				ETLConnections etlConnections = new ETLConnections();
 				for (String connectionName: connectionNames) {
-					etlConnections.addETLConnection(new ETLConnection(connectionName,
-							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
+					etlConnections.addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
 							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
-							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "userName")
+							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
+							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username")
 							                                         ));
 				}
 				for (OutputStep outputStep: os) {

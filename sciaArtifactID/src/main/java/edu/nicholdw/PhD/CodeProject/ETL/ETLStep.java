@@ -49,7 +49,8 @@ public class ETLStep {
 	 */
 	public static void loadTableViewWithETLSteps(TableView<gui.GUIETLStep> tableView, ETLSteps etlSteps) {
         ObservableList<gui.GUIETLStep> data = tableView.getItems();
-   		for (ETLStep etlStep : etlSteps) {
+        data.clear();
+        for (ETLStep etlStep : etlSteps) {
    	        data.add(new gui.GUIETLStep(etlStep.getStepName(), etlStep.getStepType(), etlStep.getSql(), etlStep.getTable()));
    		}
     }
