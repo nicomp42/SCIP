@@ -1,12 +1,18 @@
 package gui;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class DataBrowseController {
 	private Scene myScene;
@@ -17,7 +23,7 @@ public class DataBrowseController {
 	private ScrollPane scpData;
 	@FXML
 	private TextArea txaData;
-	
+
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("DataBrowseController.Initialize() starting...");
@@ -30,7 +36,7 @@ public class DataBrowseController {
 	}
 
 	private void setTheScene() {
-	
+
 	}
 	public DataBrowseController() {
 		

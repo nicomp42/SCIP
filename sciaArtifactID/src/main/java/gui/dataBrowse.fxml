@@ -10,22 +10,18 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="apAboutWindow" fx:id="apAboutWindow" prefHeight="386.0" prefWidth="484.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AboutController">
+<AnchorPane id="apAboutWindow" fx:id="apAboutWindow" prefHeight="386.0" prefWidth="484.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DataBrowseController">
    <padding>
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
    <children>
-      <Button fx:id="btnOK" layoutX="428.0" layoutY="346.0" mnemonicParsing="false" onAction="#btnOK_OnClick" text="OK">
-         <font>
-            <Font name="System Bold" size="18.0" />
-         </font>
-      </Button>
       <ScrollPane fx:id="scpData" layoutX="7.0" layoutY="14.0" prefHeight="328.0" prefWidth="471.0">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TextArea fx:id="txaData" prefHeight="200.0" prefWidth="200.0" />
-               </children></AnchorPane>
+                  <TextArea fx:id="txaData" prefHeight="328.0" prefWidth="471.0" />
+               </children>
+          </AnchorPane>
         </content>
       </ScrollPane>
    </children>

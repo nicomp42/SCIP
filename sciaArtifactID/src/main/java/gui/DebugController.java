@@ -124,7 +124,7 @@ public class DebugController /* extends Application */ {
 		try {
 			txaProgress.appendText("\n" + msg);
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeDebugInfo: " + ex.getLocalizedMessage());
+			System.out.println("DebugController.writeProgress: " + ex.getLocalizedMessage());
 		}
 	}
 	public void writeNeo4jQueryInfo(String msg) {
@@ -146,7 +146,7 @@ public class DebugController /* extends Application */ {
 		try {
 			txaErrors.appendText("\n" + msg);
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeNeo4jQueryInfo: " + ex.getLocalizedMessage());
+			System.out.println("DebugController.writeError: " + ex.getLocalizedMessage());
 		}
 	}
 	private void clearAllLogs() {

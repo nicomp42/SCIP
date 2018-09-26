@@ -100,9 +100,11 @@ public class ProcessETLController {
 		}
 		Log.logProgress("ProcessETLController.Initialize() complete");
 	}
+	private DataBrowseController dataBrowseController;
 	private void setTheScene() {
 		loadTableViewWithETLSteps(new ETLSteps());		// Load nothing. 
 		addDoubleClickHandler();
+		dataBrowseController = null;
 	}
 	/***
 	 * Set up the event handler when the user double-clicks on an ETL step
@@ -114,6 +116,10 @@ public class ProcessETLController {
 		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
 		        	GUIETLStep guiETLStep = row.getItem();
 		            System.out.println(guiETLStep.toString());
+		            if (dataBrowseController == null) {
+		            	dataBrowseController = openDataBrowse();
+		            } 
+	            	dataBrowseController.appendToTextArea(guiETLStep.toString());
 		        }
 		    });
 		    return row ;
@@ -245,6 +251,32 @@ public class ProcessETLController {
 			txaInputStepResults.clear();
 			txaJoinStepResults.clear();
 			txaStepNamesResults.clear();
+		}
+		/**
+		 * A place to write interesting data for browsing
+		 */
+		public DataBrowseController openDataBrowse() {
+			DataBrowseController dataBrowseController = null;
+			try {
+				FXMLLoader fxmlLoader = null;
+				// Open the New Project Window
+				fxmlLoader = new FXMLLoader(getClass().getResource("dataBrowse.fxml"));
+				Parent root = fxmlLoader.load();
+				Stage stage = new Stage();
+				stage.initModality(Modality.NONE);
+				stage.setOpacity(1);
+				stage.setTitle("Data Browser");
+				Scene scene = new Scene(root, 700, 450);
+				stage.setScene(scene);
+				dataBrowseController = fxmlLoader.getController();
+				dataBrowseController.setScene(scene);
+				dataBrowseController.setStage(stage);
+				stage.show();
+				dataBrowseController.appendToTextArea("Data Browse Window");
+			} catch (Exception ex) {
+				Log.logError("DataBrowse.openDataBrowseWindow():" + ex.getLocalizedMessage());
+			}
+			return dataBrowseController;
 		}
 	}
 
