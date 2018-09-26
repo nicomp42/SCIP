@@ -16,17 +16,25 @@ public class GUIETLStep {
 	private final SimpleStringProperty stepType = new SimpleStringProperty("");
 	private final SimpleStringProperty sql = new SimpleStringProperty("");
 	private final SimpleStringProperty table = new SimpleStringProperty("");
+	private final SimpleStringProperty connection = new SimpleStringProperty("");
 	
 	public GUIETLStep() {
-        this("", "", "", "");
+        this("", "", "", "", "");
 	}
 
-    public GUIETLStep(String stepName, String stepType, String sql, String table) {
+    public GUIETLStep(String stepName, String stepType, String sql, String table, String connection) {
     	setStepName(stepName);
     	setStepType(stepType);
     	setSQL(sql);
     	setTable(table);
+    	setConnection(connection);
     }
+	public void setConnection(String connection) {
+		this.connection.set(connection);
+	}
+	public String getConnection() {
+		return connection.get();
+	}
 
 	public String getStepName() {
 		return stepName.get();

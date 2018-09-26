@@ -42,6 +42,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnection;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnections;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
 import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
@@ -119,6 +120,7 @@ public class ProcessETLController {
 		pneETLLoad.setDisable(disable);
 	}
 	private void loadETL() {
+		ETLProcess etlProcess = new ETLProcess();
 		String xmlFilePath = txaETLFilePath.getText().trim();
 		Log.logProgress("ProcessETLController.loadDB() " + txaETLFilePath.getText().trim());
 		displayLoadETLResults(false);
@@ -154,7 +156,7 @@ public class ProcessETLController {
 	        }
 	    };
 	    task.setOnSucceeded(e -> {
-	    	ETLSteps etlSteps = new ETLSteps();
+	    	//ETLSteps etlSteps = new ETLSteps();
 	    	lblWorking.setVisible(false);
 			XMLParser myXMLParser = new XMLParser();
 			//myXMLParser.getStepNames(xmlFilePath, stepNames);
@@ -169,21 +171,22 @@ public class ProcessETLController {
 				XPath xpath = xpathFactory.newXPath();
 				int counter = 0;
 				for (String stepName: stepNames) {
-					String tmp, stepType, sql, table;
+					String tmp, stepType, sql, table, connection;
 					counter++;
 					tmp = String.valueOf(counter) + ": ";
 					tmp += stepName;
 					stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName);
 					sql = myXMLParser.getSQL(xpath, doc, stepName);
 					table = myXMLParser.getSomethingInAStep(xpath, doc, stepName, "table");
+					connection = myXMLParser.getSomethingInAStep(xpath, doc, stepName, "connection");
 					tmp += " (" + stepType +  ")";
 					txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
 					// Add this new step to the collection of steps
-					etlSteps.addETLStep(new ETLStep(stepName, stepType, sql, table));
+					etlProcess.getETLSteps().addETLStep(new ETLStep(stepName, stepType, sql, table, connection));
 				}
-				ETLConnections etlConnections = new ETLConnections();
+				//ETLConnections etlConnections = new ETLConnections();
 				for (String connectionName: connectionNames) {
-					etlConnections.addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
+					etlProcess.getETLConnections().addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
 							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
 							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
 							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
@@ -200,14 +203,18 @@ public class ProcessETLController {
 					txaJoinStepResults.appendText(joinStep.toString() + System.getProperty("line.separator"));
 				}
 				// Copy the collection of steps to the table view control on the GUI
-				loadTableViewWithETLSteps(etlSteps);
+				loadTableViewWithETLSteps(etlProcess.getETLSteps());
 				displayLoadETLResults(true);
 				disableETLLoadSelectionControls(false);
-				loadTableViewWithETLConnections(etlConnections);
+				loadTableViewWithETLConnections(etlProcess.getETLConnections());
+				// OK, the ETLProcess object is loaded up with ETL Steps and Connections and stuff
+				// We should be able to parse the queries in the table input steps
+				etlProcess.processTableInputSteps();
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 			}
 	      });
+	    
 	    Thread thread = new Thread(task);
 	    thread.setDaemon(true);
 	    thread.start();

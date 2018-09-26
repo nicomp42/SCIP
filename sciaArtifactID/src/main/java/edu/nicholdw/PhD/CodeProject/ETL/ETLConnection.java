@@ -9,6 +9,8 @@ public class ETLConnection {
 	private String database;
 	private String userName;
 	private String type;
+	//  Since the password in the XML is encrypted. We will ask for a password for the userName that was in the XML file.
+	private String passwordDefinedExternally;		// TODO Get this pw from somewhere rather than hard=coding it.
 
 	public ETLConnection(String name, String server, String database, String userName, String type) {
 		this.setName(name);
@@ -16,6 +18,7 @@ public class ETLConnection {
 		this.setServer(server);
 		this.setUserName(userName);
 		this.setType(type);
+		setPasswordDefinedExternally("Danger42");
 	}
 	public ETLConnection(ETLConnection etlConnection) {
 		this.setName(etlConnection.getName());
@@ -23,6 +26,7 @@ public class ETLConnection {
 		this.setDatabase(etlConnection.getDatabase());
 		this.setUserName(etlConnection.getUserName());
 		this.setType(etlConnection.getType());
+		this.setPasswordDefinedExternally(etlConnection.getPasswordDefinedExternally());
 	}
 	
 	public String toString() {
@@ -34,9 +38,17 @@ public class ETLConnection {
 	public void setName(String name) {
 		this.name = name;
 	}
+	/**
+	 * Called host name in other places. 
+	 * @return The server name / host name
+	 */
 	public String getServer() {
 		return server;
 	}
+	/**
+	 * Called host name in other places. 
+	 * @param server The server name / host name
+	 */
 	public void setServer(String server) {
 		this.server = server;
 	}
@@ -69,4 +81,10 @@ public class ETLConnection {
    	        		                          etlConnection.getType()));
    		}
     }
+	public String getPasswordDefinedExternally() {
+		return passwordDefinedExternally;
+	}
+	public void setPasswordDefinedExternally(String passwordDefinedExternally) {
+		this.passwordDefinedExternally = passwordDefinedExternally;
+	}
 }

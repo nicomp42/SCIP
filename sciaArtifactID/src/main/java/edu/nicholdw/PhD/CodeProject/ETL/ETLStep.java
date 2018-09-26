@@ -1,5 +1,6 @@
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 
@@ -9,24 +10,34 @@ import javafx.scene.control.TableView;
  *
  */
 public class ETLStep {
+	public static final String type_TableInput = "TableInput";
+	
 	private String stepType;
 	private String stepName;
 	private String sql;
 	private String table;
+	private QueryDefinition queryDefinition;
+	private String connection;
 	
 	public ETLStep(ETLStep etlStep) {
 		setStepName(etlStep.getStepName());
 		setStepType(etlStep.getStepType());
 		setSql(etlStep.getSql());
 		setTable(etlStep.getTable());
+		setConnection(etlStep.getConnection());
 	}
-	public ETLStep(String stepName, String stepType, String sql, String table) {
+	public ETLStep(String stepName, String stepType, String sql, String table, String connection) {
 		setStepName(stepName);
 		setStepType(stepType);
 		setSql(sql);
 		setTable(table);
+		setConnection(connection);
 	}
 	
+	public String getConnection() {
+		return connection;
+	}
+
 	public String getStepType() {
 		return stepType;
 	}
@@ -35,6 +46,9 @@ public class ETLStep {
 		this.stepType = stepType;
 	}
 
+	public void setConnection(String connection) {
+		this.connection = connection;
+	}
 	public String getStepName() {
 		return stepName;
 	}
@@ -51,7 +65,7 @@ public class ETLStep {
         ObservableList<gui.GUIETLStep> data = tableView.getItems();
         data.clear();
         for (ETLStep etlStep : etlSteps) {
-   	        data.add(new gui.GUIETLStep(etlStep.getStepName(), etlStep.getStepType(), etlStep.getSql(), etlStep.getTable()));
+   	        data.add(new gui.GUIETLStep(etlStep.getStepName(), etlStep.getStepType(), etlStep.getSql(), etlStep.getTable(), etlStep.getConnection()));
    		}
     }
 	public String getSql() {
@@ -65,5 +79,11 @@ public class ETLStep {
 	}
 	public void setTable(String table) {
 		this.table = table;
-	}	
+	}
+	public void setQueryDefinition(QueryDefinition queryDefinition) {
+		this.queryDefinition = queryDefinition;	
+	}
+	public QueryDefinition getQueryDefinition() {
+		return queryDefinition;
+	}
 }
