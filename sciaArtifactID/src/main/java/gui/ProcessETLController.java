@@ -186,7 +186,8 @@ public class ProcessETLController {
 					etlConnections.addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
 							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
 							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
-							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username")
+							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
+							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
 							                                         ));
 				}
 				for (OutputStep outputStep: os) {

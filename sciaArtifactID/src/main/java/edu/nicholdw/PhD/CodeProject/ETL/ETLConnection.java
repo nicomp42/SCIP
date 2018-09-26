@@ -8,22 +8,25 @@ public class ETLConnection {
 	private String server;
 	private String database;
 	private String userName;
+	private String type;
 
-	public ETLConnection(String name, String server, String database, String userName) {
+	public ETLConnection(String name, String server, String database, String userName, String type) {
 		this.setName(name);
 		this.setDatabase(database);
 		this.setServer(server);
 		this.setUserName(userName);
+		this.setType(type);
 	}
 	public ETLConnection(ETLConnection etlConnection) {
 		this.setName(etlConnection.getName());
 		this.setServer(etlConnection.getServer());
 		this.setDatabase(etlConnection.getDatabase());
 		this.setUserName(etlConnection.getUserName());
+		this.setType(etlConnection.getType());
 	}
 	
 	public String toString() {
-		return getName() + ":" + getServer() + ":" + getDatabase() + ":" + getUserName();
+		return getName() + ":" + getServer() + ":" + getDatabase() + ":" + getUserName() + ":" + getType();
 	}
 	public String getName() {
 		return name;
@@ -49,6 +52,12 @@ public class ETLConnection {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getType() {
+		return type;
+	}
 	public static void loadTableViewWithETLConnections(TableView<gui.GUIETLConnection> tableView, ETLConnections etlConnections) {
         ObservableList<gui.GUIETLConnection> data = tableView.getItems();
         data.clear();
@@ -56,7 +65,8 @@ public class ETLConnection {
    	        data.add(new gui.GUIETLConnection(etlConnection.getName(), 
                        						  etlConnection.getServer(), 
    	        		                          etlConnection.getDatabase(), 
-   	        		                          etlConnection.getUserName()));
+   	        		                          etlConnection.getUserName(),
+   	        		                          etlConnection.getType()));
    		}
     }
 }

@@ -131,6 +131,11 @@
                                                             <PropertyValueFactory property="userName" />
    												     </cellValueFactory>
    										          </TableColumn>
+   										          <TableColumn prefWidth="137.0" text="Type">
+   												     <cellValueFactory>
+                                                            <PropertyValueFactory property="type" />
+   												     </cellValueFactory>
+   										          </TableColumn>
    										     </columns>       		   			      				
         									</TableView>
                  						</children>

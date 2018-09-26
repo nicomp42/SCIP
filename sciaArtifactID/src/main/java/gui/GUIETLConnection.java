@@ -17,16 +17,18 @@ public class GUIETLConnection {
 	private final SimpleStringProperty server = new SimpleStringProperty("");
 	private final SimpleStringProperty database = new SimpleStringProperty("");
 	private final SimpleStringProperty userName = new SimpleStringProperty("");
+	private final SimpleStringProperty type = new SimpleStringProperty("");
 	
 	public GUIETLConnection() {
-        this("", "", "", "");
+        this("", "", "", "", "");
 	}
 
-    public GUIETLConnection(String name, String server, String database, String userName) {
+    public GUIETLConnection(String name, String server, String database, String userName, String type) {
     	setName(name);
     	setServer(server);
     	setDatabase(database);
     	setUserName(userName);
+    	setType(type);
     }
 
 	public String getServer() {
@@ -58,5 +60,12 @@ public class GUIETLConnection {
 
 	public void setName(String name) {
 		this.name.set(name);
+	}
+	public String getType() {
+		return type.get();
+	}
+
+	public void setType(String type) {
+		this.type.set(type);
 	}
 }
