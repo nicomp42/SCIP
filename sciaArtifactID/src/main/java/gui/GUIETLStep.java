@@ -66,5 +66,7 @@ public class GUIETLStep {
 	public void setTable(String table) {
 		this.table.set(table);
 	}
-
+	public String toString() {
+		return stepName.getValue() + ":" + stepType.getValue() + ":" + table.getValue() + ":" + connection.getValue();
+	}
 }

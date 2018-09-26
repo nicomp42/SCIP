@@ -16,7 +16,7 @@ public class ETLProcess {
 	}
 	public void processTableInputSteps() {
 		for (ETLStep etlStep : etlSteps) {
-			if (etlStep.getStepType() == "TableInput") {
+			if (etlStep.getStepType().equals("TableInput")) {
 				// Look up the connection 
 				ETLConnection etlConnection = etlConnections.getConnection(etlStep.getConnection());
 				// Parse the query

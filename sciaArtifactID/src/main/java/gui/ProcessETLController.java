@@ -61,6 +61,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
@@ -101,7 +102,24 @@ public class ProcessETLController {
 	}
 	private void setTheScene() {
 		loadTableViewWithETLSteps(new ETLSteps());		// Load nothing. 
+		addDoubleClickHandler();
 	}
+	/***
+	 * Set up the event handler when the user double-clicks on an ETL step
+	 */
+	private void addDoubleClickHandler() {
+		tvETLSteps.setRowFactory( tv -> {
+		    TableRow<GUIETLStep> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		        	GUIETLStep guiETLStep = row.getItem();
+		            System.out.println(guiETLStep.toString());
+		        }
+		    });
+		    return row ;
+		});
+	}
+	
 	private void loadTableViewWithETLSteps(ETLSteps etlSteps) {
 		ETLStep.loadTableViewWithETLSteps(tvETLSteps, etlSteps);
 	}	
