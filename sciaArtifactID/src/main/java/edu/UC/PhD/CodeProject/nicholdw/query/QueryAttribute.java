@@ -110,7 +110,6 @@ public class QueryAttribute extends QueryComponent  {
 		} catch (Exception ex) {
 			Log.logError("QueryAttribute.toString(); " + ex.getLocalizedMessage());
 		}
-		
 		return result.toString();
 	}
 

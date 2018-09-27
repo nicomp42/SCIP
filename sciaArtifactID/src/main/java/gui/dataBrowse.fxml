@@ -10,19 +10,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="apAboutWindow" fx:id="apAboutWindow" prefHeight="386.0" prefWidth="484.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DataBrowseController">
+<AnchorPane id="apAboutWindow" fx:id="apAboutWindow" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.DataBrowseController">
    <padding>
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
-   <children>
-      <ScrollPane fx:id="scpData" layoutX="7.0" layoutY="14.0" prefHeight="328.0" prefWidth="471.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <TextArea fx:id="txaData" prefHeight="328.0" prefWidth="471.0" />
-               </children>
-          </AnchorPane>
-        </content>
-      </ScrollPane>
-   </children>
+         <children>
+            <ScrollPane fx:id="scpData" fitToHeight="true" fitToWidth="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1000.0">
+              <content>
+                        <TextArea fx:id="txaData" />
+              </content>
+            </ScrollPane>
+         </children>
 </AnchorPane>

@@ -101,6 +101,8 @@ public class ProcessETLController {
 		Log.logProgress("ProcessETLController.Initialize() complete");
 	}
 	private DataBrowseController dataBrowseController;
+	private ETLProcess etlProcess;
+	
 	private void setTheScene() {
 		loadTableViewWithETLSteps(new ETLSteps());		// Load nothing. 
 		addDoubleClickHandler();
@@ -120,6 +122,13 @@ public class ProcessETLController {
 		            	dataBrowseController = openDataBrowse();
 		            } 
 	            	dataBrowseController.appendToTextArea(guiETLStep.toString());
+	            	ETLStep etlStep = etlProcess.getETLSteps().getETLStep(guiETLStep.getStepName());
+	            	etlProcess.processTableInputStep(etlStep);
+	            	for (QueryAttribute queryAttribute : etlStep.getQueryDefinition().getQueryAttributes()) {
+	            		String tmp;
+	            		tmp = queryAttribute.toString();
+	            		dataBrowseController.appendToTextArea(tmp);
+	            	}
 		        }
 		    });
 		    return row ;
@@ -144,7 +153,7 @@ public class ProcessETLController {
 		pneETLLoad.setDisable(disable);
 	}
 	private void loadETL() {
-		ETLProcess etlProcess = new ETLProcess();
+		etlProcess = new ETLProcess();
 		String xmlFilePath = txaETLFilePath.getText().trim();
 		Log.logProgress("ProcessETLController.loadDB() " + txaETLFilePath.getText().trim());
 		displayLoadETLResults(false);
@@ -238,7 +247,6 @@ public class ProcessETLController {
 				Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 			}
 	      });
-	    
 	    Thread thread = new Thread(task);
 	    thread.setDaemon(true);
 	    thread.start();
@@ -272,7 +280,7 @@ public class ProcessETLController {
 				dataBrowseController.setScene(scene);
 				dataBrowseController.setStage(stage);
 				stage.show();
-				dataBrowseController.appendToTextArea("Data Browse Window");
+//				dataBrowseController.appendToTextArea("Data Browse Window");
 			} catch (Exception ex) {
 				Log.logError("DataBrowse.openDataBrowseWindow():" + ex.getLocalizedMessage());
 			}

@@ -46,6 +46,6 @@ public class DataBrowseController {
 	public void setStage(Stage myStage) {this.myStage = myStage;}
 	
 	public void appendToTextArea(String msg) {
-		txaData.appendText(msg);
+		txaData.appendText( System.getProperty("line.separator") + msg);
 	}
 }

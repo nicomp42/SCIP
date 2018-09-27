@@ -1,7 +1,6 @@
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 
 public class ETLProcess {
@@ -17,21 +16,24 @@ public class ETLProcess {
 	public void processTableInputSteps() {
 		for (ETLStep etlStep : etlSteps) {
 			if (etlStep.getStepType().equals("TableInput")) {
-				// Look up the connection 
-				ETLConnection etlConnection = etlConnections.getConnection(etlStep.getConnection());
-				// Parse the query
-				etlStep.setQueryDefinition(new QueryDefinition(etlConnection.getServer(), 
-						                                       etlConnection.getUserName(), 
-						                                       etlConnection.getPasswordDefinedExternally(),
-						                                       new QueryTypeSelect(),
-						                                       "",				// No query name 'cause it's from an ETLStep 
-						                                       etlStep.getSql(),
-						                                       etlConnection.getDatabase()));
-				etlStep.getQueryDefinition().crunchIt();
+				processTableInputStep(etlStep);
 			}
 		}
 	}
-	
+	public void processTableInputStep(ETLStep etlStep) {
+		// Look up the connection 
+		ETLConnection etlConnection = etlConnections.getConnection(etlStep.getConnection());
+		// Parse the query
+		etlStep.setQueryDefinition(new QueryDefinition(etlConnection.getServer(), 
+				                                       etlConnection.getUserName(), 
+				                                       etlConnection.getPasswordDefinedExternally(),
+				                                       new QueryTypeSelect(),
+				                                       "",				// No query name 'cause it's from an ETLStep 
+				                                       etlStep.getSql(),
+				                                       etlConnection.getDatabase()));
+		etlStep.getQueryDefinition().crunchIt();
+	}
+
 	public String getName() {
 		return name;
 	}

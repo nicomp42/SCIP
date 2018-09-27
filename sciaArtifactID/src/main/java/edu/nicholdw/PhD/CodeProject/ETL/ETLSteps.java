@@ -14,7 +14,16 @@ public class ETLSteps implements Iterable<ETLStep> {
 	public ETLSteps() {
 		etlSteps = new ArrayList<ETLStep>();
 	}
-
+	public ETLStep getETLStep(String stepName) {
+		ETLStep etlStepFound = null;
+		for (ETLStep etlStep : etlSteps) {
+			if (etlStep.getStepName().equals(stepName)) {
+				etlStepFound = new ETLStep(etlStep);
+				break;
+			}
+		}
+		return etlStepFound;
+	}
 	/***
 	 * Add a new object to the set
 	 * @param ETLStep The ETLStep object to be added. A deep copy is performed.
