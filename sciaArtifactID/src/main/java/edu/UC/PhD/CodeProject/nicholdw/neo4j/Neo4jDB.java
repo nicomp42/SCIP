@@ -444,5 +444,14 @@ public class Neo4jDB {
 		}
 		return status;
 	}
-
+	public static boolean submitNeo4jQuery(String query) {
+		boolean status = true;		// Hope for the best
+		try {
+			Neo4jDB.getDriver();
+			Neo4jDB.ExecActionQuery(query);
+		} catch (Exception ex) {
+			status = false;
+		}
+		return status;
+	}
 }

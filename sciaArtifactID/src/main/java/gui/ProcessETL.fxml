@@ -29,6 +29,7 @@
    	                  <Button fx:id="btnETLBrowse" layoutX="17.0" layoutY="104.0" mnemonicParsing="false" onAction="#btnETLBrowse_OnClick" text="Browse..." />
    				      <TextArea fx:id="txaETLFilePath" layoutX="17.0" layoutY="39.0" prefHeight="54.0" prefWidth="781.0" />
    	    		      <Button fx:id="btnETLSubmit" layoutX="17.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnETLSubmit_OnClick" text="Submit" />
+                              <Button fx:id="btnCreateGraph" layoutX="94.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnCreateGraph_OnClick" text="Create Graph" />
                      </children>
                   </Pane>
                   <Pane fx:id="pneETLResults" layoutX="1.0" layoutY="278.0" prefHeight="384.0" prefWidth="780.0">
@@ -110,43 +111,45 @@
    		   			      		</content>
 		   			      	</Tab>
 	   			      	</tabs>
-          					<Tab text="Connections">
-					            <content>
-              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="600">
-                 						<children>
-      		   			      				<TableView fx:id="tvETLConnections" layoutX="5.0" layoutY="5.0" prefHeight="400.0" prefWidth="793.0">  
-   										     <columns>
-   										          <TableColumn prefWidth="113.0" text="Connection Name">
-   												     <cellValueFactory>
-                                                            <PropertyValueFactory property="name" />
-   												     </cellValueFactory>
-   												  </TableColumn>
-   										          <TableColumn prefWidth="137.0" text="Server">
-   												     <cellValueFactory>
-                                                            <PropertyValueFactory property="server" />
-   												     </cellValueFactory>
-   										          </TableColumn>
-   										          <TableColumn prefWidth="137.0" text="Database">
-   												     <cellValueFactory>
-                                                            <PropertyValueFactory property="database" />
-   												     </cellValueFactory>
-   										          </TableColumn>
-   										          <TableColumn prefWidth="137.0" text="User name">
-   												     <cellValueFactory>
-                                                            <PropertyValueFactory property="userName" />
-   												     </cellValueFactory>
-   										          </TableColumn>
-   										          <TableColumn prefWidth="137.0" text="Type">
-   												     <cellValueFactory>
-                                                            <PropertyValueFactory property="type" />
-   												     </cellValueFactory>
-   										          </TableColumn>
-   										     </columns>       		   			      				
-        									</TableView>
-                 						</children>
-   		   			      			</AnchorPane>
-   		   			      		</content>
-		   			      	</Tab>
+   <tabs>
+             					<Tab text="Connections">
+   					            <content>
+                 						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="600">
+                    						<children>
+         		   			      				<TableView fx:id="tvETLConnections" layoutX="5.0" layoutY="5.0" prefHeight="400.0" prefWidth="793.0">  
+      										     <columns>
+      										          <TableColumn prefWidth="113.0" text="Connection Name">
+      												     <cellValueFactory>
+                                                               <PropertyValueFactory property="name" />
+      												     </cellValueFactory>
+      												  </TableColumn>
+      										          <TableColumn prefWidth="137.0" text="Server">
+      												     <cellValueFactory>
+                                                               <PropertyValueFactory property="server" />
+      												     </cellValueFactory>
+      										          </TableColumn>
+      										          <TableColumn prefWidth="137.0" text="Database">
+      												     <cellValueFactory>
+                                                               <PropertyValueFactory property="database" />
+      												     </cellValueFactory>
+      										          </TableColumn>
+      										          <TableColumn prefWidth="137.0" text="User name">
+      												     <cellValueFactory>
+                                                               <PropertyValueFactory property="userName" />
+      												     </cellValueFactory>
+      										          </TableColumn>
+      										          <TableColumn prefWidth="137.0" text="Type">
+      												     <cellValueFactory>
+                                                               <PropertyValueFactory property="type" />
+      												     </cellValueFactory>
+      										          </TableColumn>
+      										     </columns>       		   			      				
+           									</TableView>
+                    						</children>
+      		   			      			</AnchorPane>
+      		   			      		</content>
+   		   			      	</Tab>
+   </tabs>
 
    			      	</TabPane>
                      </children>

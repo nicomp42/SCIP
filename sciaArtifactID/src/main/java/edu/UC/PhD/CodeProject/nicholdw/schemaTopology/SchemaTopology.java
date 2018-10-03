@@ -120,17 +120,17 @@ public class SchemaTopology {
 	}
 	private void addSchemaNode() {
 		if (schemaTopologyConfig.getIncludeSchemaInGraph() == true) {
-			submitNeo4jQuery("CREATE (" + schemaName + ":" + schemaNodeLabel + " { key: " + "'" + schemaName + "'" + ", name:'" + schemaName + "'})");
+			Neo4jDB.submitNeo4jQuery("CREATE (" + schemaName + ":" + schemaNodeLabel + " { key: " + "'" + schemaName + "'" + ", name:'" + schemaName + "'})");
 		}
 	}
 	private void addQueryNodes() {
 		for (QueryDefinition queryDefinition : queryDefinitions) {
 			String queryName;
 			queryName = queryDefinition.getQueryName();
-			submitNeo4jQuery("CREATE (" + queryName + ":" + queryNodeLabel + " { key: " + "'" + schemaName + "." + queryName + "'" + ", name:'" + queryName + "'})");
+			Neo4jDB.submitNeo4jQuery("CREATE (" + queryName + ":" + queryNodeLabel + " { key: " + "'" + schemaName + "." + queryName + "'" + ", name:'" + queryName + "'})");
 			if (schemaTopologyConfig.getIncludeSchemaInGraph() == true) {
 				// Add relationships from the schema to the queries
-				submitNeo4jQuery("MATCH "
+				Neo4jDB.submitNeo4jQuery("MATCH "
 				           +       "(q:" + queryNodeLabel  + "{key:'" + schemaName + "." + queryDefinition.getQueryName() + "'}), "
 			               + "      (s:" + schemaNodeLabel + "{key:'" + schemaName + "'}) "
 					       + "CREATE (s)-[:" + schemaToQueryLabel +"]->(q)");
@@ -138,7 +138,7 @@ public class SchemaTopology {
 		}
 	}
 	private void addTableConstraint() {
-		submitNeo4jQuery("CREATE CONSTRAINT ON (t:" + tableNodeLabel + ") ASSERT t.Key IS UNIQUE");
+		Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (t:" + tableNodeLabel + ") ASSERT t.Key IS UNIQUE");
 	}
 	/**
 	 *  Grab all the table names from the schema and drop in a node for each one
@@ -146,11 +146,11 @@ public class SchemaTopology {
 	private void addTableNodes() {
 		Tables tables = schema.getTables();	// Get the list of loaded tables.
 		for (Table table : tables) {
-			submitNeo4jQuery("CREATE (" + table.getTableName() + ":" + tableNodeLabel + " { key: " + "'" + schemaName + "." + table.getTableName() + "'" + ", name:'" + table.getTableName() + "'})");
+			Neo4jDB.submitNeo4jQuery("CREATE (" + table.getTableName() + ":" + tableNodeLabel + " { key: " + "'" + schemaName + "." + table.getTableName() + "'" + ", name:'" + table.getTableName() + "'})");
 			schemaTopologyResults.incrementTotalTables();
 			if (schemaTopologyConfig.getIncludeSchemaInGraph() == true) {
 				// Add relationships from the schema to the tables
-				submitNeo4jQuery("MATCH "
+				Neo4jDB.submitNeo4jQuery("MATCH "
 				           +       "(t:" + tableNodeLabel  + "{key:'" + schemaName + "." + table.getTableName() + "'}), "
 			               + "      (s:" + schemaNodeLabel + "{key:'" + schemaName + "'}) "
 					       + "CREATE (s)-[:" + schemaToTableLabel +"]->(t)");
@@ -158,16 +158,16 @@ public class SchemaTopology {
 		}
 	}
 	private void addAttributeConstraint() {
-		submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + attributeNodeLabel + ") ASSERT a.Key IS UNIQUE");
+		Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + attributeNodeLabel + ") ASSERT a.Key IS UNIQUE");
 	}
 	private void addAttributeNodes() {
 		Tables tables = schema.getTables();	// Get the list of loaded tables. By now we have also populated the attribute collection in each table.
 		for (Table table : tables) {
 			for (Attribute attribute: table.getAttributes()) {
 				schemaTopologyResults.incrementTotalAttributes();
-				submitNeo4jQuery("CREATE (" + attribute.getAttributeName() + ":" + attributeNodeLabel + " { key: " + "'" + schemaName + "." + table.getTableName() + "." + attribute.getAttributeName() + "'" + ", name:'" + attribute.getAttributeName() + "'})");
+				Neo4jDB.submitNeo4jQuery("CREATE (" + attribute.getAttributeName() + ":" + attributeNodeLabel + " { key: " + "'" + schemaName + "." + table.getTableName() + "." + attribute.getAttributeName() + "'" + ", name:'" + attribute.getAttributeName() + "'})");
 				// Add the relationship between the table and the attribute now because we have everything we need.
-				submitNeo4jQuery("MATCH (t:" + tableNodeLabel     + "{key:'" + schemaName + "." + table.getTableName() + "'}), "
+				Neo4jDB.submitNeo4jQuery("MATCH (t:" + tableNodeLabel     + "{key:'" + schemaName + "." + table.getTableName() + "'}), "
 				               + "      (a:" + attributeNodeLabel + "{key:'" + schemaName + "." + table.getTableName() + "." + attribute.getAttributeName() + "'}) "
 						       + "CREATE (t)-[:" + tableToAttributeLabel +"]->(a)");
 			}
@@ -178,22 +178,12 @@ public class SchemaTopology {
 			HashMap<String, QueryAttribute> queryAttributes = queryDefinition.getUniqueQueryAttributes();
 			// traverse queryAttributes and add a relation from the query to the attribute
 			for (QueryAttribute queryAttribute: queryAttributes.values()) {
-				submitNeo4jQuery("MATCH "
+				Neo4jDB.submitNeo4jQuery("MATCH "
 				           + "           (q:" + queryNodeLabel  + "{key:'" + schemaName + "." + queryDefinition.getQueryName() + "'}), "
 			               + "           (a:" + attributeNodeLabel + "{key:'" + schemaName + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName() + "'}) "
 					       + "    CREATE (q)-[:" + queryToAttributeLabel +"]->(a)");
 				schemaTopologyResults.incrementTotalQueryAttributes();
 			}
 		}
-	}
-	private boolean submitNeo4jQuery(String query) {
-		boolean status = true;		// Hope for the best
-		try {
-			Neo4jDB.getDriver();
-			Neo4jDB.ExecActionQuery(query);
-		} catch (Exception ex) {
-			status = false;
-		}
-		return status;
 	}
 }

@@ -84,12 +84,13 @@ public class ProcessETLController {
 	@FXML	private TableView<GUIETLConnection> tvETLConnections;
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults;
-	@FXML	private Button btnDBSubmit, btnETLBrowse;
+	@FXML	private Button btnDBSubmit, btnETLBrowse, btnCreateGraph;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
 	@FXML	private Pane pneETLResults, pneETLLoad;
 	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETL();}
 	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
+	@FXML	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessETLController.Initialize() starting...");
@@ -102,11 +103,23 @@ public class ProcessETLController {
 	}
 	private DataBrowseController dataBrowseController;
 	private ETLProcess etlProcess;
-	
+	/***
+	 * Create a GraphDB from the currently loaded ETL steps
+	 */
+	private void createGraph() {
+		Log.logProgress("ProcessETLController.createGraph()");
+		try {
+			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),  Config.getConfig().getNeo4jDBDefaultPassword());
+			ETLProcess.createGraph(etlProcess);
+		} catch (Exception ex) {
+			Log.logError("ProcessETLController.createGraph(): " + ex.getLocalizedMessage());
+		}
+	}
 	private void setTheScene() {
 		loadTableViewWithETLSteps(new ETLSteps());		// Load nothing. 
 		addDoubleClickHandler();
 		dataBrowseController = null;
+		btnCreateGraph.setVisible(false);
 	}
 	/***
 	 * Set up the event handler when the user double-clicks on an ETL step
@@ -148,6 +161,7 @@ public class ProcessETLController {
 	}
 	private void displayLoadETLResults(boolean visible) {
 		pneETLResults.setVisible(visible);
+		btnCreateGraph.setVisible(visible);
 	}
 	private void disableETLLoadSelectionControls(boolean disable) {
 		pneETLLoad.setDisable(disable);

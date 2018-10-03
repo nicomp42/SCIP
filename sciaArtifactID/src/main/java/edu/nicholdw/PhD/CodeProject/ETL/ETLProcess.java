@@ -1,5 +1,6 @@
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 
@@ -65,5 +66,17 @@ public class ETLProcess {
 	public void setEtlConnections(ETLConnections etlConnections) {
 		this.etlConnections = etlConnections;
 	}
-	
+	public static void createGraph(ETLProcess etlProcess) {
+		for (ETLStep etlStep : etlProcess.getETLSteps()) {
+			if (etlStep.getStepType().equals("TableInput")) {
+				// CREATE (n:Person { name: 'Andy', title: 'Developer' })
+				Neo4jDB.submitNeo4jQuery("CREATE (A:ETLStep" + 
+				                         " { StepName: " + 
+				                         "'" + etlStep.getStepName() 		+ "'" + 
+				                         ", sql:'" + etlStep.getSql() 		+ "'" + 
+				                         ",	table:'" + etlStep.getTable()	+ "'" +
+				                         "})");
+			}
+		}
+	}
 }
