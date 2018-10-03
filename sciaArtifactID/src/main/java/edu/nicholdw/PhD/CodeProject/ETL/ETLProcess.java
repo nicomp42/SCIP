@@ -1,8 +1,10 @@
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopology;
 
 public class ETLProcess {
 	private String name;
@@ -70,12 +72,41 @@ public class ETLProcess {
 		for (ETLStep etlStep : etlProcess.getETLSteps()) {
 			if (etlStep.getStepType().equals("TableInput")) {
 				// CREATE (n:Person { name: 'Andy', title: 'Developer' })
-				Neo4jDB.submitNeo4jQuery("CREATE (A:ETLStep" + 
+				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlStepNodeLabel + 
 				                         " { StepName: " + 
 				                         "'" + etlStep.getStepName() 		+ "'" + 
 				                         ", sql:'" + etlStep.getSql() 		+ "'" + 
 				                         ",	table:'" + etlStep.getTable()	+ "'" +
+				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
+				                         ",	key:'" + etlStep.getStepName()	+ "'" +
 				                         "})");
+				QueryDefinition qd = etlStep.getQueryDefinition();
+					// Add the nodes for the attributes in the query that this step uses
+				for (QueryAttribute qa : qd.getQueryAttributes()) {
+					String key = "";
+					key = qa.getSchemaName() + "." + qa.getTableName() + "." + qa.getAttributeName(); 
+					Neo4jDB.submitNeo4jQuery("CREATE (A:" + 
+	                         SchemaTopology.attributeNodeLabel +
+	                         ":" + 
+							 qa.getAttributeName() + 
+	                         " { key: "
+	                         + "'" 
+							 + key
+	                         + "'" 
+	                         + ", name:'" 
+	                         + qa.getAttributeName() 
+	                         + "'})");
+					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.attributeNodeLabel  + "{key:'" + key + "'}), "
+				               				 +     "(a:" + SchemaTopology.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
+				               				 + "CREATE (t)-[:" + SchemaTopology.etlStepToQueryAttributeLbel +"]->(a)");
+				}
+			} else if (etlStep.getStepType().equals("TableOutput")) {
+				Neo4jDB.submitNeo4jQuery("CREATE (A:ETLStep" + 
+                        " { StepName: " + 
+                        "'" + etlStep.getStepName() 		+ "'" + 
+                        ",	table:'" + etlStep.getTable()	+ "'" +
+                        ",	stepType:'" + etlStep.getStepType()	+ "'" +
+                        "})");
 			}
 		}
 	}

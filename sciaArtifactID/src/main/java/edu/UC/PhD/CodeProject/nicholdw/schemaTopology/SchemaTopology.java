@@ -29,12 +29,14 @@ public class SchemaTopology {
 	private DatabaseGraphConfig schemaTopologyConfig;
 	private static final String schemaNodeLabel = "Schema";
 	private static final String queryNodeLabel = "Query";
-	private static final String tableNodeLabel = "Table";
-	private static final String attributeNodeLabel = "Attribute";
-	private static final String tableToAttributeLabel = "contains_attribute";
+	public  static final String tableNodeLabel = "Table";
+	public  static final String attributeNodeLabel = "Attribute";
+	public static final String tableToAttributeLabel = "contains_attribute";
 	private static final String queryToAttributeLabel = "references_attribute";
 	private static final String schemaToTableLabel = "contains_table";
 	private static final String schemaToQueryLabel = "contains_query";
+	public static final String etlStepNodeLabel = "ETLStep";
+	public static final String etlStepToQueryAttributeLbel = "ETLStepToQueryAttribute";
 
 	public static void main(String[] args) {
 		Log.logProgress("SchemaTopology.main(): working...");
@@ -165,7 +167,21 @@ public class SchemaTopology {
 		for (Table table : tables) {
 			for (Attribute attribute: table.getAttributes()) {
 				schemaTopologyResults.incrementTotalAttributes();
-				Neo4jDB.submitNeo4jQuery("CREATE (" + attribute.getAttributeName() + ":" + attributeNodeLabel + " { key: " + "'" + schemaName + "." + table.getTableName() + "." + attribute.getAttributeName() + "'" + ", name:'" + attribute.getAttributeName() + "'})");
+				Neo4jDB.submitNeo4jQuery("CREATE (" + 
+				                         attribute.getAttributeName() + 
+				                         ":" + 
+				                         attributeNodeLabel + 
+				                         " { key: " 
+				                         + "'" 
+				                         + schemaName 
+				                         + "." 
+				                         + table.getTableName() 
+				                         + "." 
+				                         + attribute.getAttributeName() 
+				                         + "'" 
+				                         + ", name:'" 
+				                         + attribute.getAttributeName() 
+				                         + "'})");
 				// Add the relationship between the table and the attribute now because we have everything we need.
 				Neo4jDB.submitNeo4jQuery("MATCH (t:" + tableNodeLabel     + "{key:'" + schemaName + "." + table.getTableName() + "'}), "
 				               + "      (a:" + attributeNodeLabel + "{key:'" + schemaName + "." + table.getTableName() + "." + attribute.getAttributeName() + "'}) "

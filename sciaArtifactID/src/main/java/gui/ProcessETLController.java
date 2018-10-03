@@ -58,6 +58,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -87,6 +88,7 @@ public class ProcessETLController {
 	@FXML	private Button btnDBSubmit, btnETLBrowse, btnCreateGraph;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
+	@FXML	private CheckBox cbClearDB;
 	@FXML	private Pane pneETLResults, pneETLLoad;
 	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETL();}
 	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
@@ -110,6 +112,7 @@ public class ProcessETLController {
 		Log.logProgress("ProcessETLController.createGraph()");
 		try {
 			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),  Config.getConfig().getNeo4jDBDefaultPassword());
+			if (cbClearDB.isSelected()) {Neo4jDB.clearDB();}
 			ETLProcess.createGraph(etlProcess);
 		} catch (Exception ex) {
 			Log.logError("ProcessETLController.createGraph(): " + ex.getLocalizedMessage());
@@ -120,6 +123,7 @@ public class ProcessETLController {
 		addDoubleClickHandler();
 		dataBrowseController = null;
 		btnCreateGraph.setVisible(false);
+		cbClearDB.setSelected(false);
 	}
 	/***
 	 * Set up the event handler when the user double-clicks on an ETL step
@@ -162,6 +166,7 @@ public class ProcessETLController {
 	private void displayLoadETLResults(boolean visible) {
 		pneETLResults.setVisible(visible);
 		btnCreateGraph.setVisible(visible);
+		cbClearDB.setVisible(visible);
 	}
 	private void disableETLLoadSelectionControls(boolean disable) {
 		pneETLLoad.setDisable(disable);
