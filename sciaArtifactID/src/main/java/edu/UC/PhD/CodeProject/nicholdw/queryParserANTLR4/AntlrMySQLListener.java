@@ -3,6 +3,8 @@ package edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
+
 import org.Antlr4MySQLFromANTLRRepo.NestingLevel;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByClauseContext;
@@ -13,13 +15,16 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClassOLD;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAlias;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAliases;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClause;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseOrderBy;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseSelect;
@@ -71,6 +76,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		queryDefinition.setQueryType(new QueryTypeUnknown());
 		lastTerminalNode = "";
 		firstVisit = true;
+		queryDefinition.initWildcards();
 	}
 	private void printTerminalNodes(List<TerminalNode> tns) {
 		for (TerminalNode tn : tns) {
@@ -105,9 +111,30 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void exitSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText());
+		try {
+			boolean b;
+			b = queryDefinition.popWildcardFlag();
+			{
+				if (b) {
+					// we need all the attributes in all the tables in this select statement
+					for (QueryTable qt: queryDefinition.getQueryTables()) {
+						Attributes as = new Attributes();
+						as = Table.readAttributesFromTableDefinition(qt.getSchemaName(), qt.getTableName());
+					}
+				}
+			}
+		} catch (Exception ex) {}
 	}
 	@Override public void enterSelectElements(MySqlParser.SelectElementsContext ctx) {
+		
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectElements: " + ctx.getText());
+		boolean isAsterisk = false;
+		// If it's an asterisk, we need all the fields in all the tables.
+		if (ctx.getText().equals("*")) {
+			Log.logQueryParseProgress("AntlrMySQLListener.enterSelectElements: it's a star!");
+			isAsterisk = true;
+		}
+		queryDefinition.pushWildcardFlag(isAsterisk);
 	}
 	@Override public void exitSelectElements(MySqlParser.SelectElementsContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectElements: " + ctx.getText());
@@ -836,6 +863,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): SELECT statement qualifier: " + node.getText().toUpperCase());
 			break;
 		default:
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): UNKNOWN symbol: " + node.getText());
 			lastTerminalNode = "UNKNOWN";
 		}
 	}

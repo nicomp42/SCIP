@@ -16,6 +16,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
@@ -71,6 +72,7 @@ public class QueryParser {
 	 * @return True if attribute is indeed an attribute, false otherwise
 	 */
 	public static boolean isAttribute(String attribute) {
+//		Log.logQueryParseProgress("isAttribute(): " + attribute);
 		boolean status = true;		// Hope for the best
 		char firstChar = attribute.charAt(0);
 		CharSequence charSeq = firstChar + "";

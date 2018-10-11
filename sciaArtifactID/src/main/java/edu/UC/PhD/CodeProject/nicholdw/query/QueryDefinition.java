@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
@@ -42,7 +43,8 @@ public class QueryDefinition {
 	private QueryFunctions queryFunctions;
 	private QueryVariables queryVariables;
 	private QueryTerminalSymbols queryTerminalSymbols;
-	  
+	private Stack<Boolean> wildcards;		// This is irrelevant in MySQL stored views. Attirbute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html 
+	
 	public QueryDefinition(String hostName, String loginName, String password, QueryType queryType, String queryName, String sql, String schemaName) {
 		setQueryType(queryType);
 		setQueryName(queryName);
@@ -61,7 +63,11 @@ public class QueryDefinition {
 		setQueryFunctions(new QueryFunctions());
 		setQueryVariables(new QueryVariables());
 		setQueryTerminalSymbols(new QueryTerminalSymbols());		
+		setWildcards(new Stack<Boolean>());
 	}
+	public void initWildcards() {wildcards = new Stack<Boolean>();}
+	public void pushWildcardFlag(Boolean isAsterisk) {wildcards.push(isAsterisk);}
+	public Boolean popWildcardFlag() {return wildcards.pop();}
 	public CompoundAliases getCompoundAliases() {return compoundAliases;}
 	public void setCompoundAliases(CompoundAliases compoundAliases) {this.compoundAliases = compoundAliases;}
 	/*
@@ -592,6 +598,14 @@ public class QueryDefinition {
 	public void setQueryFunctions(QueryFunctions queryFunctions) {this.queryFunctions = queryFunctions;}
 	public QueryVariables getQueryVariables() {return queryVariables;}
 	public void setQueryVariables(QueryVariables queryVariables) {this.queryVariables = queryVariables;}
-	public QueryTerminalSymbols getQueryTerminalSymbols() {return queryTerminalSymbols;}
+	public QueryTerminalSymbols getQueryTerminalSymbols() {
+		return queryTerminalSymbols;
+	}
 	public void setQueryTerminalSymbols(QueryTerminalSymbols queryTerminalSymbols) {this.queryTerminalSymbols = queryTerminalSymbols;}
+	public Stack<Boolean> getWildcards() {
+		return wildcards;
+	}
+	public void setWildcards(Stack<Boolean> wildcards) {
+		this.wildcards = wildcards;
+	}
 }

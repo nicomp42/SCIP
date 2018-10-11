@@ -21246,7 +21246,7 @@ public class MySqlParser extends Parser {
 			if ( listener instanceof MySqlParserListener ) ((MySqlParserListener)listener).exitUnionParenthesisSelect(this);
 		}
 	}
-	public static class SimpleSelectContext extends SelectStatementContext {
+	public /*static*/ class SimpleSelectContext extends SelectStatementContext {
 		public QuerySpecificationContext querySpecification() {
 			return getRuleContext(QuerySpecificationContext.class,0);
 		}
