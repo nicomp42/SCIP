@@ -85,7 +85,7 @@ public class ProcessETLController {
 	@FXML	private TableView<GUIETLConnection> tvETLConnections;
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults;
-	@FXML	private Button btnDBSubmit, btnETLBrowse, btnCreateGraph;
+	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
 	@FXML	private CheckBox cbClearDB;
@@ -122,8 +122,9 @@ public class ProcessETLController {
 		loadTableViewWithETLSteps(new ETLSteps());		// Load nothing. 
 		addDoubleClickHandler();
 		dataBrowseController = null;
-		btnCreateGraph.setVisible(false);
-		cbClearDB.setSelected(false);
+		cbClearDB.setVisible(false);
+		displayLoadETLResults(false);
+		btnETLSubmit.setVisible(false);
 	}
 	/***
 	 * Set up the event handler when the user double-clicks on an ETL step
@@ -156,12 +157,21 @@ public class ProcessETLController {
 		ETLStep.loadTableViewWithETLSteps(tvETLSteps, etlSteps);
 	}	
 	private void browseETL() {
+		btnETLSubmit.setVisible(false);
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 		directoryChooser.setTitle("Select ETL Directory");
 		Stage stage = (Stage) this.btnETLBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
 		File file = (new FileChooser()).showOpenDialog(stage);
-		if (file != null) {txaETLFilePath.setText(file.getAbsolutePath());}	
+		if (file != null) {
+			txaETLFilePath.setText(file.getAbsolutePath());
+			btnETLSubmit.setVisible(true);
+		} else {
+			// Was there already something in the file path field?
+			if (txaETLFilePath.getText().trim().length() > 0) {
+				btnETLSubmit.setVisible(true);
+			}
+		}
 	}
 	private void displayLoadETLResults(boolean visible) {
 		pneETLResults.setVisible(visible);
@@ -263,6 +273,7 @@ public class ProcessETLController {
 				etlProcess.processTableOutputStepsFields(xmlFilePath);
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
+				disableETLLoadSelectionControls(false);
 			}
 	      });
 	    Thread thread = new Thread(task);
