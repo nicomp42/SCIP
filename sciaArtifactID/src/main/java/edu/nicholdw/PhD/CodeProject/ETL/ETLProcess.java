@@ -146,15 +146,25 @@ public class ETLProcess {
 				               				 + "CREATE (t)-[:" + SchemaTopology.etlStepToQueryAttributeLbel +"]->(a)");
 				}
 			} else if (etlStep.getStepType().equals("TableOutput")) {
-				Neo4jDB.submitNeo4jQuery("CREATE (A:ETLStep" + 
-				                         " { StepName: " + 
-				                         "'" + etlStep.getStepName() 		+ "'" + 
+				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlStepNodeLabel + 
+				                         " { StepName: " + "'" + etlStep.getStepName() + "'" + 
 				                         ",	table:'" + etlStep.getTable()	+ "'" +
+				                         ",	key:'" + etlStep.getStepName()	+ "'" +
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         "})");
 				// There is no query here: we just need to step through all the fields that are accessed in the output table
 				for (ETLField etlField: etlStep.getETLFields()) {
-				
+					String key;
+					key = etlStep.getStepName() + ":" + etlField.getStreamName()	+ ":" + etlField.getColumnName();
+					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlFieldNodeLabel + 
+	                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
+	                         ",	key:'" + key + "'" +
+	                         ",	stepName:'" + etlStep.getStepName()	+ "'" +
+	                         "})");
+
+					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.etlFieldNodeLabel  + "{key:'" + key + "'}), "
+              				 +     "(a:" + SchemaTopology.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
+              				 + "CREATE (t)-[:" + SchemaTopology.etlFieldToETLStepLabel +"]->(a)");
 				}		
 			}
 		}

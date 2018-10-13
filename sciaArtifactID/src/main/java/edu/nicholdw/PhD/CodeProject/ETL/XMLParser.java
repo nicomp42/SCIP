@@ -421,12 +421,10 @@ public class XMLParser {
 				streamName  = ""; columnName = "";
 				for (int k = 0; k < children.getLength(); k++) {
 					if (children.item(k).getNodeName().equals("#text")) {continue;}
-					//streamName = children.item(k).getNodeName();
-					//columnName = children.item(k).getTextContent();
-					System.out.println("Node Name : " + children.item(k).getNodeName());
-					System.out.println("Node Value : " + children.item(k).getNodeValue());
-					System.out.println("Local Name : " + children.item(k).getLocalName());
-					System.out.println("Text Content : " + children.item(k).getTextContent());
+//					System.out.println("Node Name : " + children.item(k).getNodeName());
+//					System.out.println("Node Value : " + children.item(k).getNodeValue());
+//					System.out.println("Local Name : " + children.item(k).getLocalName());
+//					System.out.println("Text Content : " + children.item(k).getTextContent());
 					if (children.item(k).getNodeName().equals("column_name") ) {
 						columnName = children.item(k).getTextContent();
 					}

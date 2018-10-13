@@ -26,6 +26,7 @@ public class ETLStep {
 		setSql(etlStep.getSql());
 		setTable(etlStep.getTable());
 		setConnection(etlStep.getConnection());
+		etlFields = new ETLFields();
 	}
 	public ETLStep(String stepName, String stepType, String sql, String table, String connection) {
 		setStepName(stepName);
@@ -33,6 +34,7 @@ public class ETLStep {
 		setSql(sql);
 		setTable(table);
 		setConnection(connection);
+		etlFields = new ETLFields();
 	}
 	public void addETLFields(ETLFields etlFields) {
 		for (ETLField etlField: etlFields) {

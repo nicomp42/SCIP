@@ -31,12 +31,14 @@ public class SchemaTopology {
 	private static final String queryNodeLabel = "Query";
 	public  static final String tableNodeLabel = "Table";
 	public  static final String attributeNodeLabel = "Attribute";
+	public  static final String etlFieldNodeLabel = "ETLField";
 	public static final String tableToAttributeLabel = "contains_attribute";
 	private static final String queryToAttributeLabel = "references_attribute";
 	private static final String schemaToTableLabel = "contains_table";
 	private static final String schemaToQueryLabel = "contains_query";
 	public static final String etlStepNodeLabel = "ETLStep";
 	public static final String etlStepToQueryAttributeLbel = "ETLStepToQueryAttribute";
+	public static final String etlFieldToETLStepLabel = "ETLFieldToETLStep";
 
 	public static void main(String[] args) {
 		Log.logProgress("SchemaTopology.main(): working...");
