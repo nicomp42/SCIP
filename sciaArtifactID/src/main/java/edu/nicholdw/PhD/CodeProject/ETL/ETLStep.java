@@ -18,6 +18,7 @@ public class ETLStep {
 	private String table;
 	private QueryDefinition queryDefinition;
 	private String connection;
+	private ETLFields etlFields;
 	
 	public ETLStep(ETLStep etlStep) {
 		setStepName(etlStep.getStepName());
@@ -33,7 +34,13 @@ public class ETLStep {
 		setTable(table);
 		setConnection(connection);
 	}
-	
+	public void addETLFields(ETLFields etlFields) {
+		for (ETLField etlField: etlFields) {
+			this.etlFields.add(etlField);
+		}
+	}
+	public ETLFields getETLFields() {return etlFields;}
+
 	public String getConnection() {
 		return connection;
 	}

@@ -90,7 +90,7 @@ public class ProcessETLController {
 	@FXML	private Label lblWorking;
 	@FXML	private CheckBox cbClearDB;
 	@FXML	private Pane pneETLResults, pneETLLoad;
-	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETL();}
+	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETL(txaETLFilePath.getText().trim());}
 	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
 	@FXML	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
 	@FXML
@@ -140,7 +140,7 @@ public class ProcessETLController {
 		            } 
 	            	dataBrowseController.appendToTextArea(guiETLStep.toString());
 	            	ETLStep etlStep = etlProcess.getETLSteps().getETLStep(guiETLStep.getStepName());
-	            	etlProcess.processTableInputStep(etlStep);
+	            	etlProcess.processTableInputStepQuery(etlStep);
 	            	for (QueryAttribute queryAttribute : etlStep.getQueryDefinition().getQueryAttributes()) {
 	            		String tmp;
 	            		tmp = queryAttribute.toString();
@@ -171,9 +171,8 @@ public class ProcessETLController {
 	private void disableETLLoadSelectionControls(boolean disable) {
 		pneETLLoad.setDisable(disable);
 	}
-	private void loadETL() {
+	private void loadETL(String xmlFilePath) {
 		etlProcess = new ETLProcess();
-		String xmlFilePath = txaETLFilePath.getText().trim();
 		Log.logProgress("ProcessETLController.loadDB() " + txaETLFilePath.getText().trim());
 		displayLoadETLResults(false);
 		disableETLLoadSelectionControls(true);
@@ -208,7 +207,6 @@ public class ProcessETLController {
 	        }
 	    };
 	    task.setOnSucceeded(e -> {
-	    	//ETLSteps etlSteps = new ETLSteps();
 	    	lblWorking.setVisible(false);
 			XMLParser myXMLParser = new XMLParser();
 			//myXMLParser.getStepNames(xmlFilePath, stepNames);
@@ -261,7 +259,8 @@ public class ProcessETLController {
 				loadTableViewWithETLConnections(etlProcess.getETLConnections());
 				// OK, the ETLProcess object is loaded up with ETL Steps and Connections and stuff
 				// We should be able to parse the queries in the table input steps
-				etlProcess.processTableInputSteps();
+				etlProcess.processTableInputStepQueries();
+				etlProcess.processTableOutputStepsFields(xmlFilePath);
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 			}

@@ -1,5 +1,13 @@
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
@@ -16,14 +24,51 @@ public class ETLProcess {
 		etlSteps = new ETLSteps();
 		etlConnections = new ETLConnections();
 	}
-	public void processTableInputSteps() {
+	public void processTableInputStepQueries() {
 		for (ETLStep etlStep : etlSteps) {
 			if (etlStep.getStepType().equals("TableInput")) {
-				processTableInputStep(etlStep);
+				processTableInputStepQuery(etlStep);
 			}
 		}
 	}
-	public void processTableInputStep(ETLStep etlStep) {
+	/**
+	 * Step through all the Table Output Steps and look up the Fields for each step
+	 */
+	public void processTableOutputStepsFields(String xmlFilePath) {
+		for (ETLStep etlStep : etlSteps) {
+			Log.logProgress("ETLProcess.processTableOutputStepsFields(): ETL Step Name = " + etlStep.getStepName() + ", ETL Step Type = " + etlStep.getStepType());
+			if (etlStep.getStepType().equals("TableOutput")) {
+				processTableOutputStepFields(xmlFilePath, etlStep);
+			}
+		}
+	}
+	/**
+	 * Look up the fields for a Table Output Step and add them to the etlStep
+	 * @param etlStep The ETLStep to receive the fields
+	 */
+	public void processTableOutputStepFields(String xmlFilePath, ETLStep etlStep) {
+		// Look up the connection 
+		ETLConnection etlConnection = etlConnections.getConnection(etlStep.getConnection());
+		// Read the fields into the etlStep object
+		XMLParser myXMLParser = new XMLParser();
+		//myXMLParser.getStepNames(xmlFilePath, stepNames);
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(xmlFilePath);
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			ETLFields etlFields;
+			etlFields = myXMLParser.getETLFields(xpath, doc, etlStep.getStepName());
+			etlStep.addETLFields(etlFields);
+		} catch (Exception ex) {		
+			Log.logError("ETLProcess.processTableOutputStepFields(): " + ex.getLocalizedMessage());
+		}
+	}
+	public void processTableInputStepQuery(ETLStep etlStep) {
 		// Look up the connection 
 		ETLConnection etlConnection = etlConnections.getConnection(etlStep.getConnection());
 		// Parse the query
@@ -84,29 +129,33 @@ public class ETLProcess {
 					// Add the nodes for the attributes in the query that this step uses
 				for (QueryAttribute qa : qd.getQueryAttributes()) {
 					String key = "";
-					key = qa.getSchemaName() + "." + qa.getTableName() + "." + qa.getAttributeName(); 
-					Neo4jDB.submitNeo4jQuery("CREATE (A:" + 
-	                         SchemaTopology.attributeNodeLabel +
-	                         ":" + 
-							 qa.getAttributeName() + 
-	                         " { key: "
-	                         + "'" 
-							 + key
-	                         + "'" 
-	                         + ", name:'" 
-	                         + qa.getAttributeName() 
-	                         + "'})");
+					key = etlStep.getStepName() + "." + qa.getSchemaName() + "." + qa.getTableName() + "." + qa.getAttributeName();
+					Neo4jDB.submitNeo4jQuery("CREATE (A:" +
+					                         SchemaTopology.attributeNodeLabel +
+					                         ":" + 
+											 qa.getAttributeName() +
+					                         " { key: "
+					                         + "'" 
+											 + key
+					                         + "'" 
+					                         + ", name:'" 
+					                         + qa.getAttributeName() 
+					                         + "'})");
 					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.attributeNodeLabel  + "{key:'" + key + "'}), "
 				               				 +     "(a:" + SchemaTopology.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
 				               				 + "CREATE (t)-[:" + SchemaTopology.etlStepToQueryAttributeLbel +"]->(a)");
 				}
 			} else if (etlStep.getStepType().equals("TableOutput")) {
 				Neo4jDB.submitNeo4jQuery("CREATE (A:ETLStep" + 
-                        " { StepName: " + 
-                        "'" + etlStep.getStepName() 		+ "'" + 
-                        ",	table:'" + etlStep.getTable()	+ "'" +
-                        ",	stepType:'" + etlStep.getStepType()	+ "'" +
-                        "})");
+				                         " { StepName: " + 
+				                         "'" + etlStep.getStepName() 		+ "'" + 
+				                         ",	table:'" + etlStep.getTable()	+ "'" +
+				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
+				                         "})");
+				// There is no query here: we just need to step through all the fields that are accessed in the output table
+				for (ETLField etlField: etlStep.getETLFields()) {
+				
+				}		
 			}
 		}
 	}

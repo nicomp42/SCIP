@@ -211,19 +211,18 @@ public class Neo4jDB {
 		readDatabase(filePath, neo4jNodes);
 		return neo4jNodes;
 	}
-
 	/**
 	 * Delete all the nodes and relationships in an open DB
 	 */
 	public static void clearDB() {
 		String sql = "MATCH (n) DETACH DELETE n";
 		try {
+			Neo4jDB.getDriver();
 			ExecActionQuery(sql);
 		} catch (Exception e) {
 			Log.logError("Neo4jUtils.clearDB(): ", e.getStackTrace());
 		}
 	}
-
 	/**
 	 * Execute an action query against the database. It must be started and
 	 * listening on port #dbmsConnectorBoltPort.
@@ -238,8 +237,7 @@ public class Neo4jDB {
 		// getDriver();
 		try (Session session = driver.session()) {
 			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "query = " + sql);
-			Log.logProgress(
-					"Neo4jUtils.ExecActionQuery(): " + "session is " + (session.isOpen() ? "" : "not ") + "open");
+			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "session is " + (session.isOpen() ? "" : "not ") + "open");
 			// If there is no active db, then this method call causes all kind of errors
 			// that we can't catch.
 			// We will eventually end up in the catch block, below, but only after numerous

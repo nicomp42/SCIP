@@ -13,6 +13,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -381,13 +383,63 @@ public class XMLParser {
 			XPathExpression expr = xpath.compile("/transformation/step/name/text()");
 
 			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-			for (int i = 0; i < nodes.getLength(); i++)
+			for (int i = 0; i < nodes.getLength(); i++) {
 				stepNames.add(nodes.item(i).getNodeValue());
-
+			}
 		}catch (XPathExpressionException e) {
 			Log.logError("XMLParser.getStepNames(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
 		return stepNames;
+	}
+	/**
+	 * Read fields for an ETLStep that is an OutputStep 
+	 * @param xpath
+	 * @param doc
+	 * @param stepName
+	 * @return
+	 */
+	public ETLFields getETLFields(XPath xpath, Document doc, String stepName){
+		Log.logProgress("XMLParser.getFields(" + xpath + ")");
+		String cleanStepName=stepName.replace("'", "");
+		ETLFields etlFields = new ETLFields();
+		try {
+			String myPath = "/transformation/step[name='" + cleanStepName + "']/fields/field";
+			XPathExpression expr = xpath.compile(myPath);
+
+			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Node node = nodes.item(i);
+				
+//				System.out.println(node.toString() + " " + node.getNodeName());
+				NodeList children = node.getChildNodes();
+/*			
+				NodeList children = nodes.item(i).getChildNodes();
+				NamedNodeMap nnm; 
+				nnm = nodes.item(i).getAttributes();
+				System.out.println("nnm length = " + nnm.getLength() + " children length = " + children.getLength()); */
+				String streamName = "", columnName = "";
+				streamName  = ""; columnName = "";
+				for (int k = 0; k < children.getLength(); k++) {
+					if (children.item(k).getNodeName().equals("#text")) {continue;}
+					//streamName = children.item(k).getNodeName();
+					//columnName = children.item(k).getTextContent();
+					System.out.println("Node Name : " + children.item(k).getNodeName());
+					System.out.println("Node Value : " + children.item(k).getNodeValue());
+					System.out.println("Local Name : " + children.item(k).getLocalName());
+					System.out.println("Text Content : " + children.item(k).getTextContent());
+					if (children.item(k).getNodeName().equals("column_name") ) {
+						columnName = children.item(k).getTextContent();
+					}
+					if (children.item(k).getNodeName().equals("stream_name")) {
+						streamName = children.item(k).getTextContent();
+					}
+				}
+				etlFields.add(new ETLField(columnName, streamName));						
+			}
+		}catch (Exception e) {
+			Log.logError("XMLParser.getETLFields(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+		return etlFields;
 	}
 	public void megaParser(String stepType) {
 		switch (stepType) {
