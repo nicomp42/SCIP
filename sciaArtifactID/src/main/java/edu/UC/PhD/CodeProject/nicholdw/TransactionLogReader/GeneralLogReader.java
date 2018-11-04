@@ -15,7 +15,10 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import javafx.scene.control.TextArea;
 import lib.SQLUtils;
-
+/***
+ * Process the database transaction log file
+ * @author nicomp
+ */
 public class GeneralLogReader {
 
 	public static void main(String[] args) {
@@ -71,7 +74,7 @@ public class GeneralLogReader {
 																																		connectionInformation.getHostName(), 
 																																		connectionInformation.getLoginName(),
 																																		connectionInformation.getPassword(),""));
-		SQLUtils.executeActionQuery(connection, "delete  FROM `seq-am`.tadhocquery WHERE ProjectID = " + projectID + ";");		// Clear any queries already captured for this project
+		SQLUtils.executeActionQuery(connection, "DELETE FROM `seq-am`.tadhocquery WHERE ProjectID = " + projectID + ";");		// Clear any queries already captured for this project
 		BufferedReader br = null;
 		try {
 			FileReader generalLogFile = new FileReader(logFilePath);
@@ -99,7 +102,7 @@ public class GeneralLogReader {
 //				}
 			}
 		} catch (Exception ex) {
-			System.out.println("GeneralLogReader.doEverything(): " + ex.getLocalizedMessage());
+			Log.logError("GeneralLogReader.doEverything(): " + ex.getLocalizedMessage());
 		}
 		try {br.close();} catch (Exception ex) {}
 		try {connection.close();} catch(Exception ex) {}
@@ -134,7 +137,7 @@ public class GeneralLogReader {
 //				}
 			}
 		} catch (Exception ex) {
-			System.out.println("GeneralLogReader.readFromServer(): " + ex.getLocalizedMessage());
+			Log.logError("GeneralLogReader.readFromServer(): " + ex.getLocalizedMessage());
 		}
 		try {br.close();} catch (Exception ex) {}
 		return totalRecords;

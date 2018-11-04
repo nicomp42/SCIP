@@ -147,12 +147,12 @@ public class ProcessETLController {
 	            		tmp = queryAttribute.toString();
 	            		dataBrowseController.appendToTextArea(tmp);
 	            	}
-		        }
+		        } 
 		    });
 		    return row ;
 		});
 	}
-	
+
 	private void loadTableViewWithETLSteps(ETLSteps etlSteps) {
 		ETLStep.loadTableViewWithETLSteps(tvETLSteps, etlSteps);
 	}	

@@ -25,9 +25,7 @@ public class BinaryLogReader {
 	public static void main(String[] args) {
 		BinaryLogReader demo = new BinaryLogReader();
 		//demo.readFromBinaryLogFile();
-		
 		demo.readFromServer();
-		
 	}
 	
 	public void readFromServer() {
@@ -50,7 +48,6 @@ public class BinaryLogReader {
 			System.out.println("readFromServer: " + ex.getLocalizedMessage());
 		}
 	}
-
 	public void readFromBinaryLogFile() {
 		File binlogFile = new File("C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data\\device-bin.000001");
 		BinaryLogFileReader reader = null;

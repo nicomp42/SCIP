@@ -13,7 +13,11 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopology;
-
+/***
+ * Model an entire ETL Process consisting of steps and connections
+ * @author nicomp
+ *
+ */
 public class ETLProcess {
 	private String name;
 	private String description;
