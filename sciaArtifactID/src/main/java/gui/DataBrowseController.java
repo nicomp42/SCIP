@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package gui;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;

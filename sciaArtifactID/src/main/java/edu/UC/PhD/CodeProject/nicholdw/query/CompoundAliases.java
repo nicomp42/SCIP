@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import java.util.ArrayList;
@@ -6,7 +10,7 @@ import java.util.Iterator;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 /**
- * A collestion of CompoundAlias objects
+ * A collection of CompoundAlias objects
  * @author nicomp
  */
 public class CompoundAliases implements Iterable<CompoundAlias> {

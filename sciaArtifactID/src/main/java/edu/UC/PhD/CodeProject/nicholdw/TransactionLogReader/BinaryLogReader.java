@@ -15,6 +15,8 @@ import com.github.shyiko.mysql.binlog.BinaryLogClient.EventListener;
 import com.github.shyiko.mysql.binlog.BinaryLogFileReader;
 import com.github.shyiko.mysql.binlog.event.Event;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
+
 /**
  * Development for MySQL Binary Transaction Log reader using the code at https://github.com/shyiko/mysql-binlog-connector-java
  * @author nicomp
@@ -27,11 +29,15 @@ public class BinaryLogReader {
 		//demo.readFromBinaryLogFile();
 		demo.readFromServer();
 	}
-	
+
 	public void readFromServer() {
 		try {
-			BinaryLogClient blc = new BinaryLogClient("localhost", 3306, "root", "Danger42");
-	
+//			BinaryLogClient blc = new BinaryLogClient("localhost", 3306, "root", "Danger42");
+			BinaryLogClient blc = new BinaryLogClient(Config.getConfig().getMySQLDefaultHostname(),
+					                                  Config.getConfig().getMySQLDefaultPort(),
+					                                  Config.getConfig().getMySQLDefaultLoginName(),
+					                                  Config.getConfig().getMySQLDefaultPassword());
+
 			blc.registerEventListener(new EventListener() {
 	
 			    @Override

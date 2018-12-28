@@ -2,6 +2,8 @@
  * Entry point for the GUI
  * See http://www.iconarchive.com for icons
  * Thousands of lines of awesomeness
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
  */
 package gui;
 

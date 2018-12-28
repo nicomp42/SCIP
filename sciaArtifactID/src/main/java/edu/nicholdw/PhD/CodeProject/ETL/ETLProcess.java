@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import javax.xml.parsers.DocumentBuilder;
