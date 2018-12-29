@@ -31,7 +31,7 @@ public class AliasNameClassOLD {
 	 * @return true if the names are lexically identical, false otherwise. 
 	 */
 	public Boolean equals(AliasNameClassOLD aliasNameClass) {
-		Boolean result = false;
+//		Boolean result = false;
 		return (Config.getConfig().compareAliasNames(this.getAliasName(), aliasNameClass.getAliasName()));
 	}
 	public String toString() {return getAliasName();}

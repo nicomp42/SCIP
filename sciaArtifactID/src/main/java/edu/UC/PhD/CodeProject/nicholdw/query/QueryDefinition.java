@@ -99,7 +99,7 @@ public class QueryDefinition {
 			}
 			type = queryTable.getAttributeDataType(queryAttribute.getAttributeName());
 		} catch (Exception ex) {
-			Log.logError("QueryDefinition.getQueryAttributeType(" + queryAttribute.getAttributeName() + "): " + ex.getLocalizedMessage());
+			Log.logError("QueryDefinition.getQueryAttributeType(" + queryAttribute.toString() + "): " + ex.getLocalizedMessage());
 			type = "UNDEFINED";
 		}
 		// Using the table, look up the data type for the attribute.

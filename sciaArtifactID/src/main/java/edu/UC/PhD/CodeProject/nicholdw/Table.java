@@ -243,6 +243,7 @@ public class Table {
 		return result;
 	}
 	private static int extractLength(String dataType) {
+		// float(2,2) means "use two digits, of which two are used after the decimal point". 
 		int length = -1;
 		try {
 			int idx1, idx2;
@@ -251,8 +252,16 @@ public class Table {
 				idx1++;
 				idx2 = dataType.indexOf(")");
 //				idx2--;
-				String strLength = dataType.substring(idx1, idx2);
-				length = Integer.valueOf(strLength);
+				// Is there a comma in the length specifier?
+				int commaIdx;
+				commaIdx = dataType.substring(idx1, idx2).indexOf(",");
+				if (commaIdx == -1) {
+					String strLength = dataType.substring(idx1, idx2);
+					length = Integer.valueOf(strLength);
+				} else {
+					String strLength = dataType.substring(idx1, idx1 + commaIdx);
+					length = Integer.valueOf(strLength);
+				}
 			}
 		} catch (Exception ex) {
 			Log.logError("Table.extractLength(): " + ex.getLocalizedMessage());

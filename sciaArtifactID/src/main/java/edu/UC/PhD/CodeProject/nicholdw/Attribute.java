@@ -23,7 +23,7 @@ public class Attribute {
 	 */
 	public static final String typeUnknown = "Unknown";
 	public static enum enumNullableCheck {notCheckedYet, nullsFoundInTheData, noNullsFoundInTheData, notNullable};
-	public static enum enumType {tinyInt, mediumInt, intType, BigInt, decimalType, floatType, doubleType, real, bit, booleanType, serial, dateType, dateTime, timeStamp, time, year, charType, varchar, tinytext, textType, mediumText, longText, binary, varBinary, unknown};
+	public static enum enumType {tinyInt, mediumInt, intType, BigInt, decimalType, floatType, doubleType, real, bit, booleanType, serial, dateType, dateTime, timeStamp, time, year, charType, varchar, tinytext, textType, mediumText, longText, binary, varBinary, enumType, setType, timestamp, unknown};
 
 	private boolean autoIncrement;
 	protected String attributeName;
