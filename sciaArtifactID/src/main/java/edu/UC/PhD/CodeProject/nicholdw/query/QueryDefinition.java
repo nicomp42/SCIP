@@ -43,7 +43,7 @@ public class QueryDefinition {
 	private QueryFunctions queryFunctions;
 	private QueryVariables queryVariables;
 	private QueryTerminalSymbols queryTerminalSymbols;
-	private Stack<Boolean> wildcards;		// This is irrelevant in MySQL stored views. Attirbute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html 
+	private Stack<Boolean> wildcards;		// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html 
 	
 	public QueryDefinition(String hostName, String loginName, String password, QueryType queryType, String queryName, String sql, String schemaName) {
 		setQueryType(queryType);

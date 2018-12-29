@@ -13,7 +13,7 @@ public class CompoundAlias {
 	private String aliasName;
 	@SuppressWarnings("unchecked")
 	public CompoundAlias(CompoundAlias compoundAlias) {
-		this.setAliasName(aliasName);
+		this.setAliasName(compoundAlias.getAliasName());
 		this.fullColumnNames = (ArrayList<FullColumnName>) compoundAlias.fullColumnNames.clone();
 	}
 	public CompoundAlias(String aliasName) {

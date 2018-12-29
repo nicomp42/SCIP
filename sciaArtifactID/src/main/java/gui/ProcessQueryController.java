@@ -15,6 +15,7 @@ import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
+import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAlias;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
@@ -280,6 +281,9 @@ public class ProcessQueryController /* extends Application */ {
 			QueryAttributes queryAttributes = qd.getQueryAttributes();
 			for (QueryAttribute queryAttribute : queryAttributes) {
 				lvPqAttributes.getItems().add(queryAttribute.toString() + " (" + qd.getQueryAttributeType(queryAttribute) + ")");
+			}
+			for (CompoundAlias qca : qd.getCompoundAliases()) {
+				lvPqAttributes.getItems().add(qca.toString());
 			}
 			// Schemas referenced in the query
 			lvPqSchemas.getItems().clear();
