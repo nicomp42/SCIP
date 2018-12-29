@@ -544,7 +544,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText() + " Parent Context = " + ctx.getParent().getClass());
 		// This has to be here. Do not put it in EnterAtomTableItem because the "Left" in "Left Join" will mess it up
-		fullTableNames.add(new FullTableName(ctx.getText())); 
+//		fullTableNames.add(new FullTableName(ctx.getText())); 
+		fullTableNames.add(new FullTableName(ctx.getParent().getText()));	// If we use getChild() then we don't get the alias!! 
 	}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
