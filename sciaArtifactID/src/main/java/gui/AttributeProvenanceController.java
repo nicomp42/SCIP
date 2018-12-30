@@ -197,8 +197,9 @@ public class AttributeProvenanceController /* extends Application */ {
 			// TODO: This is hinkey: we have a formatted string with schema, table, attribute, alias, data type and we will extract those individual values.
 			// This is more hinkey because the full provenance is not in the structure returned by buildProvenance. 
 			AttributeParts attributeParts = new AttributeParts();
-			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem());
-			QueryTables qt = QueryDefinition.buildProvenance(queryDefinition, attributeParts.getAliasName());
+			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem());	// Doesn't work for compound attribute entries in this ComboBox
+			QueryTables qt = new QueryTables();
+			QueryDefinition.buildProvenance(queryDefinition, attributeParts.getAliasName(), qt);
 			TreeItem<String> rootItem = null;
 			int nodeCount = 1;
 			for (QueryTable queryTable: qt) {

@@ -7,6 +7,7 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 /**
@@ -63,4 +64,19 @@ public class CompoundAliases implements Iterable<CompoundAlias> {
     }
 	public String toString() {return compoundAliases.size() + " attributes";}
 	public int size() { return compoundAliases.size();}
+	/**
+	 * Find a Compound Alias by name
+	 * @param aliasName The name to search for
+	 * @return A clone of the CompoundAlias object, or null if not found
+	 */
+	public CompoundAlias findCompoundAlias(String aliasName) {
+		CompoundAlias compoundAlias = null;
+		for (CompoundAlias ca: compoundAliases) {
+			if (Config.getConfig().compareAliasNames(ca.getAliasName(), aliasName)) {
+				compoundAlias = new CompoundAlias(ca);
+				break;
+			}
+		}
+		return compoundAlias;
+	}
 }

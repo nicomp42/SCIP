@@ -74,7 +74,7 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 		Boolean matchFound;
 		for (QueryAttribute queryAttribute : queryAttributes) {
 			matchFound = false;
-			if (Config.getConfig().compareAttributeNames(queryAttribute.getAttributeName(), attributeOrAliasName) == true){
+			if (Config.getConfig().compareAttributeNames(queryAttribute.getAttributeName(), attributeOrAliasName) == true) {
 				result = queryAttribute;
 				matchFound = true;
 				break;

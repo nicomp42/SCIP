@@ -444,12 +444,12 @@ public class QueryDefinition {
 	 * @param aliasName Attribute Name
 	 * @return The ordered list of tables that define the provenance of the attribute
 	 */
-	public static QueryTables buildProvenance(QueryDefinition qd, String aliasName) {
+	public static QueryTables buildProvenance(QueryDefinition qd, String aliasName, QueryTables queryTablesProvenance) {
 		String currentAliasName = aliasName;
 		String currentAttributeName = null;
 		QueryDefinition qdTmp = qd;
 		Log.logProgress("QueryDefinition.buildProvenance(): query = " + qd.getSchemaName() + "." + qd.getQueryName() + ", attribute alias = " + aliasName );
-		QueryTables queryTablesProvenance = new QueryTables();
+//		QueryTables queryTablesProvenance = new QueryTables();
 		boolean keepGoing = true;
 		QueryTable queryTableProvenance = null;
 		QueryAttribute queryAttributeProvenance = null;
@@ -458,24 +458,39 @@ public class QueryDefinition {
 			try {
 				if (qdTmp != null) {	// We found the underlying query that provides the attribute
 
-				// We were given the alias so we need to get that table from the table collection of this query definition
-				QueryAttribute queryAttribute = qdTmp.getQueryAttributes().findAttribute(currentAliasName);
-				Log.logProgress("QueryDefinition.buildProvenance(): query attribute with alias `" + currentAliasName + "` = " + queryAttribute.toString());
-				currentAttributeName = queryAttribute.getAttributeName();
-				qt = qdTmp.getQueryTables().lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getTableName());
-				// if this is a table, we're done. If it's not a table, it's a query and we need to find that query in the children collection for this Query Definition
-				queryTableProvenance = null;
-				queryAttributeProvenance = null;
-
-					Log.logProgress("QueryDefinition.buildProvenance(): found next table = " + qt.getSchemaName() + "." + qt.getTableName());
-					queryTableProvenance = new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClassOLD(""), null);
-					queryAttributeProvenance = qdTmp.getQueryAttributes().findAttribute(currentAliasName);
-					queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
-					queryTablesProvenance.addQueryTable(queryTableProvenance);
-					Log.logProgress("QueryDefinition.buildProvenance(): table added to provenance: " + qdTmp.getSchemaName() + "." + qdTmp.getQueryName());
-					Log.logProgress("QueryDefinition.buildProvenance(): searching for table/query with attribute: " + queryAttributeProvenance.getSchemaName() + "." +  queryAttributeProvenance.getTableName() + "." +  queryAttributeProvenance.getAttributeName() );
-					qdTmp = qdTmp.children.findQueryDefinitionBySchemaAndTableName(queryAttribute.getSchemaName(), queryAttribute.getTableName());
-					currentAliasName = currentAttributeName;		// We need the attribute name used in this query
+					// We were given the alias so we need to get that table from the table collection of this query definition
+					QueryAttribute queryAttribute = qdTmp.getQueryAttributes().findAttribute(currentAliasName);
+					if (queryAttribute != null) {
+						Log.logProgress("QueryDefinition.buildProvenance(): query attribute with alias `" + currentAliasName + "` = " + queryAttribute.toString());
+						currentAttributeName = queryAttribute.getAttributeName();
+						qt = qdTmp.getQueryTables().lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getTableName());
+						// If this is a table, we're done. If it's not a table, it's a query and we need to find that query in the children collection for this Query Definition
+						queryTableProvenance = null;
+						queryAttributeProvenance = null;
+	
+						Log.logProgress("QueryDefinition.buildProvenance(): found next table = " + qt.getSchemaName() + "." + qt.getTableName());
+						queryTableProvenance = new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClassOLD(""), null);
+						queryAttributeProvenance = qdTmp.getQueryAttributes().findAttribute(currentAliasName);
+						queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
+						queryTablesProvenance.addQueryTable(queryTableProvenance);
+						Log.logProgress("QueryDefinition.buildProvenance(): table added to provenance: " + qdTmp.getSchemaName() + "." + qdTmp.getQueryName());
+						Log.logProgress("QueryDefinition.buildProvenance(): searching for table/query with attribute: " + queryAttributeProvenance.getSchemaName() + "." +  queryAttributeProvenance.getTableName() + "." +  queryAttributeProvenance.getAttributeName() );
+						qdTmp = qdTmp.children.findQueryDefinitionBySchemaAndTableName(queryAttribute.getSchemaName(), queryAttribute.getTableName());
+						currentAliasName = currentAttributeName;		// We need the attribute name used in this query
+					} else {
+						// If queryAttribute is null, we need to look in the list of compoundAliases
+						CompoundAlias compoundAlias = qdTmp.getCompoundAliases().findCompoundAlias(currentAliasName);
+						if (compoundAlias != null) {
+							// Now we have a new problem because we need to compute provenance for all the attributes in the compound attribute.
+							for (FullColumnName fcn : compoundAlias.getFullColumnNames()) {
+								queryTableProvenance = new QueryTable(fcn.getSchemaName(), fcn.getTableName(), new AliasNameClassOLD(""), null);
+								queryAttributeProvenance = qdTmp.getQueryAttributes().findAttribute(fcn.getAttributeName());
+								queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
+								queryTablesProvenance.addQueryTable(queryTableProvenance);
+//								buildProvenance(qdTmp, fcn.getAliasNames().iterator().next().toString() , queryTablesProvenance);
+							}
+						}
+					}
 				} else {
 					// Add the last item to the provenance, which must be a table not a query. Use the schema name and table name that we didn't find in the children collection.
 					queryTableProvenance = new QueryTable(qt.getSchemaName(), qt.getTableName(), new AliasNameClassOLD(""), null );
@@ -488,6 +503,8 @@ public class QueryDefinition {
 				}
 			} catch (Exception ex) {
 				Log.logError("QueryDefinition.buildProvenance(): " + ex.getLocalizedMessage() );
+				// We need to do something here, else we may loop forever, throwing and catching errors
+				keepGoing = false;
 			}
 		}
 		return queryTablesProvenance;

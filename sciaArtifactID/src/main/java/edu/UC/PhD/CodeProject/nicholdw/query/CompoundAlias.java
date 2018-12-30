@@ -42,4 +42,8 @@ public class CompoundAlias {
 		result += ")";
 		return result;
 	}
+	@SuppressWarnings("unchecked")
+	public ArrayList<FullColumnName> getFullColumnNames() {
+		return (ArrayList<FullColumnName>) fullColumnNames.clone();
+	}
 }
