@@ -92,4 +92,19 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 		}
 		return result;
 	}
+	/***
+	 * Find a QueryAttribute by ID
+	 * @param ID The ID to search for
+	 * @return The QueryAttribute that was found, or null
+	 */
+	public QueryAttribute findAttributeByID(String ID) {
+		QueryAttribute result = null;
+		for (QueryAttribute queryAttribute : queryAttributes) {
+			if (queryAttribute.getID().contentEquals(ID)) {
+				result = queryAttribute;
+				break;
+			}
+		}
+		return result;
+	}
 }

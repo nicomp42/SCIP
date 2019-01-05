@@ -1,4 +1,10 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
+
+import java.util.UUID;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -14,6 +20,7 @@ public class QueryAttribute extends QueryComponent  {
 	private String attributeName;
 	private String tableName;
 	private String expression;
+	private String ID;
 	/**
 	 * Create a QueryAttribute object
 	 * @param schemaName
@@ -29,6 +36,7 @@ public class QueryAttribute extends QueryComponent  {
 		this.setSchemaName(schemaName);
 		this.setQueryClause(queryClause);
 		this.setAttributeName(attributeName);
+		ID = UUID.randomUUID().toString();
 	}
 	/**
 	 * Create a new QueryAttribute object
@@ -45,6 +53,7 @@ public class QueryAttribute extends QueryComponent  {
 		this.setSchemaName(schemaName);
 		this.setQueryClause(queryClause);
 		this.setAttributeName(attributeName);
+		ID = UUID.randomUUID().toString();
 	}
 	public Boolean isConstant() {
 		// TODO: write this
@@ -166,4 +175,15 @@ public class QueryAttribute extends QueryComponent  {
 		}
 		return result;
 	}
+	/***
+	 * Get the unique identifier of the attribute
+	 * @return the ID
+	 */
+	public String getID() {
+		return ID;
+	}
+/*	
+	public void setID(int iD) {
+		ID = iD;
+	} */
 }

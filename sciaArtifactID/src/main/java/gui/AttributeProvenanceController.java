@@ -5,6 +5,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
+import gui.ProcessQueryController.RowlvPqAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.attributeParts.AttributeParts;
 import edu.UC.PhD.CodeProject.nicholdw.attributeProvenance.AttributeProvenanceForNe04j;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
@@ -44,7 +45,7 @@ public class AttributeProvenanceController /* extends Application */ {
 	@FXML private CheckBox cbClearNeo4jBeforeExport, cbOpenBrowserWindowAfterExporting;
 
 	private QueryDefinition queryDefinition;
-	private ListView<String> lvPqAttributes;	// Already populated in ProcessQueryController. We just need to copy its' items into the combo-box on this form
+	private ListView<RowlvPqAttribute> lvPqAttributes;	// Already populated in ProcessQueryController. We just need to copy its' items into the combo-box on this form
 	private int startingIndexInListView;		// The index of the attribute selected by the user in ProcessQueryController just before this form was loaded. It will be used to initialize the controls on this form.
 
 	public AttributeProvenanceController() {
@@ -102,6 +103,7 @@ public class AttributeProvenanceController /* extends Application */ {
 		String CSVFolder = txaCSVFolder.getText().trim();
 		if (CSVFolder.length() != 0) {
 			// This is hinkey: we have a formatted string with schema, table, attribute and we will extract those individual values
+			// This seems better: https://stackoverflow.com/questions/41634789/javafx-combobox-display-text-but-return-id-on-selection
 			AttributeParts attributeParts = new AttributeParts();
 			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem());
 			AttributeProvenanceForNe04j.exportCSVFiles(attributeParts, queryDefinition, txaCSVFolder.getText() );
@@ -138,8 +140,8 @@ public class AttributeProvenanceController /* extends Application */ {
 		});
 	}
 	public void copyLvPqAttributes() {
-		for (String string : lvPqAttributes.getItems()) {
-			cbPqAttributes.getItems().add(string);
+		for (RowlvPqAttribute row : lvPqAttributes.getItems()) {
+			cbPqAttributes.getItems().add(row.getText());
 		}
 		cbPqAttributes.getSelectionModel().select(startingIndexInListView);
 	}
@@ -227,8 +229,8 @@ public class AttributeProvenanceController /* extends Application */ {
 			Log.logError("AttributeProvenanceController.populateTreeView(): " + ex.getLocalizedMessage());
 		}
 	}
-	public ListView<String> getLvPqAttributes() {return lvPqAttributes;}
-	public void setLvPqAttributes(ListView<String> lvPqAttributes) {this.lvPqAttributes = lvPqAttributes;}
+	public ListView<RowlvPqAttribute> getLvPqAttributes() {return lvPqAttributes;}
+	public void setLvPqAttributes(ListView<RowlvPqAttribute> lvPqAttributes) {this.lvPqAttributes = lvPqAttributes;}
 	public int getStartingIndexInListView() {return startingIndexInListView;}
 	public void setStartingIndexInListView(int startingIndexInListView) {this.startingIndexInListView = startingIndexInListView;}
 	private void openBrowserWindow() {Browser.openBrowserWindow();}

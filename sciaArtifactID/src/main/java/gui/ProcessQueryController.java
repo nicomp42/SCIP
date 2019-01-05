@@ -37,6 +37,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
@@ -53,6 +54,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 public class ProcessQueryController /* extends Application */ {
 
@@ -65,7 +67,8 @@ public class ProcessQueryController /* extends Application */ {
 	@FXML	private TextArea txaSQL, txaCSVFolder;
 	@FXML	private TextField txtPqHostName, txtPqLoginName, txtPqPassword, txtPqQueryName;
 	@FXML	private Button btnLoadPqSchemaNames, btnLoadPqSQueries, btnSavePqSchemaArtifactsToCSVFiles, btnProcessQuery, btnExportCSVFilesToNeo4j, btnBrowseForCSVFolder;
-	@FXML	private ListView<String> lvPqTables, lvPqAttributes, lvPqSchemas;
+	@FXML	private ListView<String> lvPqTables, lvPqSchemas;
+	@FXML	private ListView<RowlvPqAttribute>  lvPqAttributes;
 	@FXML	private TreeView<String> tvSchemasAndQueries;
 	@FXML	private Label lblQueryToProcess, lblQueriesReferencedInTheQuery, lblAttributesReferencedInTheQuery,	lblTablesReferencedInTheQuery, lblSchemasReferencedInTheQuery, lblCSVFolder, lblContentsOfDatabaseHost;
 	@FXML	private Pane pneArtifacts;
@@ -92,6 +95,7 @@ public class ProcessQueryController /* extends Application */ {
 		showProcessQueryControls(false);
 		showArtifacts(false);
 		showContentsOfDatabaseHostControls(false);
+		initlvPqAttributes();
 	}
 	@FXML
 	private void btnLoadPqSchemaNames_OnClick(ActionEvent event) {loadPqSchemaNames();}
@@ -280,7 +284,7 @@ public class ProcessQueryController /* extends Application */ {
 			lvPqAttributes.getItems().clear();
 			QueryAttributes queryAttributes = qd.getQueryAttributes();
 			for (QueryAttribute queryAttribute : queryAttributes) {
-				lvPqAttributes.getItems().add(queryAttribute.toString() + " (" + qd.getQueryAttributeType(queryAttribute) + ")");
+				lvPqAttributes.getItems().add(new RowlvPqAttribute(queryAttribute.getID(), queryAttribute.toString() + " (" + qd.getQueryAttributeType(queryAttribute) + ")"));
 			}
 			for (CompoundAlias qca : qd.getCompoundAliases()) {
 				lvPqAttributes.getItems().add(qca.toString());
@@ -422,4 +426,53 @@ public class ProcessQueryController /* extends Application */ {
 		public String schemaName;
 		public String queryName;
 	}
+	/**
+	 * Used to represent a row in lvPqAttributes 
+	 * @author nicomp
+	 *
+	 */
+	public class RowlvPqAttribute {
+		private String ID;
+		private String text;
+		public RowlvPqAttribute(String ID, String text) {
+			setID(ID);
+			setText(text);
+		}
+		public String getID() {
+			return ID;
+		}
+		public void setID(String iD) {
+			ID = iD;
+		}
+		public String getText() {
+			return text;
+		}
+		public void setText(String text) {
+			this.text = text;
+		}
+	}
+	private void initlvPqAttributes() {
+		lvPqAttributes.setCellFactory(lv -> new ListCell< RowlvPqAttribute>() {
+			@Override
+			public void updateItem(RowlvPqAttribute row, boolean empty) {
+			    super.updateItem(row, empty) ;
+			    setText(empty ? null : row.getText());
+			}
+		});
+/*		
+		lvPqAttributes.setConverter(new StringConverter<RowlvPqAttributes>() {
+		    @Override
+		    public String toString(RowlvPqAttributes object) {
+		        return object.getText();
+		    }
+
+		    @Override
+		    public RowlvPqAttributes fromString(String string) {
+		        return lvPqAttributes.getItems().stream().filter(ap -> 
+		            ap.getText().equals(string)).findFirst().orElse(null);
+		    }	
+		}); */
+	}
+	
+	
 }
