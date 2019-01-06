@@ -9,7 +9,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
-import gui.ProcessQueryController.RowlvPqAttribute;
+import gui.ProcessQueryController.RowPqAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.attributeParts.AttributeParts;
 import edu.UC.PhD.CodeProject.nicholdw.attributeProvenance.AttributeProvenanceForNe04j;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
@@ -24,6 +24,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
@@ -35,6 +36,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 /**
  * Display the provenance of an attribute in the target query in a dedicated window
@@ -45,11 +47,11 @@ public class AttributeProvenanceController /* extends Application */ {
 	@FXML private TreeView<String> tvAttributeProvenance;
 	@FXML private TextArea txaCSVFolder;
 	@FXML private Button btnOK, btnSaveSchemaArtifactsToCSVFiles, btnExportCSVFilesToNeo4j, btnBrowseForCSVFolder, btnProcessEverything;
-	@FXML private ComboBox<String> cbPqAttributes;
+	@FXML private ComboBox<RowPqAttribute> cbPqAttributes;
 	@FXML private CheckBox cbClearNeo4jBeforeExport, cbOpenBrowserWindowAfterExporting;
 
 	private QueryDefinition queryDefinition;
-	private ListView<RowlvPqAttribute> lvPqAttributes;	// Already populated in ProcessQueryController. We just need to copy its' items into the combo-box on this form
+	private ListView<RowPqAttribute> lvPqAttributes;	// Already populated in ProcessQueryController. We just need to copy its' items into the combo-box on this form
 	private int startingIndexInListView;		// The index of the attribute selected by the user in ProcessQueryController just before this form was loaded. It will be used to initialize the controls on this form.
 
 	public AttributeProvenanceController() {
@@ -109,7 +111,7 @@ public class AttributeProvenanceController /* extends Application */ {
 			// This is hinkey: we have a formatted string with schema, table, attribute and we will extract those individual values
 			// This seems better: https://stackoverflow.com/questions/41634789/javafx-combobox-display-text-but-return-id-on-selection
 			AttributeParts attributeParts = new AttributeParts();
-			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem());
+			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem().getText());
 			AttributeProvenanceForNe04j.exportCSVFiles(attributeParts, queryDefinition, txaCSVFolder.getText() );
 		} else {
     		Alert alert = new Alert(AlertType.ERROR);		// http://code.makery.ch/blog/javafx-dialogs-official/
@@ -138,14 +140,18 @@ public class AttributeProvenanceController /* extends Application */ {
 	private void setTheScene() {
 		// Lambda method
 		cbPqAttributes.setOnAction((event) -> {
-		    String attribute = cbPqAttributes.getSelectionModel().getSelectedItem();
+		    String attribute = cbPqAttributes.getSelectionModel().getSelectedItem().getText();
 		    Log.logProgress("AttributeProvenanceController.setTheScene(): cbPqAttributes Action selected: " + attribute);
 		    populateTreeView();
 		});
 	}
+	/**
+	 * Copy from a List Box on another form into the combo box on this form.
+	 * The List Box was provided when this form was opened. See setLvPqAttributes()
+	 */
 	public void copyLvPqAttributes() {
-		for (RowlvPqAttribute row : lvPqAttributes.getItems()) {
-			cbPqAttributes.getItems().add(row.getText());
+		for (RowPqAttribute row : lvPqAttributes.getItems()) {
+			cbPqAttributes.getItems().add(row);
 		}
 		cbPqAttributes.getSelectionModel().select(startingIndexInListView);
 	}
@@ -158,7 +164,7 @@ public class AttributeProvenanceController /* extends Application */ {
 	}
 	@FXML
 	public void btnProcessEverything_OnClick(ActionEvent event) {
-		processEverything();
+		copyToCSVFiles();
 	}
 //	@FXML
 //	public void btnOK_OnClick(ActionEvent event) {
@@ -168,17 +174,17 @@ public class AttributeProvenanceController /* extends Application */ {
 	/**
 	 * Send all the artifacts in the drop-down list to CSV files then on to the active Neo4j DB
 	 */
-	private void processEverything() {
+	private void copyToCSVFiles() {
 		Log.logProgress("AttributeProvenanceController.processEverything()");
 		try {
 			String CSVFolder = txaCSVFolder.getText().trim();
 			if (CSVFolder.length() != 0) {
 				if (cbClearNeo4jBeforeExport.isSelected()) {Neo4jDB.clearDB();}
-				ObservableList<String> items = cbPqAttributes.getItems();
-				for (String s: items) {
+				ObservableList<RowPqAttribute> items = cbPqAttributes.getItems();
+				for (RowPqAttribute attrib: items) {
 					AttributeParts attributeParts;
 					attributeParts = new AttributeParts();
-					attributeParts.split(s);
+					attributeParts.split(attrib.getText());
 					AttributeProvenanceForNe04j.exportCSVFiles(attributeParts, queryDefinition, txaCSVFolder.getText());
 					AttributeProvenanceForNe04j.executeCypherQueries(txaCSVFolder.getText());
 				}
@@ -203,7 +209,7 @@ public class AttributeProvenanceController /* extends Application */ {
 			// TODO: This is hinkey: we have a formatted string with schema, table, attribute, alias, data type and we will extract those individual values.
 			// This is more hinkey because the full provenance is not in the structure returned by buildProvenance. 
 			AttributeParts attributeParts = new AttributeParts();
-			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem());	// Doesn't work for compound attribute entries in this ComboBox
+			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem().getText());	// Doesn't work for compound attribute entries in this ComboBox
 			QueryTables qt = new QueryTables();
 			QueryDefinition.buildProvenance(queryDefinition, attributeParts.getAliasName(), qt);
 			TreeItem<String> rootItem = null;
@@ -233,9 +239,29 @@ public class AttributeProvenanceController /* extends Application */ {
 			Log.logError("AttributeProvenanceController.populateTreeView(): " + ex.getLocalizedMessage());
 		}
 	}
-	public ListView<RowlvPqAttribute> getLvPqAttributes() {return lvPqAttributes;}
-	public void setLvPqAttributes(ListView<RowlvPqAttribute> lvPqAttributes) {this.lvPqAttributes = lvPqAttributes;}
+	public ListView<RowPqAttribute> getLvPqAttributes() {return lvPqAttributes;}
+	/**
+	 * This must be called before the form is displayed
+	 * @param lvPqAttributes The source of rows for the Combo Box on this form. 
+	 */
+	public void setLvPqAttributes(ListView<RowPqAttribute> lvPqAttributes) {this.lvPqAttributes = lvPqAttributes;}
 	public int getStartingIndexInListView() {return startingIndexInListView;}
 	public void setStartingIndexInListView(int startingIndexInListView) {this.startingIndexInListView = startingIndexInListView;}
 	private void openBrowserWindow() {Browser.openBrowserWindow();}
+
+	private void initcbPqAttributes() {
+		
+		cbPqAttributes.setConverter(new StringConverter<RowPqAttribute>() {
+		    @Override
+		    public String toString(RowPqAttribute object) {
+		        return object.getText();
+		    }
+
+		    @Override
+		    public RowPqAttribute fromString(String string) {
+		        return cbPqAttributes.getItems().stream().filter(ap -> 
+		            ap.getText().equals(string)).findFirst().orElse(null);
+		    }	
+		}); 
+	}
 }

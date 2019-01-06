@@ -68,7 +68,7 @@ public class ProcessQueryController /* extends Application */ {
 	@FXML	private TextField txtPqHostName, txtPqLoginName, txtPqPassword, txtPqQueryName;
 	@FXML	private Button btnLoadPqSchemaNames, btnLoadPqSQueries, btnSavePqSchemaArtifactsToCSVFiles, btnProcessQuery, btnExportCSVFilesToNeo4j, btnBrowseForCSVFolder;
 	@FXML	private ListView<String> lvPqTables, lvPqSchemas;
-	@FXML	private ListView<RowlvPqAttribute>  lvPqAttributes;
+	@FXML	private ListView<RowPqAttribute>  lvPqAttributes;
 	@FXML	private TreeView<String> tvSchemasAndQueries;
 	@FXML	private Label lblQueryToProcess, lblQueriesReferencedInTheQuery, lblAttributesReferencedInTheQuery,	lblTablesReferencedInTheQuery, lblSchemasReferencedInTheQuery, lblCSVFolder, lblContentsOfDatabaseHost;
 	@FXML	private Pane pneArtifacts;
@@ -284,10 +284,10 @@ public class ProcessQueryController /* extends Application */ {
 			lvPqAttributes.getItems().clear();
 			QueryAttributes queryAttributes = qd.getQueryAttributes();
 			for (QueryAttribute queryAttribute : queryAttributes) {
-				lvPqAttributes.getItems().add(new RowlvPqAttribute(queryAttribute.getID(), queryAttribute.toString() + " (" + qd.getQueryAttributeType(queryAttribute) + ")"));
+				lvPqAttributes.getItems().add(new RowPqAttribute(queryAttribute.getID(), queryAttribute.toString() + " (" + qd.getQueryAttributeType(queryAttribute) + ")"));
 			}
 			for (CompoundAlias qca : qd.getCompoundAliases()) {
-				lvPqAttributes.getItems().add(new RowlvPqAttribute(qca.getID().toString(), qca.toString()));
+				lvPqAttributes.getItems().add(new RowPqAttribute(qca.getID().toString(), qca.toString()));
 			}
 			// Schemas referenced in the query
 			lvPqSchemas.getItems().clear();
@@ -431,10 +431,10 @@ public class ProcessQueryController /* extends Application */ {
 	 * @author nicomp
 	 *
 	 */
-	public class RowlvPqAttribute {
+	public class RowPqAttribute {
 		private String ID;
 		private String text;
-		public RowlvPqAttribute(String ID, String text) {
+		public RowPqAttribute(String ID, String text) {
 			setID(ID);
 			setText(text);
 		}
@@ -452,9 +452,9 @@ public class ProcessQueryController /* extends Application */ {
 		}
 	}
 	private void initlvPqAttributes() {
-		lvPqAttributes.setCellFactory(lv -> new ListCell< RowlvPqAttribute>() {
+		lvPqAttributes.setCellFactory(lv -> new ListCell< RowPqAttribute>() {
 			@Override
-			public void updateItem(RowlvPqAttribute row, boolean empty) {
+			public void updateItem(RowPqAttribute row, boolean empty) {
 			    super.updateItem(row, empty) ;
 			    setText(empty ? null : row.getText());
 			}
@@ -473,6 +473,4 @@ public class ProcessQueryController /* extends Application */ {
 		    }	
 		}); */
 	}
-	
-	
 }
