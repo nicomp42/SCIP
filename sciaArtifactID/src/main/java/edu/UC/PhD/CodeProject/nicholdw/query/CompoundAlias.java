@@ -12,7 +12,7 @@ import edu.UC.PhD.CodeProject.nicholdw.UUIDnicholdw;
  * For example: SELECT (tAlpha.beta + tAlpha.delta) AS mySum FROM ...
  * @author nicomp
  */
-public class CompoundAlias {
+public class CompoundAlias implements NameThing {
 
 	private ArrayList<FullColumnName> fullColumnNames;
 	private String aliasName;
@@ -31,6 +31,7 @@ public class CompoundAlias {
 	public void addFullColumnName(FullColumnName fullColumnName) {
 		fullColumnNames.add(fullColumnName);
 	}
+	public String getName() {return getAliasName();}
 	public String getAliasName() {
 		return aliasName;
 	}

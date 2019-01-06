@@ -6,6 +6,9 @@ package gui;
 
 import java.io.File;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAlias;
+import edu.UC.PhD.CodeProject.nicholdw.query.NameThing;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
@@ -138,6 +141,7 @@ public class AttributeProvenanceController /* extends Application */ {
 		AttributeProvenanceForNe04j.executeCypherQueries( txaCSVFolder.getText());
 	}
 	private void setTheScene() {
+		initcbPqAttributes();
 		// Lambda method
 		cbPqAttributes.setOnAction((event) -> {
 		    String attribute = cbPqAttributes.getSelectionModel().getSelectedItem().getText();
@@ -208,10 +212,15 @@ public class AttributeProvenanceController /* extends Application */ {
 		try {
 			// TODO: This is hinkey: we have a formatted string with schema, table, attribute, alias, data type and we will extract those individual values.
 			// This is more hinkey because the full provenance is not in the structure returned by buildProvenance. 
-			AttributeParts attributeParts = new AttributeParts();
-			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem().getText());	// Doesn't work for compound attribute entries in this ComboBox
+			NameThing sourceObject;
+			sourceObject = cbPqAttributes.getSelectionModel().getSelectedItem().getSourceObject();
+			Log.logProgress("PopulateTreeView(); Source Object Class = " + sourceObject.getClass() + ", name = " + sourceObject.getName()); 
+			String name;
+			name = sourceObject.getName();
+//			AttributeParts attributeParts = new AttributeParts();
+//			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem().getText());	// Doesn't work for compound attribute entries in this ComboBox
 			QueryTables qt = new QueryTables();
-			QueryDefinition.buildProvenance(queryDefinition, attributeParts.getAliasName(), qt);
+			QueryDefinition.buildProvenance(queryDefinition, name, qt);
 			TreeItem<String> rootItem = null;
 			int nodeCount = 1;
 			for (QueryTable queryTable: qt) {
@@ -248,7 +257,9 @@ public class AttributeProvenanceController /* extends Application */ {
 	public int getStartingIndexInListView() {return startingIndexInListView;}
 	public void setStartingIndexInListView(int startingIndexInListView) {this.startingIndexInListView = startingIndexInListView;}
 	private void openBrowserWindow() {Browser.openBrowserWindow();}
-
+	/**
+	 * Set up the event handlers for displaying and retrieving rows in the cbPqAttributes ComboBox control
+	 */
 	private void initcbPqAttributes() {
 		
 		cbPqAttributes.setConverter(new StringConverter<RowPqAttribute>() {

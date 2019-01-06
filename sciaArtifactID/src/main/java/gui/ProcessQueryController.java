@@ -16,6 +16,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAlias;
+import edu.UC.PhD.CodeProject.nicholdw.query.NameThing;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
@@ -284,10 +285,10 @@ public class ProcessQueryController /* extends Application */ {
 			lvPqAttributes.getItems().clear();
 			QueryAttributes queryAttributes = qd.getQueryAttributes();
 			for (QueryAttribute queryAttribute : queryAttributes) {
-				lvPqAttributes.getItems().add(new RowPqAttribute(queryAttribute.getID(), queryAttribute.toString() + " (" + qd.getQueryAttributeType(queryAttribute) + ")"));
+				lvPqAttributes.getItems().add(new RowPqAttribute(queryAttribute, queryAttribute.getID(), queryAttribute.toString() + " (" + qd.getQueryAttributeType(queryAttribute) + ")"));
 			}
 			for (CompoundAlias qca : qd.getCompoundAliases()) {
-				lvPqAttributes.getItems().add(new RowPqAttribute(qca.getID().toString(), qca.toString()));
+				lvPqAttributes.getItems().add(new RowPqAttribute(qca, qca.getID().toString(), qca.toString()));
 			}
 			// Schemas referenced in the query
 			lvPqSchemas.getItems().clear();
@@ -434,9 +435,11 @@ public class ProcessQueryController /* extends Application */ {
 	public class RowPqAttribute {
 		private String ID;
 		private String text;
-		public RowPqAttribute(String ID, String text) {
+		private NameThing sourceObject;
+		public RowPqAttribute(NameThing sourceObject, String ID, String text) {
 			setID(ID);
 			setText(text);
+			setSourceObject(sourceObject);
 		}
 		public String getID() {
 			return ID;
@@ -449,6 +452,12 @@ public class ProcessQueryController /* extends Application */ {
 		}
 		public void setText(String text) {
 			this.text = text;
+		}
+		public NameThing getSourceObject() {
+			return sourceObject;
+		}
+		private void setSourceObject(NameThing sourceObject) {
+			this.sourceObject = sourceObject;
 		}
 	}
 	private void initlvPqAttributes() {

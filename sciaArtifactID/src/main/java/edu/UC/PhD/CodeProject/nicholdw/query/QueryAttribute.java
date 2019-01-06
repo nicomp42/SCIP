@@ -13,7 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
  * A member of a QueryDefinition object.
  * @author nicomp
  */
-public class QueryAttribute extends QueryComponent  {
+public class QueryAttribute extends QueryComponent implements NameThing  {
 	private AliasNamesOLD aliasNames;
 	private String schemaName;		// Not necessarily redundant. A query can span multiple schemas
 	private QueryClause queryClause;
@@ -186,4 +186,8 @@ public class QueryAttribute extends QueryComponent  {
 	public void setID(int iD) {
 		ID = iD;
 	} */
+	@Override
+	public String getName() {
+		return getAttributeName();
+	}
 }

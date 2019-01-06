@@ -490,6 +490,9 @@ public class QueryDefinition {
 //								buildProvenance(qdTmp, fcn.getAliasNames().iterator().next().toString() , queryTablesProvenance);
 							}
 						}
+						// qdTmp needs to change or else we will never leave this loop. 
+						// At this point are we really done with the provenance computation?
+						qdTmp = null;
 					}
 				} else {
 					// Add the last item to the provenance, which must be a table not a query. Use the schema name and table name that we didn't find in the children collection.
@@ -506,7 +509,7 @@ public class QueryDefinition {
 				// We need to do something here, else we may loop forever, throwing and catching errors
 				keepGoing = false;
 			}
-		}
+		}	// while(keepGoing)
 		return queryTablesProvenance;
 	}
 
