@@ -1,6 +1,11 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import java.util.ArrayList;
+import edu.UC.PhD.CodeProject.nicholdw.UUIDnicholdw;
 
 /**
  * An alias in a SQL statement that refers to an expression which may have zero or more attributes in it
@@ -11,14 +16,17 @@ public class CompoundAlias {
 
 	private ArrayList<FullColumnName> fullColumnNames;
 	private String aliasName;
+	private UUIDnicholdw ID;
 	@SuppressWarnings("unchecked")
 	public CompoundAlias(CompoundAlias compoundAlias) {
 		this.setAliasName(compoundAlias.getAliasName());
 		this.fullColumnNames = (ArrayList<FullColumnName>) compoundAlias.fullColumnNames.clone();
+		this.ID = new UUIDnicholdw(compoundAlias.getID());
 	}
 	public CompoundAlias(String aliasName) {
 		fullColumnNames = new ArrayList<FullColumnName>();
 		this.setAliasName(aliasName);
+		ID = new UUIDnicholdw();
 	}
 	public void addFullColumnName(FullColumnName fullColumnName) {
 		fullColumnNames.add(fullColumnName);
@@ -46,4 +54,10 @@ public class CompoundAlias {
 	public ArrayList<FullColumnName> getFullColumnNames() {
 		return (ArrayList<FullColumnName>) fullColumnNames.clone();
 	}
+	public UUIDnicholdw getID() {
+		return ID;
+	}
+/*	public void setID(String iD) {
+		ID = iD;
+	} */
 }

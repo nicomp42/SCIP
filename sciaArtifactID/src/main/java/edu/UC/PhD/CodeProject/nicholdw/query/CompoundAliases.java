@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.UUIDnicholdw;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 /**
@@ -73,6 +74,21 @@ public class CompoundAliases implements Iterable<CompoundAlias> {
 		CompoundAlias compoundAlias = null;
 		for (CompoundAlias ca: compoundAliases) {
 			if (Config.getConfig().compareAliasNames(ca.getAliasName(), aliasName)) {
+				compoundAlias = new CompoundAlias(ca);
+				break;
+			}
+		}
+		return compoundAlias;
+	}
+	/**
+	 * Find a Compound Alias by ID
+	 * @param ID The ID to search for
+	 * @return A clone of the CompoundAlias object, or null if not found
+	 */
+	public CompoundAlias findCompoundAlias(UUIDnicholdw ID) {
+		CompoundAlias compoundAlias = null;
+		for (CompoundAlias ca: compoundAliases) {
+			if (ca.getID().compare(ID)) {
 				compoundAlias = new CompoundAlias(ca);
 				break;
 			}

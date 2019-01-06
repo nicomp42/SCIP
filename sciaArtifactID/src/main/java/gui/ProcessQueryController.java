@@ -287,7 +287,7 @@ public class ProcessQueryController /* extends Application */ {
 				lvPqAttributes.getItems().add(new RowlvPqAttribute(queryAttribute.getID(), queryAttribute.toString() + " (" + qd.getQueryAttributeType(queryAttribute) + ")"));
 			}
 			for (CompoundAlias qca : qd.getCompoundAliases()) {
-				lvPqAttributes.getItems().add(qca.toString());
+				lvPqAttributes.getItems().add(new RowlvPqAttribute(qca.getID().toString(), qca.toString()));
 			}
 			// Schemas referenced in the query
 			lvPqSchemas.getItems().clear();
