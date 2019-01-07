@@ -40,6 +40,20 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			setRawData(rawData);
 			setNestingLevel(nestingLevel);			
 		}
+		public String getName() {
+			String name = null;
+			try {
+				if (aliasNames.size() > 0) {
+					name = aliasNames.iterator().next().toString();
+				} else {
+					name = attributeName;
+				}
+			} catch (Exception ex) {
+				Log.logError("FullColumnName.getName(): " + ex.getLocalizedMessage());
+			}
+			return name;
+		}
+			
 		public void init() {
 			schemaName = "";
 			tableName = "";

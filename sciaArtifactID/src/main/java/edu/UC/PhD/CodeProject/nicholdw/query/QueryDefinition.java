@@ -487,11 +487,12 @@ public class QueryDefinition {
 								queryAttributeProvenance = qdTmp.getQueryAttributes().findAttribute(fcn.getAttributeName());
 								queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
 								queryTablesProvenance.addQueryTable(queryTableProvenance);
-//								buildProvenance(qdTmp, fcn.getAliasNames().iterator().next().toString() , queryTablesProvenance);
+								Log.logProgress("QueryDefinition.buildProvenance(): Calling buildProvenance() again for query definition " + qdTmp.toString() + ", attribute alias/name = " + fcn.getName());
+								buildProvenance(qdTmp, fcn.getName(), queryTablesProvenance);
 							}
 						}
 						// qdTmp needs to change or else we will never leave this loop. 
-						// At this point are we really done with the provenance computation?
+						// TODO: At this point are we really done with the provenance computation?
 						qdTmp = null;
 					}
 				} else {

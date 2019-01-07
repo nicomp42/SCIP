@@ -236,10 +236,12 @@ public class AttributeProvenanceController /* extends Application */ {
 					Node schemaIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/database-iconSilver24px.png")));
 	//				TreeItem<String> schemaItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + attributeParts.getAttributeName(), schemaIcon);  2018=05-26
 					String aliasName;
-					aliasName = queryTable.getQueryAttributeProvenance().getAliasNames().toString();
+//					aliasName = queryTable.getQueryAttributeProvenance().getAliasNames().toString();
+					aliasName = queryTable.getQueryAttributeProvenance().getName();
 					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + aliasName, schemaIcon);
+//					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName(), schemaIcon);
 					rootItem.getChildren().add(provenanceItem);
-					rootItem = provenanceItem;
+//					rootItem = provenanceItem;
 					rootItem.setExpanded(true);
 				}
 				nodeCount++;
