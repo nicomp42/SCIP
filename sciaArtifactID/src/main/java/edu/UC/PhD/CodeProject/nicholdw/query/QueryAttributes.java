@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class QueryAttributes implements Iterable<QueryAttribute> {
 
@@ -70,29 +71,37 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 	}
 	/**
 	 * Find a QueryAttribute by AttributeName or AliasName
-	 * @param attributeOrAliasName The name/alias to match
+	 * @param fcn The Full Column Name to match, taken from the query when it was parsed. This should *always* be enough to uniquely identify the attribute
 	 * @return The QueryAttribute that is found, else null if not found
 	 */
-	public QueryAttribute findAttribute(String attributeOrAliasName) {
+	public QueryAttribute findAttribute(FullColumnName fcn) {
 		QueryAttribute result = null;
-		Boolean matchFound;
-		for (QueryAttribute queryAttribute : queryAttributes) {
-			matchFound = false;
-			if (Config.getConfig().compareAttributeNames(queryAttribute.getAttributeName(), attributeOrAliasName) == true) {
-				result = queryAttribute;
-				matchFound = true;
-				break;
-			}
-			if (matchFound == false) {
-				for (AliasNameClassOLD aliasName : queryAttribute.getAliasNames()) {
-					if (Config.getConfig().compareAliasNames(aliasName.getAliasName(), attributeOrAliasName) == true) {
+		Boolean matchFound = false, needTableMatch = false, needSchemaMatch = false;;
+		try {
+			if (fcn.getSchemaName().trim().length() == 0) { needSchemaMatch = true;}
+			if (fcn.getTableName().trim().length() == 0) { needTableMatch = true;}
+			
+				// If there's no table name then the attribute name must be sufficient to uniquely identify the attribute
+				for (QueryAttribute queryAttribute : queryAttributes) {
+					matchFound = false;
+					if ((!needSchemaMatch || Config.getConfig().compareSchemaNames(fcn.getSchemaName(), queryAttribute.getSchemaName())) &&
+						(!needTableMatch  || Config.getConfig().compareTableNames(fcn.getTableName(), queryAttribute.getTableName()) || queryAttribute.hasAliasName(aliasNameTarget) ) &&	
+						(Config.getConfig().compareAttributeNames(queryAttribute.getAttributeName(), fcn.getAttributeName()) == true)) {
 						result = queryAttribute;
 						matchFound = true;
 						break;
 					}
+					if (matchFound == false) {
+						if (queryAttribute.hasAliasName(fcn.getAttributeName())) {
+							result = queryAttribute;
+							matchFound = true;
+							break;
+						}
+					}
+					if (matchFound == true) {break;}
 				}
-			}
-			if (matchFound == true) {break;}
+		} catch (Exception ex) {
+			Log.logError("QueryAttributes.findAttribute(" + fcn.toString() + "): " + ex.getLocalizedMessage()); 
 		}
 		return result;
 	}

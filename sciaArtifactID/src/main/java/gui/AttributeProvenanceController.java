@@ -7,7 +7,7 @@ package gui;
 import java.io.File;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAlias;
-import edu.UC.PhD.CodeProject.nicholdw.query.NameThing;
+import edu.UC.PhD.CodeProject.nicholdw.query.Name;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
@@ -212,7 +212,7 @@ public class AttributeProvenanceController /* extends Application */ {
 		try {
 			// TODO: This is hinkey: we have a formatted string with schema, table, attribute, alias, data type and we will extract those individual values.
 			// This is more hinkey because the full provenance is not in the structure returned by buildProvenance. 
-			NameThing sourceObject;
+			Name sourceObject;
 			sourceObject = cbPqAttributes.getSelectionModel().getSelectedItem().getSourceObject();
 			Log.logProgress("PopulateTreeView(); Source Object Class = " + sourceObject.getClass() + ", name = " + sourceObject.getName()); 
 			String name;
@@ -222,23 +222,28 @@ public class AttributeProvenanceController /* extends Application */ {
 			QueryTables qt = new QueryTables();
 			QueryDefinition.buildProvenance(queryDefinition, name, qt);
 			TreeItem<String> rootItem = null;
-			int nodeCount = 1;
+			int nodeCount = 2;
+			Node rootIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
+			rootItem = new TreeItem<String>(name, rootIcon);
+			rootItem.setExpanded(true);
+			tvAttributeProvenance.setRoot(rootItem);
 			for (QueryTable queryTable: qt) {
 				if (nodeCount == 1) {
-					Node rootIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
+/*					Node rootIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
 //					TreeItem<String> rootItem = new TreeItem<String> (queryDefinition.getSchemaName() + "." + queryDefinition.getQueryName() + "." + attributeParts.getAliasName(), rootIcon);
-					String aliasName;
-					aliasName = queryTable.getQueryAttributeProvenance().getAliasNames().toString();
-					rootItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + aliasName, rootIcon);
+//					We want the schema.table/query.attribute in this tree view. No aliases. 					
+					String attributeName;
+					attributeName = queryTable.getQueryAttributeProvenance().getAttributeName();
+					rootItem = new TreeItem<String>(queryTable.getQueryAttributeProvenance().getSchemaName() + "." + queryTable.getQueryAttributeProvenance().getTableName() + "." + attributeName, rootIcon);
 					rootItem.setExpanded(true);
-					tvAttributeProvenance.setRoot(rootItem);
+					tvAttributeProvenance.setRoot(rootItem); */
 				} else {
 					Node schemaIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/database-iconSilver24px.png")));
 	//				TreeItem<String> schemaItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + attributeParts.getAttributeName(), schemaIcon);  2018=05-26
-					String aliasName;
+					String attributeName;
 //					aliasName = queryTable.getQueryAttributeProvenance().getAliasNames().toString();
-					aliasName = queryTable.getQueryAttributeProvenance().getName();
-					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + aliasName, schemaIcon);
+					attributeName = queryTable.getQueryAttributeProvenance().getAttributeName();
+					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getQueryAttributeProvenance().getSchemaName() + "." + queryTable.getQueryAttributeProvenance().getTableName() + "." + attributeName, schemaIcon);
 //					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName(), schemaIcon);
 					rootItem.getChildren().add(provenanceItem);
 //					rootItem = provenanceItem;

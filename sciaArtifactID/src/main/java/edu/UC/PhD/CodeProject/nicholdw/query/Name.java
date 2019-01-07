@@ -9,6 +9,10 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
  * @author nicomp
  *
  */
-public interface NameThing {
+public interface Name {
+	/***
+	 * Get the name of the thing
+	 * @return The name of the thing
+	 */
 	String getName();
 }

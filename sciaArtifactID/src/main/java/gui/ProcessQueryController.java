@@ -16,7 +16,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAlias;
-import edu.UC.PhD.CodeProject.nicholdw.query.NameThing;
+import edu.UC.PhD.CodeProject.nicholdw.query.Name;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
@@ -435,8 +435,8 @@ public class ProcessQueryController /* extends Application */ {
 	public class RowPqAttribute {
 		private String ID;
 		private String text;
-		private NameThing sourceObject;
-		public RowPqAttribute(NameThing sourceObject, String ID, String text) {
+		private Name sourceObject;
+		public RowPqAttribute(Name sourceObject, String ID, String text) {
 			setID(ID);
 			setText(text);
 			setSourceObject(sourceObject);
@@ -453,10 +453,10 @@ public class ProcessQueryController /* extends Application */ {
 		public void setText(String text) {
 			this.text = text;
 		}
-		public NameThing getSourceObject() {
+		public Name getSourceObject() {
 			return sourceObject;
 		}
-		private void setSourceObject(NameThing sourceObject) {
+		private void setSourceObject(Name sourceObject) {
 			this.sourceObject = sourceObject;
 		}
 	}

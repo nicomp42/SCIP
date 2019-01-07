@@ -90,7 +90,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.exitRoot()");
 		Log.logQueryParseProgress("Attributes collected from the SQL...");
 		for (FullColumnName fcn: fullColumnNames) {
-			fcn.processRawData();
+//			fcn.processRawData();
 			fcn.copyIntoQueryDefinition(queryDefinition);
 			Log.logQueryParseProgress(fcn.toString());
 		}
@@ -970,7 +970,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			// Neat stuff!
 			CompoundAlias compoundAlias = new CompoundAlias(Utils.removeBackQuotes(node.getParent().getChild(2).getText()));
 			for (FullColumnName fcn: fullColumnNames) {
-				fcn.processRawData();
+//				fcn.processRawData();
 				if (fcn.getNestingLevel().isNestedInOrIsEqualTo(previousNestingLevel)) {
 					Log.logQueryParseProgress("Adding column " + fcn.getRawData() + " to compoundAlias " + node.getParent().getChild(2).getText());
 					compoundAlias.addFullColumnName(fcn);
@@ -1040,7 +1040,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		 * Figure out exactly what is in the SQL that we have in our clutches.
 		 * Beware: A table name and an attribute name can have a . (period in it) Yikes.
 		 */
-		public void processRawData() {
+		private void processRawData() {
 			ArrayList<String> data = new ArrayList<String>();
 			// Does it have two consecutive `` delimiters? If so, there's an alias
 			String s[] = rawData.split("``");

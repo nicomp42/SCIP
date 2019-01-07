@@ -29,7 +29,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		public FullColumnName(String rawData) {
 			setRawData(rawData);
 		}
-		public String setRawData(String rawData) {this.rawData = rawData.trim(); return this.rawData;}
+		public String setRawData(String rawData) {this.rawData = rawData.trim(); processRawData(); return this.rawData;}
 		public String getRawData() {return rawData;}
 		public String toString() {return (schemaName.length() > 0? schemaName + ".":"") + (tableName.length() > 0 ? tableName + "." : "") + attributeName + (aliasNames.toString().length() > 0 ? " AS " + aliasNames.toString():"");}
 		public String getAttributeName() {return attributeName;}
@@ -69,7 +69,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		 * There cannot be an alias in the string to parse.
 		 * @return The number of parts that were parsed: 0 - 3
 		 */
-		public int processRawData() {
+		private int processRawData() {
 			int numberOfColumnParts = 0;
 			String tmpColumnParts[] = rawData.split("\\`");
 			ArrayList<String> columnParts = new ArrayList<String>();
@@ -98,7 +98,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 				break;
 
 			default:
-				Log.logQueryParseProgress("AntlrMySQLListener.processRawData(): unexpected number of parts to parse (" + columnParts.size() + "): " + " started with " + rawData, true);
+				Log.logProgress("FullColumnName.processRawData(): unexpected number of parts to parse (" + columnParts.size() + "): " + " started with " + rawData);
 			}
 			return numberOfColumnParts;
 		}

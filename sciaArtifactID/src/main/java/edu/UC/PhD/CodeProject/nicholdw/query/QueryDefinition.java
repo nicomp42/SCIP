@@ -190,7 +190,7 @@ public class QueryDefinition {
 	public void setQueryAttributes(QueryAttributes queryAttributes) {this.queryAttributes = queryAttributes;}
 	public String getSchemaName() {return schemaName;}
 	public void setSchemaName(String schemaName) {this.schemaName = schemaName;}
-	public String toString() {return schemaName + ":" + queryName + ":" + queryType.getQueryType();}
+	public String toString() {return schemaName + Config.getConfig().getAttributePartsDelimiter() + queryName + ", " + queryType.getQueryType();}
 	public void listAttributes(PrintStream myPrintStream) {
 		myPrintStream.println("Attributes found in query:");
 		for (QueryAttribute queryAttribute: this.getQueryAttributes()) {
@@ -439,8 +439,6 @@ public class QueryDefinition {
 	/**
 	 * Schema Name/Table Name/Attribute name must uniquely identify an attribute in a table or query
 	 * @param qd Query Definition that we are processing
-	 * @param schemaName Schema Name associated with the attribute
-	 * @param tableName Table Name associated with the attribute 
 	 * @param aliasName Attribute Name
 	 * @return The ordered list of tables that define the provenance of the attribute
 	 */
@@ -484,16 +482,18 @@ public class QueryDefinition {
 							// Now we have a new problem because we need to compute provenance for all the attributes in the compound attribute.
 							for (FullColumnName fcn : compoundAlias.getFullColumnNames()) {
 								queryTableProvenance = new QueryTable(fcn.getSchemaName(), fcn.getTableName(), new AliasNameClassOLD(""), null);
-								queryAttributeProvenance = qdTmp.getQueryAttributes().findAttribute(fcn.getAttributeName());
+								queryAttributeProvenance = qdTmp.getQueryAttributes().findAttribute(fcn);
 								queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
 								queryTablesProvenance.addQueryTable(queryTableProvenance);
-								Log.logProgress("QueryDefinition.buildProvenance(): Calling buildProvenance() again for query definition " + qdTmp.toString() + ", attribute alias/name = " + fcn.getName());
-								buildProvenance(qdTmp, fcn.getName(), queryTablesProvenance);
+								Log.logProgress("QueryDefinition.buildProvenance(): Calling buildProvenance() again for query definition " + qdTmp.toString() + ", attribute alias/name = " + fcn.toString());
+								System.out.print(".");
+//								buildProvenance(qdTmp, fcn.getName(), queryTablesProvenance);
 							}
 						}
 						// qdTmp needs to change or else we will never leave this loop. 
 						// TODO: At this point are we really done with the provenance computation?
 						qdTmp = null;
+						keepGoing = false;
 					}
 				} else {
 					// Add the last item to the provenance, which must be a table not a query. Use the schema name and table name that we didn't find in the children collection.
