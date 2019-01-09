@@ -15,4 +15,5 @@ public interface Name {
 	 * @return The name of the thing
 	 */
 	String getName();
+	FullColumnName getFullColumnName();
 }

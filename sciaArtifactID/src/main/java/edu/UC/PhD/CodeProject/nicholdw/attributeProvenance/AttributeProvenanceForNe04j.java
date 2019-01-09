@@ -25,6 +25,7 @@ import edu.UC.PhD.CodeProject.nicholdw.attributeParts.AttributeParts;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
+import edu.UC.PhD.CodeProject.nicholdw.query.FullColumnName;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitionFileProcessing;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
@@ -42,7 +43,7 @@ public class AttributeProvenanceForNe04j {
 	public static boolean exportCSVFiles(AttributeParts attributeParts, QueryDefinition qd, String filePath) {
 		String fileName = Utils.formatPath(Utils.cleanPath(filePath)) + Config.getConfig().getNeo4jSuffix() + attributeProvenanceFileSuffix + Config.getConfig().getCSVFileExtension();
 		QueryTables queryTablesProvenance = new QueryTables();
-		QueryDefinition.buildProvenance(qd, attributeParts.getAliasName(), queryTablesProvenance);
+		QueryDefinition.buildProvenance(qd, new FullColumnName(attributeParts.getSchemaName(), attributeParts.getTableName(), attributeParts.getAliasName()), queryTablesProvenance);
 		return writeAttributeProvenanceCSVFile(fileName, qd, queryTablesProvenance, attributeParts);
 	}
 	/**

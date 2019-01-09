@@ -85,7 +85,7 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 				for (QueryAttribute queryAttribute : queryAttributes) {
 					matchFound = false;
 					if ((!needSchemaMatch || Config.getConfig().compareSchemaNames(fcn.getSchemaName(), queryAttribute.getSchemaName())) &&
-						(!needTableMatch  || Config.getConfig().compareTableNames(fcn.getTableName(), queryAttribute.getTableName()) || queryAttribute.hasAliasName(aliasNameTarget) ) &&	
+						(!needTableMatch  || Config.getConfig().compareTableNames(fcn.getTableName(), queryAttribute.getTableName())) &&	
 						(Config.getConfig().compareAttributeNames(queryAttribute.getAttributeName(), fcn.getAttributeName()) == true)) {
 						result = queryAttribute;
 						matchFound = true;

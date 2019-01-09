@@ -22,6 +22,23 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		//private String aliasName;		// Removed because a query attribute can have multiple aliases
 		private NestingLevel nestingLevel;
 		private String rawData;			// Taken from the SQL during parsing. could be schema.table.attribute, table.attribute, or just attribute
+		public FullColumnName(String schemaName, String tableName, String attributeName) {
+			setSchemaName(schemaName);
+			setTableName(tableName);
+			setAttributeName(attributeName);
+			setRawData(  (getSchemaName().length() > 0 ? (getSchemaName() + ".") : "")
+			           + (getTableName().length()  > 0 ? (getTableName()  + ".") : "")
+					   +  getAttributeName());
+		}
+		private void setSchemaName(String schemaName) {
+			this.schemaName = schemaName.trim();
+		}
+		private void setTableName(String tableName) {
+			this.tableName = tableName.trim();
+		}
+		private void setAttributeName(String attributeName) {
+			this.attributeName = attributeName.trim();
+		}
 		/**
 		 * Create a FullColumnName object with just the raw data taken from the query parser
 		 * @param rawData

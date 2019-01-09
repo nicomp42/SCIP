@@ -190,4 +190,8 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	public String getName() {
 		return getAttributeName();
 	}
+	
+	public FullColumnName getFullColumnName() {
+		return new FullColumnName(getSchemaName(), getTableName(), getAttributeName());
+	}
 }

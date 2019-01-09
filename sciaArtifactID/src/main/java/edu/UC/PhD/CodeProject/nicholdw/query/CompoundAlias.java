@@ -58,6 +58,9 @@ public class CompoundAlias implements Name {
 	public UUIDnicholdw getID() {
 		return ID;
 	}
+	public FullColumnName getFullColumnName() {
+		return new FullColumnName("", "",  getAliasName());
+	}
 /*	public void setID(String iD) {
 		ID = iD;
 	} */

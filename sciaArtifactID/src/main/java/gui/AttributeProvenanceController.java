@@ -211,16 +211,15 @@ public class AttributeProvenanceController /* extends Application */ {
 		Log.logProgress("AttributeProvenanceController.populateTreeView()");
 		try {
 			// TODO: This is hinkey: we have a formatted string with schema, table, attribute, alias, data type and we will extract those individual values.
-			// This is more hinkey because the full provenance is not in the structure returned by buildProvenance. 
 			Name sourceObject;
 			sourceObject = cbPqAttributes.getSelectionModel().getSelectedItem().getSourceObject();
-			Log.logProgress("PopulateTreeView(); Source Object Class = " + sourceObject.getClass() + ", name = " + sourceObject.getName()); 
+			Log.logProgress("PopulateTreeView(); Source Object Class = " + sourceObject.getClass() + ", name = " + sourceObject.getFullColumnName().toString()); 
 			String name;
 			name = sourceObject.getName();
 //			AttributeParts attributeParts = new AttributeParts();
 //			attributeParts.split(cbPqAttributes.getSelectionModel().getSelectedItem().getText());	// Doesn't work for compound attribute entries in this ComboBox
 			QueryTables qt = new QueryTables();
-			QueryDefinition.buildProvenance(queryDefinition, name, qt);
+			QueryDefinition.buildProvenance(queryDefinition, sourceObject.getFullColumnName(), qt);
 			TreeItem<String> rootItem = null;
 			int nodeCount = 2;
 			Node rootIcon = new ImageView(new Image(ProcessQueryController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
