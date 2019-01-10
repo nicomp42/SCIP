@@ -456,7 +456,7 @@ public class QueryDefinition {
 			try {
 				if (qdTmp != null) {	// We found the underlying query that provides the attribute
 
-					// We were given the alias so we need to get that table from the table collection of this query definition
+					// We were given the full column name or part of it so we need to get that table from the table collection of this query definition
 					QueryAttribute queryAttribute = qdTmp.getQueryAttributes().findAttribute(currentFCN);
 					if (queryAttribute != null) {
 						Log.logProgress("QueryDefinition.buildProvenance(): query attribute with alias `" + currentFCN.toString() + "` = " + queryAttribute.toString());

@@ -5,12 +5,14 @@ import java.util.ArrayList;
 
 import org.Antlr4MySQLFromANTLRRepo.NestingLevel;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 	/**
 	 * Fully qualified (or not) column reference from an SQL statement.
 	 * Could be schema.table.attribute, table.attribute, or just attribute. May also have one or more aliases.
+	 * It's stored like this: `schema`.`table`.`attribute` -> The ` is a delimiter, not part of the name
 	 * @author nicomp
 	 */
 	public class FullColumnName {
@@ -23,6 +25,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		private NestingLevel nestingLevel;
 		private String rawData;			// Taken from the SQL during parsing. could be schema.table.attribute, table.attribute, or just attribute
 		public FullColumnName(String schemaName, String tableName, String attributeName) {
+			init();
 			setSchemaName(schemaName);
 			setTableName(tableName);
 			setAttributeName(attributeName);
@@ -31,13 +34,14 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 					   +  getAttributeName());
 		}
 		private void setSchemaName(String schemaName) {
-			this.schemaName = schemaName.trim();
+//			this.schemaName = schemaName.trim();
+			this.schemaName = Utils.wrapInDelimiter(schemaName.trim(), "`");
 		}
 		private void setTableName(String tableName) {
-			this.tableName = tableName.trim();
+			this.tableName = Utils.wrapInDelimiter(tableName.trim(), "`");
 		}
 		private void setAttributeName(String attributeName) {
-			this.attributeName = attributeName.trim();
+			this.attributeName = Utils.wrapInDelimiter(attributeName.trim(), "`");
 		}
 		/**
 		 * Create a FullColumnName object with just the raw data taken from the query parser

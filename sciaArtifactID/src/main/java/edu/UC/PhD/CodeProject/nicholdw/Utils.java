@@ -179,5 +179,33 @@ public class Utils {
 	public static String convertStreamToString(java.io.InputStream is) {
 	    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
 	    return s.hasNext() ? s.next() : "";
-	}}
+	}
+	/**
+	 * Wrap a string in a delimiter, if the string is not zero length
+	 * @param data The string to process
+	 * @param delimiter The delimiter to use
+	 * @return The wrapped String, or the original String if the original String is zero length
+	 */
+	public static String wrapInDelimiter(String data, String delimiter) {
+		if (data.trim().length() > 0) {
+			return delimiter + data.trim() + delimiter;
+		} else {
+			return data;
+		}
+	}
+	/**
+	 * Remove a delimiter from around a String, if it's there
+	 * @param data The string to process
+	 * @param delimiter The delimiter to use
+	 * @return The unwrapped String, or the original String if the original String doesn't have the delimiter
+	 */
+	public static String removeDelimiter(String data, String delimiter) {
+		String tmp = data.trim();
+		if (tmp.substring(0, 0).equals(delimiter) && tmp.substring(tmp.length()-1, tmp.length()-1).equals(delimiter)) {
+			return tmp.substring(1, tmp.length()-2);
+		} else {
+			return tmp;
+		}
+	}
+}
 

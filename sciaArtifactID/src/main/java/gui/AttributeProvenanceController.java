@@ -242,7 +242,8 @@ public class AttributeProvenanceController /* extends Application */ {
 					String attributeName;
 //					aliasName = queryTable.getQueryAttributeProvenance().getAliasNames().toString();
 					attributeName = queryTable.getQueryAttributeProvenance().getAttributeName();
-					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getQueryAttributeProvenance().getSchemaName() + "." + queryTable.getQueryAttributeProvenance().getTableName() + "." + attributeName, schemaIcon);
+					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName() + "." + queryTable.getQueryAttributeProvenance().getAttributeOrAliasName(), schemaIcon);
+//					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getQueryAttributeProvenance().getSchemaName() + "." + queryTable.getQueryAttributeProvenance().getTableName() + "." + attributeName, schemaIcon);
 //					TreeItem<String> provenanceItem = new TreeItem<String>(queryTable.getSchemaName() + "." + queryTable.getTableName(), schemaIcon);
 					rootItem.getChildren().add(provenanceItem);
 //					rootItem = provenanceItem;

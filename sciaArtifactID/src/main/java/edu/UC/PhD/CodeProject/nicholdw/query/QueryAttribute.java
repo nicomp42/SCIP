@@ -194,4 +194,15 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	public FullColumnName getFullColumnName() {
 		return new FullColumnName(getSchemaName(), getTableName(), getAttributeName());
 	}
+	/***
+	 * If the attribute has an alias, return that, else return the attribute name
+	 * @return The alias or attribute
+	 */
+	public String getAttributeOrAliasName() {
+		if (aliasNames.size() > 0) {
+			return aliasNames.iterator().next().getAliasName();
+		} else {
+			return getAttributeName();
+		}
+	}
 }
