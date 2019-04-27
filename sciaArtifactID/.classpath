@@ -26,6 +26,5 @@
 	<classpathentry kind="lib" path="jars/gsp.jar"/>
 	<classpathentry kind="lib" path="jars/antlr-4.7.1-complete.jar"/>
 	<classpathentry kind="lib" path="jars/mysql-binlog-connector-java-0.16.1.jar"/>
-	<classpathentry kind="lib" path="Logback"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -32,8 +32,8 @@ public class Log {
 	}
 	public static synchronized void resetAllBuffers() {
 		resetMsgBuffer();
-		reseterrorLog();
-		resetneo4jQueryHistoryLog();
+		resetErrorLog();
+		resetNeo4jQueryHistoryLog();
 	}
 	public static synchronized void nullAllBuffers() {
 		progressLog = null;
@@ -116,7 +116,7 @@ public class Log {
 		}
 	}
 	/**
-	 * Flush the contents of the message buffer to the final destination of the messages, then null the buffer
+	 * Flush the contents of the message buffer to the final destination of the messages, then clear the log
 	 */
 	public static synchronized void flushProgressLog() {
 		if (progressLog != null) {
@@ -125,7 +125,7 @@ public class Log {
 		}
 	}
 	/**
-	 * Flush the contents of the error buffer to the final destination of the messages, then null the buffer
+	 * Flush the contents of the error buffer to the final destination of the messages, then clear the log
 	 */
 	public static synchronized void flusherrorLog() {
 		if (errorLog != null) {
@@ -134,7 +134,7 @@ public class Log {
 		}
 	}
 	/**
-	 * Flush the contents of the Neo4j buffer to the final destination of the messages, then null the buffer
+	 * Flush the contents of the Neo4j buffer to the final destination of the messages, then clear the log
 	 */
 	public static synchronized void flushneo4jQueryHistoryLog() {
 		if (neo4jQueryHistoryLog != null) {
@@ -146,7 +146,7 @@ public class Log {
 //	public static List<String> getMsgBuffer() {return progressLog;}
 	private static void resetMsgBuffer() {progressLog = new LogMessages("Progess");}// Collections.synchronizedList(new ArrayList<String>());}
 //	public static List<String> geterrorLog() {return errorLog;}
-	private static void reseterrorLog() {errorLog = new LogMessages("Error");}
+	private static void resetErrorLog() {errorLog = new LogMessages("Error");}
 //	public static List<String> getneo4jQueryHistoryLog() {return neo4jQueryHistoryLog;}
-	private static void resetneo4jQueryHistoryLog() {neo4jQueryHistoryLog = new LogMessages("Neo4j Query History");}
+	private static void resetNeo4jQueryHistoryLog() {neo4jQueryHistoryLog = new LogMessages("Neo4j Query History");}
 }
