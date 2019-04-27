@@ -16,8 +16,8 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
  */
 public class Log {
 	// Is there is a non-null buffer, bypass processing the message and just store it in the buffer
-	private static List<String> progressBuffer, errorBuffer, neo4jQueryHistoryBuffer, queryParseProgressBuffer;
-
+	private static LogMessages progressBuffer, errorBuffer, neo4jQueryHistoryBuffer, queryParseProgressBuffer;
+	
 	static {
 		progressBuffer = null; errorBuffer = null; neo4jQueryHistoryBuffer = null; queryParseProgressBuffer = null;
 		//resetMsgBuffer();
@@ -52,7 +52,7 @@ public class Log {
 				if (!Config.getConfig().getSupressOutputToConsole()) {System.out.println(msg);}
 			}
 		} else {
-			errorBuffer.add(msg);
+			errorBuffer.add(new LogMessage(msg));
 		}
 	}
 	public static synchronized void logError(String msg, StackTraceElement[] stackTrace) {
@@ -63,7 +63,7 @@ public class Log {
 				if (!Config.getConfig().getSupressOutputToConsole()) {System.err.println(msg + "\n" + stackTrace.toString());}
 			}
 		} else {
-			errorBuffer.add(msg + "\n" + stackTrace.toString());
+			errorBuffer.add(new LogMessage(msg + "\n" + stackTrace.toString()));
 		}
 	}
 	public static synchronized void logError(String msg, Exception ex) {
@@ -74,7 +74,7 @@ public class Log {
 				if (!Config.getConfig().getSupressOutputToConsole()) {System.err.println(msg + "\n" + ex.getLocalizedMessage());}
 			}
 		} else {
-			errorBuffer.add(msg + "\n" + ex.getLocalizedMessage());
+			errorBuffer.add(new LogMessage(msg + "\n" + ex.getLocalizedMessage()));
 		}
 	}
 	public static synchronized void logQueryParseProgress(String msg, Boolean isError) {
@@ -87,7 +87,7 @@ public class Log {
 				if (!Config.getConfig().getSupressOutputToConsole()) {System.out.println(prefix + msg);}
 			}
 		} else {
-			queryParseProgressBuffer.add(prefix + msg);
+			queryParseProgressBuffer.add(new LogMessage(prefix + msg));
 		}
 	}
 	public static synchronized void logQueryParseProgress(String msg) {
@@ -101,7 +101,7 @@ public class Log {
 				if (!Config.getConfig().getSupressOutputToConsole()) {System.out.println(msg);}
 			}
 		} else {
-			progressBuffer.add(msg);
+			progressBuffer.add(new LogMessage(msg));
 		}
 	}
 	public static synchronized void logNeo4jQueryHistory(String sql) {
