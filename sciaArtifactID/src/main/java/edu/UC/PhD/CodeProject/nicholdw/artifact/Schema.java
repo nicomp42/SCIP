@@ -14,6 +14,16 @@ public class Schema {
 	public Schema(Schema schema) throws Exception {
 		setName(schema.getName());
 	}
+	/**
+	 * Compare the values of a schema
+	 * @param schema The Schema object to compare
+	 * @return true if the two schemas contain all the same values. 
+	 */
+	public boolean compareTo(Schema schema) {
+		boolean result = true;
+		if (!getName().equals(schema.getName())) {result = false;}
+		return result;
+	}
 	
 	public Schema (String name) throws Exception {
 		setName(name);
