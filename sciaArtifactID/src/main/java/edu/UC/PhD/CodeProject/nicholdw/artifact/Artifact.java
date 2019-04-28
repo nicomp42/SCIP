@@ -11,11 +11,11 @@ package edu.UC.PhD.CodeProject.nicholdw.artifact;
  */
 public class Artifact {
 	private String host;
-	private String schema;
+	private Schema schema;
 	private String table;
 	private String query;
 	private String attribute;
-	public Artifact(String host, String schema, String table, String query, String attribute) {
+	public Artifact(String host, Schema schema, String table, String query, String attribute) throws Exception {
 		setHost(host);
 		setSchema(schema);
 		setTable(table);
@@ -28,11 +28,11 @@ public class Artifact {
 	public void setHost(String host) {
 		this.host = host;
 	}
-	public String getSchema() {
-		return schema;
+	public Schema getSchema() throws Exception {
+		return new Schema(schema);
 	}
-	public void setSchema(String schema) {
-		this.schema = schema;
+	public void setSchema(Schema schema) throws Exception {
+		this.schema = new Schema(schema);
 	}
 	public String getTable() {
 		return table;

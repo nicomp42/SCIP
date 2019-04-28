@@ -11,6 +11,10 @@ package edu.UC.PhD.CodeProject.nicholdw.artifact;
 public class Schema {
 	private String name;
 
+	public Schema(Schema schema) throws Exception {
+		setName(schema.getName());
+	}
+	
 	public Schema (String name) throws Exception {
 		setName(name);
 	}
