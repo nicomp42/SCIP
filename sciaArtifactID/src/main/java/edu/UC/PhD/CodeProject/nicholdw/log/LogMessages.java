@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.log;
 
 import java.util.ArrayList;
@@ -9,7 +13,6 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 
 /***
  * A collection of Log Messages
- * 
  * @author nicomp
  *
  */
@@ -20,8 +23,7 @@ public class LogMessages implements Iterable<LogMessage> {
 	/**
 	 * Constructor
 	 * 
-	 * @param title
-	 *            The Description of what will be stored in the log
+	 * @param title The Description of what will be stored in the log
 	 */
 	public LogMessages(String title) {
 		this.setTitle(title);
@@ -34,22 +36,26 @@ public class LogMessages implements Iterable<LogMessage> {
 	 * @param logMessage
 	 */
 	public void add(LogMessage logMessage) {
-		logMessages.add(logMessage);
+		synchronized (logMessages) {
+			logMessages.add(logMessage);
+		}
 	}
 
 	/**
 	 * Add a message to the log.
 	 * 
-	 * @param message
+	 * @param message 
 	 */
 	public void add(String message) {
-		logMessages.add(new LogMessage(message));
+		synchronized (logMessages) {
+			logMessages.add(new LogMessage(message));
+		}
 	}
 
 	/**
 	 * Get the title of the Log
 	 * 
-	 * @return
+	 * @return title of the log
 	 */
 	public String getTitle() {
 		return title;

@@ -15,7 +15,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
  *
  */
 public class Log {
-	// Is there is a non-null buffer, bypass processing the message and just store it in the buffer
+	// If there is a non-null buffer, bypass processing the message and just store it in the buffer
 	private static LogMessages progressLog, errorLog, neo4jQueryHistoryLog, queryParseProgressLog;
 	
 	static {
@@ -27,18 +27,21 @@ public class Log {
 
 	public static synchronized void flushAllBuffers() {
 		flushProgressLog();
-		flusherrorLog();
-		flushneo4jQueryHistoryLog();
+		flushErrorLog();
+		flushNeo4jQueryHistoryLog();
+		flushQueryParseProgressLog();		
 	}
 	public static synchronized void resetAllBuffers() {
 		resetMsgBuffer();
 		resetErrorLog();
 		resetNeo4jQueryHistoryLog();
+		resetQueryParseProgressLog();
 	}
 	public static synchronized void nullAllBuffers() {
 		progressLog = null;
 		errorLog = null;
 		neo4jQueryHistoryLog = null;
+		queryParseProgressLog = null;
 	}
 	/**
 	 * Log the error message
@@ -127,7 +130,7 @@ public class Log {
 	/**
 	 * Flush the contents of the error buffer to the final destination of the messages, then clear the log
 	 */
-	public static synchronized void flusherrorLog() {
+	public static synchronized void flushErrorLog() {
 		if (errorLog != null) {
 			errorLog.writeAllMessages();
 			errorLog.clear();
@@ -136,12 +139,22 @@ public class Log {
 	/**
 	 * Flush the contents of the Neo4j buffer to the final destination of the messages, then clear the log
 	 */
-	public static synchronized void flushneo4jQueryHistoryLog() {
+	public static synchronized void flushNeo4jQueryHistoryLog() {
 		if (neo4jQueryHistoryLog != null) {
 			neo4jQueryHistoryLog.writeAllMessages();
 			neo4jQueryHistoryLog.clear();
 		}
 	}
+	/**
+	 * Flush the contents of the Query Parsing buffer to the final destination of the messages, then clear the log
+	 */
+	public static synchronized void flushQueryParseProgressLog() {
+		if (queryParseProgressLog != null) {
+			queryParseProgressLog.writeAllMessages();
+			queryParseProgressLog.clear();
+		}
+	}
+	
 	// The reset methods are private because we should only use them when we call the flush methods, above.
 //	public static List<String> getMsgBuffer() {return progressLog;}
 	private static void resetMsgBuffer() {progressLog = new LogMessages("Progess");}// Collections.synchronizedList(new ArrayList<String>());}
@@ -149,4 +162,5 @@ public class Log {
 	private static void resetErrorLog() {errorLog = new LogMessages("Error");}
 //	public static List<String> getneo4jQueryHistoryLog() {return neo4jQueryHistoryLog;}
 	private static void resetNeo4jQueryHistoryLog() {neo4jQueryHistoryLog = new LogMessages("Neo4j Query History");}
+	private static void resetQueryParseProgressLog() {queryParseProgressLog = new LogMessages("Query Parse Progress");}
 }
