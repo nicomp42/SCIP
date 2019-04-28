@@ -15,7 +15,7 @@ public class LogMessage {
 	private String message;
 	private LocalDateTime localDateTime;	// Using Java API added in Java 8
 	/**
-	 * Create a LogMessage object. The time stamp will be defaulted to now
+	 * Create a LogMessage object. The date/time stamp will be defaulted to now
 	 * @param message
 	 */
 	public LogMessage(String message) {
@@ -24,14 +24,14 @@ public class LogMessage {
 	}
 	/**
 	 * Get the value in the message
-	 * @return
+	 * @return the message 
 	 */
 	public String getMessage() {
 		return message;
 	}
 	/**
-	 * Set the value in the message
-	 * @param message
+	 * Set the value in the message. The date/time stamp is defaulted to now.
+	 * @param message 
 	 */
 	public void setMessage(String message) {
 		localDateTime = LocalDateTime.now();

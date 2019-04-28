@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.artifact;
 /***
  * An chunk of a Data Warehouse that we will be watching. The term 'artifact' is defined in our research
@@ -48,7 +52,4 @@ public class Artifact {
 	public void setAttribute(String attribute) {
 		this.attribute = attribute;
 	}
-	
-	
-	
 }
