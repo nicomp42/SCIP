@@ -1,6 +1,8 @@
 /*
  * Table/query attribute aliases
- */
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+*/
 package edu.UC.PhD.CodeProject.nicholdw;
 
 import java.util.ArrayList;

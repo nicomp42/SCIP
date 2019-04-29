@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw;
 /**
  * A step in the ETL process. A step is reading from an Operational schema table. There will be SQL in here that needs to be parsed.
