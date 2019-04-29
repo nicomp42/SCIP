@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
@@ -62,6 +64,7 @@ public class Config implements Serializable {
 	}
 	private final String version = "0.05";
 	private final int mySQLDefaultPort = 3306;
+	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	private final Boolean useCaseSensitiveAttributeNameComparison = false;
 	private final Boolean useCaseSensitiveAliasNameComparison = false;
 	private final Boolean useCaseSensitiveTableNameComparison = false;
@@ -413,6 +416,18 @@ public class Config implements Serializable {
 	}
 	public String getAttributePartsDelimiter() {
 		return attributePartsDelimiter;
+	}
+	/**
+	 * Format a LocalDateTime object for display
+	 * @param localDateTime
+	 * @return The formatted string
+	 */
+	public static String formatLocalDateTime(LocalDateTime localDateTime) {
+		try {
+			return localDateTime.format(dateTimeFormatter);
+		} catch (Exception ex) {
+			return "!!!";
+		}
 	}
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.

@@ -15,7 +15,7 @@ public class Schema {
 		setName(schema.getName());
 	}
 	/**
-	 * Compare the values of a schema
+	 * Compare the values in another schema
 	 * @param schema The Schema object to compare
 	 * @return true if the two schemas contain all the same values. 
 	 */

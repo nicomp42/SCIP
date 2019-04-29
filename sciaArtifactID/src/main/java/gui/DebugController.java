@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.log.LogMessage;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -124,6 +125,13 @@ public class DebugController /* extends Application */ {
 	public void btnClearSQLQueryParsing_OnClick(ActionEvent event) {
 		txaSQLQueryParsing.setText("");
 	}
+	public void writeProgress(LogMessage msg) {
+		try {
+			txaProgress.appendText("\n" + msg.toString());
+		} catch (Exception ex) {
+			System.out.println("DebugController.writeProgress: " + ex.getLocalizedMessage());
+		}
+	}
 	public void writeProgress(String msg) {
 		try {
 			txaProgress.appendText("\n" + msg);
@@ -143,6 +151,13 @@ public class DebugController /* extends Application */ {
 			txaSQLQueryParsing.appendText("\n" + msg);
 		} catch (Exception ex) {
 			System.out.println("DebugController.writeQueryParseProgress: " + ex.getLocalizedMessage());
+		}
+	}
+	public void writeError(LogMessage logMessage) {
+		try {
+			txaErrors.appendText("\n" + logMessage.toString());
+		} catch (Exception ex) {
+			System.out.println("DebugController.writeError: " + ex.getLocalizedMessage());
 		}
 	}
 

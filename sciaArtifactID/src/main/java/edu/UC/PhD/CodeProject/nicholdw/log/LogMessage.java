@@ -6,6 +6,8 @@ package edu.UC.PhD.CodeProject.nicholdw.log;
 
 import java.time.LocalDateTime;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
+
 /**
  * A message in a log file
  * @author nicomp
@@ -14,6 +16,14 @@ import java.time.LocalDateTime;
 public class LogMessage {
 	private String message;
 	private LocalDateTime localDateTime;	// Using Java API added in Java 8
+	/**
+	 * Copy Constructor
+	 * @param logMessage LogMessage object to be copied
+	 */
+	public LogMessage(LogMessage logMessage) {
+		this.message = logMessage.getMessage();
+		this.localDateTime = logMessage.getLocalDateTime();
+	}
 	/**
 	 * Create a LogMessage object. The date/time stamp will be defaulted to now
 	 * @param message
@@ -37,9 +47,10 @@ public class LogMessage {
 		localDateTime = LocalDateTime.now();
 		this.message = message;
 	}
+	public LocalDateTime getLocalDateTime() {return localDateTime;}
 	/**
 	 * String representation of the message
 	 * @return the formatted message
 	 */
-	public String toString() {return localDateTime + ": " + message;}
+	public String toString() {return Config.formatLocalDateTime(localDateTime) + ": " + message;}
 }

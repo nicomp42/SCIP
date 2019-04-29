@@ -47,8 +47,24 @@ public class Log {
 	 * Log the error message
 	 * @param msg The error message
 	 */
-	public static synchronized void logError(String msg) {
+	public static synchronized void logError(LogMessage logMessage) {
 		if (errorLog == null) {
+			if (Config.getConfig().getDebugController() != null) {
+				Config.getConfig().getDebugController().writeError(logMessage);
+			} else {
+				if (!Config.getConfig().getSupressOutputToConsole()) {System.out.println(logMessage.toString());}
+			}
+		} else {
+			errorLog.add(logMessage);
+		}
+	}
+	/**
+	 * Log the error message
+	 * @param msg The error message
+	 */
+	public static synchronized void logError(String msg) {
+		logError(new LogMessage(msg));
+/*		if (errorLog == null) {
 			if (Config.getConfig().getDebugController() != null) {
 				Config.getConfig().getDebugController().writeError(msg);
 			} else {
@@ -56,7 +72,7 @@ public class Log {
 			}
 		} else {
 			errorLog.add(new LogMessage(msg));
-		}
+		} */
 	}
 	public static synchronized void logError(String msg, StackTraceElement[] stackTrace) {
 		if (errorLog == null) {
@@ -70,7 +86,8 @@ public class Log {
 		}
 	}
 	public static synchronized void logError(String msg, Exception ex) {
-		if (errorLog == null) {
+		logError(new LogMessage(msg + "\n" + ex.getLocalizedMessage()));
+/*		if (errorLog == null) {
 			if (Config.getConfig().getDebugController() != null) {
 				Config.getConfig().getDebugController().writeError(msg);
 			} else {
@@ -78,7 +95,7 @@ public class Log {
 			}
 		} else {
 			errorLog.add(new LogMessage(msg + "\n" + ex.getLocalizedMessage()));
-		}
+		} */
 	}
 	public static synchronized void logQueryParseProgress(String msg, Boolean isError) {
 		String prefix = "";
@@ -96,7 +113,7 @@ public class Log {
 	public static synchronized void logQueryParseProgress(String msg) {
 		logQueryParseProgress(msg, false);
 	}
-	public static synchronized void logProgress(String msg) {
+	public static synchronized void logProgress(LogMessage msg) {
 		if (progressLog == null) {
 			if (Config.getConfig().getDebugController() != null) {
 				Config.getConfig().getDebugController().writeProgress(msg);
@@ -106,6 +123,18 @@ public class Log {
 		} else {
 			progressLog.add(new LogMessage(msg));
 		}
+	}
+	public static synchronized void logProgress(String msg) {
+		logProgress(new LogMessage(msg));
+/*		if (progressLog == null) {
+			if (Config.getConfig().getDebugController() != null) {
+				Config.getConfig().getDebugController().writeProgress(msg);
+			} else {
+				if (!Config.getConfig().getSupressOutputToConsole()) {System.out.println(msg);}
+			}
+		} else {
+			progressLog.add(new LogMessage(msg));
+		} */
 	}
 	public static synchronized void logNeo4jQueryHistory(String sql) {
 		if (neo4jQueryHistoryLog == null) {

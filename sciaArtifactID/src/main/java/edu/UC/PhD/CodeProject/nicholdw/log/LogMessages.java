@@ -37,7 +37,7 @@ public class LogMessages implements Iterable<LogMessage> {
 	 */
 	public void add(LogMessage logMessage) {
 		synchronized (logMessages) {
-			logMessages.add(logMessage);
+			logMessages.add(new LogMessage(logMessage));
 		}
 	}
 
