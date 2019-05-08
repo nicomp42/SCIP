@@ -15,6 +15,15 @@ public class Artifact {
 	private String table;
 	private String query;
 	private String attribute;
+	/**
+	 * Constructor
+	 * @param host Host Name where the DB engine is
+	 * @param schema Schema Object
+	 * @param table Table Name
+	 * @param query Query Name
+	 * @param attribute Attribute Name
+	 * @throws Exception: Something that can't be blank, etc.
+	 */
 	public Artifact(String host, Schema schema, String table, String query, String attribute) throws Exception {
 		setHost(host);
 		setSchema(schema);
