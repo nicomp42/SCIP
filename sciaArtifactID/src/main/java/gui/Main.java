@@ -9,6 +9,8 @@ package gui;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import org.apache.log4j.PropertyConfigurator;
 import org.neo4j.graphdb.GraphDatabaseService;
 import edu.UC.PhD.CodeProject.nicholdw.Attribute;
 import edu.UC.PhD.CodeProject.nicholdw.Attributes;
@@ -69,6 +71,8 @@ import javafx.scene.web.WebView;
 
 public class Main extends Application {
 	public static void main(String[] args) {
+		// See https://stackoverflow.com/questions/25997556/no-appenders-could-be-found-for-logger-org-apache-http-client-protocol-requesta
+		PropertyConfigurator.configure(System.getProperty("user.dir") + "/src/resources/log4j.properties");
 		launch(args);
 	}
 	private Stage myPrimaryStage;

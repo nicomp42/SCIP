@@ -2,6 +2,8 @@ package edu.UC.PhD.CodeProject.nicholdw.browser;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.log.LogMessage;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
@@ -44,6 +46,7 @@ public class Browser {
 	}
 	// Do everything necessary to open browser window, log in, and display the entire graph.
 	public void initAndLoad(String cypherStatement) {
+		Log.logProgress(new LogMessage("Browser.initAndLoadBrowser(): " + cypherStatement));
 		initBrowser();
 		browseToNeo4j();
 		loginToNeo4j();

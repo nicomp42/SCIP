@@ -23,6 +23,12 @@
 	  <pentaho-kettle.version>5.4.1.8-209</pentaho-kettle.version>      
    </properties>
    <dependencies>
+	   	<!-- See https://stackoverflow.com/questions/25997556/no-appenders-could-be-found-for-logger-org-apache-http-client-protocol-requesta -->
+		<dependency>
+		    <groupId>log4j</groupId>
+		    <artifactId>log4j</artifactId>
+		    <version>1.2.17</version>
+		</dependency>
 <!-- 
 	   		Added 4/12/2019 , removed 4/27/2019 because I got frustrated trying to make it work.
 		   	https://mvnrepository.com/artifact/ch.qos.logback/logback-classic

@@ -233,8 +233,10 @@ public class QueryDefinition {
 			    try {
 			    	resultSet.next();					// Move to the first record
 					sql = resultSet.getString(1);		// The argument to getString() is one-based, not zero-based
-				} catch (Exception e) {Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition() : " + e.getLocalizedMessage());}
-			} catch (Exception ex) {Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition(): " + ex.getLocalizedMessage()); }
+				} catch (Exception e) {
+					Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition() : " + e.getLocalizedMessage());}
+			} catch (Exception ex) {
+				Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition(): " + ex.getLocalizedMessage()); }
 			try {connection.close();} catch (Exception ex) {}
 		}
 		return sql;
