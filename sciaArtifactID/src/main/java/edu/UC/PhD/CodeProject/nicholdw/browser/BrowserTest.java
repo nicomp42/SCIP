@@ -9,7 +9,11 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-
+/**
+ * Testing that we can launch a FireFox window. I had to update Geckodriver.exe to make this run all the way through
+ * @author nicomp
+ *
+ */
 public class BrowserTest {
 
 	public static void main(String[] args) {
