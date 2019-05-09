@@ -61,7 +61,8 @@
                           </rowConstraints>
                           <children>                              
                               <CheckBox fx:id="cbSupressOutputToConsole" mnemonicParsing="false" prefHeight="25.0" text="Suppress all output to the console" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                              <CheckBox fx:id="cbUseTestData" mnemonicParsing="false" prefHeight="25.0" text="Use test queries (be careful!)" GridPane.columnIndex="0" GridPane.rowIndex="1" />                             
+                              <CheckBox fx:id="cbUseTestData" mnemonicParsing="false" prefHeight="25.0" text="Use test queries (be careful!)" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                              <CheckBox fx:id="cbEnableLogging" mnemonicParsing="false" text="Enable Logging" GridPane.rowIndex="2" />                             
                           </children>
                         </GridPane>
                      </content>
@@ -231,7 +232,7 @@
                           </rowConstraints>
                            <children>
                               <Label prefHeight="25.0" text="Connections" GridPane.columnIndex="0" GridPane.rowIndex="0" />                              		
-                              <TableView fx:id="tvDatabaseConnections" prefHeight="100.0" prefWidth="450.0" GridPane.columnIndex="1" GridPane.rowIndex="0" >
+                              <TableView fx:id="tvDatabaseConnections" prefHeight="100.0" prefWidth="450.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
 							     <columns>
 							          <TableColumn text="Connection Name">
 							                  <cellValueFactory><PropertyValueFactory property="connectionName" /></cellValueFactory>

@@ -33,7 +33,5 @@ public class BrowserTest {
 		} catch (Exception ex) {
 			Log.logError("BrowserTest: " + ex.getLocalizedMessage());
 		}
-
 	}
-
 }

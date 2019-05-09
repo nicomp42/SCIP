@@ -83,6 +83,7 @@ public class Config implements Serializable {
 	private String Neo4jTableToAttributeRelationName = "contains";
 	private String Neo4jQueryToTableRelationName = "contains";
 	private Boolean useTestData = false;
+	private Boolean enableLogging = false;		// If false, turn off all logging;
 	private String initialDirectory = "";
 	private String neo4jDBDefaultUser = "neo4j";
 	private String neo4jDBDefaultPassword = "Danger42";
@@ -428,6 +429,20 @@ public class Config implements Serializable {
 		} catch (Exception ex) {
 			return "!!!";
 		}
+	}
+	/**
+	 * Check to see if logging is enabled
+	 * @return True if logging is enabled, false otherwise
+	 */
+	public Boolean getEnableLogging() {
+		return enableLogging;
+	}
+	/**
+	 * Enable/Disable logging
+	 * @param enableLogging True = enable logging
+	 */
+	public void setEnableLogging(Boolean enableLogging) {
+		this.enableLogging = enableLogging;
 	}
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.

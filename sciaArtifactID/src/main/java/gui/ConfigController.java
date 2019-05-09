@@ -49,7 +49,7 @@ public class ConfigController /* extends Application */ {
 	@FXML TextField txtNeo4jDefaultUser, txtNeo4jDefaultPassword, txtNeo4jTableToAttributeRelationName, txtNeo4jQueryToTableRelationName, txtMySQLDefaultLoginName,
 				    txtMySQLDefaultPassword, txtMySQLDefaultHostname;
 	@FXML TextArea txaCSVFolder, txaGrassURL, txaUserHomeDirectory, txaConfigFilePath;
-	@FXML CheckBox cbUseTestData, cbSupressOutputToConsole;
+	@FXML CheckBox cbUseTestData, cbSupressOutputToConsole, cbEnableLogging;
 	@FXML Tab tabMain, tabDatabase, tabNeo4j, tabFiles;
 	@FXML TabPane tbpConfig;
 	@FXML TextField txtSystemDatabaseLoginName, txtSystemDatabasePassword, txtSystemDatabaseHostName, txtSystemDatabaseSchemaName;

@@ -129,35 +129,35 @@ public class DebugController /* extends Application */ {
 		try {
 			txaProgress.appendText("\n" + msg.toString());
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeProgress: " + ex.getLocalizedMessage());
+			System.out.println("DebugController.writeProgress: " + ex.getLocalizedMessage() + "\n message = " + msg);
 		}
 	}
 	public void writeProgress(String msg) {
 		try {
 			txaProgress.appendText("\n" + msg);
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeProgress: " + ex.getLocalizedMessage());
+			System.out.println("DebugController.writeProgress: " + ex.getLocalizedMessage() + "\n message = " + msg);
 		}
 	}
 	public void writeNeo4jQueryInfo(String msg) {
 		try {
 			txaNeo4jQuerys.appendText("\n" + msg);
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeNeo4jQueryInfo: " + ex.getLocalizedMessage());
+			System.out.println("DebugController.writeNeo4jQueryInfo: " + ex.getLocalizedMessage() + "\n message = " + msg);
 		}
 	}
 	public void writeQueryParseProgress(String msg) {
 		try {
 			txaSQLQueryParsing.appendText("\n" + msg);
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeQueryParseProgress: " + ex.getLocalizedMessage());
+			System.out.println("DebugController.writeQueryParseProgress: " + ex.getLocalizedMessage() + "\n message = " + msg);
 		}
 	}
 	public void writeError(LogMessage logMessage) {
 		try {
 			txaErrors.appendText("\n" + logMessage.toString());
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeError: " + ex.getLocalizedMessage());
+			System.out.println("DebugController.writeError: " + ex.getLocalizedMessage() + "\n message = " + logMessage.toString());
 		}
 	}
 
@@ -165,7 +165,7 @@ public class DebugController /* extends Application */ {
 		try {
 			txaErrors.appendText("\n" + msg);
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeError: " + ex.getLocalizedMessage());
+			System.out.println("DebugController.writeError: " + ex.getLocalizedMessage() + "\n message = " + msg);
 		}
 	}
 	private void clearAllLogs() {

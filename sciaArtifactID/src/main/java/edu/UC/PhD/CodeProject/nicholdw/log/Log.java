@@ -19,7 +19,8 @@ public class Log {
 	private static LogMessages progressLog, errorLog, neo4jQueryHistoryLog, queryParseProgressLog;
 	
 	static {
-		progressLog = null; errorLog = null; neo4jQueryHistoryLog = null; queryParseProgressLog = null;
+//		progressLog = null; errorLog = null; neo4jQueryHistoryLog = null; queryParseProgressLog = null;
+		resetAllBuffers();
 		//resetMsgBuffer();
 		//reseterrorLog();
 		//resetNeo4jBuffer();
