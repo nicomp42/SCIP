@@ -46,7 +46,7 @@ public class Browser {
 	}
 	// Do everything necessary to open browser window, log in, and display the entire graph.
 	public void initAndLoad(String cypherStatement) {
-		Log.logProgress(new LogMessage("Browser.initAndLoadBrowser(): " + cypherStatement));
+		Log.logProgress(new LogMessage("Browser.initAndLoad(): " + cypherStatement));
 		initBrowser();
 		browseToNeo4j();
 		loginToNeo4j();
@@ -72,11 +72,11 @@ public class Browser {
 		}
 	}
 	public void browseToNeo4j() {
-		Log.logProgress("Browser.displayBrowser()");
+		Log.logProgress("Browser.browseToNeo4j()");
 		try {
 			eventDriver.get("http://127.0.0.1:7474/browser/");
 		} catch (Exception ex) {
-			Log.logError("Browser.displayBrowser(): " + ex.getLocalizedMessage());
+			Log.logError("Browser.browseToNeo4j(): " + ex.getLocalizedMessage());
 		}
 	}
 	public void setStyleSheet() {
