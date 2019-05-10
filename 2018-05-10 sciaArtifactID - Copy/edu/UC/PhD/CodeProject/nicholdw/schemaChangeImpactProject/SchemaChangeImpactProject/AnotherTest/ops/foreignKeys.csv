@@ -1,7 +1,0 @@
-relation_name,attr_name,constraint_name,referenced_relation_name,referenced_column_name
-tcustomer,CustomerTypeID,FK_CustomerTypeID,tcustomertype,CustomerTypeID
-tpilot_flight,FlightID,FK_FlightID,tflight,FlightID
-tpilot_flight,PilotID,FK_PilotID,tpilot,PilotID
-tstore,ManagerID,tstore_ibfk_1,templ,EmplID
-tstudent_class,ClassID,FK_ClassID,tclass,ClassID
-tstudent_class,StudentID,FK_StudentID,tstudent,StudentID

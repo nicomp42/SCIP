@@ -1,1 +1,0 @@
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `FullCoveragetestcase`.`query01` AS select `FullCoveragetestcase`.`table01`.`Field01` AS `Field01` from `FullCoveragetestcase`.`table01`;
