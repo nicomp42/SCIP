@@ -239,6 +239,7 @@ public class Main extends Application {
 				Scene scene = new Scene(root, 700, 450);
 		        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 		            public void handle(WindowEvent we) {
+		                Config.getConfig().getDebugController().stopHeartbeat();
 		                Config.getConfig().setDebugController(null);
 		            }
 		        });
@@ -744,30 +745,4 @@ public class Main extends Application {
 			Log.logError("Main.openTransactionLogFileReaderWindow():" + ex.getLocalizedMessage());
 		}
 	}
-/*
-		try {
-			FXMLLoader fxmlLoader = null;
-			// Open the New Project Window
-			fxmlLoader = new FXMLLoader(getClass().getResource("browser.fxml"));
-			Parent root = fxmlLoader.load();
-			Stage stage = new Stage();
-			stage.initModality(Modality.NONE);
-			stage.setOpacity(1);
-			stage.setTitle("Browser");
-			Scene scene = new Scene(root);		//, 700, 450);
-	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-	            public void handle(WindowEvent we) {
-
-	            }
-	        });
-			stage.setScene(scene);
-			BrowserController bc = fxmlLoader.getController();
-			bc.setScene(scene);
-			bc.setStage(stage);
-			stage.show();
-		} catch (Exception ex) {
-			Log.logError("Main.openBrowserWindow():" + ex.getLocalizedMessage());
-		}
-	}
-	*/
 }

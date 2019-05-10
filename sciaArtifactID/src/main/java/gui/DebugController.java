@@ -52,7 +52,7 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 	private Scene myScene;
 	private double  btnClearHeight, btnClearWidth, btnClearSQLQueryParsingWidth, btnClearNeo4jQuerysWidth, btnClearNeo4jQuerysHeight, btnClearErrorsWidth, btnClearErrorsHeight, btnClearSQLQueryParsingHeight;
 	private Stage myStage;
-
+	private Timeline heartbeat;
 	public DebugController() {
 	}
 
@@ -224,34 +224,23 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		System.out.println("DebugController.initialize()...");
-		Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
-
+//		This doesn't work and causes the method to fail!
+//		System.out.println("DebugController.initialize(" + location.toString() + ", " + resources.toString() + ")...");
+		System.out.println("DebugController.initialize(URL location, ResourceBundle resources)...");
+		startHeartbeat();
+	}
+	private void startHeartbeat() {
+		heartbeat = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent event) {
 				  System.out.println("beep");
 				  Log.flushAllBuffers();
 		    }
 		}));
-		fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);
-		fiveSecondsWonder.play();
-		// Set up a background task to check for messages in the logs
-//		TimerTask messageTask = new MessageTask();
-//	    Timer timer = new Timer();
-//	    timer.scheduleAtFixedRate(messageTask, new Date(), 5000);		
-/*		Task<Void> runnable = new Task<Void>() {		// https://docs.oracle.com/javafx/2/threads/jfxpub-threads.htm
-			 // This thread cannot write to JavaFX controls, even in the Debug window.
-			  public Void call() {
-				  int count = 0;
-				  while(true) {
-					  count++;
-					  System.out.println(count + " beep");
-					  try {Thread.sleep(5000);} catch (Exception ex) {}
-				  }
-//				  return null;
-			}
-		}; 
-	    Thread thread = new Thread(runnable);
-	    thread.start();*/
+		heartbeat.setCycleCount(Timeline.INDEFINITE);
+		heartbeat.play();
+	}
+	public void stopHeartbeat() {
+		heartbeat.stop();
 	}
 }
