@@ -4,16 +4,28 @@
  */
 package gui;
 
+import java.net.URL;
 import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.log.LogMessage;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopology;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,12 +37,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * Display debug messages in a dedicated window
  * @author nicomp
  */
-public class DebugController /* extends Application */ {
+public class DebugController implements javafx.fxml.Initializable {
 
 	@FXML TextArea txaProgress, txaNeo4jQuerys, txaErrors, txaSQLQueryParsing;
 	@FXML Button btnClear, btnClearNeo4jQuerys, btnClearErrors, btnClearSQLQueryParsing, btnClearAllLogs;
@@ -160,7 +173,6 @@ public class DebugController /* extends Application */ {
 			System.out.println("DebugController.writeError: " + ex.getLocalizedMessage() + "\n message = " + logMessage.toString());
 		}
 	}
-
 	public void writeError(String msg) {
 		try {
 			txaErrors.appendText("\n" + msg);
@@ -177,5 +189,44 @@ public class DebugController /* extends Application */ {
 	public void setScene(Scene scene) {this.myScene = scene;}
 	public Stage getStage() {return myStage;}
 	public void setStage(Stage myStage) {this.myStage = myStage;}
-}
+	static class MessageTask extends TimerTask {
+		@Override
+		public void run() {
+			  System.out.println((new Date()) + " beep");
+			  Log.flushAllBuffers();
+		}
+	}
+	
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		System.out.println("DebugController.initialize()...");
+		Timeline fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
 
+		    @Override
+		    public void handle(ActionEvent event) {
+				  System.out.println("beep");
+				  Log.flushAllBuffers();
+		    }
+		}));
+		fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);
+		fiveSecondsWonder.play();
+		// Set up a background task to check for messages in the logs
+//		TimerTask messageTask = new MessageTask();
+//	    Timer timer = new Timer();
+//	    timer.scheduleAtFixedRate(messageTask, new Date(), 5000);		
+/*		Task<Void> runnable = new Task<Void>() {		// https://docs.oracle.com/javafx/2/threads/jfxpub-threads.htm
+			 // This thread cannot write to JavaFX controls, even in the Debug window.
+			  public Void call() {
+				  int count = 0;
+				  while(true) {
+					  count++;
+					  System.out.println(count + " beep");
+					  try {Thread.sleep(5000);} catch (Exception ex) {}
+				  }
+//				  return null;
+			}
+		}; 
+	    Thread thread = new Thread(runnable);
+	    thread.start();*/
+	}
+}

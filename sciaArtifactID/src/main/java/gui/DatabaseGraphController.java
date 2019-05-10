@@ -169,10 +169,10 @@ public class DatabaseGraphController {
 	@FXML
 	private void btnProcessSchema_OnClick(ActionEvent event) throws InterruptedException {
 		// OK, the user has drilled down to a schema. Generate the topology...
-		ProcessSchema();
+		processSchema();
 		showArtifacts(true);
 	}
-	private void ProcessSchema() {
+	private void processSchema() {
  		if ( txtSchemaName.getText().trim().length() > 0) {
 			schemaTopologyResults = new DatabaseGraphResults();
 			DatabaseGraphConfig schemaTopologyConfig = new DatabaseGraphConfig();
@@ -213,8 +213,8 @@ public class DatabaseGraphController {
 				showResultsControls(true);
 				btnProcessSchema.setVisible(true);
 				taResults.requestFocus();
-				Log.flushAllBuffers();
-				Log.nullAllBuffers();
+//				Log.flushAllBuffers();
+//				Log.nullAllBuffers();
 				showFilters(true);
 		    });
 			try {
@@ -225,8 +225,8 @@ public class DatabaseGraphController {
 				taResults.requestFocus();
 				taResults.setText("");				// We need to wait for this to happen so the user isn't confused.
 				// Since we can't write to the JavaFX controls in the worker thread, we will buffer the messages and write them when the worker thread is finished.
-				Log.flushAllBuffers();
-				Log.resetAllBuffers();
+//				Log.flushAllBuffers();
+//				Log.resetAllBuffers();
 			    Thread thread = new Thread(runnable);
 			    thread.start();
 			} catch (Exception e) {

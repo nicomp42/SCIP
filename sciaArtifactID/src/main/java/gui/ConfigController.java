@@ -23,6 +23,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
@@ -43,7 +45,7 @@ import javafx.scene.control.TableView;
  */
 public class ConfigController /* extends Application */ {
 //  <ListView fx:id="lvDatabaseConnections" prefHeight="100.0" prefWidth="450.0" GridPane.columnIndex="1" GridPane.rowIndex="0" /> 
-
+	@FXML MenuItem mnuFileSave;
 	@FXML AnchorPane apConfig;
 	@FXML Button btnSave, btnBrowseForCSVFolder;
 	@FXML TextField txtNeo4jDefaultUser, txtNeo4jDefaultPassword, txtNeo4jTableToAttributeRelationName, txtNeo4jQueryToTableRelationName, txtMySQLDefaultLoginName,
@@ -117,6 +119,12 @@ public class ConfigController /* extends Application */ {
 		this.myStage = myStage;
 		setTheScene();
 	}
+	/**
+	 * User clicked File/Save on the menu
+	 * @param event
+	 */
+	@FXML
+	private void mnuFileSave_OnClick(ActionEvent event) {save();}
 
 	/**
 	 * User clicked Save
@@ -168,6 +176,7 @@ public class ConfigController /* extends Application */ {
 			txtMySQLDefaultHostname.setText(Config.getConfig().getMySQLDefaultHostname());
 			cbUseTestData.setSelected(Config.getConfig().getUseTestData());
 			cbSupressOutputToConsole.setSelected(Config.getConfig().getSupressOutputToConsole());
+			cbEnableLogging.setSelected(Config.getConfig().getEnableLogging());
 			txaCSVFolder.setText(Config.getConfig().getNeo4jDefaultImportFilePath());
 			txaGrassURL.setText(Config.getConfig().getGrassStyleSheetURL());
 			txaUserHomeDirectory.setText(Config.getConfig().getUserHomeDirectory());
@@ -196,6 +205,7 @@ public class ConfigController /* extends Application */ {
 			Config.getConfig().setMySQLDefaultHostname(txtMySQLDefaultHostname.getText());
 			Config.getConfig().setUseTestData(cbUseTestData.isSelected());
 			Config.getConfig().setSupressOutputToConsole(cbSupressOutputToConsole.isSelected());
+			Config.getConfig().setEnableLogging(cbEnableLogging.isSelected());
 			Config.getConfig().setNeo4jDefaultImportFilePath(txaCSVFolder.getText());
 			Config.getConfig().setGrassStyleSheetURL(txaGrassURL.getText());
 			Config.getConfig().getSystemDatabaseConnectionInformation().setHostName(txtSystemDatabaseHostName.getText());
@@ -236,11 +246,11 @@ public class ConfigController /* extends Application */ {
 		txaGrassURL.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
 		cbSupressOutputToConsole.selectedProperty().addListener(new ChangeListener<Boolean>() {@Override public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {setDirty(true);}});
 		cbUseTestData.selectedProperty().addListener(new ChangeListener<Boolean>() {@Override public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {setDirty(true);}});
-
 		txtSystemDatabaseLoginName.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
 		txtSystemDatabasePassword.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
 		txtSystemDatabaseHostName.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});
 		txtSystemDatabaseSchemaName.textProperty().addListener(new ChangeListener<String>() {@Override public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {setDirty(true);}});		
+		cbEnableLogging.selectedProperty().addListener(new ChangeListener<Boolean>() {@Override public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {setDirty(true);}});
 	}
 
 	private void setDirty(Boolean dirty) {this.dataIsDirty = dirty; displaySaveButton();}

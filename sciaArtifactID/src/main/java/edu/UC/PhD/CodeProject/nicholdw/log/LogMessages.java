@@ -8,16 +8,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 
 /***
  * A collection of Log Messages
  * @author nicomp
- *
  */
 public class LogMessages implements Iterable<LogMessage> {
-	private List<LogMessage> logMessages;
+//	private List<LogMessage> logMessages;
+	BlockingQueue<LogMessage> logMessages;	// = new LinkedBlockingQueue<>();
 	private String title;
 
 	/**
@@ -27,7 +30,8 @@ public class LogMessages implements Iterable<LogMessage> {
 	 */
 	public LogMessages(String title) {
 		this.setTitle(title);
-		logMessages = Collections.synchronizedList(new ArrayList<LogMessage>()); // new ArrayList<LogMessage>();
+//		logMessages = Collections.synchronizedList(new ArrayList<LogMessage>()); 
+		logMessages = new LinkedBlockingQueue<LogMessage>(); 
 	}
 
 	/**
@@ -79,14 +83,15 @@ public class LogMessages implements Iterable<LogMessage> {
 	 * Write all the messages to the output device
 	 */
 	public void writeAllMessages() {
+//		if (Config.getConfig().getEnableLogging() == false) return;
 		synchronized (logMessages) {
-			Iterator<LogMessage> i = logMessages.iterator(); // Must be in synchronized block
-			while (i.hasNext()) {
+			//Iterator<LogMessage> i = logMessages.iterator(); // Must be in synchronized block
+			while (logMessages.isEmpty() == false) {
 				if (Config.getConfig().getDebugController() != null) {
-					Config.getConfig().getDebugController().writeProgress(i.toString());
+					try {Config.getConfig().getDebugController().writeProgress(logMessages.poll(0, TimeUnit.SECONDS).toString());} catch (Exception ex) {}
 				} else {
 					if (!Config.getConfig().getSupressOutputToConsole()) {
-						System.out.println(i.toString());
+						try {System.out.println(logMessages.poll(0, TimeUnit.SECONDS).toString());} catch (Exception ex) {}
 					}
 				}
 			}
