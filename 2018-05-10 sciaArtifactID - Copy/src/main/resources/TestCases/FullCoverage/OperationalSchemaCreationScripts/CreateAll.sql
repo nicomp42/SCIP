@@ -1,0 +1,1 @@
+CALL `fullcoveragetestcase`.`CreateAll`();

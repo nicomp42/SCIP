@@ -1,0 +1,28 @@
+// How to build the parser from the grammar files
+// Get the grammar from https://github.com/antlr/grammars-v4/tree/master/mysql
+
+// Run ALRTLR
+
+C:\Temp>java -cp antlr-4.7.1-complete.jar org.antlr.v4.Tool MySqlLexer.g4
+
+C:\Temp>java -cp antlr-4.7.1-complete.jar org.antlr.v4.Tool MySqlParser.g4
+
+
+ Directory of C:\Temp
+
+07/20/2018  11:03 AM    <DIR>          .
+07/20/2018  11:03 AM    <DIR>          ..
+06/10/2018  09:53 AM         2,240,116 antlr-4.7.1-complete.jar
+06/21/2018  03:26 PM    <DIR>          Foo
+07/20/2018  10:59 AM            52,772 MySqlLexer.g4
+07/20/2018  11:02 AM           399,751 MySqlLexer.interp
+07/20/2018  11:02 AM           392,776 MySqlLexer.java
+07/20/2018  11:02 AM            29,368 MySqlLexer.tokens
+07/20/2018  10:59 AM            75,589 MySqlParser.g4
+07/20/2018  11:03 AM           261,267 MySqlParser.interp
+07/20/2018  11:03 AM         2,596,979 MySqlParser.java
+07/20/2018  11:03 AM            29,368 MySqlParser.tokens
+07/20/2018  11:03 AM           190,222 MySqlParserBaseListener.java
+07/20/2018  11:03 AM           226,524 MySqlParserListener.java
+              11 File(s)      6,494,732 bytes
+               3 Dir(s)  23,274,110,976 bytes free

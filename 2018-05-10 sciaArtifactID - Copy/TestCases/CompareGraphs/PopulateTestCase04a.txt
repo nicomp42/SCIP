@@ -1,0 +1,7 @@
+-- Populate TestCase04a. See also populateTestCase04.txt for the companion script
+-- The difference between the graphs is an extra label, Mineral, in the other graph
+MATCH (n) DETACH DELETE n;
+--
+CREATE (n:Animal:Vegetable { name: ['Thing', 'Gizmo', 'Widget'], color:['Red','Green','Blue']});
+--
+

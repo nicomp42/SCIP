@@ -1,0 +1,13 @@
+ContainingQueryName,SchemaName,TableName
+q01,queryprocessingtest,tWidget
+q01,queryprocessingtest,qc
+qlevelaa,queryprocessingtest,qlevelbb
+qc,queryprocessingtest,ttablec
+qd,queryprocessingtest,ttabled
+qlevelcc,queryprocessingtest,ttablef
+q01,queryprocessingtest,qlevelaa
+qlevelcc,queryprocessingtest,ttablee
+q01,queryprocessingtest,ttablea
+q01,queryprocessingtest,ttableb
+q01,queryprocessingtest,qd
+qlevelbb,queryprocessingtest,qlevelcc
