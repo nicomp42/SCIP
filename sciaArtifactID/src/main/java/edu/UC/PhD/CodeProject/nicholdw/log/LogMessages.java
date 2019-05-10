@@ -50,9 +50,9 @@ public class LogMessages implements Iterable<LogMessage> {
 	 * 
 	 * @param message 
 	 */
-	public void add(String message) {
+	public void add(String message, LogMessage.enumLogMessageType logMessageType) {
 		synchronized (logMessages) {
-			logMessages.add(new LogMessage(message));
+			logMessages.add(new LogMessage(message, logMessageType));
 		}
 	}
 
@@ -80,15 +80,15 @@ public class LogMessages implements Iterable<LogMessage> {
 		return myIterator;
 	}
 	/***
-	 * Write all the messages to the output device
+	 * Write all the progress messages to the output device
 	 */
-	public void writeAllMessages() {
+	public void writeAllMessages(WriteLogMessage wlm) {
 //		if (Config.getConfig().getEnableLogging() == false) return;
 		synchronized (logMessages) {
 			//Iterator<LogMessage> i = logMessages.iterator(); // Must be in synchronized block
 			while (logMessages.isEmpty() == false) {
-				if (Config.getConfig().getDebugController() != null) {
-					try {Config.getConfig().getDebugController().writeProgress(logMessages.poll(0, TimeUnit.SECONDS).toString());} catch (Exception ex) {}
+				if (wlm != null) {
+					try {wlm.writeLogMessage(logMessages.poll(0, TimeUnit.SECONDS));} catch (Exception ex) {}
 				} else {
 					if (!Config.getConfig().getSupressOutputToConsole()) {
 						try {System.out.println(logMessages.poll(0, TimeUnit.SECONDS).toString());} catch (Exception ex) {}

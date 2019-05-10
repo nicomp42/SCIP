@@ -66,11 +66,11 @@ public class Log {
 	 * @param msg The error message
 	 */
 	public static synchronized void logError(String msg) {
-		logError(new LogMessage(msg));
+		logError(new LogMessage(msg, LogMessage.enumLogMessageType.error));
 	}
 	public static synchronized void logError(String msg, StackTraceElement[] stackTrace) {
 		if (errorLog != null) {
-			errorLog.add(new LogMessage(msg + "\n" + stackTrace.toString()));
+			errorLog.add(new LogMessage(msg + "\n" + stackTrace.toString(), LogMessage.enumLogMessageType.error));
 		}
 /*		if (errorLog == null) {
 			if (Config.getConfig().getDebugController() != null) {
@@ -83,13 +83,13 @@ public class Log {
 		} */
 	}
 	public static synchronized void logError(String msg, Exception ex) {
-		logError(new LogMessage(msg + "\n" + ex.getLocalizedMessage()));
+		logError(new LogMessage(msg + "\n" + ex.getLocalizedMessage(), LogMessage.enumLogMessageType.error));
 	}
 	public static synchronized void logQueryParseProgress(String msg, Boolean isError) {
 		String prefix = "";
 		if (isError) {prefix = "***** ";}
 		if (queryParseProgressLog != null) {
-			queryParseProgressLog.add(new LogMessage(prefix + msg));
+			queryParseProgressLog.add(new LogMessage(prefix + msg, LogMessage.enumLogMessageType.queryParseProgress));
 		}
 /*		if (queryParseProgressLog == null) {
 			if (Config.getConfig().getDebugController() != null) {
@@ -119,11 +119,11 @@ public class Log {
 		}*/
 	}
 	public static synchronized void logProgress(String msg) {
-		logProgress(new LogMessage(msg));
+		logProgress(new LogMessage(msg, LogMessage.enumLogMessageType.progress));
 	}
 	public static synchronized void logNeo4jQueryHistory(String sql) {
 		if (neo4jQueryHistoryLog != null) {
-			neo4jQueryHistoryLog.add(sql);
+			neo4jQueryHistoryLog.add(new LogMessage(sql, LogMessage.enumLogMessageType.neo4jQuery));
 		}
 /*		if (neo4jQueryHistoryLog == null) {
 			if (Config.getConfig().getDebugController() != null) {
@@ -140,7 +140,7 @@ public class Log {
 	 */
 	public static synchronized void flushProgressLog() {
 		if (progressLog != null) {
-			progressLog.writeAllMessages();
+			progressLog.writeAllMessages(Config.getConfig().getDebugController());
 			progressLog.clear();
 		}
 	}
@@ -149,7 +149,7 @@ public class Log {
 	 */
 	public static synchronized void flushErrorLog() {
 		if (errorLog != null) {
-			errorLog.writeAllMessages();
+			errorLog.writeAllMessages(Config.getConfig().getDebugController());
 			errorLog.clear();
 		}
 	}
@@ -158,7 +158,7 @@ public class Log {
 	 */
 	public static synchronized void flushNeo4jQueryHistoryLog() {
 		if (neo4jQueryHistoryLog != null) {
-			neo4jQueryHistoryLog.writeAllMessages();
+			neo4jQueryHistoryLog.writeAllMessages(Config.getConfig().getDebugController());
 			neo4jQueryHistoryLog.clear();
 		}
 	}
@@ -167,7 +167,7 @@ public class Log {
 	 */
 	public static synchronized void flushQueryParseProgressLog() {
 		if (queryParseProgressLog != null) {
-			queryParseProgressLog.writeAllMessages();
+			queryParseProgressLog.writeAllMessages(Config.getConfig().getDebugController());
 			queryParseProgressLog.clear();
 		}
 	}

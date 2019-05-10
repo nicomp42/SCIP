@@ -15,6 +15,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.log.LogMessage;
+import edu.UC.PhD.CodeProject.nicholdw.log.WriteLogMessage;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopology;
 import javafx.animation.KeyFrame;
@@ -43,7 +44,7 @@ import javafx.util.Duration;
  * Display debug messages in a dedicated window
  * @author nicomp
  */
-public class DebugController implements javafx.fxml.Initializable {
+public class DebugController implements javafx.fxml.Initializable, WriteLogMessage {
 
 	@FXML TextArea txaProgress, txaNeo4jQuerys, txaErrors, txaSQLQueryParsing;
 	@FXML Button btnClear, btnClearNeo4jQuerys, btnClearErrors, btnClearSQLQueryParsing, btnClearAllLogs;
@@ -138,48 +139,72 @@ public class DebugController implements javafx.fxml.Initializable {
 	public void btnClearSQLQueryParsing_OnClick(ActionEvent event) {
 		txaSQLQueryParsing.setText("");
 	}
-	public void writeProgress(LogMessage msg) {
+	/**
+	 * Write a log message to the view
+	 * @param logMessage the message to be written. Should have a message type so it goes to the correct place
+	 */
+	public void writeLogMessage(LogMessage logMessage) {
+		switch (logMessage.getLogMessageType()) {
+	    	case progress:
+	    		writeProgressMessage(logMessage);
+	    		break;
+	    	case error:
+	    		writeErrorMessage(logMessage);
+	    		break;
+	    	case neo4jQuery:
+	    		writeNeo4jQueryHistoryMessage(logMessage);
+	    		break;
+	    	case queryParseProgress:
+	    		writeQueryParseProgressMessage(logMessage);
+	    		break;
+	    	default:
+	    		// We don't know the message type but we cannot simply discard it!
+	    		writeProgressMessage(logMessage);
+	    		break;
+		}	
+	}
+	private void writeProgressMessage(LogMessage msg) {
 		try {
 			txaProgress.appendText("\n" + msg.toString());
 		} catch (Exception ex) {
 			System.out.println("DebugController.writeProgress: " + ex.getLocalizedMessage() + "\n message = " + msg);
 		}
 	}
-	public void writeProgress(String msg) {
+/*	public void writeProgress(String msg) {
 		try {
 			txaProgress.appendText("\n" + msg);
 		} catch (Exception ex) {
 			System.out.println("DebugController.writeProgress: " + ex.getLocalizedMessage() + "\n message = " + msg);
 		}
-	}
-	public void writeNeo4jQueryInfo(String msg) {
+	} */
+	private void writeNeo4jQueryHistoryMessage(LogMessage msg) {
 		try {
-			txaNeo4jQuerys.appendText("\n" + msg);
+			txaNeo4jQuerys.appendText("\n" + msg.toString());
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeNeo4jQueryInfo: " + ex.getLocalizedMessage() + "\n message = " + msg);
+			System.out.println("DebugController.writeNeo4jQueryInfo: " + ex.getLocalizedMessage() + "\n message = " + msg.toString());
 		}
 	}
-	public void writeQueryParseProgress(String msg) {
+	private void writeQueryParseProgressMessage(LogMessage msg) {
 		try {
-			txaSQLQueryParsing.appendText("\n" + msg);
+			txaSQLQueryParsing.appendText("\n" + msg.toString());
 		} catch (Exception ex) {
-			System.out.println("DebugController.writeQueryParseProgress: " + ex.getLocalizedMessage() + "\n message = " + msg);
+			System.out.println("DebugController.writeQueryParseProgress: " + ex.getLocalizedMessage() + "\n message = " + msg.toString());
 		}
 	}
-	public void writeError(LogMessage logMessage) {
+	private void writeErrorMessage(LogMessage logMessage) {
 		try {
 			txaErrors.appendText("\n" + logMessage.toString());
 		} catch (Exception ex) {
 			System.out.println("DebugController.writeError: " + ex.getLocalizedMessage() + "\n message = " + logMessage.toString());
 		}
 	}
-	public void writeError(String msg) {
+/*	public void writeError(String msg) {
 		try {
 			txaErrors.appendText("\n" + msg);
 		} catch (Exception ex) {
 			System.out.println("DebugController.writeError: " + ex.getLocalizedMessage() + "\n message = " + msg);
 		}
-	}
+	} */
 	private void clearAllLogs() {
 		txaProgress.setText("");
 		txaErrors.setText("");

@@ -16,6 +16,8 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 public class LogMessage {
 	private String message;
 	private LocalDateTime localDateTime;	// Using Java API added in Java 8
+	public enum enumLogMessageType {progress, error, neo4jQuery, queryParseProgress};
+	private enumLogMessageType logMessageType;
 	/**
 	 * Copy Constructor
 	 * @param logMessage LogMessage object to be copied
@@ -23,15 +25,22 @@ public class LogMessage {
 	public LogMessage(LogMessage logMessage) {
 		this.message = logMessage.getMessage();
 		this.localDateTime = logMessage.getLocalDateTime();
+		this.logMessageType = logMessage.logMessageType;
 	}
 	/**
 	 * Create a LogMessage object. The date/time stamp will be defaulted to now
 	 * @param message
 	 */
-	public LogMessage(String message) {
+	public LogMessage(String message, enumLogMessageType logMessageType) {
 		localDateTime = LocalDateTime.now();
 		this.message = message;
+		this.logMessageType = logMessageType;
 	}
+	/**
+	 * Get the type of message
+	 * @return The enum that defines the message type
+	 */
+	public enumLogMessageType getLogMessageType() {return logMessageType;}
 	/**
 	 * Get the value in the message
 	 * @return the message 
