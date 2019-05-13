@@ -9,6 +9,7 @@ import java.util.Collections;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.GeneralLogReader;
+import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.TransactionLogReaderResults;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -211,10 +212,17 @@ public class TransactionLogFileReaderController {
 	 */
 	private void performEndToEndProcessingOfTransactionLog() {
 		ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
-		GeneralLogReader.doEverything(txaLogFile.getText(),
-									  connectionInformation, 
-									  Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName()),
-									  true);
+		TransactionLogReaderResults transactionLogReaderResults = GeneralLogReader.doEverything(txaLogFile.getText(),
+														 connectionInformation, 
+														 Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName()),
+														 true);
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Transaction Log Processing Results");
+		alert.setHeaderText("");
+		alert.setContentText(transactionLogReaderResults.getTotalRecords() + " transaction log entries processed." 
+		                     + "\n" 
+		                     + ((transactionLogReaderResults.getLastErrorMsg().trim().length()) > 0) != null ? "Last error message: " + transactionLogReaderResults.getLastErrorMsg() : "");
+		alert.showAndWait();
 	}
 }
 

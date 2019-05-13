@@ -66,7 +66,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	boolean firstVisit;
 
 	public AntlrMySQLListener(QueryDefinition queryDefinition) {
-		System.out.println("AntlrMySQLListener.AntlrMySQLListener(qd)");
+		Log.logProgress("AntlrMySQLListener.AntlrMySQLListener(qd)");
 		this.queryDefinition = queryDefinition;
 		queryClause = new QueryClauseUnknown();
 		fullColumnNames = new FullColumnNames();

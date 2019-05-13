@@ -66,7 +66,8 @@ public class GeneralLogReader {
 	 * @param projectID the primary key of a project in tProject, or zero. No validation is performed here. 
 	 * @return The number of records written to the database
 	 */
-	public static int doEverything(String logFilePath, ConnectionInformation connectionInformation, int projectID, boolean clearDatabaseFirst) {
+	public static TransactionLogReaderResults doEverything(String logFilePath, ConnectionInformation connectionInformation, int projectID, boolean clearDatabaseFirst) {
+		TransactionLogReaderResults transactionLogReaderResults = new TransactionLogReaderResults();
 		int totalRecords = 0;
 		StringBuilder sanitizedSQL = new StringBuilder();
 		MySQLDatabase mySQLDatabase = new MySQLDatabase();		// TODO generalize
@@ -103,16 +104,19 @@ public class GeneralLogReader {
 			}
 		} catch (Exception ex) {
 			Log.logError("GeneralLogReader.doEverything(): " + ex.getLocalizedMessage());
+			transactionLogReaderResults.setLastErrorMsg(ex.getLocalizedMessage());
 		}
 		try {br.close();} catch (Exception ex) {}
 		try {connection.close();} catch(Exception ex) {}
-		return totalRecords;
+		transactionLogReaderResults.setTotalRecords(totalRecords);
+		return transactionLogReaderResults;
 	}
 
 	/***
 	 * Read records that we care about: SELECT queries that access tables in our databases
 	 */
 	public int readFromServer(String logFilePath, TextArea txaOutput, int maxLines) {
+		Log.logProgress("GeneraLogReader.readFromServer(): " + logFilePath); 
 		int totalRecords = 0;
 		BufferedReader br = null;
 		try {
@@ -125,7 +129,6 @@ public class GeneralLogReader {
 				if (buffer == null) {break;}		// End of file
 				totalRecords++;
 				MySQLGeneralLogEntry gle = new MySQLGeneralLogEntry(buffer);
-				 
 //				if (gle.doWeCare()) {
 					if (gle.getText().toUpperCase().startsWith("ALTER")) {
 						buffer= br.readLine();
