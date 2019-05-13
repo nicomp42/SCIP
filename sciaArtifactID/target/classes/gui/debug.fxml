@@ -57,8 +57,20 @@
                   </AnchorPane>
             </content>
           </Tab>
+            <Tab text="Save to File">
+              <content>
+              <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="690.0">
+                     <children>
+                        <TextArea id="txaFilePath" fx:id="txaFilePath" editable="false" layoutX="1.0" layoutY="38.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="62.0" prefWidth="688.0" />
+                        <Button fx:id="btnSaveToFile" layoutX="479.0" layoutY="339.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#btnSaveToFile_OnClick" text="Save to File" />
+                        <Label layoutX="11.0" layoutY="15.0" text="Target Folder:" />
+                        <Button fx:id="btnBrowse" layoutX="92.0" layoutY="11.0" mnemonicParsing="false" onAction="#btnBrowse_OnClick" text="..." />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="btnClearAllLogs" layoutX="2.0" layoutY="382.0" mnemonicParsing="false" onAction="#btnClearAllLogs_OnClick" text="Clear All Logs" />
+      <Button fx:id="btnClearAllLogs" layoutX="2.0" layoutY="373.0" mnemonicParsing="false" onAction="#btnClearAllLogs_OnClick" text="Clear All Logs" />
    </children>
 </AnchorPane>

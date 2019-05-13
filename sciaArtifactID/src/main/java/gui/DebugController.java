@@ -4,6 +4,9 @@
  */
 package gui;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.net.URL;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -36,6 +39,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.TextFlow;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -46,8 +51,8 @@ import javafx.util.Duration;
  */
 public class DebugController implements javafx.fxml.Initializable, WriteLogMessage {
 
-	@FXML TextArea txaProgress, txaNeo4jQuerys, txaErrors, txaSQLQueryParsing;
-	@FXML Button btnClear, btnClearNeo4jQuerys, btnClearErrors, btnClearSQLQueryParsing, btnClearAllLogs;
+	@FXML TextArea txaProgress, txaNeo4jQuerys, txaErrors, txaSQLQueryParsing, txaFilePath;
+	@FXML Button btnClear, btnClearNeo4jQuerys, btnClearErrors, btnClearSQLQueryParsing, btnClearAllLogs, btnBrowse, btnSaveToFile;
 	@FXML AnchorPane apDebug;
 	private Scene myScene;
 	private double  btnClearHeight, btnClearWidth, btnClearSQLQueryParsingWidth, btnClearNeo4jQuerysWidth, btnClearNeo4jQuerysHeight, btnClearErrorsWidth, btnClearErrorsHeight, btnClearSQLQueryParsingHeight;
@@ -90,33 +95,10 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 			        relocateBtnClearNeo4jQuerys();
 			        relocateBtnClearErrors();
 			        relocateBtnClearSQLQueryParsing();
-//			        resizeLogAreas();
 		    	} catch (Exception ex) {}
 		    }
 		});
-/*		This didn't work and I was sick of messing with it.
-		apDebug.heightProperty().addListener(new ChangeListener<Number>() {
-		    @Override public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-		        //System.out.println("Height: " + newSceneHeight);
-		    	try {
-			        txaDebug.setPrefHeight(myScene.getHeight() - 40);
-			        txaNeo4jQuerys.setPrefHeight(myScene.getHeight() - 40);
-			        relocateBtnClear();
-			        relocateBtnClearNeo4jQuerys();
-		        } catch (Exception ex) {}
-		    }
-		});
-*/
 	}
-/*	private void resizeLogAreas() {
-//		txaProgress, txaNeo4jQuerys, txaErrors, txaSQLQueryParsing
-		try {
-//			txaProgress.setPrefHeight(myScene.getHeight() - 100);
-			txaProgress.setPrefWidth(myScene.getWidth() - 40);
-		} catch (Exception ex) {
-			Log.logError("DebugController.resizeLogAreas(): " + ex.getLocalizedMessage());
-		}
-	} */
 	private void relocateBtnClearSQLQueryParsing() {
 		btnClearSQLQueryParsing.relocate(txaSQLQueryParsing.getWidth() - btnClearSQLQueryParsing.getWidth() - 3, txaSQLQueryParsing.getHeight() + 7);
 	}
@@ -134,21 +116,26 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 		clearAllLogs();
 	}
 	@FXML
-	public void btnClear_OnClick(ActionEvent event) {
-		txaProgress.setText("");
+	public void btnBrowse_OnClick(ActionEvent event) {
+		DirectoryChooser directoryChooser = new DirectoryChooser();
+		directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		directoryChooser.setTitle("Select the location for the log files");
+		Stage stage = (Stage) this.btnBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
+		File file = directoryChooser.showDialog(stage);
+		if (file != null) {txaFilePath.setText(file.getAbsolutePath());}
 	}
 	@FXML
-	public void btnClearErrors_OnClick(ActionEvent event) {
-		txaErrors.setText("");
+	public void btnSaveToFile_OnClick(ActionEvent event) {
+		saveAllLogFiles(txaFilePath.getText());
 	}
 	@FXML
-	public void btnClearNeo4jQuerys_OnClick(ActionEvent event) {
-		txaNeo4jQuerys.setText("");
-	}
+	public void btnClear_OnClick(ActionEvent event) {txaProgress.setText("");}
 	@FXML
-	public void btnClearSQLQueryParsing_OnClick(ActionEvent event) {
-		txaSQLQueryParsing.setText("");
-	}
+	public void btnClearErrors_OnClick(ActionEvent event) {txaErrors.setText("");}
+	@FXML
+	public void btnClearNeo4jQuerys_OnClick(ActionEvent event) {txaNeo4jQuerys.setText("");}
+	@FXML
+	public void btnClearSQLQueryParsing_OnClick(ActionEvent event) {txaSQLQueryParsing.setText("");}
 	/**
 	 * Write a log message to the view
 	 * @param logMessage the message to be written. Should have a message type so it goes to the correct place
@@ -235,7 +222,7 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		setTheScene();
-		System.out.println("DebugController.initialize(URL location, ResourceBundle resources)...");
+//		System.out.println("DebugController.initialize(URL location, ResourceBundle resources)...");
 		startHeartbeat();
 	}
 	private void startHeartbeat() {
@@ -251,5 +238,26 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 	}
 	public void stopHeartbeat() {
 		heartbeat.stop();
+	}
+	private void saveAllLogFiles(String filePath) {
+		saveLogFile(txaProgress,        "Progress",     filePath, false);
+		saveLogFile(txaNeo4jQuerys,     "Neo4jQueries", filePath, false);
+		saveLogFile(txaErrors,          "Errors",       filePath, false);
+		saveLogFile(txaSQLQueryParsing, "QueryParsing", filePath, false);
+	}
+	private void saveLogFile(TextArea ta, String fileNamePrefix, String filePath, Boolean append) {
+		String[] lines = ta.getText().split("\n");
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try {
+			fw = new FileWriter(filePath + "/" + fileNamePrefix + ".txt", append);
+			bw = new BufferedWriter(fw);
+			for (String s: lines) {
+				bw.write(s); bw.newLine(); 
+			}
+			bw.close();
+		} catch (Exception ex) {
+			Log.logError("DebugController.saveLogFile(): " + ex.getLocalizedMessage());
+		}
 	}
 }
