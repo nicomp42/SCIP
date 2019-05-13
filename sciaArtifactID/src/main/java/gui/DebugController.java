@@ -56,7 +56,7 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 	public DebugController() {
 	}
 
-	@FXML
+/*	@FXML
 	private void initialize() { // Automagically called by JavaFX
 //		Log.logProgress("DebugController.Initialize() starting...");
 		try {
@@ -65,7 +65,7 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 //			Log.logError("DebugController.Initialize(): " + e.getLocalizedMessage());
 		}
 //		Log.logProgress("DebugController.Initialize() complete");
-	}
+	}*/
 	private void setTheScene() {
 		btnClearHeight = 25;					// btnClear.getHeight();
 		btnClearWidth = btnClear.getWidth();							//108;
@@ -90,6 +90,7 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 			        relocateBtnClearNeo4jQuerys();
 			        relocateBtnClearErrors();
 			        relocateBtnClearSQLQueryParsing();
+//			        resizeLogAreas();
 		    	} catch (Exception ex) {}
 		    }
 		});
@@ -107,6 +108,15 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 		});
 */
 	}
+/*	private void resizeLogAreas() {
+//		txaProgress, txaNeo4jQuerys, txaErrors, txaSQLQueryParsing
+		try {
+//			txaProgress.setPrefHeight(myScene.getHeight() - 100);
+			txaProgress.setPrefWidth(myScene.getWidth() - 40);
+		} catch (Exception ex) {
+			Log.logError("DebugController.resizeLogAreas(): " + ex.getLocalizedMessage());
+		}
+	} */
 	private void relocateBtnClearSQLQueryParsing() {
 		btnClearSQLQueryParsing.relocate(txaSQLQueryParsing.getWidth() - btnClearSQLQueryParsing.getWidth() - 3, txaSQLQueryParsing.getHeight() + 7);
 	}
@@ -224,8 +234,7 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-//		This doesn't work and causes the method to fail!
-//		System.out.println("DebugController.initialize(" + location.toString() + ", " + resources.toString() + ")...");
+		setTheScene();
 		System.out.println("DebugController.initialize(URL location, ResourceBundle resources)...");
 		startHeartbeat();
 	}
@@ -233,7 +242,7 @@ public class DebugController implements javafx.fxml.Initializable, WriteLogMessa
 		heartbeat = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent event) {
-				  System.out.println("beep");
+//				  System.out.println("beep");
 				  Log.flushAllBuffers();
 		    }
 		}));
