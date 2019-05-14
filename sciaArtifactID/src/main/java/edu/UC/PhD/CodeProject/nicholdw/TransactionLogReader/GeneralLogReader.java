@@ -8,10 +8,13 @@ package edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
+import com.mysql.jdbc.PreparedStatement;
+
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import javafx.scene.control.TextArea;
 import lib.SQLUtils;
@@ -58,7 +61,6 @@ public class GeneralLogReader {
 		try {br.close();} catch (Exception ex) {}
 	}
 */
-	
 	/***
 	 * Read the transaction log, filter the ad-hoc queries, write all of them to the project database ad-hoc query table
 	 * @param logFilePath 
@@ -67,6 +69,59 @@ public class GeneralLogReader {
 	 * @return The number of records written to the database
 	 */
 	public static TransactionLogReaderResults doEverything(String logFilePath, ConnectionInformation connectionInformation, int projectID, boolean clearDatabaseFirst) {
+		Log.logProgress("GeneralLogReader.doEverything(" + logFilePath + ")");
+		TransactionLogReaderResults transactionLogReaderResults;
+		transactionLogReaderResults = loadFromTransactionLogIntoDatabase(logFilePath, connectionInformation, projectID, clearDatabaseFirst);
+		extractAndLoadArtifacts(connectionInformation, projectID, transactionLogReaderResults);
+		return transactionLogReaderResults;
+	}
+	private static void extractAndLoadArtifacts(ConnectionInformation connectionInformation, int projectID, TransactionLogReaderResults transactionLogReaderResults) {
+		Log.logProgress("GeneralLogReader.processTransactionLogRecordsInDatabase()");
+		int totalQueriesProcessed = 0;
+		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", 
+				connectionInformation.getHostName(), 
+				connectionInformation.getLoginName(),
+				connectionInformation.getPassword(),""));
+		String currentSchemaName = "";
+		try {
+			java.sql.PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `seq-am`.tadhocquery WHERE ProjectID = " + projectID + " ORDER BY DateTimeStamp ASC");
+			java.sql.ResultSet resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				String sql;
+				sql = resultSet.getString("sqlStatement");
+				String[] parts = null;
+				parts = sql.split(" ");
+				if (parts[0].toUpperCase().equals("USE")) {
+					currentSchemaName = parts[1].replace("`", "");
+				} else {
+					Log.logProgress("GeneralLogReader(): Parsing sql: " + parts[1]);
+					// OK. Parse the query to get all the artifacts. Woo hoo.
+					QueryDefinition queryDefinition = new QueryDefinition("", "", "", null, "", sql, currentSchemaName);
+					queryDefinition.crunchIt();
+					for (QueryAttribute qa: queryDefinition.getQueryAttributes()) {
+						String schemaName = "";
+						if (qa.getSchemaName().trim().length() == 0) {schemaName = currentSchemaName;} else {schemaName = qa.getSchemaName();} 
+						String sqlInsert = "INSERT INTO `seq-am`.tArtifact(artifact, schemaName, tableName, ProjectID)" +
+                                     "VALUES(" + 
+								     Utils.quoteMeSingle(qa.getAttributeName()) + 
+                                     ", " + 
+                                     Utils.quoteMeSingle(schemaName) + 
+                                     ", " + 
+                                     Utils.quoteMeSingle(qa.getTableName()) + 
+                                     ", " + projectID + ")";
+						SQLUtils.executeActionQuery(connection, sqlInsert); 
+					}
+					totalQueriesProcessed++;
+				}
+			}
+		} catch (Exception ex) {
+			Log.logError("GeneralLogReader.processTransactionLogRecordsInDatabase(): " + ex.getLocalizedMessage() );
+		}
+		try {transactionLogReaderResults.setTotalQueriesProcessed(totalQueriesProcessed);} catch (Exception ex) {}
+		try {connection.close();} catch(Exception ex) {}
+	}
+	private static TransactionLogReaderResults loadFromTransactionLogIntoDatabase(String logFilePath, ConnectionInformation connectionInformation, int projectID, boolean clearDatabaseFirst) {
+		Log.logProgress("GeneralLogReader.loadFromTransactionLogIntoDatabase()");
 		TransactionLogReaderResults transactionLogReaderResults = new TransactionLogReaderResults();
 		int totalRecords = 0;
 		StringBuilder sanitizedSQL = new StringBuilder();
@@ -86,21 +141,22 @@ public class GeneralLogReader {
 				if (buffer == null) {break;}		// End of file
 				totalRecords++;
 				MySQLGeneralLogEntry gle = new MySQLGeneralLogEntry(buffer);
-				
-//				if (gle.doWeCare()) {
+
+				if (gle.getText().toUpperCase().startsWith("USE")) {
+					SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(gle.getText().toUpperCase()) + ")");
+				} else {
 					if (gle.getText().toUpperCase().startsWith("ALTER")) {
 						buffer= br.readLine();
 						gle.setText(gle.getText() + " " + buffer.trim());
-					}
-//					System.out.println(gle.getText());
+					} //					System.out.println(gle.getText());
 					if (mySQLDatabase.isAdHocQuery(gle.toString(), sanitizedSQL, connection) ) {
 						Log.logProgress("GeneraLogReader.doEverything(): " + sanitizedSQL.toString()); 
 						// It's an ad-hoc query but does it reference a system table? If so, we don't want it
-						if (!mySQLDatabase.checkForSystemTableInSQL(sanitizedSQL.toString())) {
+//						if (!mySQLDatabase.checkForSystemTableInSQL(sanitizedSQL.toString())) {
 							SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(sanitizedSQL.toString()) + ")");
-						}
+//						}
 					}
-//				}
+				}
 			}
 		} catch (Exception ex) {
 			Log.logError("GeneralLogReader.doEverything(): " + ex.getLocalizedMessage());

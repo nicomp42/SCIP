@@ -99,7 +99,7 @@ public class Utils {
 	 * @param sb
 	 * @return sb wrapped in single quotes
 	 */
-	public static String QuoteMeSingle(String sb) {
+	public static String quoteMeSingle(String sb) {
 		return "'" + sb + "'";
 	}
 	/**

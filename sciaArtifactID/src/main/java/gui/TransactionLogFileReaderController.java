@@ -200,7 +200,7 @@ public class TransactionLogFileReaderController {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Do Everything?");
 		alert.setHeaderText("Read the entire transaction log, filter the ad-hoc queries, copy them to the database for this project. ");
-		alert.setContentText("Are you sure?");
+		alert.setContentText("The log file you selected must be offline and the DB Engine must be running. Are you ready?");
 		alert.showAndWait().ifPresent(rs -> {
 		    if (rs == ButtonType.OK) {
 		    	performEndToEndProcessingOfTransactionLog();
@@ -219,9 +219,14 @@ public class TransactionLogFileReaderController {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Transaction Log Processing Results");
 		alert.setHeaderText("");
-		alert.setContentText(transactionLogReaderResults.getTotalRecords() + " transaction log entries processed." 
-		                     + "\n" 
-		                     + ((transactionLogReaderResults.getLastErrorMsg().trim().length()) > 0) != null ? "Last error message: " + transactionLogReaderResults.getLastErrorMsg() : "");
+		String msg = transactionLogReaderResults.getTotalRecords() + " transaction log entries processed."; 
+        msg += "\n";
+        if (transactionLogReaderResults.getLastErrorMsg().trim().length() > 0) {
+        	msg +=  "Last error message: " + transactionLogReaderResults.getLastErrorMsg();
+        } else {
+        	msg += "No error reported.";
+        }
+		alert.setContentText(msg);
 		alert.showAndWait();
 	}
 }
