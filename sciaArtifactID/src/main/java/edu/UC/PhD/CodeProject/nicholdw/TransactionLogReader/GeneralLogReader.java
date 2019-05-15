@@ -94,7 +94,7 @@ public class GeneralLogReader {
 				if (parts[0].toUpperCase().equals("USE")) {
 					currentSchemaName = parts[1].replace("`", "");
 				} else {
-					Log.logProgress("GeneralLogReader(): Parsing sql: " + parts[1]);
+					Log.logProgress("GeneralLogReader(): Parsing sql: " + sql);
 					// OK. Parse the query to get all the artifacts. Woo hoo.
 					QueryDefinition queryDefinition = new QueryDefinition("", "", "", null, "", sql, currentSchemaName);
 					queryDefinition.crunchIt();

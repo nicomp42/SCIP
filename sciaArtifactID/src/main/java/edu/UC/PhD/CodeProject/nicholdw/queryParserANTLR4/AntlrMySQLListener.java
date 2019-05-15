@@ -7,8 +7,10 @@ import java.util.Stack;
 
 import org.Antlr4MySQLFromANTLRRepo.NestingLevel;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser.FullColumnNameContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByClauseContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser.TableNameContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -956,11 +958,35 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE somthing is unidentified: " + createType, true);
 		}
 	}
+	// This is an AS for a column name and for a table/query name. We have to handle each.
 	private void processTerminalNodeAs(TerminalNode node) {
+		System.out.println(node.getParent().getChild(0).getClass().getName());
+		Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAs(): context = " + node.getParent().getChild(0).getClass().getName()); 
+		ParserRuleContext ctx = null;
+		switch (node.getParent().getChild(0).getClass().getName()) {
+		case "org.Antlr4MySQLFromANTLRRepo.MySqlParser$FullColumnNameContext":
+			// The alias is for a column name
+			ctx = (FullColumnNameContext) node.getParent().getChild(0);
+			
+			break;
+		case "org.Antlr4MySQLFromANTLRRepo.MySqlParser$TableNameContext":
+			// The alias is for a table name or query name
+			ctx = (TableNameContext) node.getParent().getChild(0);
+			
+			break;
+		case "org.Antlr4MySQLFromANTLRRepo.MySqlParser$ParenthesisSelectContext":
+			// The alias is for an expression
+			
+			break;
+
+		}
+		Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAs(): Found \"AS\" after \"" 
+	                              + ctx.start.getText() +"\"" + " NestingLevel = " + currentNestingLevel.toString());
+		System.out.println(ctx.start.getText());
 		try {
 		// Add the alias to the last column name we processed. If we are not nested at all
 		if (lastTerminalNode.equals(Config.RT_BRACKET)) {
-			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): Found \"AS\" after \"" + Config.RT_BRACKET + "\"" + " NestingLevel = " + currentNestingLevel.toString());
+			Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAs(): Found \"AS\" after \"" + Config.RT_BRACKET + "\"" + " NestingLevel = " + currentNestingLevel.toString());
 			// Add to aliasAggregate structure that accumulates sets of attributes that are under one alias
 			// Get the previous nesting level just before the AS
 			// Create a new alias in the compoundAlias structure
@@ -972,7 +998,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			for (FullColumnName fcn: fullColumnNames) {
 //				fcn.processRawData();
 				if (fcn.getNestingLevel().isNestedInOrIsEqualTo(previousNestingLevel)) {
-					Log.logQueryParseProgress("Adding column " + fcn.getRawData() + " to compoundAlias " + node.getParent().getChild(2).getText());
+					Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAs(): Adding column " + fcn.getRawData() + " to compoundAlias " + node.getParent().getChild(2).getText());
 					compoundAlias.addFullColumnName(fcn);
 				}
 			}
