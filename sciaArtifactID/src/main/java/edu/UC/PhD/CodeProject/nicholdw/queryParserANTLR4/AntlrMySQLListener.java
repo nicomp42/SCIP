@@ -109,10 +109,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		}
 	}
 	@Override public void enterSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void exitSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 		try {
 			boolean b;
 			b = queryDefinition.popWildcardFlag();
@@ -129,7 +129,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void enterSelectElements(MySqlParser.SelectElementsContext ctx) {
 		
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectElements: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectElements: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 		boolean isAsterisk = false;
 		// If it's an asterisk, we need all the fields in all the tables.
 		if (ctx.getText().equals("*")) {
@@ -139,17 +139,17 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		queryDefinition.pushWildcardFlag(isAsterisk);
 	}
 	@Override public void exitSelectElements(MySqlParser.SelectElementsContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectElements: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectElements: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 
 	@Override public void enterSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectStarElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectStarElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void exitSelectStarElement(MySqlParser.SelectStarElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectStarElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectStarElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void enterSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectColumnElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectColumnElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void exitSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectColumnElement: " + ctx.getText());
@@ -157,22 +157,22 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void enterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
 		// ToDo capture this as a function and store it somewhere
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectFunctionElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectFunctionElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void exitSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectFunctionElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectFunctionElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void enterSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectExpressionElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectExpressionElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void exitSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectExpressionElement: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectExpressionElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void enterSelectIntoVariables(MySqlParser.SelectIntoVariablesContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoVariables: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoVariables: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void exitSelectIntoVariables(MySqlParser.SelectIntoVariablesContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoVariables: " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoVariables: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void enterSelectIntoDumpFile(MySqlParser.SelectIntoDumpFileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoDumpFile()");}
 	@Override public void exitSelectIntoDumpFile(MySqlParser.SelectIntoDumpFileContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSelectIntoDumpFile()");}
@@ -182,7 +182,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitSelectFieldsInto(MySqlParser.SelectFieldsIntoContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterSelectLinesInto()");}
 	@Override public void enterSelectLinesInto(MySqlParser.SelectLinesIntoContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSelectLinesInto()");}
 	@Override public void exitSelectLinesInto(MySqlParser.SelectLinesIntoContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSelectLinesInto()");}
-	@Override public void enterFromClause(MySqlParser.FromClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFromClause()");}
+	@Override public void enterFromClause(MySqlParser.FromClauseContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterFromClause() " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+	}
 	@Override public void exitFromClause(MySqlParser.FromClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFromClause()");}
 	@Override public void enterGroupByItem(MySqlParser.GroupByItemContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterGroupByItem()");}
 	@Override public void exitGroupByItem(MySqlParser.GroupByItemContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGroupByItem()");}
@@ -246,7 +248,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitMasterBoolOption(MySqlParser.MasterBoolOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMasterBoolOption()");}
 	@Override public void enterMasterRealOption(MySqlParser.MasterRealOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMasterRealOption()");}
 	@Override public void exitMasterRealOption(MySqlParser.MasterRealOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMasterRealOption()");}
-	@Override public void enterMasterUidListOption(MySqlParser.MasterUidListOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterMasterUidListOption()");}
+	@Override public void enterMasterUidListOption(MySqlParser.MasterUidListOptionContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterMasterUidListOption()" + ctx.getText()  + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+	}
 	@Override public void exitMasterUidListOption(MySqlParser.MasterUidListOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitMasterUidListOption()");}
 	@Override public void enterStringMasterOption(MySqlParser.StringMasterOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterStringMasterOption()");}
 	@Override public void exitStringMasterOption(MySqlParser.StringMasterOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitStringMasterOption()");}
@@ -290,7 +294,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitDefaultAuthConnectionOption(MySqlParser.DefaultAuthConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDefaultAuthConnectionOption()");}
 	@Override public void enterPluginDirConnectionOption(MySqlParser.PluginDirConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterPluginDirConnectionOption()");}
 	@Override public void exitPluginDirConnectionOption(MySqlParser.PluginDirConnectionOptionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitPluginDirConnectionOption()");}
-	@Override public void enterGtuidSet(MySqlParser.GtuidSetContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterGtuidSet()");}
+	@Override public void enterGtuidSet(MySqlParser.GtuidSetContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterGtuidSet() " + ctx.getText()  + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+		}
 	@Override public void exitGtuidSet(MySqlParser.GtuidSetContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGtuidSet()");}
 	@Override public void enterXaStartTransaction(MySqlParser.XaStartTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterXaStartTransaction()");}
 	@Override public void exitXaStartTransaction(MySqlParser.XaStartTransactionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitXaStartTransaction()");}
@@ -539,19 +545,21 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterFullId(MySqlParser.FullIdContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterFullId(): " + ctx.getText());
 		}
-	@Override public void exitFullId(MySqlParser.FullIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullId()");}
+	@Override public void exitFullId(MySqlParser.FullIdContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitFullId() " + ctx.getText()  + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+		}
 	/**
 	 * This is useful because it's called in DROP, ALTER, etc., but enter enterAtomTableItem() is not called for tables in those queries.
 	 */
 	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText() + " Parent Context = " + ctx.getParent().getClass());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " Parent Context = " + ctx.getParent().getClass());
 		// This has to be here. Do not put it in EnterAtomTableItem because the "Left" in "Left Join" will mess it up
 //		fullTableNames.add(new FullTableName(ctx.getText())); 
 		fullTableNames.add(new FullTableName(ctx.getParent().getText()));	// If we use getChild() then we don't get the alias!! 
 	}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
-		Log.logQueryParseProgress("********************** AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + " Parent.stop = " + ctx.getParent().getStop().getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " Parent.stop = " + ctx.getParent().getStop().getText());
 		fullColumnNames.addFullColumnName(new FullColumnName(ctx.getText(), currentNestingLevel));	// Store the raw data and we will parse it later
 	}
 	@Override public void exitFullColumnName(MySqlParser.FullColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnName()");}
@@ -580,11 +588,11 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void exitUid(MySqlParser.UidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUid()");}
 	@Override public void enterSimpleId(MySqlParser.SimpleIdContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleId(): " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleId(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
-	@Override public void exitSimpleId(MySqlParser.SimpleIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleId()");}
+	@Override public void exitSimpleId(MySqlParser.SimpleIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleId() " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());}
 	@Override public void enterDottedId(MySqlParser.DottedIdContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterDottedId(): " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterDottedId(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 		}
 	@Override public void exitDottedId(MySqlParser.DottedIdContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDottedId()");}
 	@Override public void enterDecimalLiteral(MySqlParser.DecimalLiteralContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDecimalLiteral()");}
@@ -619,9 +627,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitLengthTwoDimension(MySqlParser.LengthTwoDimensionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLengthTwoDimension()");}
 	@Override public void enterLengthTwoOptionalDimension(MySqlParser.LengthTwoOptionalDimensionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterLengthTwoOptionalDimension()");}
 	@Override public void exitLengthTwoOptionalDimension(MySqlParser.LengthTwoOptionalDimensionContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitLengthTwoOptionalDimension()");}
-	@Override public void enterUidList(MySqlParser.UidListContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUidList()");}
+	@Override public void enterUidList(MySqlParser.UidListContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterUidList()" + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+	}
 	@Override public void exitUidList(MySqlParser.UidListContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUidList()");}
-	@Override public void enterTables(MySqlParser.TablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterTables()");}
+	@Override public void enterTables(MySqlParser.TablesContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterTables()");
+	}
 	@Override public void exitTables(MySqlParser.TablesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTables()");}
 	@Override public void enterIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIndexColumnNames()");}
 	@Override public void exitIndexColumnNames(MySqlParser.IndexColumnNamesContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIndexColumnNames()");}
@@ -754,7 +766,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFullColumnNameExpressionAtom()");}
 	// An expression, such as a WHERE clause or an ORDER BY clause
 	@Override public void exitFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnNameExpressionAtom()");
+		Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnNameExpressionAtom() " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void enterBitExpressionAtom(MySqlParser.BitExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBitExpressionAtom()");}
 	@Override public void exitBitExpressionAtom(MySqlParser.BitExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBitExpressionAtom()");}
@@ -874,7 +886,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 
 //	@Override public void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
 	@Override public void enterOrderByClause(MySqlParser.OrderByClauseContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterOrderByClause(): " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterOrderByClause(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 		// The third child will be the order by expression
 		MySqlParser.OrderByExpressionContext obec = (OrderByExpressionContext) ctx.getChild(2);
 	}
@@ -883,13 +895,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.exitOrderByClause(): " + ctx.getText());
 	}
 	@Override public void enterTableSourceBase(MySqlParser.TableSourceBaseContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterTableSourceBase(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	/**
 	 * This event will have the "LEFT" in "LEFT JOIN" tacked onto it. Yuk
 	 */
 	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText() + " parent = " + ctx.getParent().getClass());
+		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " parent = " + ctx.getParent().getClass());
 //		fullTableNames.add(new FullTableName(ctx.getText()));
 	}
 	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
@@ -975,7 +987,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			
 			break;
 		case "org.Antlr4MySQLFromANTLRRepo.MySqlParser$ParenthesisSelectContext":
-			// The alias is for an expression
+			// The alias is for an expression. We don't care. 
+			Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAs(): this is an alias for an expression."); 
 			
 			break;
 
