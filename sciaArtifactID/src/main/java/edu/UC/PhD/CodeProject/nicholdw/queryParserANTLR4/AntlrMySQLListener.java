@@ -151,40 +151,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void enterSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectColumnElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
-		String foo = " " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop();
-		// Add to the list of columns that are referenced in this query
-		//String start = ctx.getStart().getText();
-		String stop = ctx.getStop().getText();
-		MySqlParser.FullColumnNameContext fullColumnNameContext = (FullColumnNameContext) ctx.children.get(0);
-		FullColumnName fullColumnName = null;
-		switch (fullColumnNameContext.children.size()) {
-		case 1:	
-			// Just an attribute Name
-			fullColumnName = new FullColumnName("", "", fullColumnNameContext.children.get(0).getText());
-			break;
-		case 2:
-			// An Attribute Name and a table/query name/alias
-			fullColumnName = new FullColumnName("", 
-												fullColumnNameContext.children.get(0).getText(),  
-					                            fullColumnNameContext.children.get(1).getText());
-			break;
-		case 3:
-			// An Attribute Name, a table/query name/alias, and a schema name
-			fullColumnName = new FullColumnName(fullColumnNameContext.children.get(0).getText(),  
-												fullColumnNameContext.children.get(1).getText(), 
-												fullColumnNameContext.children.get(2).getText());
-			break;
-		}
-		if (ctx.children.size() > 1) {
-			// There is an alias. We want it. Now.
-			MySqlParser.UidContext alias = (UidContext) ctx.children.get(ctx.children.size()-1);
-			fullColumnName.addAliasName(new AliasNameClassOLD(stop));
-		}
-		fullColumnNames.addFullColumnName(fullColumnName);
+		processSelectColumnElementContext(ctx);
 	}
 	@Override public void exitSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectColumnElement: " + ctx.getText());
-//		queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(columnNameParts.schemaName, columnNameParts.tableName, columnNameParts.attributeName, new AliasNameClass(columnNameParts.aliasName), new QueryClauseSelect()));
 	}
 	@Override public void enterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
 		// ToDo capture this as a function and store it somewhere
@@ -591,14 +561,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " Parent.stop = " + ctx.getParent().getStop().getText());
-//		fullColumnNames.addFullColumnName(new FullColumnName(ctx.getText(), currentNestingLevel));	// Store the raw data and we will parse it later
-		// Add to the list of columns that are referenced in this query
-		FullColumnName fullColumnName = new FullColumnName(ctx.children.get(0).getText());
-		if (ctx.getStart() != ctx.getStop()) {
-			// There is an alias.
-			fullColumnName.addAliasName(new AliasNameClassOLD(ctx.children.get(ctx.children.size()-1).getText()));
-		}
-		fullColumnNames.addFullColumnName(fullColumnName);	}
+		processFullColumnNameContext(ctx);
+	}
 	@Override public void exitFullColumnName(MySqlParser.FullColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnName()");}
 	@Override public void enterIndexColumnName(MySqlParser.IndexColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIndexColumnName()");}
 	@Override public void exitIndexColumnName(MySqlParser.IndexColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIndexColumnName()");}
@@ -800,7 +764,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitFunctionCallExpressionAtom(MySqlParser.FunctionCallExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFunctionCallExpressionAtom()");}
 	@Override public void enterBinaryExpressionAtom(MySqlParser.BinaryExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterBinaryExpressionAtom()");}
 	@Override public void exitBinaryExpressionAtom(MySqlParser.BinaryExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitBinaryExpressionAtom()");}
-	@Override public void enterFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterFullColumnNameExpressionAtom()");}
+	@Override public void enterFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterFullColumnNameExpressionAtom()");
+		}
 	// An expression, such as a WHERE clause or an ORDER BY clause
 	@Override public void exitFullColumnNameExpressionAtom(MySqlParser.FullColumnNameExpressionAtomContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnNameExpressionAtom() " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
@@ -1009,7 +975,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	// This is an AS for a column name and for a table/query name. We have to handle each.
 	private void processTerminalNodeAs(TerminalNode node) {
-		System.out.println(node.getParent().getChild(0).getClass().getName());
+/*		System.out.println(node.getParent().getChild(0).getClass().getName());
 		Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAs(): context = " + node.getParent().getChild(0).getClass().getName()); 
 		ParserRuleContext ctx = null;
 		switch (node.getParent().getChild(0).getClass().getName()) {
@@ -1029,10 +995,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			
 			break;
 
-		}
-		Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAs(): Found \"AS\" after \"" 
-	                              + ctx.start.getText() +"\"" + " NestingLevel = " + currentNestingLevel.toString());
-		System.out.println(ctx.start.getText());
+		} */
+		Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAs(): Found \"AS\" ");// after \"" 
+//	                              + ctx.start.getText() +"\"" + " NestingLevel = " + currentNestingLevel.toString());
+/*		System.out.println(ctx.start.getText());
 		try {
 		// Add the alias to the last column name we processed. If we are not nested at all
 		if (lastTerminalNode.equals(Config.RT_BRACKET)) {
@@ -1060,7 +1026,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		} catch (Exception ex) {
 			Log.logError("AntlrMySQLListener.processTerminalNodeAs(): " + ex.getLocalizedMessage()); 
 		}
-	}
+*/	}
 	/**
 	 * A Terminal Node has been identified as "ALTER"
 	 * @param node
@@ -1084,6 +1050,70 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): ALTER somthing is unidentified: " + alterType, true);
 			}
 		}
+	}
+	private void processFullColumnNameContext(MySqlParser.FullColumnNameContext ctx){
+		String foo = " " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop();
+		// Add to the list of columns that are referenced in this query
+		//String start = ctx.getStart().getText();
+		String stop = ctx.getStop().getText();
+		MySqlParser.FullColumnNameContext fullColumnNameContext = (FullColumnNameContext) ctx.children.get(0);
+		FullColumnName fullColumnName = null;
+		switch (fullColumnNameContext.children.size()) {
+		case 1:	
+			// Just an attribute Name
+			fullColumnName = new FullColumnName("", "", fullColumnNameContext.children.get(0).getText());
+			break;
+		case 2:
+			// An Attribute Name and a table/query name/alias
+			fullColumnName = new FullColumnName("", 
+												fullColumnNameContext.children.get(0).getText(),  
+					                            fullColumnNameContext.children.get(1).getText());
+			break;
+		case 3:
+			// An Attribute Name, a table/query name/alias, and a schema name
+			fullColumnName = new FullColumnName(fullColumnNameContext.children.get(0).getText(),  
+												fullColumnNameContext.children.get(1).getText(), 
+												fullColumnNameContext.children.get(2).getText());
+			break;
+		}
+		if (ctx.children.size() > 1) {
+			// There is an alias. We want it. Now.
+			MySqlParser.UidContext alias = (UidContext) ctx.children.get(ctx.children.size()-1);
+			fullColumnName.addAliasName(new AliasNameClassOLD(stop));
+		}
+		fullColumnNames.addFullColumnName(fullColumnName);
+	}
+	private void processSelectColumnElementContext(MySqlParser.SelectColumnElementContext ctx) {
+		String foo = " " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop();
+		// Add to the list of columns that are referenced in this query
+		//String start = ctx.getStart().getText();
+		String stop = ctx.getStop().getText();
+		MySqlParser.FullColumnNameContext fullColumnNameContext = (FullColumnNameContext) ctx.children.get(0);
+		FullColumnName fullColumnName = null;
+		switch (fullColumnNameContext.children.size()) {
+		case 1:	
+			// Just an attribute Name
+			fullColumnName = new FullColumnName("", "", fullColumnNameContext.children.get(0).getText());
+			break;
+		case 2:
+			// An Attribute Name and a table/query name/alias
+			fullColumnName = new FullColumnName("", 
+												fullColumnNameContext.children.get(0).getText(),  
+					                            fullColumnNameContext.children.get(1).getText());
+			break;
+		case 3:
+			// An Attribute Name, a table/query name/alias, and a schema name
+			fullColumnName = new FullColumnName(fullColumnNameContext.children.get(0).getText(),  
+												fullColumnNameContext.children.get(1).getText(), 
+												fullColumnNameContext.children.get(2).getText());
+			break;
+		}
+		if (ctx.children.size() > 1) {
+			// There is an alias. We want it. Now.
+			MySqlParser.UidContext alias = (UidContext) ctx.children.get(ctx.children.size()-1);
+			fullColumnName.addAliasName(new AliasNameClassOLD(stop));
+		}
+		fullColumnNames.addFullColumnName(fullColumnName);
 	}
 	/************************************************************************************************
 	 * Static (internal) classes follow
@@ -1152,81 +1182,3 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		}
 	}
 }
-
-/*
-	private void parseColumnName(MySqlParser.SelectColumnElementContext scec) {
-		switch (scec.getChildCount()) {
-		case 1:		// Just an attribute
-			columnNameParts.attributeName = scec.children.get(0).getText().replace("`", "").replace(".", "");
-			break;
-		case 2:		// A table and an attribute
-			columnNameParts.attributeName = scec.children.get(1).getText().replace("`", "").replace(".", "");
-			columnNameParts.tableName = scec.children.get(0).getText().replace("`", "").replace(".", "");
-			break;
-		case 3:		// A schema, table and attribute
-			columnNameParts.attributeName = scec.children.get(2).getText().replace("`", "").replace(".", "");
-			columnNameParts.tableName = scec.children.get(1).getText().replace("`", "").replace(".", "");
-			columnNameParts.schemaName = scec.children.get(0).getText().replace("`", "").replace(".", "");
-			break;
-		default:
-			Log.logQueryParseProgress("parseColumnName(MySqlParser.SelectColumnElementContext): not the right number of parts: " + scec.getChildCount() + " (" + scec.toString() + ")");
-		}
-		Log.logQueryParseProgress("AntlrMySQLListener.parseColumnName(MySqlParser.SelectColumnElementContext): schema = <" + columnNameParts.schemaName + "> table = <" + columnNameParts.tableName + "> attribute = <" + columnNameParts.attributeName + "> alias = <" + columnNameParts.aliasName + ">");
-	}
-	private void parseColumnName(MySqlParser.FullColumnNameContext fcnc) {
-		switch (fcnc.getChildCount()) {
-		case 1:		// Just an attribute
-			columnNameParts.attributeName = fcnc.children.get(0).getText().replace("`", "").replace(".", "");
-			break;
-		case 2:		// A table and an attribute
-			columnNameParts.attributeName = fcnc.children.get(1).getText().replace("`", "").replace(".", "");
-			columnNameParts.tableName = fcnc.children.get(0).getText().replace("`", "").replace(".", "");
-			break;
-		case 3:		// A schema, table and attribute
-			columnNameParts.attributeName = fcnc.children.get(2).getText().replace("`", "").replace(".", "");
-			columnNameParts.tableName = fcnc.children.get(1).getText().replace("`", "").replace(".", "");
-			columnNameParts.schemaName = fcnc.children.get(0).getText().replace("`", "").replace(".", "");
-			break;
-		default:
-			Log.logQueryParseProgress("parseColumnName(List<TerminalNode>): not the right number of parts: " + fcnc.getChildCount() + " (" + fcnc.toString() + ")");
-		}
-		Log.logQueryParseProgress("AntlrMySQLListener.parseColumnName(MySqlParser.FullColumnNameContext): schema = <" + columnNameParts.schemaName + "> table = <" + columnNameParts.tableName + "> attribute = <" + columnNameParts.attributeName + "> alias = <" + columnNameParts.aliasName + ">");
-	}
-	private void parseColumnName(List<TerminalNode> parts) {
-		// columnNameParts.init(); Do not do this! The alias is already stored
-		// here
-		switch (parts.size()) {
-		case 1:
-			columnNameParts.attributeName = parts.get(0).toString();
-			break;
-		case 2:
-			columnNameParts.attributeName = parts.get(1).toString();
-			columnNameParts.tableName = parts.get(0).toString();
-			break;
-		case 3:
-			columnNameParts.attributeName = parts.get(2).toString();
-			columnNameParts.tableName = parts.get(1).toString();
-			columnNameParts.schemaName = parts.get(0).toString();
-			break;
-		default:
-			Log.logQueryParseProgress("parseColumnName(List<TerminalNode>): not the right number of parts: " + parts.size() + " ("
-					+ parts.toString() + ")");
-		}
-	}
-	private void parseTableName(List<TerminalNode> parts) {
-		// tableNameParts.init(); Do not do this! The alias is already stored
-		// here
-		switch (parts.size()) {
-		case 1:
-			tableNameParts.tableName = parts.get(0).toString();
-			break;
-		case 2:
-			tableNameParts.tableName = parts.get(1).toString();
-			columnNameParts.schemaName = parts.get(0).toString();
-			break;
-		default:
-			Log.logQueryParseProgress("parseTableName(List<TerminalNode>): not the right number of parts: " + parts.size() + " ("
-					+ parts.toString() + ")");
-		}
-	}
-*/

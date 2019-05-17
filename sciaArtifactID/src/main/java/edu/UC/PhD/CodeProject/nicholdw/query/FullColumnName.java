@@ -34,26 +34,26 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 					   +  getAttributeName());
 		}
 		private void setSchemaName(String schemaName) {
-//			this.schemaName = schemaName.trim();
-			if (!schemaName.trim().startsWith("`")) {
-				this.schemaName = Utils.wrapInDelimiter(schemaName.trim(), "`");
-			} else {
-				this.schemaName = schemaName.trim();
-			}
+			this.schemaName = cleanUpArtifactName(schemaName);
 		}
 		private void setTableName(String tableName) {
-			if (!tableName.trim().startsWith("`")) {
-				this.tableName = Utils.wrapInDelimiter(tableName.trim(), "`");
-			} else {
-				this.tableName = tableName.trim();
-			}
+			this.tableName = cleanUpArtifactName(tableName);
 		}
 		private void setAttributeName(String attributeName) {
-			if (!attributeName.trim().startsWith("`")) {
-				this.attributeName = Utils.wrapInDelimiter(attributeName.trim(), "`");
-			} else {
-				this.attributeName = attributeName.trim();
+			this.attributeName = cleanUpArtifactName(attributeName);
+		}
+		private String cleanUpArtifactName(String artifactName) {
+			String tmp = artifactName.trim();
+			if (tmp.length() != 0) {
+				if (tmp.trim().startsWith("`")) {
+					tmp = tmp.substring(1, artifactName.length() - 2);
+				}
+				if (tmp.startsWith(".")) {
+					tmp = tmp.substring(1);
+				}
+				tmp = Utils.wrapInDelimiter(artifactName.trim(), "`");
 			}
+			return tmp;
 		}
 		/**
 		 * Create a FullColumnName object with just the raw data taken from the query parser

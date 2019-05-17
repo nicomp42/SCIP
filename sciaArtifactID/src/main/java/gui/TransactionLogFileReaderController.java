@@ -13,6 +13,8 @@ import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.TransactionLogReader
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.FullColumnName;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitions;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryUtils;
@@ -185,6 +187,12 @@ public class TransactionLogFileReaderController {
 					}
 				}
 			}
+/*			for (QueryDefinition qd : queryDefinitions) {
+				txaLog.appendText(qd.getSql() + "\n");
+				for (QueryAttribute qa : qd.getQueryAttributes()) {
+					txaLog.appendText(qa.getFullyQualifiedName() + "\n");
+				}
+			} */
 		} catch(Exception ex) {
 			Log.logError("TransactionLogFileReaderController.parseQuerys(): " + ex.getLocalizedMessage());
 		}
@@ -211,11 +219,12 @@ public class TransactionLogFileReaderController {
 	 * Read the transaction file, filter the ad-hoc queries, write them to the system database
 	 */
 	private void performEndToEndProcessingOfTransactionLog() {
+		int projectID = Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName());
 		ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
 		TransactionLogReaderResults transactionLogReaderResults = GeneralLogReader.doEverything(txaLogFile.getText(),
-														 connectionInformation, 
-														 Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName()),
-														 true);
+														          connectionInformation, 
+														          projectID,
+														          true);
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Transaction Log Processing Results");
 		alert.setHeaderText("");
@@ -228,6 +237,25 @@ public class TransactionLogFileReaderController {
         }
 		alert.setContentText(msg);
 		alert.showAndWait();
+		ReadFromDBIntoTextArea(connectionInformation, projectID, txaLog);
+	}
+	private void ReadFromDBIntoTextArea(ConnectionInformation connectionInformation, int projectID, TextArea txaLog) {
+		try {
+			java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", 
+	                connectionInformation.getHostName(), 
+	                connectionInformation.getLoginName(),
+	                connectionInformation.getPassword(),""));
+			java.sql.PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `seq-am`.tartifact WHERE ProjectID = " + projectID + " ORDER BY artifactID ASC");
+			java.sql.ResultSet resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				txaLog.appendText((new FullColumnName(resultSet.getString("SchemaName"),
+													  resultSet.getString("tableName"),
+													  resultSet.getString("Artifact"))).toString());
+				txaLog.appendText("\n");
+			}
+		} catch (Exception ex) {
+			Log.logError("TransactionLogFileReaderController.ReadFromDBIntoTextArea(): " + ex.getLocalizedMessage());
+		}
 	}
 }
 

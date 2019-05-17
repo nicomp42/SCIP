@@ -79,11 +79,13 @@ public class GeneralLogReader {
 		Log.logProgress("GeneralLogReader.processTransactionLogRecordsInDatabase()");
 		int totalQueriesProcessed = 0;
 		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", 
-				connectionInformation.getHostName(), 
-				connectionInformation.getLoginName(),
-				connectionInformation.getPassword(),""));
+				                                                     connectionInformation.getHostName(), 
+				                                                     connectionInformation.getLoginName(),
+				                                                     connectionInformation.getPassword(),""));
 		String currentSchemaName = "";
 		try {
+			SQLUtils.executeActionQuery(connection, "DELETE FROM `seq-am`.tArtifact WHERE ProjectID = " + projectID + ";");		// Clear any artifacts already captured for this project
+
 			java.sql.PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `seq-am`.tadhocquery WHERE ProjectID = " + projectID + " ORDER BY DateTimeStamp ASC");
 			java.sql.ResultSet resultSet = preparedStatement.executeQuery();
 			while(resultSet.next()) {
