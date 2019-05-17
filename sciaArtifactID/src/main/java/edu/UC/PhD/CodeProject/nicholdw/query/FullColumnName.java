@@ -35,19 +35,32 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		}
 		private void setSchemaName(String schemaName) {
 //			this.schemaName = schemaName.trim();
-			this.schemaName = Utils.wrapInDelimiter(schemaName.trim(), "`");
+			if (!schemaName.trim().startsWith("`")) {
+				this.schemaName = Utils.wrapInDelimiter(schemaName.trim(), "`");
+			} else {
+				this.schemaName = schemaName.trim();
+			}
 		}
 		private void setTableName(String tableName) {
-			this.tableName = Utils.wrapInDelimiter(tableName.trim(), "`");
+			if (!tableName.trim().startsWith("`")) {
+				this.tableName = Utils.wrapInDelimiter(tableName.trim(), "`");
+			} else {
+				this.tableName = tableName.trim();
+			}
 		}
 		private void setAttributeName(String attributeName) {
-			this.attributeName = Utils.wrapInDelimiter(attributeName.trim(), "`");
+			if (!attributeName.trim().startsWith("`")) {
+				this.attributeName = Utils.wrapInDelimiter(attributeName.trim(), "`");
+			} else {
+				this.attributeName = attributeName.trim();
+			}
 		}
 		/**
 		 * Create a FullColumnName object with just the raw data taken from the query parser
 		 * @param rawData
 		 */
 		public FullColumnName(String rawData) {
+			init();
 			setRawData(rawData);
 		}
 		public String setRawData(String rawData) {this.rawData = rawData.trim(); processRawData(); return this.rawData;}

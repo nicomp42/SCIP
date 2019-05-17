@@ -11,6 +11,7 @@ import org.Antlr4MySQLFromANTLRRepo.MySqlParser.FullColumnNameContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByClauseContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.TableNameContext;
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser.UidContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -86,7 +87,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		}
 	}
 	@Override public void enterRoot(MySqlParser.RootContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterRoot()");
+		Log.logQueryParseProgress("AntlrMySQLListener.enterRoot()" + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void exitRoot(MySqlParser.RootContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitRoot()");
@@ -150,6 +151,36 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void enterSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectColumnElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+		String foo = " " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop();
+		// Add to the list of columns that are referenced in this query
+		//String start = ctx.getStart().getText();
+		String stop = ctx.getStop().getText();
+		MySqlParser.FullColumnNameContext fullColumnNameContext = (FullColumnNameContext) ctx.children.get(0);
+		FullColumnName fullColumnName = null;
+		switch (fullColumnNameContext.children.size()) {
+		case 1:	
+			// Just an attribute Name
+			fullColumnName = new FullColumnName("", "", fullColumnNameContext.children.get(0).getText());
+			break;
+		case 2:
+			// An Attribute Name and a table/query name/alias
+			fullColumnName = new FullColumnName("", 
+												fullColumnNameContext.children.get(0).getText(),  
+					                            fullColumnNameContext.children.get(1).getText());
+			break;
+		case 3:
+			// An Attribute Name, a table/query name/alias, and a schema name
+			fullColumnName = new FullColumnName(fullColumnNameContext.children.get(0).getText(),  
+												fullColumnNameContext.children.get(1).getText(), 
+												fullColumnNameContext.children.get(2).getText());
+			break;
+		}
+		if (ctx.children.size() > 1) {
+			// There is an alias. We want it. Now.
+			MySqlParser.UidContext alias = (UidContext) ctx.children.get(ctx.children.size()-1);
+			fullColumnName.addAliasName(new AliasNameClassOLD(stop));
+		}
+		fullColumnNames.addFullColumnName(fullColumnName);
 	}
 	@Override public void exitSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectColumnElement: " + ctx.getText());
@@ -560,8 +591,14 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterFullColumnName(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " Parent.stop = " + ctx.getParent().getStop().getText());
-		fullColumnNames.addFullColumnName(new FullColumnName(ctx.getText(), currentNestingLevel));	// Store the raw data and we will parse it later
-	}
+//		fullColumnNames.addFullColumnName(new FullColumnName(ctx.getText(), currentNestingLevel));	// Store the raw data and we will parse it later
+		// Add to the list of columns that are referenced in this query
+		FullColumnName fullColumnName = new FullColumnName(ctx.children.get(0).getText());
+		if (ctx.getStart() != ctx.getStop()) {
+			// There is an alias.
+			fullColumnName.addAliasName(new AliasNameClassOLD(ctx.children.get(ctx.children.size()-1).getText()));
+		}
+		fullColumnNames.addFullColumnName(fullColumnName);	}
 	@Override public void exitFullColumnName(MySqlParser.FullColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitFullColumnName()");}
 	@Override public void enterIndexColumnName(MySqlParser.IndexColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterIndexColumnName()");}
 	@Override public void exitIndexColumnName(MySqlParser.IndexColumnNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitIndexColumnName()");}
