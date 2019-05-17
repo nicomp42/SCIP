@@ -51,7 +51,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 				if (tmp.startsWith(".")) {
 					tmp = tmp.substring(1);
 				}
-				tmp = Utils.wrapInDelimiter(artifactName.trim(), "`");
+				tmp = Utils.wrapInDelimiter(tmp.trim(), "`");
 			}
 			return tmp;
 		}

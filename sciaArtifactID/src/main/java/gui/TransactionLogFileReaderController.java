@@ -219,6 +219,7 @@ public class TransactionLogFileReaderController {
 	 * Read the transaction file, filter the ad-hoc queries, write them to the system database
 	 */
 	private void performEndToEndProcessingOfTransactionLog() {
+		txaLog.clear();
 		int projectID = Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName());
 		ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
 		TransactionLogReaderResults transactionLogReaderResults = GeneralLogReader.doEverything(txaLogFile.getText(),
@@ -251,6 +252,9 @@ public class TransactionLogFileReaderController {
 				txaLog.appendText((new FullColumnName(resultSet.getString("SchemaName"),
 													  resultSet.getString("tableName"),
 													  resultSet.getString("Artifact"))).toString());
+				if (resultSet.getString("alias").trim().length() > 0) {
+					txaLog.appendText(" AS " + resultSet.getString("alias"));
+				}
 				txaLog.appendText("\n");
 			}
 		} catch (Exception ex) {

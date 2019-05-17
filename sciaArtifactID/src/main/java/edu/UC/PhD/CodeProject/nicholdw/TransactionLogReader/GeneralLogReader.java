@@ -103,13 +103,15 @@ public class GeneralLogReader {
 					for (QueryAttribute qa: queryDefinition.getQueryAttributes()) {
 						String schemaName = "";
 						if (qa.getSchemaName().trim().length() == 0) {schemaName = currentSchemaName;} else {schemaName = qa.getSchemaName();} 
-						String sqlInsert = "INSERT INTO `seq-am`.tArtifact(artifact, schemaName, tableName, ProjectID)" +
+						String sqlInsert = "INSERT INTO `seq-am`.tArtifact(artifact, schemaName, tableName, alias, ProjectID)" +
                                      "VALUES(" + 
 								     Utils.quoteMeSingle(qa.getAttributeName()) + 
                                      ", " + 
                                      Utils.quoteMeSingle(schemaName) + 
                                      ", " + 
                                      Utils.quoteMeSingle(qa.getTableName()) + 
+                                     ", " + 
+                                     Utils.quoteMeSingle(qa.aliasNameListToString()) + 
                                      ", " + projectID + ")";
 						SQLUtils.executeActionQuery(connection, sqlInsert); 
 					}

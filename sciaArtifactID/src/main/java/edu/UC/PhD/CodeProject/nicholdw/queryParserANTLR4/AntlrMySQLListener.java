@@ -10,6 +10,7 @@ import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.FullColumnNameContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByClauseContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser.SelectColumnElementContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.TableNameContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.UidContext;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -1056,31 +1057,32 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		// Add to the list of columns that are referenced in this query
 		//String start = ctx.getStart().getText();
 		String stop = ctx.getStop().getText();
-		MySqlParser.FullColumnNameContext fullColumnNameContext = (FullColumnNameContext) ctx.children.get(0);
+//		MySqlParser.UidContext uidContext = (UidContext) ctx.children.get(0);
 		FullColumnName fullColumnName = null;
-		switch (fullColumnNameContext.children.size()) {
+		switch (ctx.children.size()) {
 		case 1:	
 			// Just an attribute Name
-			fullColumnName = new FullColumnName("", "", fullColumnNameContext.children.get(0).getText());
+			fullColumnName = new FullColumnName("", "", ctx.children.get(0).getText());
 			break;
 		case 2:
 			// An Attribute Name and a table/query name/alias
 			fullColumnName = new FullColumnName("", 
-												fullColumnNameContext.children.get(0).getText(),  
-					                            fullColumnNameContext.children.get(1).getText());
+												ctx.children.get(0).getText(),  
+					                            ctx.children.get(1).getText());
 			break;
 		case 3:
 			// An Attribute Name, a table/query name/alias, and a schema name
-			fullColumnName = new FullColumnName(fullColumnNameContext.children.get(0).getText(),  
-												fullColumnNameContext.children.get(1).getText(), 
-												fullColumnNameContext.children.get(2).getText());
+			fullColumnName = new FullColumnName(ctx.children.get(0).getText(),  
+												ctx.children.get(1).getText(), 
+												ctx.children.get(2).getText());
 			break;
 		}
-		if (ctx.children.size() > 1) {
+//		There is no alias in this context		
+/*		if (ctx.children.size() > 1) {
 			// There is an alias. We want it. Now.
 			MySqlParser.UidContext alias = (UidContext) ctx.children.get(ctx.children.size()-1);
 			fullColumnName.addAliasName(new AliasNameClassOLD(stop));
-		}
+		} */
 		fullColumnNames.addFullColumnName(fullColumnName);
 	}
 	private void processSelectColumnElementContext(MySqlParser.SelectColumnElementContext ctx) {
