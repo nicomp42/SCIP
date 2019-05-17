@@ -8,6 +8,7 @@ import java.util.Stack;
 import org.Antlr4MySQLFromANTLRRepo.NestingLevel;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.FullColumnNameContext;
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser.FullIdContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByClauseContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.SelectColumnElementContext;
@@ -554,10 +555,24 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	 * This is useful because it's called in DROP, ALTER, etc., but enter enterAtomTableItem() is not called for tables in those queries.
 	 */
 	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " Parent Context = " + ctx.getParent().getClass());
-		// This has to be here. Do not put it in EnterAtomTableItem because the "Left" in "Left Join" will mess it up
-//		fullTableNames.add(new FullTableName(ctx.getText())); 
-		fullTableNames.add(new FullTableName(ctx.getParent().getText()));	// If we use getChild() then we don't get the alias!! 
+		try {
+			Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " Parent Context = " + ctx.getParent().getClass());
+			FullIdContext fullIdContext = (FullIdContext)ctx.getChild(0);
+			switch (fullIdContext.getChildCount()) {
+			case 1:
+				// Just the table name, no schema
+				fullTableNames.add(new FullTableName(queryDefinition.getSchemaName(), fullIdContext.getChild(0).getText(), "")); 
+				break;
+			case 2:
+				// Schema followed by table name
+				fullTableNames.add(new FullTableName(fullIdContext.getChild(0).getText(), fullIdContext.getChild(1).toString(), "")); 
+				break;
+			default:
+				Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): too many children found");
+			}
+		} catch (Exception ex) {
+			Log.logError("AntlrMySQLListener.enterTableName(): " + ex.getLocalizedMessage());
+		}
 	}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
 	@Override public void enterFullColumnName(MySqlParser.FullColumnNameContext ctx) {
@@ -906,7 +921,51 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	 */
 	@Override public void enterAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " parent = " + ctx.getParent().getClass());
-//		fullTableNames.add(new FullTableName(ctx.getText()));
+		String classType = ctx.getChild(0).getClass().toString();
+		switch (classType) {
+		case "org.Antlr4MySQLFromANTLRRepo.MySqlParser$TableNameContext":
+			
+			break;
+		}
+		TableNameContext tableNameContext = (TableNameContext)(ctx.getChild(0));
+		//FullIdContext fullIdContext = ctx;		//(FullIdContext)tableNameContext.getChild(0);
+		FullTableName fullTableName = new FullTableName("");
+		try {
+			switch (tableNameContext.getChild(0).getChildCount()) {
+			case 1:
+				// Just the table name, no schema. Use the default schema name
+				fullTableName.setSchemaName(queryDefinition.getSchemaName());
+				fullTableName.setTableName(tableNameContext.getChild(0).getChild(0).getText()); 
+				break;
+			case 2:
+				// Schema followed by table name
+				fullTableName.setSchemaName(tableNameContext.getChild(0).getChild(0).getText()); 
+				fullTableName.setTableName(tableNameContext.getChild(0).getChild(1).toString()); 
+				break;
+			default:
+				Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): too many children found in TableNameContext object (" + tableNameContext.getChildCount() + ")");
+			}
+			// Now check for the alias
+			switch (ctx.getChildCount()) {
+			case 1:
+				// No alias
+				break;
+			case 2:
+				// Alias with no "AS" keyword
+				fullTableName.setAliasName(ctx.getChild(1).toString());
+				break;
+			case 3:
+				// Alias with "AS" keyword
+				fullTableName.setAliasName(ctx.getChild(2).getText());
+				break;
+			default:
+				Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): too many children found in fullIdContext object (" + ctx.getChildCount() + ")");
+				break;
+			}
+		} catch (Exception ex) {
+			Log.logError("AntlrMySQLListener.enterTableName(): " + ex.getLocalizedMessage());
+		}
+		fullTableNames.add(fullTableName);
 	}
 	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAtomTableItem(): " + ctx.getText());
@@ -1133,10 +1192,23 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			init();
 			this.rawData = rawData;
 		}
+		FullTableName(String schemaName, String tableName,  String alias) {
+			init();
+			setSchemaName(schemaName);
+			setTableName(tableName);
+			setAliasName(aliasName);
+		}
+		void setSchemaName(String schemaName) {this.schemaName = removeLeadingPeriod(schemaName);}
+		void setTableName(String tableName) {this.tableName = removeLeadingPeriod(tableName);}
+		void setAliasName(String aliasName) {this.aliasName = removeLeadingPeriod(aliasName);}
 		public String toString() {
 			return (schemaName.length() > 0? schemaName + ".": "") + 
 					tableName 
 					+ (aliasName.length() > 0 ? " AS " + aliasName:"");
+		}
+		String  removeLeadingPeriod(String text) {
+			if (text.startsWith(".")) {return text.substring(1);} else {return text;}
+				
 		}
 		void init() {
 			schemaName = "";

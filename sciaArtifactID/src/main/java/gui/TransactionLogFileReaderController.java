@@ -249,6 +249,9 @@ public class TransactionLogFileReaderController {
 			java.sql.PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `seq-am`.tartifact WHERE ProjectID = " + projectID + " ORDER BY artifactID ASC");
 			java.sql.ResultSet resultSet = preparedStatement.executeQuery();
 			while(resultSet.next()) {
+				if (resultSet.getString("Artifact").equals("Qty")) {
+					System.out.println("goo");
+				}
 				txaLog.appendText((new FullColumnName(resultSet.getString("SchemaName"),
 													  resultSet.getString("tableName"),
 													  resultSet.getString("Artifact"))).toString());

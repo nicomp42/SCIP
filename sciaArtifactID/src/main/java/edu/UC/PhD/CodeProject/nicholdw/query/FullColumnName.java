@@ -29,8 +29,8 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			setSchemaName(schemaName);
 			setTableName(tableName);
 			setAttributeName(attributeName);
-			setRawData(  (getSchemaName().length() > 0 ? (getSchemaName() + ".") : "")
-			           + (getTableName().length()  > 0 ? (getTableName()  + ".") : "")
+			setRawData(  (getSchemaName().length() > 0 ? (getSchemaName() + ".") : ".")
+			           + (getTableName().length()  > 0 ? (getTableName()  + ".") : ".")
 					   +  getAttributeName());
 		}
 		private void setSchemaName(String schemaName) {
