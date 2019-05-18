@@ -27,7 +27,7 @@ public class Table {
 	private final String auto_increment = "1";	// http://dev.mysql.com/doc/refman/5.7/en/example-auto-increment.html
 	private boolean alreadyHasSurrogateKey;
 	private String dBInstanceName;
-	
+
 	/**
 	 * Test some stuff
 	 * @param args
@@ -37,12 +37,32 @@ public class Table {
 		Table myFlightTable = new Table("flight", "tFlight");
 		Table myPilotTable = new Table("flight", "tPilot");
 		myFlightTable.setAttributes(Table.readAttributesFromTableDefinition(myFlightTable.getSchemaName(), myFlightTable.getTableName()));
-		
 		myPilotTable.setAttributes(Table.readAttributesFromTableDefinition(myPilotTable.getSchemaName(), myPilotTable.getTableName()));
-		
-		
 	}
-	
+	/*
+	 * Define the table name of the table
+	 * @param tableName
+	 */
+	public void setTableName(String tableName) {
+		if (tableName.trim().startsWith("`") && tableName.trim().endsWith("`")) {
+			// It's all good
+			this.tableName = tableName.trim();
+		} else {
+			this.tableName = Utils.QuoteMeBack(tableName.trim());
+		}
+	}
+	/*
+	 * Define the schema name of the table
+	 * @param schemaName
+	 */
+	public void setSchemaName(String schemaName) {
+		if (schemaName.trim().startsWith("`") && schemaName.trim().endsWith("`")) {
+			// It's all good
+			this.schemaName = schemaName.trim();
+		} else {
+			this.schemaName = Utils.QuoteMeBack(schemaName.trim());
+		}
+	}
 	public String getComment() {return comment;}
 	public void setComment(String comment) {this.comment = comment;}
 	/**
@@ -111,7 +131,7 @@ public class Table {
 	 * @param schemaName Name of schema/database
 	 */
 	public Table(String tableName, String schemaName) {
-		this.tableName = tableName;
+		setTableName(tableName);
 		indexList = new Indexes();
 		this.schemaName = schemaName;
 		attributes = new Attributes();
@@ -126,7 +146,7 @@ public class Table {
 	 * @param indexList
 	 */
 	public Table(String tableName, String schemaName, Attributes attributeList, Indexes indexList) {
-		this.tableName = tableName;
+		setTableName(tableName);
 		this.indexList = indexList;
 		this.schemaName = schemaName;
 		this.attributes = attributeList;
@@ -139,8 +159,8 @@ public class Table {
 	 * @param schemaName Name of schema/database
 	 * @param indexList
 	 */
-	public Table(String name,  String schemaName, Indexes indexList) {
-		this.tableName = name;
+	public Table(String tableName,  String schemaName, Indexes indexList) {
+		setTableName(tableName);
 		this.schemaName = schemaName;
 		this.indexList = indexList;
 		attributes = new Attributes();
@@ -153,8 +173,8 @@ public class Table {
 	 * @param schemaName Name of database/schema
 	 * @param attributeList
 	 */
-	public Table(String name, String schemaName, Attributes attributeList) {
-		this.tableName = name;
+	public Table(String tableName, String schemaName, Attributes attributeList) {
+		setTableName(tableName);
 		this.schemaName = schemaName;
 		this.attributes = attributeList;
 		indexList = new Indexes();
@@ -293,7 +313,6 @@ public class Table {
 		setAlreadyHasSurrogateKey(true);
 	}
 	public String getSchemaName() {return schemaName;}
-	public void setSchemaName(String schemaName) {this.schemaName = schemaName;}
 
 	/**
 	 * Look up the data type for an attribute in the table

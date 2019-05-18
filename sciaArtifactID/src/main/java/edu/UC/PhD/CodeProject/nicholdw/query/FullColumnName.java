@@ -46,7 +46,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			String tmp = artifactName.trim();
 			if (tmp.length() != 0) {
 				if (tmp.trim().startsWith("`")) {
-					tmp = tmp.substring(1, artifactName.length() - 2);
+					tmp = tmp.substring(1, artifactName.length() - 1);
 				}
 				if (tmp.startsWith(".")) {
 					tmp = tmp.substring(1);

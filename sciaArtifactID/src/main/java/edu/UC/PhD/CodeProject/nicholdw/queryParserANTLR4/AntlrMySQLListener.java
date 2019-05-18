@@ -567,6 +567,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				// Schema followed by table name
 				fullTableNames.add(new FullTableName(fullIdContext.getChild(0).getText(), fullIdContext.getChild(1).toString(), "")); 
 				break;
+			case 3:
+				// Schema followed by dot then table name
+				fullTableNames.add(new FullTableName(fullIdContext.getChild(0).getText(), fullIdContext.getChild(2).getText(), "")); 
+				break;
 			default:
 				Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): too many children found");
 			}
@@ -931,7 +935,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		//FullIdContext fullIdContext = ctx;		//(FullIdContext)tableNameContext.getChild(0);
 		FullTableName fullTableName = new FullTableName("");
 		try {
-			switch (tableNameContext.getChild(0).getChildCount()) {
+			int childCount = tableNameContext.getChild(0).getChildCount();
+			switch (childCount) {
 			case 1:
 				// Just the table name, no schema. Use the default schema name
 				fullTableName.setSchemaName(queryDefinition.getSchemaName());
@@ -942,8 +947,14 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				fullTableName.setSchemaName(tableNameContext.getChild(0).getChild(0).getText()); 
 				fullTableName.setTableName(tableNameContext.getChild(0).getChild(1).toString()); 
 				break;
+			case 3:
+				// Schema followed by dot followed by table name
+				fullTableName.setSchemaName(tableNameContext.getChild(0).getChild(0).getText()); 
+				fullTableName.setTableName(tableNameContext.getChild(0).getChild(2).getText()); 
+				break;
+
 			default:
-				Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): too many children found in TableNameContext object (" + tableNameContext.getChildCount() + ")");
+				Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): too many children found in TableNameContext object (" + tableNameContext.getChildCount() + ")");
 			}
 			// Now check for the alias
 			switch (ctx.getChildCount()) {
@@ -952,18 +963,18 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				break;
 			case 2:
 				// Alias with no "AS" keyword
-				fullTableName.setAliasName(ctx.getChild(1).toString());
+				fullTableName.setAliasName(ctx.getChild(1).getText());
 				break;
 			case 3:
 				// Alias with "AS" keyword
 				fullTableName.setAliasName(ctx.getChild(2).getText());
 				break;
 			default:
-				Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): too many children found in fullIdContext object (" + ctx.getChildCount() + ")");
+				Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): too many children found in fullIdContext object (" + ctx.getChildCount() + ")");
 				break;
 			}
 		} catch (Exception ex) {
-			Log.logError("AntlrMySQLListener.enterTableName(): " + ex.getLocalizedMessage());
+			Log.logError("AntlrMySQLListener.enterAtomTableItem(): " + ex.getLocalizedMessage());
 		}
 		fullTableNames.add(fullTableName);
 	}
@@ -1172,7 +1183,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		if (ctx.children.size() > 1) {
 			// There is an alias. We want it. Now.
 			MySqlParser.UidContext alias = (UidContext) ctx.children.get(ctx.children.size()-1);
-			fullColumnName.addAliasName(new AliasNameClassOLD(stop));
+			fullColumnName.addAliasName(new AliasNameClassOLD(alias.getStop().getText()));
 		}
 		fullColumnNames.addFullColumnName(fullColumnName);
 	}
@@ -1198,17 +1209,26 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			setTableName(tableName);
 			setAliasName(aliasName);
 		}
-		void setSchemaName(String schemaName) {this.schemaName = removeLeadingPeriod(schemaName);}
-		void setTableName(String tableName) {this.tableName = removeLeadingPeriod(tableName);}
-		void setAliasName(String aliasName) {this.aliasName = removeLeadingPeriod(aliasName);}
+		void setSchemaName(String schemaName) {this.schemaName = cleanUpArtifactName(schemaName);}
+		void setTableName(String tableName) {this.tableName = cleanUpArtifactName(tableName);}
+		void setAliasName(String aliasName) {this.aliasName = cleanUpArtifactName(aliasName);}
 		public String toString() {
 			return (schemaName.length() > 0? schemaName + ".": "") + 
 					tableName 
 					+ (aliasName.length() > 0 ? " AS " + aliasName:"");
 		}
-		String  removeLeadingPeriod(String text) {
-			if (text.startsWith(".")) {return text.substring(1);} else {return text;}
-				
+		private String cleanUpArtifactName(String artifactName) {
+			String tmp = artifactName.trim();
+			if (tmp.length() != 0) {
+				if (tmp.trim().startsWith("`")) {
+					tmp = tmp.substring(1, artifactName.length() - 1);
+				}
+				if (tmp.startsWith(".")) {
+					tmp = tmp.substring(1);
+				}
+				tmp = Utils.wrapInDelimiter(tmp.trim(), "`");
+			}
+			return tmp;
 		}
 		void init() {
 			schemaName = "";
