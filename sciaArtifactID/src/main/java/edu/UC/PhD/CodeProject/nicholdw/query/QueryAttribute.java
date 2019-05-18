@@ -7,6 +7,8 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.util.UUID;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Schema;
+import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 /**
@@ -70,7 +72,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		if (tableName == null) {
 			this.tableName = "";
 		} else {
-			this.tableName = tableName.trim();
+			this.tableName = Table.formatTableName(tableName);
 		}
 	}
 	public String getTableName() {return this.tableName;}
@@ -98,11 +100,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	}
 	public String getSchemaName() {return schemaName;}
 	public void setSchemaName(String schemaName) {
-		if (schemaName == null) {
-			this.schemaName = "";
-		} else {
-			this.schemaName = schemaName.trim();
-		}
+		this.schemaName = Schema.formatSchemaName(schemaName);
 	}
 	public QueryClause getQueryClause() {return queryClause;}
 	public void setQueryClause(QueryClause queryClause) {this.queryClause = queryClause;}

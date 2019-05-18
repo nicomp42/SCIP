@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.Date;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class MySQL {
@@ -44,11 +45,16 @@ public class MySQL {
 	        Class.forName("com.mysql.jdbc.Driver");
 	        // Setup the connection with the DB
 //	        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/phd", "root", "Danger42");
-	        connection = DriverManager.getConnection("jdbc:mysql://" + edu.UC.PhD.CodeProject.nicholdw.Config.getConfig().getMySQLDefaultHostname() + ":" + Config.getConfig().getMySQLDefaultPort() + "/" + databaseName,
+	        connection = DriverManager.getConnection("jdbc:mysql://" + edu.UC.PhD.CodeProject.nicholdw.Config.getConfig().getMySQLDefaultHostname() 
+	        		                                 + ":" 
+	        		                                 + Config.getConfig().getMySQLDefaultPort() 
+	        		                                 + "/" 
+	        		                                 + Utils.removeBackQuotes(databaseName), 
 	        		                                 edu.UC.PhD.CodeProject.nicholdw.Config.getConfig().getMySQLDefaultLoginName(),
 	        		                                 edu.UC.PhD.CodeProject.nicholdw.Config.getConfig().getMySQLDefaultPassword());
 	        										//"root",
 	        		                                // "Danger42");
+//            + "\"" + Utils.removeBackQuotes(databaseName) + "\"", 
 
 	    } catch (Exception ex) {
 	    	Log.logError("mySQL.connectToDatabase(" + databaseName + ") : " + ex.getLocalizedMessage(), ex);

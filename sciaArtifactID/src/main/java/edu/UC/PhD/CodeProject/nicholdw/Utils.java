@@ -152,11 +152,18 @@ public class Utils {
 	 */
 	public static String removePeriod(String data) {return data.replace("\\.", "");}	// The . is a special character in RegEx. We have to hide it.
 	/**
-	 * Remove the back quotes from a string
+	 * Remove the back quotes from the beginning and end of a string, if present.
 	 * @param data The string
-	 * @return The string with back quotes removed
+	 * @return The string with back quotes removed from beginning and end
 	 */
-	public static String removeBackQuotes(String data) {return data.replace("`", "");}
+	public static String removeBackQuotes(String data) {
+		if (data.startsWith("`") && data.endsWith("`")) {
+			return data.substring(1, data.length()-1);
+		} else {
+			return data;
+		}
+//		return data.replace("`", "");
+		}
 
 	/***
 	 * Map a null string to an empty string

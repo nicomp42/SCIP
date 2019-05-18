@@ -44,11 +44,14 @@ public class Table {
 	 * @param tableName
 	 */
 	public void setTableName(String tableName) {
+		this.tableName = Table.formatTableName(tableName);
+	}
+	public static String formatTableName(String tableName) {
 		if (tableName.trim().startsWith("`") && tableName.trim().endsWith("`")) {
 			// It's all good
-			this.tableName = tableName.trim();
+			return tableName.trim();
 		} else {
-			this.tableName = Utils.QuoteMeBack(tableName.trim());
+			return Utils.QuoteMeBack(tableName.trim());
 		}
 	}
 	/*
@@ -80,7 +83,6 @@ public class Table {
 		}
 		return attributeFound;
 	}
-	
 	public String generateScript() {
 		String script = "CREATE TABLE " + tableName + " (";
 		String comma = "";
@@ -207,7 +209,7 @@ public class Table {
 			//connection = new MySQL().connectToDatabase(Config.getConfig().databaseName);
 			connection = new MySQL().connectToDatabase(schemaName);
 
-			String sql = "DESC " + tableName;
+			String sql = "DESC " + schemaName + "." + tableName;
 		    java.sql.PreparedStatement preparedStatement = null;
 		    try {
 				preparedStatement = connection.prepareStatement(sql);

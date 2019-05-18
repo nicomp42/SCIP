@@ -299,8 +299,20 @@ public class Schema {
 	}
 
 	public String getSchemaName() {return schemaName;}
-	public void setSchemaName(String name) {this.schemaName = name;}
-
+	
+	public void setSchemaName(String schemaName) {this.schemaName = formatSchemaName(schemaName);}
+	
+	public static String formatSchemaName(String schemaName) {
+		if (schemaName == null) {
+			return "``";
+		} else {
+			if (schemaName.trim().startsWith("`") && schemaName.trim().endsWith("`")) {
+				return schemaName.trim();
+			} else {
+				return Utils.QuoteMeBack(schemaName.trim());
+			}
+		}		
+	}
 	public Attributes getAttributes() {return attributes;}
 	public void setAttributes(Attributes attributes) {this.attributes = attributes;}
 	public ForeignKeys getForeignKeys() {return foreignKeys;}
