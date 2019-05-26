@@ -29,7 +29,7 @@ public class MySQL {
 //	        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/phd", "root", "Danger42");
 	        connection = DriverManager.getConnection("jdbc:mysql://" +
 	        										 hostName + ":" + Config.getConfig().getMySQLDefaultPort() + "/" +
-	        										 databaseName,
+	        										 Utils.removeBackQuotes(databaseName),
 	        		                                 userName,
 	        		                                 password);
 	    } catch (Exception ex) {

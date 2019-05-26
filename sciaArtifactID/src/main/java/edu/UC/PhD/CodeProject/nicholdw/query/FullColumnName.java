@@ -141,7 +141,16 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		 * @param queryDefinition The target QueryDefinition
 		 */
 		public void copyIntoQueryDefinition(QueryDefinition queryDefinition) {
-			queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(schemaName, tableName, attributeName, aliasNames, queryClause));
+			try {
+				String mySchemaName = schemaName;
+				// If this attribute has no schema name, use the schema name in the query definition
+				if (mySchemaName == null || mySchemaName.trim() == "") {
+					mySchemaName = queryDefinition.getSchemaName();
+				}
+				queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(mySchemaName, tableName, attributeName, aliasNames, queryClause));
+			} catch (Exception ex) {
+				Log.logError("FullColumnName.copyIntoQueryDefinition(): " + ex.getLocalizedMessage());
+			}
 		}
 		/**
 		 * Set the nesting level of this attribute

@@ -225,7 +225,7 @@ public class QueryDefinition {
 			    try {
 					preparedStatement = connection.prepareStatement(query);
 				} catch (SQLException e) {
-					System.out.println("QueryDefinition.readSQLFromDatabaseServerQueryDefinition() : " + e.getLocalizedMessage());
+					Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition() : " + e.getLocalizedMessage());
 				}
 			    java.sql.ResultSet resultSet = null;
 			    try {
