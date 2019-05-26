@@ -262,7 +262,6 @@ public class QueryDefinition {
 			// Make sure every query attribute has a table/query that it belongs to
 			for (QueryAttribute qa : this.getQueryAttributes()) {
 				Log.logProgress("QueryDefinition.reconcileAttributes(): processing the attribute " + qa.toString());
-				QueryTable qt = null;
 //				Log.logProgress("QueryDefinition.reconcileAttributes(): attribute = " + qa.toString());
 				if ((qa.getTableName().length() > 0) && (qa.getSchemaName().length() > 0)) {
 					Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a schema and a table. Checking to see it it's a table alias.");
@@ -282,8 +281,32 @@ public class QueryDefinition {
 					//		we should always be here. The attribute table name must always be in the list of (table names & table alias names)
 					//	else
 					//		something bad happened. We should never be here
-					
+					boolean found = false;
+					for (QueryTable qt: queryTables) {
+						if (Config.getConfig().compareTableNames(qt.getSchemaName(), qa.getSchemaName())) {
+							if (Config.getConfig().compareTableNames(qt.getTableName(), qa.getTableName())) {
+								found = true;
+								Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a table name that is actually a table name (" + qa.getTableName() + ").");
+								break;
+							}
+							// Check the list of aliases for this table
+							for (AliasNameClassOLD an: qt.getAliasNames()) {
+								if (Config.getConfig().compareAliasNames(an.getAliasName(), qa.getTableName())) {
+									Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a table name that is an alias (" + qa.getTableName() + "), changing to " + qt.getTableName() + ".");
+									qa.setTableAliasName(qa.getTableName());
+									qa.setTableName(qt.getTableName());
+									found = true;
+									break;
+								}
+							}
+							if (found) {break;}
+						}
+					}
+					if (!found) {
+						Log.logError("QueryDefinition.reconcileArtifacts(): Very bad: attribute has a schema and a table BUT table not found in the query definition (" + qa.getTableName() + ")");
+					}
 				} else  {
+					QueryTable qt = null;
 					qt = this.getQueryTables().findQueryOrTableContainingAttribute(qa);	// This must work, else the query is not properly formed or there are > 0 nested queries to search
 					if (qt != null) {
 						Log.logProgress("QueryDefinition.reconcileArtifacts(): found the table: " + qt.toString());
