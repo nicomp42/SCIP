@@ -34,9 +34,8 @@ public class QueryTable extends Table {
 		setIsQuery(true);		// Assume it's a query. We will reconcile it later. See QueryDefinition.reconcileTables() 
 		setIsProcessed(false);
 		setContainingQueryName("");
-		queryAttributeProvenance = new QueryAttribute("", "", "", new AliasNameClassOLD(""), new QueryClauseUnknown() );	// TODO: Hinkey
+		queryAttributeProvenance = new QueryAttribute("", "", "", new AliasNameClassOLD(""), new QueryClauseUnknown(), "" );
 	}
-
 	/**
 	 * @return 	true if the query includes all attributes in this table: table has a ".*" in the SELECT clause
 	 */

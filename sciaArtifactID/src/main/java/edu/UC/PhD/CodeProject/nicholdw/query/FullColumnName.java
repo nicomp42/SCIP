@@ -147,7 +147,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 				if (mySchemaName == null || mySchemaName.trim() == "") {
 					mySchemaName = queryDefinition.getSchemaName();
 				}
-				queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(mySchemaName, tableName, attributeName, aliasNames, queryClause));
+				queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(mySchemaName, tableName, attributeName, aliasNames, queryClause, ""));
 			} catch (Exception ex) {
 				Log.logError("FullColumnName.copyIntoQueryDefinition(): " + ex.getLocalizedMessage());
 			}

@@ -20,7 +20,8 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	private String schemaName;		// Not necessarily redundant. A query can span multiple schemas
 	private QueryClause queryClause;
 	private String attributeName;
-	private String tableName;
+	private String tableName;			// The table/query that the attribute lives in. 
+	private String tableAliasName;		// If the attribute as it appeared in the query referenced a table alias, we will store it here
 	private String expression;
 	private String ID;
 	/**
@@ -31,7 +32,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	 * @param aliasName If you only have one alias for this QueryAttribute object
 	 * @param queryClause
 	 */
-	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause) {
+	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName) {
 		this.setTableName(tableName);
 		aliasNames = new AliasNamesOLD();
 		this.addAliasName (aliasName);
@@ -39,6 +40,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		this.setQueryClause(queryClause);
 		this.setAttributeName(attributeName);
 		ID = UUID.randomUUID().toString();
+		this.tableAliasName = tableAliasName;
 	}
 	/**
 	 * Create a new QueryAttribute object
@@ -48,7 +50,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	 * @param aliasNames If you already have an AliasNames object for this QueryAttribute object
 	 * @param queryClause
 	 */
-	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNamesOLD aliasNames, QueryClause queryClause) {
+	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNamesOLD aliasNames, QueryClause queryClause, String tableAliasName) {
 		this.setTableName(tableName);
 		this.aliasNames = new AliasNamesOLD();
 		this.aliasNames.addAliasNames(aliasNames);
@@ -56,6 +58,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		this.setQueryClause(queryClause);
 		this.setAttributeName(attributeName);
 		ID = UUID.randomUUID().toString();
+		this.tableAliasName = tableAliasName;
 	}
 	public Boolean isConstant() {
 		// TODO: write this
@@ -202,5 +205,19 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		} else {
 			return getAttributeName();
 		}
+	}
+	/**
+	 * If the attribute as it appeared in the query referenced a table alias, we store it here
+	 * @return The table alias name, if it exists, or "" otherwise
+	 */
+	public String getTableAliasName() {
+		return tableAliasName;
+	}
+	/**
+	 * If the attribute as it appeared in the query referenced a table alias, we will store it here
+	 * @param tableAliasName The alias name of the table or query that the attribute references. Can be null or "" if it doesn't exist.
+	 */
+	public void setTableAliasName(String tableAliasName) {
+		this.tableAliasName = tableAliasName;
 	}
 }
