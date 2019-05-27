@@ -29,9 +29,9 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			setSchemaName(schemaName);
 			setTableName(tableName);
 			setAttributeName(attributeName);
-			setRawData(  (getSchemaName().length() > 0 ? (getSchemaName() + ".") : ".")
+			setRawData("");/*  (getSchemaName().length() > 0 ? (getSchemaName() + ".") : ".")
 			           + (getTableName().length()  > 0 ? (getTableName()  + ".") : ".")
-					   +  getAttributeName());
+					   +  getAttributeName()); */
 		}
 		private void setSchemaName(String schemaName) {
 			this.schemaName = cleanUpArtifactName(schemaName);
@@ -101,38 +101,41 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		 * Start with a string formatted like schemaName.TableName.AttributeName and extract the parts into a structure.
 		 * Beware: A table name and an attribute name CAN have a . (period in it) Yikes.
 		 * There cannot be an alias in the string to parse.
+		 * If rawData is blank, this method does nothing and returns zero
 		 * @return The number of parts that were parsed: 0 - 3
 		 */
 		private int processRawData() {
 			int numberOfColumnParts = 0;
-			String tmpColumnParts[] = rawData.split("\\`");
-			ArrayList<String> columnParts = new ArrayList<String>();
-			for (String s : tmpColumnParts) {
-				if ((s.trim().length() > 0) && (s.equals(".") == false)) {
-					columnParts.add(s);
+			if (rawData.trim().length() > 0) {
+				String tmpColumnParts[] = rawData.split("\\`");
+				ArrayList<String> columnParts = new ArrayList<String>();
+				for (String s : tmpColumnParts) {
+					if ((s.trim().length() > 0) && (s.equals(".") == false)) {
+						columnParts.add(s);
+					}
+				}			
+	//			String columnParts[] = rawData.split("\\.");			// The . character is special in RegEx so we gotta hide it. Doesn't work because a symbol can contain a .
+				switch (columnParts.size()) {
+				case 1:			// Just a column name
+					this.attributeName = Utils.removeBackQuotes(columnParts.get(0).trim());
+					numberOfColumnParts = 1;
+					break;
+				case 2:			// column name and table name
+					this.attributeName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(1))).trim();
+					this.tableName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(0))).trim();
+					numberOfColumnParts = 2;
+					break;
+	
+				case 3:			// column name, table name, schema name
+					this.attributeName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(2))).trim();
+					this.tableName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(1))).trim();
+					this.schemaName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(0))).trim();
+					numberOfColumnParts = 3;
+					break;
+	
+				default:
+					Log.logProgress("FullColumnName.processRawData(): unexpected number of parts to parse (" + columnParts.size() + "): " + " started with " + rawData);
 				}
-			}			
-//			String columnParts[] = rawData.split("\\.");			// The . character is special in RegEx so we gotta hide it. Doesn't work because a symbol can contain a .
-			switch (columnParts.size()) {
-			case 1:			// Just a column name
-				this.attributeName = Utils.removeBackQuotes(columnParts.get(0).trim());
-				numberOfColumnParts = 1;
-				break;
-			case 2:			// column name and table name
-				this.attributeName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(1))).trim();
-				this.tableName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(0))).trim();
-				numberOfColumnParts = 2;
-				break;
-
-			case 3:			// column name, table name, schema name
-				this.attributeName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(2))).trim();
-				this.tableName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(1))).trim();
-				this.schemaName = Utils.removePeriod(Utils.removeBackQuotes(columnParts.get(0))).trim();
-				numberOfColumnParts = 3;
-				break;
-
-			default:
-				Log.logProgress("FullColumnName.processRawData(): unexpected number of parts to parse (" + columnParts.size() + "): " + " started with " + rawData);
 			}
 			return numberOfColumnParts;
 		}

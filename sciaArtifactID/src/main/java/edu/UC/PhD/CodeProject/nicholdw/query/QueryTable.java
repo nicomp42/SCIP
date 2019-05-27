@@ -47,7 +47,7 @@ public class QueryTable extends Table {
 	public void setIncludeAllAttributes(boolean includeAllAttributes) {this.includeAllAttributes = includeAllAttributes;}
 	public AliasNamesOLD getAliasNames() {return aliasNames;}
 	public void addAliasName(AliasNameClassOLD aliasNameClass) {
-		if (aliasNameClass.getAliasName().length() > 0) {this.aliasNames.addAliasName(aliasNameClass);}
+		if (aliasNameClass != null && aliasNameClass.getAliasName().length() > 0) {this.aliasNames.addAliasName(aliasNameClass);}
 	}
 	public QueryClause getQueryClause() {return queryClause;}
 	public void setQueryClause(QueryClause queryClause) {this.queryClause = queryClause;}

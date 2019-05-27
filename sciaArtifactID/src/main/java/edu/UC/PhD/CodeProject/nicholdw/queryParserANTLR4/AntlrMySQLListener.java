@@ -605,7 +605,38 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void enterAuthPlugin(MySqlParser.AuthPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAuthPlugin()");}
 	@Override public void exitAuthPlugin(MySqlParser.AuthPluginContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAuthPlugin()");}
 	@Override public void enterUid(MySqlParser.UidContext ctx) {
+		// We land here when parsing an ALTER Table statement. The field we are altering is this one
 		Log.logQueryParseProgress("AntlrMySQLListener.enterUid(): " + ctx.getText() + ", " + ctx.getChild(0).getText() + " Parent Context = " + ctx.getParent().getClass());
+//		processUidContext(ctx);
+	}
+	private void processUidContext(MySqlParser.UidContext ctx) {
+		String foo = " " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop();
+		// Add to the list of columns that are referenced in this query
+		//String start = ctx.getStart().getText();
+		String stop = ctx.getStop().getText();
+		FullColumnName fullColumnName = null;
+		switch (ctx.children.size()) {
+		case 1:	
+			// Just an attribute Name
+			fullColumnName = new FullColumnName("", "", ctx.children.get(0).getText());
+			break;
+		case 2:
+			// An Attribute Name and a table/query name/alias
+			fullColumnName = new FullColumnName("", 
+												ctx.children.get(0).getText(),  
+					                            ctx.children.get(1).getText());
+			break;
+		case 3:
+			// An Attribute Name, a table/query name/alias, and a schema name
+			fullColumnName = new FullColumnName(ctx.children.get(0).getText(),  
+												ctx.children.get(1).getText(), 
+												ctx.children.get(2).getText());
+			break;
+		default: 
+			Log.logError("processUidContext(): unrecognized number of children (" + ctx.children.size() +")");
+			break;
+		}
+		fullColumnNames.addFullColumnName(fullColumnName);
 	}
 	@Override public void exitUid(MySqlParser.UidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUid()");}
 	@Override public void enterSimpleId(MySqlParser.SimpleIdContext ctx) {
@@ -1112,6 +1143,25 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			case "TABLE": 
 				queryDefinition.setQueryType(new QueryTypeAlterTable());
 				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+				String mySchemaName = "";
+				String myTableName = "";
+				String myClass = node.getParent().getChild(2).getChild(0).getClass().getName();
+				switch (node.getParent().getChild(2).getChild(0).getChildCount()) {
+				case 1:
+					// Just a table name
+					myTableName = node.getParent().getChild(2).getChild(0).getChild(0).getText();
+					break;
+
+				case 3:
+					// A schema name and a table name with a dot in between
+					mySchemaName = node.getParent().getChild(2).getChild(0).getChild(0).getText();
+					myTableName = node.getParent().getChild(2).getChild(0).getChild(2).getText();
+					break;
+				default:
+					Log.logError("ANTLRMySQLListener.processTerminalNodeAlter(): unexpected number of child nodes (" + node.getParent().getChild(2).getChildCount() + ")");
+					break;
+				}
+				queryDefinition.getQueryTables().addQueryTable(new QueryTable(mySchemaName, myTableName, null, null));
 				break;
 			case "VIEW": 
 				queryDefinition.setQueryType(new QueryTypeAlterView());
@@ -1127,7 +1177,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		// Add to the list of columns that are referenced in this query
 		//String start = ctx.getStart().getText();
 		String stop = ctx.getStop().getText();
-//		MySqlParser.UidContext uidContext = (UidContext) ctx.children.get(0);
 		FullColumnName fullColumnName = null;
 		switch (ctx.children.size()) {
 		case 1:	
@@ -1146,13 +1195,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 												ctx.children.get(1).getText(), 
 												ctx.children.get(2).getText());
 			break;
+		default: 
+			Log.logError("processFullColumnNameContext(): unrecognized number of children (" + ctx.children.size() +")");
+			break;
 		}
-//		There is no alias in this context		
-/*		if (ctx.children.size() > 1) {
-			// There is an alias. We want it. Now.
-			MySqlParser.UidContext alias = (UidContext) ctx.children.get(ctx.children.size()-1);
-			fullColumnName.addAliasName(new AliasNameClassOLD(stop));
-		} */
 		fullColumnNames.addFullColumnName(fullColumnName);
 	}
 	private void processSelectColumnElementContext(MySqlParser.SelectColumnElementContext ctx) {
