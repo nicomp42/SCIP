@@ -1129,6 +1129,21 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logError("AntlrMySQLListener.processTerminalNodeAs(): " + ex.getLocalizedMessage()); 
 		}
 */	}
+	/***
+	 * Extract the class name without the package
+	 * @param qualifiedClassName the class name with the package appended to it. A $ is the delimiter
+	 * @return The class name
+	 */
+	private String getClassName(String qualifiedClassName) {
+		String className = "";
+		try {
+			int idx = qualifiedClassName.lastIndexOf("$");
+			className = qualifiedClassName.substring(idx + 1);
+		} catch (Exception ex) {
+			Log.logError("ANTLRMySQLListener.getClassName(): " + ex.getLocalizedMessage());
+		}
+		return className;
+	}
 	/**
 	 * A Terminal Node has been identified as "ALTER"
 	 * @param node
@@ -1139,30 +1154,86 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			firstVisit = false;
 			String alterType = node.getParent().getChild(1).getText().trim().toUpperCase();
 			if (alterType.trim().toUpperCase().equals("TEMPORARY")) {alterType = node.getParent().getChild(1).getText().trim().toUpperCase();}
+			String className = "";
+			String mySchemaName = queryDefinition.getSchemaName();	// In case we don't have a schema name in the SQL we are processing
+			String myTableName = "";
+			String innerClassName = "";
 			switch (alterType) {
 			case "TABLE": 
 				queryDefinition.setQueryType(new QueryTypeAlterTable());
 				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
-				String mySchemaName = "";
-				String myTableName = "";
-				String myClass = node.getParent().getChild(2).getChild(0).getClass().getName();
-				switch (node.getParent().getChild(2).getChild(0).getChildCount()) {
-				case 1:
-					// Just a table name
-					myTableName = node.getParent().getChild(2).getChild(0).getChild(0).getText();
-					break;
+				for (int i = 2; i < node.getParent().getChildCount(); i++) {
+					className = getClassName(node.getParent().getChild(i).getClass().getName());
+//					System.out.println(className);
+					switch (className) {
+					case "TableNameContext":
+						String myClass = node.getParent().getChild(2).getChild(0).getClass().getName();
+						className = getClassName(node.getParent().getChild(2).getClass().getName());
+						switch (node.getParent().getChild(2).getChild(0).getChildCount()) {
+						case 1:
+							// Just a table name
+							myTableName = node.getParent().getChild(2).getChild(0).getChild(0).getText();
+							Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): table name = " + myTableName + ", schema name defaulted to " + mySchemaName);
+							className = getClassName(node.getParent().getChild(2).getChild(0).getClass().getName());
+							className = getClassName(node.getParent().getChild(2).getClass().getName());
+							break;
 
-				case 3:
-					// A schema name and a table name with a dot in between
-					mySchemaName = node.getParent().getChild(2).getChild(0).getChild(0).getText();
-					myTableName = node.getParent().getChild(2).getChild(0).getChild(2).getText();
-					break;
-				default:
-					Log.logError("ANTLRMySQLListener.processTerminalNodeAlter(): unexpected number of child nodes (" + node.getParent().getChild(2).getChildCount() + ")");
-					break;
+						case 3:
+							// A schema name and a table name with a dot in between
+							mySchemaName = node.getParent().getChild(2).getChild(0).getChild(0).getText();
+							myTableName = node.getParent().getChild(2).getChild(0).getChild(2).getText();
+							Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): table name = " + myTableName + ", schema name = " + mySchemaName);
+							className = getClassName(node.getParent().getChild(2).getChild(0).getClass().getName());
+							className = getClassName(node.getParent().getChild(2).getClass().getName());
+							break;
+						default:
+							Log.logError("ANTLRMySQLListener.processTerminalNodeAlter(): unexpected number of child nodes (" + node.getParent().getChild(2).getChildCount() + ")");
+							break;
+						}
+						queryDefinition.getQueryTables().addQueryTable(new QueryTable(mySchemaName, myTableName, null, null));
+						break;
+					case "AlterByDropColumnContext":
+						Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): dropping a column");
+						innerClassName = "";
+						Boolean keepGoing;
+						keepGoing = true;
+						// Look for UIdContext class
+						for (int j = 0; keepGoing && j < node.getParent().getChild(i).getChildCount(); j++) {
+							innerClassName = getClassName(node.getParent().getChild(i).getChild(j).getClass().getName());
+							switch (innerClassName) {
+							case "UidContext":
+								String attribute = "";
+								attribute = node.getParent().getChild(i).getChild(j).getText();
+								Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): column to drop = " + attribute);
+								queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(mySchemaName, myTableName, attribute, (AliasNameClassOLD)null, (QueryClause)null, "", QueryAttribute.ATTRIBUTE_DISPOSITION.Drop));
+								keepGoing = false;	// We only want the first attribute. The second one is the new name. 
+								break;
+							}							
+						}
+						break;
+					case "AlterByChangeColumnContext":
+						Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): altering a column");
+						innerClassName = "";
+						// Look for UIdContext class
+						for (int j = 0; j < node.getParent().getChild(i).getChildCount(); j++) {
+							innerClassName = getClassName(node.getParent().getChild(i).getChild(j).getClass().getName());
+							switch (innerClassName) {
+							case "UidContext":
+								String attribute = "";
+								attribute = node.getParent().getChild(i).getChild(j).getText();
+								Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): column to alter = " + attribute);
+								queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(mySchemaName, myTableName, attribute, (AliasNameClassOLD)null, (QueryClause)null, "", QueryAttribute.ATTRIBUTE_DISPOSITION.Alter));
+								break;
+							}							
+						}
+						break;
+					case "AlterByAddColumnContext":
+						Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): adding a column");
+						break;
+					default:
+					}
 				}
-				queryDefinition.getQueryTables().addQueryTable(new QueryTable(mySchemaName, myTableName, null, null));
-				break;
+				
 			case "VIEW": 
 				queryDefinition.setQueryType(new QueryTypeAlterView());
 				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
@@ -1170,6 +1241,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			default:		// It's an error. We don't know what we're creating
 				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): ALTER somthing is unidentified: " + alterType, true);
 			}
+			// Now process the table attributes that are being changed
+			
 		}
 	}
 	private void processFullColumnNameContext(MySqlParser.FullColumnNameContext ctx){

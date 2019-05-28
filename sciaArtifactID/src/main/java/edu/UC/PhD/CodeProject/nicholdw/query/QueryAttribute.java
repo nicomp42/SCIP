@@ -6,6 +6,8 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import java.util.UUID;
 
+import com.sun.org.apache.bcel.internal.generic.Select;
+
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
@@ -24,8 +26,32 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	private String tableAliasName;		// If the attribute as it appeared in the query referenced a table alias, we will store it here
 	private String expression;
 	private String ID;
+	private ATTRIBUTE_DISPOSITION attributeDisposition;
+	public enum ATTRIBUTE_DISPOSITION {Select, Add, Drop, Alter};
 	/**
 	 * Create a QueryAttribute object
+	 * Attribute Disposition defaults to Select
+	 * @param schemaName
+	 * @param tableName
+	 * @param attributeName
+	 * @param aliasName If you only have one alias for this QueryAttribute object
+	 * @param queryClause
+	 * @param attributeDisposition
+	 */
+	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
+		this.setTableName(tableName);
+		aliasNames = new AliasNamesOLD();
+		this.addAliasName (aliasName);
+		this.setSchemaName(schemaName);
+		this.setQueryClause(queryClause);
+		this.setAttributeName(attributeName);
+		ID = UUID.randomUUID().toString();
+		this.tableAliasName = tableAliasName;
+		this.setAttributeDisposition(attributeDisposition);
+	}
+	/**
+	 * Create a QueryAttribute object
+	 * Attribute Disposition defaults to Select
 	 * @param schemaName
 	 * @param tableName
 	 * @param attributeName
@@ -41,9 +67,12 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		this.setAttributeName(attributeName);
 		ID = UUID.randomUUID().toString();
 		this.tableAliasName = tableAliasName;
+		// Default the disposition to Select
+		this.setAttributeDisposition(ATTRIBUTE_DISPOSITION.Select);
 	}
 	/**
 	 * Create a new QueryAttribute object
+	 * Attribute Disposition defaults to Select
 	 * @param schemaName
 	 * @param tableName
 	 * @param attributeName
@@ -59,6 +88,8 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		this.setAttributeName(attributeName);
 		ID = UUID.randomUUID().toString();
 		this.tableAliasName = tableAliasName;
+		// Default the disposition to Select
+		this.setAttributeDisposition(ATTRIBUTE_DISPOSITION.Select);
 	}
 	public Boolean isConstant() {
 		// TODO: write this
@@ -219,5 +250,11 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	 */
 	public void setTableAliasName(String tableAliasName) {
 		this.tableAliasName = tableAliasName;
+	}
+	public ATTRIBUTE_DISPOSITION getAttributeDisposition() {
+		return attributeDisposition;
+	}
+	public void setAttributeDisposition(ATTRIBUTE_DISPOSITION attributeDisposition) {
+		this.attributeDisposition = attributeDisposition;
 	}
 }
