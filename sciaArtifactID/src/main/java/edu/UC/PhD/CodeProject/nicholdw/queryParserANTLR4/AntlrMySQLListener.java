@@ -1042,33 +1042,64 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	 * @param node
 	 */
 	private void processTerminalNodeDrop(TerminalNode node) {
-		int childIdx = 1;
 		if (firstVisit == true) {queryDefinition.setQueryType(new QueryTypeDrop()); firstVisit = false;}
-		String dropType = node.getParent().getChild(childIdx).getText().trim().toUpperCase();
-		if (dropType.trim().toUpperCase().equals("TEMPORARY")) {childIdx = 2; dropType = node.getParent().getChild(childIdx).getText().trim().toUpperCase();}
+		for (int i = 1; i < node.getParent().getChildCount(); i++) {
+			String dropType = node.getParent().getChild(i).getText().trim().toUpperCase();
+			ParseTree child = null;
+			switch (dropType) {
+				case "COLUMN": 
+					queryDefinition.setQueryType(new QueryTypeDropView());
+					Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): it's a " + queryDefinition.getQueryType().toString());
+					break;
+				case "TABLE": 
+					// The next child is TablesContext that will hold all the tables to be deleted
+					queryDefinition.setQueryType(new QueryTypeDropTable());
+					Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): it's a " + queryDefinition.getQueryType().toString());
+					i = i + 1;
+					child = node.getParent().getChild(i);
+					processTablesContext(queryDefinition, child, "processTerminalNodeDrop");
+					break;
+				case "VIEW": 
+					// A DROP VIEW parses differently than a DROP TABLE even though they are so similar.
+					queryDefinition.setQueryType(new QueryTypeDropView());
+					Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): it's a " + queryDefinition.getQueryType().toString());
+					i = i + 1;
+					for (int j = i; j < node.getParent().getChildCount(); j += 2) {
+						String mySchemaName = queryDefinition.getSchemaName();
+						String myTableName = "";
+						StringBuilder s = new StringBuilder();
+						StringBuilder t = new StringBuilder();
+						child = node.getParent().getChild(j);
+						processUidNameContext(s, t, child, "processTerminalNodeDrop");
+						mySchemaName = s.toString(); 
+						myTableName = t.toString();
+						queryDefinition.getQueryTables().addQueryTable(new QueryTable(mySchemaName, myTableName, null, null));
+					}
+					break;
+				default:		// It's an error. We don't know what we're dropping
+					Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): DROP something is unidentified: " + dropType, true);
+			}
+		}
+	}
+	/***
+	 * A list of tables separated by commas
+	 * @param myQueryDefinition The QueryDefinition object we are populating
+	 * @param child The ParseTree with the list of tables, comma separated
+	 * @param context A string used in debugging to describe who called this method 
+	 */
+	private void processTablesContext(QueryDefinition myQueryDefinition, ParseTree child, String context) {
 		String mySchemaName = queryDefinition.getSchemaName();
 		String myTableName = "";
-		switch (dropType) {
-			case "COLUMN": 
-				queryDefinition.setQueryType(new QueryTypeDropView());
-				Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): it's a " + queryDefinition.getQueryType().toString());
-				break;
-			case "TABLE": 
-				queryDefinition.setQueryType(new QueryTypeDropTable());
-				StringBuilder s = new StringBuilder().append(mySchemaName);
-				StringBuilder t = new StringBuilder();
-				processTableNameContext(s, t, node.getParent().getChild(childIdx), "processTerminalNodeDrop");
-				mySchemaName = s.toString(); 
-				myTableName = t.toString();
-				queryDefinition.getQueryTables().addQueryTable(new QueryTable(mySchemaName, myTableName, null, null));
-				Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): it's a " + queryDefinition.getQueryType().toString());
-				break;
-			case "VIEW": 
-				queryDefinition.setQueryType(new QueryTypeDropView());
-				Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): it's a " + queryDefinition.getQueryType().toString());
-				break;
-			default:		// It's an error. We don't know what we're dropping
-				Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): DROP something is unidentified: " + dropType, true);
+		StringBuilder s = null;
+		StringBuilder t = null;
+		for (int j = 0; j < child.getChildCount(); j += 2) {	// Skip the commas
+			s = new StringBuilder().append(mySchemaName);
+			t = new StringBuilder();
+			processTableNameContext(s, t, child.getChild(j), context);
+			mySchemaName = s.toString(); 
+			myTableName = t.toString();
+			myQueryDefinition.getQueryTables().addQueryTable(new QueryTable(mySchemaName, myTableName, null, null));
+			Log.logQueryParseProgress("AntlrMySQLListener." + context + ": it's a " + queryDefinition.getQueryType().toString());
 		}
 	}
 	private void processTerminalNodeCreate(TerminalNode node) {
@@ -1238,6 +1269,28 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			}
 			// Now process the table attributes that are being changed
 			
+		}
+	}
+	private void processUidNameContext(StringBuilder mySchemaName, StringBuilder myTableName, ParseTree child, String caller)
+	{
+//		String myClass = node.getParent().getChild(i).getChild(0).getClass().getName();
+		switch (child.getChildCount()) {
+		case 1:
+			// Just a table name
+			myTableName.append(child.getChild(0).getText());
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): table name = " + myTableName + ", schema name defaulted to " + mySchemaName);
+			break;
+		case 3:
+			// A schema name and a table name with a dot in between
+			mySchemaName.setLength(0);
+			mySchemaName.append(child.getChild(0).getText());
+			myTableName.setLength(0);
+			myTableName.append(child.getChild(2).getText());
+			Log.logQueryParseProgress("AntlrMySQLListener." + caller + ": table name = " + myTableName + ", schema name = " + mySchemaName);
+			break;
+		default:
+			Log.logError("ANTLRMySQLListener." + caller + "(): unexpected number of child nodes (" + child.getChildCount() + ")");
+			break;
 		}
 	}
 	private void processTableNameContext(StringBuilder mySchemaName, StringBuilder myTableName, ParseTree child, String caller)
