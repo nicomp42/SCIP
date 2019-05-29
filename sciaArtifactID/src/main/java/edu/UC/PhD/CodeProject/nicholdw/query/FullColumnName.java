@@ -44,9 +44,17 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		}
 		private String cleanUpArtifactName(String artifactName) {
 			String tmp = artifactName.trim();
+			if (tmp.startsWith(".")) {tmp = tmp.substring(1);}
 			if (tmp.length() != 0) {
-				if (tmp.trim().startsWith("`")) {
-					tmp = tmp.substring(1, artifactName.length() - 1);
+				if (tmp.startsWith("`") && tmp.endsWith("`")) {
+					tmp = tmp.substring(1);
+					tmp = tmp.substring(0, tmp.length() - 1);
+				}
+				if (tmp.startsWith("`")) {
+					tmp = tmp.substring(1);
+				}
+				if (tmp.endsWith("`")) {
+					tmp = tmp.substring(0, tmp.length() - 1);
 				}
 				if (tmp.startsWith(".")) {
 					tmp = tmp.substring(1);
