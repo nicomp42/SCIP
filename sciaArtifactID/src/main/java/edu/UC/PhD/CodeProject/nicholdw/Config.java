@@ -324,13 +324,24 @@ public class Config implements Serializable {
 		return result;
 	}
 	public boolean compareTableNames(String tableName1, String tableName2) {
+		String tmp1, tmp2;
+		if (tableName1.startsWith("`") && tableName1.endsWith("`")) { 
+			tmp1 = tableName1.substring(1, tableName1.length()-1);  
+		} else {
+			tmp1 = tableName1;  
+		}
+		if (tableName2.startsWith("`") && tableName2.endsWith("`")) { 
+			tmp2 = tableName2.substring(1, tableName2.length()-1);  
+		} else {
+			tmp2 = tableName2;  
+		}
 		boolean result = false;
 		if (Config.getConfig().getUseCaseSensitiveTableNameComparison() == true) {
-			if (tableName1.trim().equals(tableName2.trim())) {
+			if (tmp1.trim().equals(tmp2.trim())) {
 				result = true;
 			}
 		} else {
-			if (tableName1.trim().toLowerCase().equals(tableName2.trim().toLowerCase())) {
+			if (tmp1.trim().toLowerCase().equals(tmp2.trim().toLowerCase())) {
 				result = true;
 			}
 		}
@@ -340,12 +351,12 @@ public class Config implements Serializable {
 		boolean result = false;
 		String tmp1, tmp2;
 		if (attributeName1.startsWith("`") && attributeName1.endsWith("`")) { 
-			tmp1 = attributeName1.substring(1, attributeName1.length()-2);  
+			tmp1 = attributeName1.substring(1, attributeName1.length()-1);  
 		} else {
 			tmp1 = attributeName1;  
 		}
 		if (attributeName2.startsWith("`") && attributeName2.endsWith("`")) { 
-			tmp2 = attributeName2.substring(1, attributeName2.length()-2);  
+			tmp2 = attributeName2.substring(1, attributeName2.length()-1);  
 		} else {
 			tmp2 = attributeName2;  
 		}
@@ -362,12 +373,23 @@ public class Config implements Serializable {
 	}
 	public boolean compareSchemaNames(String schemaName1, String schemaName2) {
 		boolean result = false;
+		String tmp1, tmp2;
+		if (schemaName1.startsWith("`") && schemaName1.endsWith("`")) { 
+			tmp1 = schemaName1.substring(1, schemaName1.length()-1);  
+		} else {
+			tmp1 = schemaName1;  
+		}
+		if (schemaName2.startsWith("`") && schemaName2.endsWith("`")) { 
+			tmp2 = schemaName2.substring(1, schemaName2.length()-1);  
+		} else {
+			tmp2 = schemaName2;  
+		}
 		if (Config.getConfig().getUseCaseSensitiveSchemaNameComparison() == true) {
-			if (schemaName1.trim().equals(schemaName2.trim())) {
+			if (tmp1.trim().equals(tmp2.trim())) {
 				result = true;
 			}
 		} else {
-			if (schemaName1.trim().toLowerCase().equals(schemaName2.trim().toLowerCase())) {
+			if (tmp1.trim().toLowerCase().equals(tmp2.trim().toLowerCase())) {
 				result = true;
 			}
 		}
@@ -375,13 +397,24 @@ public class Config implements Serializable {
 	}
 	public boolean compareAliasNames(String aliasName1, String aliasName2) {
 		boolean result = false;
+		String tmp1, tmp2;
+		if (aliasName1.startsWith("`") && aliasName1.endsWith("`")) { 
+			tmp1 = aliasName1.substring(1, aliasName1.length()-1);  
+		} else {
+			tmp1 = aliasName1;  
+		}
+		if (aliasName2.startsWith("`") && aliasName2.endsWith("`")) { 
+			tmp2 = aliasName2.substring(1, aliasName2.length()-1);  
+		} else {
+			tmp2 = aliasName2;  
+		}
 		if (Config.getConfig().getUseCaseSensitiveAliasNameComparison() == true) {
-			if (aliasName1.equals(aliasName2)) {
+			if (tmp1.equals(tmp2)) {
 				result = true;
 			}
 		} else {
-			String a1 = aliasName1.toLowerCase().trim();
-			String a2 = aliasName2.toLowerCase().trim();
+			String a1 = tmp1.toLowerCase().trim();
+			String a2 = tmp2.toLowerCase().trim();
 			//System.out.println(a1 + "\n" + a2);
 			if (a1.equals(a2)) {
 				result = true;

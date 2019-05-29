@@ -200,9 +200,9 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	 */
 	public boolean equals(QueryAttribute queryAttribute) {
 		boolean result = false;
-		if (this.getAttributeName().equals(queryAttribute.getAttributeName()) && 
-			this.getTableName().equals(queryAttribute.getTableName()) && 
-			this.getSchemaName().equals(queryAttribute.getSchemaName())) {
+		if (Config.getConfig().compareAttributeNames(this.getAttributeName(), queryAttribute.getAttributeName()) && 
+			Config.getConfig().compareTableNames(this.getTableName(), queryAttribute.getTableName()) && 
+			Config.getConfig().compareSchemaNames(this.getSchemaName(), queryAttribute.getSchemaName())) {
 			result = true;
 		}
 		return result;
