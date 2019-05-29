@@ -13,6 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.OperationalSchemaQueries;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
+import edu.UC.PhD.CodeProject.nicholdw.exception.NotImplementedException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
@@ -86,7 +87,7 @@ public class QueryDefinition {
 	 * @param queryAttribute The Query Attribute in question
 	 * @return The data type
 	 */
-	public String getQueryAttributeType(QueryAttribute queryAttribute) {
+	public String getQueryAttributeDataType(QueryAttribute queryAttribute) {
 		String type = "";
 		try {
 			// Get the schema/table where the attribute resides
@@ -427,8 +428,9 @@ public class QueryDefinition {
 		if (noNestedQuerysFound == true) {setIsFinal(true);}	// No nested queries so this query definition is good to go.
 		return getNoNestedQuerys();
 	}
-	public void mergeQueryDefinitions(QueryDefinition qd) {
+	public void mergeQueryDefinitions(QueryDefinition qd) throws Exception {
 		Log.logProgress("QueryDefinition.mergeQueryDefinitions(): Merging " + this.getSchemaName() + "." + this.getQueryName() + " and " + qd.getSchemaName() + "." + qd.getQueryName());
+		throw new NotImplementedException("QueryDefinition/mergeQueryDefinition(): not implemented");
 	}
 	/**
 	 * Do everything to a Query Definition. All we need is a schema name, a query name, the SQL it contains, and login credentials

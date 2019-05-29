@@ -212,7 +212,7 @@ public class QueryDefinitionFileProcessing {
 				writer.append(",");
 				writer.append(queryAttribute.getSchemaName());
 				writer.append(",");
-				writer.append(qd.getQueryAttributeType(queryAttribute));
+				writer.append(qd.getQueryAttributeDataType(queryAttribute));
 //				writer.append(",");
 //				writer.append(queryAttribute.get.getTableName());
 				writer.append('\n');

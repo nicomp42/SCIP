@@ -338,12 +338,23 @@ public class Config implements Serializable {
 	}
 	public boolean compareAttributeNames(String attributeName1, String attributeName2) {
 		boolean result = false;
+		String tmp1, tmp2;
+		if (attributeName1.startsWith("`") && attributeName1.endsWith("`")) { 
+			tmp1 = attributeName1.substring(1, attributeName1.length()-2);  
+		} else {
+			tmp1 = attributeName1;  
+		}
+		if (attributeName2.startsWith("`") && attributeName2.endsWith("`")) { 
+			tmp2 = attributeName2.substring(1, attributeName2.length()-2);  
+		} else {
+			tmp2 = attributeName2;  
+		}
 		if (Config.getConfig().getUseCasesSensitiveAttributeNameComparison() == true) {
-			if (attributeName1.trim().equals(attributeName2.trim())) {
+			if (tmp1.trim().equals(tmp2.trim())) {
 				result = true;
 			}
 		} else {
-			if (attributeName1.trim().toLowerCase().equals(attributeName2.trim().toLowerCase())) {
+			if (tmp1.trim().toLowerCase().equals(tmp2.trim().toLowerCase())) {
 				result = true;
 			}
 		}

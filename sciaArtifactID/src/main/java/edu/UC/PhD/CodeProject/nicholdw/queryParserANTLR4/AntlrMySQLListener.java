@@ -1349,7 +1349,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 //		String foo = " " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop();
 		// Add to the list of columns that are referenced in this query
 		//String start = ctx.getStart().getText();
-		String stop = ctx.getStop().getText();
+//		String stop = ctx.getStop().getText();
 		MySqlParser.FullColumnNameContext fullColumnNameContext = (FullColumnNameContext) ctx.children.get(0);
 		FullColumnName fullColumnName = null;
 		switch (fullColumnNameContext.children.size()) {
