@@ -59,13 +59,13 @@ public class DatabaseGraphController {
 	@FXML void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {openBrowserWindow();}
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
-		Log.logProgress("SchemaTopologyController.Initialize() starting...");
+		Log.logProgress("DatabaseGraphController.Initialize() starting...");
 		try {
 			setTheScene();
 		} catch (Exception e) {
-			Log.logError("SchemaTopologyController.Initialize(): " + e.getLocalizedMessage());
+			Log.logError("DatabaseGraphController.Initialize(): " + e.getLocalizedMessage());
 		}
-		Log.logProgress("SchemaTopologyController.Initialize() complete");
+		Log.logProgress("DatabaseGraphController.Initialize() complete");
 	}
 	private void setTheScene() {
 		txtHostName.setText(Config.getConfig().getMySQLDefaultHostname());
@@ -109,7 +109,7 @@ public class DatabaseGraphController {
 		try {
 			// Schemas schemas = new Schemas();
 			ArrayList<String> schemaNames = Schemas.loadSchemaNamesFromDatabaseServer(hostName, loginName, password);
-//			java.net.URL imgURL = SchemaTopologyController.class.getClassLoader().getResource("images/Places-network-server-database-icon24px.png");
+//			java.net.URL imgURL = DatabaseGraphController.class.getClassLoader().getResource("images/Places-network-server-database-icon24px.png");
 //			Image icon  = new Image("../../images/Places-network-server-database-icon24px.png");
 			Node rootIcon = new ImageView(new Image(DatabaseGraphController.class.getClassLoader().getResourceAsStream("images/Places-network-server-database-icon24px.png")));
 			TreeItem<String> rootItem = new TreeItem<String>(hostName, rootIcon);
@@ -121,7 +121,7 @@ public class DatabaseGraphController {
 			}
 			tvSchemas.setRoot(rootItem);
 		} catch (Exception ex) {
-			Log.logError("SchemaTopologyController.loadTreeViewWithSchemaNamesAndQueries() : " + ex.getLocalizedMessage());
+			Log.logError("DatabaseGraphController.loadTreeViewWithSchemaNamesAndQueries() : " + ex.getLocalizedMessage());
 		}
 	}
 	@FXML
@@ -142,7 +142,7 @@ public class DatabaseGraphController {
 			showProcessSchemaControls(true);
 			taResults.setText("");
 		} catch (Exception ex) {
-			Log.logError("SchemaTopologyController.processSelectedQueryInTreeView() : " + ex.getLocalizedMessage());
+			Log.logError("DatabaseGraphController.processSelectedQueryInTreeView() : " + ex.getLocalizedMessage());
 		}
 	}
 	private void showProcessSchemaControls(Boolean visible) {
@@ -180,7 +180,7 @@ public class DatabaseGraphController {
 			 Task<Void> runnable = new Task<Void>() {		// https://docs.oracle.com/javafx/2/threads/jfxpub-threads.htm
 				 // This thread cannot write to JavaFX controls, even in the Debug window.
 				  public Void call() {
-					Log.logProgress("SchemaTopologyController.ProcessSchema(): entering local thread. ****************");
+					Log.logProgress("DatabaseGraphController.ProcessSchema(): entering local thread. ****************");
 //					try {Thread.sleep(2000);} catch (InterruptedException e) {}
 					Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 					Neo4jDB.getDriver();
@@ -195,16 +195,16 @@ public class DatabaseGraphController {
 							browser.initAndLoad(null);
 						}
 					} catch (Exception e) {
-						Log.logError("SchemaTopologyController.ProcessSchema() local thread: " + e.getLocalizedMessage());
+						Log.logError("DatabaseGraphController.ProcessSchema() local thread: " + e.getLocalizedMessage());
 					}
-					Log.logProgress("SchemaTopologyController.ProcessSchema(): exiting local thread");
+					Log.logProgress("DatabaseGraphController.ProcessSchema(): exiting local thread");
 					return null;
 				}
 			};
 			long startTime = System.currentTimeMillis();
 			// Here is the cleanup after the background thread completes.
 		    runnable.setOnSucceeded(e -> {
-				Log.logProgress("SchemaTopologyController.ProcessSchema(): local thread complete. ****************");
+				Log.logProgress("DatabaseGraphController.ProcessSchema(): local thread complete. ****************");
 		        final long endTime = System.currentTimeMillis();
 		        disableEverything(false);
 				displayWorkingMessage(false);
@@ -230,7 +230,7 @@ public class DatabaseGraphController {
 			    Thread thread = new Thread(runnable);
 			    thread.start();
 			} catch (Exception e) {
-				Log.logError("SchemaTopologyController.ProcessSchema(): " + e.getLocalizedMessage());
+				Log.logError("DatabaseGraphController.ProcessSchema(): " + e.getLocalizedMessage());
 			}
 		} else {
 			(new Alert(Alert.AlertType.ERROR, "Please enter an existing schema name or select one from the list", ButtonType.OK)).showAndWait();
@@ -272,7 +272,7 @@ public class DatabaseGraphController {
 		try {
 			apSchemaTopology.setDisable(status);
 		} catch (Exception e) {
-			Log.logError("SchemaTopologyController.enableEverything(): " + e.getLocalizedMessage());
+			Log.logError("DatabaseGraphController.enableEverything(): " + e.getLocalizedMessage());
 		}
 	}
 	/**

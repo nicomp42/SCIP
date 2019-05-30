@@ -274,7 +274,7 @@ public class Schema {
 		// Read the schema names from the mySQL server and populate the list
 		int count = 0;
 		try {
-			String sql = OperationalSchemaQueries.qTablesBySchemaName.replace("#", schemaName);
+			String sql = OperationalSchemaQueries.qTablesBySchemaName.replace("#", Utils.removeBackQuotes(schemaName));
 		    try {
 		    	java.sql.ResultSet resultSet = MySQL.loadResultSet(hostName, loginName, password, sql);
 				while (resultSet.next()) {
