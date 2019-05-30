@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import edu.UC.PhD.CodeProject.nicholdw.exception.DataTypeException;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 
 	/***
 	 * List of Table objects
@@ -47,6 +50,34 @@ import edu.UC.PhD.CodeProject.nicholdw.exception.DataTypeException;
 			    out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue().toString());
 			}
 		}
+		/***
+		 * Look up the table that originates the query attribute and set the AffectedByActionQuery flag to a value
+		 * @param queryAttribute The Query Attribute to look up
+		 * @param value true if affected by action query is true for this attribute
+		 */
+		public void setAffectedByActionQuery(QueryAttribute queryAttribute, Boolean value) {
+			Log.logProgress("Tables.setAffectedByActionQuery(): looking for " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName());
+			Boolean found = false;
+			for (Entry<String, Table> entry: tableHashMap.entrySet()) {
+				// Find the attribute in the table
+				for (Attribute qa : entry.getValue().getAttributes()) {
+					if (Config.getConfig().compareSchemaNames(entry.getValue().getSchemaName(), queryAttribute.getSchemaName()) && 
+						Config.getConfig().compareTableNames(entry.getValue().getTableName(),   queryAttribute.getTableName())) {
+						Attribute attribute;
+						attribute = entry.getValue().findAttribute(queryAttribute.getAttributeName());
+						if (attribute != null) {
+							attribute.setAffectedByActionQuery(value);
+							found = true;
+							break;
+						}
+					}
+				}
+			} 
+			if (!found) {
+				Log.logError("QueryTables.setAffectedByActionQuery(): can't find table " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName());
+			}
+		}		
+		
 /*
 		public static void main(String args[]) throws DataTypeException {
 			Tables tables = new Tables();

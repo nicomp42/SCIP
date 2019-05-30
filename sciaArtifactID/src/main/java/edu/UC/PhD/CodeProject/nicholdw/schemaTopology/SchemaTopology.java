@@ -102,9 +102,8 @@ public class SchemaTopology {
 					QueryDefinition actionQueryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), "myActionQuery", actionQuerySQL, schema.getSchemaName());
 					actionQueryDefinition.crunchIt();
 					applyActionQuery(actionQueryDefinition);
-				} else {
-					addNodesToGraph();
 				}
+				addNodesToGraph();
 			} else {
 				Log.logError("SchemaTopology.generateGraph(): subset of queries is not yet supported. Only 'all' queries can be processed");
 				throw new Exception ("SchemaTopology.generateGraph(): subset of queries is not yet supported. Only 'all' queries can be processed");		// TODO implement this.
@@ -120,16 +119,22 @@ public class SchemaTopology {
 	 * @param actionQueryDefinition The action query
 	 */
 	private void applyActionQuery(QueryDefinition actionQueryDefinition) {
+		Log.logProgress("SchemaTopology.ApplyActionQueryDefinition()");
 //		SchemaDiff schemaDiff = new SchemaDiff();
-		for (QueryDefinition qd: queryDefinitions) {
-			for (QueryAttribute qa : qd.getQueryAttributes()) {
-				if (actionQueryDefinition.getQueryAttributes().findAttribute(qa)) {
-					// The query attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
-					qa.setAffectedByActionQuery(true);
-					qd.getQueryTables().setAffectedByActionQuery(qa, true);
-					schemaTopologyResults.incrementTotalAffectedAttributes();
+		try {
+			for (QueryDefinition qd: queryDefinitions) {
+				for (QueryAttribute qa : qd.getQueryAttributes()) {
+					if (actionQueryDefinition.getQueryAttributes().findAttribute(qa)) {
+						// The query attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
+						qa.setAffectedByActionQuery(true);
+						qd.getQueryTables().setAffectedByActionQuery(qa, true);
+						schema.getTables().setAffectedByActionQuery(qa, true);
+						schemaTopologyResults.incrementTotalAffectedAttributes();
+					}
 				}
 			}
+		} catch (Exception ex) {
+			Log.logError("SchemaTopology.ApplyActionQueryDefinition(): " + ex.getLocalizedMessage());
 		}
 //		return schemaDiff;
 	}
@@ -209,8 +214,10 @@ public class SchemaTopology {
 			for (Attribute attribute: table.getAttributes()) {
 				schemaTopologyResults.incrementTotalAttributes();
 				String nodeLabel;
-				nodeLabel = affectedAttributeNodeLabel;
-				if (attribute.getAffectedByActionQuery() == true) {nodeLabel = attributeNodeLabel;}
+				nodeLabel = attributeNodeLabel;
+				if (attribute.getAffectedByActionQuery() == true) {
+					nodeLabel = affectedAttributeNodeLabel;
+				}
 				Neo4jDB.submitNeo4jQuery("CREATE (" + 
 						                 Utils.cleanForGraph(attribute.getAttributeName()) + 
 				                         ":" + 
@@ -242,8 +249,10 @@ public class SchemaTopology {
 			for (QueryAttribute queryAttribute: queryAttributes.values()) {
 				String neo4jQuery;
 				String nodeLabel;
-				nodeLabel = affectedAttributeNodeLabel;
-				if (queryAttribute.getAffectedByActionQuery() == true) {nodeLabel = attributeNodeLabel;}
+				nodeLabel = attributeNodeLabel;
+				if (queryAttribute.getAffectedByActionQuery() == true) {
+					nodeLabel = affectedAttributeNodeLabel;
+				}
 				neo4jQuery = "MATCH "
 				           + " (q:" + queryNodeLabel  + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()) + "'}), "
 			               + " (a:" + nodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName()) + "'}) "
