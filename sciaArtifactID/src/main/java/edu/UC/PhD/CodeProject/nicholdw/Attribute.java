@@ -38,6 +38,7 @@ public class Attribute {
 	private boolean isPrimaryKey;
 	protected String tableName;		// This is redundant if the attribute is contained in the Attributes collection contained in a table object.
 	private Aliases aliases;		// A table attribute won't have aliases but a query attribute will
+	private Boolean affectedByActionQuery;		// Defaults to false until an action query is applied to the query where this attribute lives
 	public boolean getAutoIncrement() {return autoIncrement;}
 	public void setAutoIncrement(boolean autoIncrement) {this.autoIncrement = autoIncrement;}
 	public int getLength() {return length;}
@@ -61,6 +62,7 @@ public class Attribute {
 		nullableCheck = enumNullableCheck.notCheckedYet;
 		setAutoIncrement(false);
 		aliases = new Aliases();
+		setAffectedByActionQuery(false);
 	}
 
 	/***
@@ -87,6 +89,7 @@ public class Attribute {
 		this.isPrimaryKey = isPrimaryKey;
 		this.tableName = tableName;
 		this.aliases = Aliases.clone(aliases);
+		setAffectedByActionQuery(false);
 	}
 	public boolean isTypeUnknown() {return type.equals(typeUnknown) ? true:false;}
 	public String getAttributeName() {return attributeName;}
@@ -175,5 +178,11 @@ public class Attribute {
 	}
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+	public Boolean getAffectedByActionQuery() {
+		return affectedByActionQuery;
+	}
+	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
+		this.affectedByActionQuery = affectedByActionQuery;
 	}
 }

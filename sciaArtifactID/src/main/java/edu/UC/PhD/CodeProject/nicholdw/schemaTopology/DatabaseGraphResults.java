@@ -10,22 +10,27 @@ public class DatabaseGraphResults {
 	private int totalTables;
 	private int totalAttributes;
 	private int totalQueryAttributes;
+	private int totalAffectedAttributes;
 
 	public void clearResults() {
 		totalQueries = 0;
 		totalTables = 0;
 		totalAttributes = 0;
 		totalQueryAttributes = 0;
+		totalAffectedAttributes = 0;
 	}
 	public int incrementTotalQueries() {totalQueries++; return totalQueries;}
 	public int incrementTotalTables() {totalTables++; return totalTables;}
 	public int incrementTotalAttributes() {totalAttributes++; return totalAttributes;}
 	public int incrementTotalQueryAttributes() {totalQueryAttributes++; return totalQueryAttributes;}
+	public int incrementTotalAffectedAttributes() {totalAffectedAttributes++; return totalAffectedAttributes;}
 
 	public String toString() {
 		String result = "undefined";
 		try {
-			result = "Results from graph generation: total queries = " + totalQueries + ", total tables = " + totalTables + ", total attributes = " + totalAttributes + ", total query attributes = " + totalQueryAttributes;
+			result = "Results from graph generation: total queries = " + totalQueries + ", total tables = " + totalTables 
+					+ ", total attributes = " + totalAttributes + ", total query attributes = " + totalQueryAttributes 
+					+ " total affected attributes = " + totalAffectedAttributes;
 		} catch (Exception ex) {}
 		return result;
 	}
@@ -37,4 +42,6 @@ public class DatabaseGraphResults {
 	public void setTotalAttributes(int totalAttributes) {this.totalAttributes = totalAttributes;}
 	public int getTotalQueryAttributes() {return totalQueryAttributes;}
 	public void setTotalQueryAttributes(int totalQueryAttributes) {this.totalQueryAttributes = totalQueryAttributes;}
+	public int getTotalAffectedAttributes() {return totalAffectedAttributes;}
+	public void setTotalAffectedAttributes(int totalAffectedAttributes) {this.totalAffectedAttributes = totalAffectedAttributes;}
 }

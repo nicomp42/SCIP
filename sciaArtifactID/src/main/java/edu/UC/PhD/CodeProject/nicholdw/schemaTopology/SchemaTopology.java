@@ -36,6 +36,7 @@ public class SchemaTopology {
 	private static final String queryNodeLabel = "Query";
 	public  static final String tableNodeLabel = "Table";
 	public  static final String attributeNodeLabel = "Attribute";
+	public  static final String affectedAttributeNodeLabel = "Affected_Attribute";
 	public  static final String etlFieldNodeLabel = "ETLField";
 	public  static final String tableToAttributeLabel = "contains_attribute";
 	private static final String queryToAttributeLabel = "references_attribute";
@@ -123,8 +124,10 @@ public class SchemaTopology {
 		for (QueryDefinition qd: queryDefinitions) {
 			for (QueryAttribute qa : qd.getQueryAttributes()) {
 				if (actionQueryDefinition.getQueryAttributes().findAttribute(qa)) {
-					// The query attribute is referenced in the action query. We need to note that somehow.
+					// The query attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
 					qa.setAffectedByActionQuery(true);
+					qd.getQueryTables().setAffectedByActionQuery(qa, true);
+					schemaTopologyResults.incrementTotalAffectedAttributes();
 				}
 			}
 		}
@@ -205,10 +208,13 @@ public class SchemaTopology {
 		for (Table table : tables) {
 			for (Attribute attribute: table.getAttributes()) {
 				schemaTopologyResults.incrementTotalAttributes();
+				String nodeLabel;
+				nodeLabel = affectedAttributeNodeLabel;
+				if (attribute.getAffectedByActionQuery() == true) {nodeLabel = attributeNodeLabel;}
 				Neo4jDB.submitNeo4jQuery("CREATE (" + 
 						                 Utils.cleanForGraph(attribute.getAttributeName()) + 
 				                         ":" + 
-				                         attributeNodeLabel + 
+				                         nodeLabel + 
 				                         " { key: " 
 				                         + "'" 
 				                         + Utils.cleanForGraph(schema.getSchemaName()) 
@@ -223,7 +229,7 @@ public class SchemaTopology {
 				// Add the relationship between the table and the attribute now because we have everything we need.
 				Neo4jDB.submitNeo4jQuery("MATCH (t:" + tableNodeLabel     
 						               + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "'}), "
-				                       + " (a:" + attributeNodeLabel 
+				                       + " (a:" + nodeLabel 
 				                       + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "." + Utils.cleanForGraph(attribute.getAttributeName()) + "'}) "
 						               + "CREATE (t)-[:" + tableToAttributeLabel +"]->(a)");
 			}
@@ -235,9 +241,12 @@ public class SchemaTopology {
 			// traverse queryAttributes and add a relation from the query to the attribute
 			for (QueryAttribute queryAttribute: queryAttributes.values()) {
 				String neo4jQuery;
+				String nodeLabel;
+				nodeLabel = affectedAttributeNodeLabel;
+				if (queryAttribute.getAffectedByActionQuery() == true) {nodeLabel = attributeNodeLabel;}
 				neo4jQuery = "MATCH "
 				           + " (q:" + queryNodeLabel  + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()) + "'}), "
-			               + " (a:" + attributeNodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName()) + "'}) "
+			               + " (a:" + nodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName()) + "'}) "
 					       + " CREATE (q)-[:" + queryToAttributeLabel +"]->(a)";
 				Neo4jDB.submitNeo4jQuery(neo4jQuery);
 				schemaTopologyResults.incrementTotalQueryAttributes();

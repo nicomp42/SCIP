@@ -6,7 +6,9 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.Attribute;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 	/***
@@ -24,7 +26,30 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		public QueryTables() {
 			queryTables = new ArrayList<QueryTable>();
 		}
-
+		/***
+		 * Look up the table that originates the query attribute and set the AffectedByActionQuery flag to a value
+		 * @param queryAttribute The Query Attribute to look up
+		 * @param value true if affected by action query is true for this attribute
+		 */
+		public void setAffectedByActionQuery(QueryAttribute queryAttribute, Boolean value) {
+			Log.logProgress("QueryTables.setAffectedByActionQuery(): looking for " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName());
+			QueryTable queryTable = lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getTableName());
+			if (queryTable != null) {
+				// Find the attribute in the table
+				for (Attribute qa : queryTable.getAttributes()) {
+					if (Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) && 
+						Config.getConfig().compareTableNames(queryTable.getTableName(),   queryAttribute.getTableName()) &&
+						Config.getConfig().compareAttributeNames(qa.getAttributeName(),   queryAttribute.getAttributeName())) {
+						qa.setAffectedByActionQuery(value);
+						break;
+					}
+				}
+			} else {
+				Log.logError("QueryTables.setAffectedByActionQuery(): can't find table " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName());
+			}
+		}
+		
+		
 		public QueryTable lookupBySchemaAndTable(String schemaName, String tableName) {
 			QueryTable queryTableResult = null;
 			Log.logProgress("QueryTables.lookUpBySchemaAndTable(): Looking for " + schemaName + "." + tableName);
