@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw;
 
 import java.io.BufferedReader;
@@ -14,7 +18,21 @@ import java.sql.ResultSet;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class Utils {
-
+	/***
+	 * Make the labels a little easier to read. Or not. 
+	 * @param text The text of the label
+	 * @return The cleaned up text, delimiters removed.
+	 */
+	public static String cleanForGraph(String text) {
+		return Utils.removeBackQuotes(text);
+/*		String result;
+		if (text.startsWith("`") && text.endsWith("`")) {
+			result = text.substring(1, text.length() - 2);
+		} else {
+			result = text;
+		}
+		return result; */
+	}
 	public static void copyDirectoryStructure(File source, File destination) {
 		if (source.isDirectory()) {
 			if (!destination.exists()) {

@@ -46,7 +46,7 @@ public class Config implements Serializable {
     public static synchronized Config getConfig() {
       if (config == null) {
         	config = new Config(); // If it's the first call, instantiate the object
-        } 
+        }
         return config;
     }
     /**
