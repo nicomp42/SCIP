@@ -62,7 +62,7 @@ public class Config implements Serializable {
 	 */
 	private Config() {
 	}
-	private final String version = "0.05";
+	private final String version = "0.06";
 	private final int mySQLDefaultPort = 3306;
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	private final Boolean useCaseSensitiveAttributeNameComparison = false;
