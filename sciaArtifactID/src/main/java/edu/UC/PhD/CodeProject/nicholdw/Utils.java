@@ -19,7 +19,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class Utils {
 	/***
-	 * Make the labels a little easier to read. Or not. 
+	 * Make the labels in a graph a little easier to read. Or not.
 	 * @param text The text of the label
 	 * @return The cleaned up text, delimiters removed.
 	 */

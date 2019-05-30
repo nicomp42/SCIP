@@ -13,6 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.OperationalSchemaQueries;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.exception.NotImplementedException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
@@ -218,7 +219,7 @@ public class QueryDefinition {
 				Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition(): " + ex.getLocalizedMessage());
 			}
 		} else {
-			String query = "SELECT view_definition FROM information_schema.VIEWS where table_schema = " +  MySQL.wrapStringInSingleQuotes(schemaName) + " AND table_name=" + MySQL.wrapStringInSingleQuotes(queryName);
+			String query = "SELECT view_definition FROM information_schema.VIEWS where table_schema = " +  MySQL.wrapStringInSingleQuotes(Utils.removeBackQuotes(schemaName)) + " AND table_name=" + MySQL.wrapStringInSingleQuotes(queryName);
 			java.sql.Connection connection = null;
 			try {
 				connection = new MySQL().connectToDatabase(hostName, schemaName, loginName, password);

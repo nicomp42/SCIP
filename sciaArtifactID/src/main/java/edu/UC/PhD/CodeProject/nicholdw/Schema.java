@@ -331,7 +331,7 @@ public class Schema {
 	public static ArrayList<String> readQueryNames(String hostName, String schemaName, String loginName, String password) {
 		ArrayList<String> queryNames = new ArrayList<String>();
 		try {
-			String sql = qQueriesBySchemaName.replace("#", schemaName);
+			String sql = qQueriesBySchemaName.replace("#", Utils.removeBackQuotes(schemaName));
 		    try {
 		    	java.sql.ResultSet resultSet = MySQL.loadResultSet(hostName, loginName, password, sql);
 				while (resultSet.next()) {

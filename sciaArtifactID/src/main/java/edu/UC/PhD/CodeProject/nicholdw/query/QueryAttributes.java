@@ -69,6 +69,23 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 		}
 		return result;
 	}
+	/***
+	 * Search for a query attribute by schema, table, and attribute name
+	 * @param queryAttribute The query attribute to search for
+	 * @return True if found
+	 */
+	public Boolean findAttribute(QueryAttribute queryAttribute) {
+		Boolean queryFound = false;
+		for (QueryAttribute qa : queryAttributes) {
+			if (Config.getConfig().compareSchemaNames(qa.getSchemaName(),       queryAttribute.getSchemaName()) &&
+				Config.getConfig().compareTableNames(qa.getTableName(),         queryAttribute.getTableName()) &&	
+				Config.getConfig().compareAttributeNames(qa.getAttributeName(), queryAttribute.getAttributeName())) {
+				queryFound = true;
+				break;
+			}
+		}
+		return queryFound;
+	}
 	/**
 	 * Find a QueryAttribute by AttributeName or AliasName
 	 * @param fcn The Full Column Name to match, taken from the query when it was parsed. This should *always* be enough to uniquely identify the attribute

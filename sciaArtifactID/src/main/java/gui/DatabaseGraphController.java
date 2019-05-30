@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import javafx.concurrent.Task;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schemas;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
@@ -53,8 +54,8 @@ public class DatabaseGraphController {
 	@FXML	private Button btnLoadSchemaNames, btnLoadSchema, btnProcessSchema, btnApplyFilter, btnAttributesInQueries, btnAttributesNotInQueries;
 //	@FXML	private ListView<String> lvTables, lvAttributes, lvSchemas;
 	@FXML	private TreeView<String> tvSchemas;
-	@FXML	private Label lblSchemaToProcess, lblContentsOfDatabaseHost, lblResults, lblWorking;
-	@FXML	private TextArea taResults;
+	@FXML	private Label lblSchemaToProcess, lblContentsOfDatabaseHost, lblResults, lblWorking, lblActionQuery;
+	@FXML	private TextArea taResults, taActionQuery;
 	@FXML	private CheckBox cbClearDB, cbIncludeSchemaNodes, cbOpenInBrowser, cbDisplayAttributes, cbDisplayTables, cbDisplayQuerys;
 	@FXML void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {openBrowserWindow();}
 	@FXML
@@ -152,6 +153,8 @@ public class DatabaseGraphController {
 		cbClearDB.setVisible(visible);
 		cbIncludeSchemaNodes.setVisible(visible);
 		cbOpenInBrowser.setVisible(visible);
+		taActionQuery.setVisible(visible);
+		lblActionQuery.setVisible(visible);
 	}
 	@FXML
 	private void btnAttributesNotInQueries_OnClick(ActionEvent event) throws InterruptedException {
@@ -189,7 +192,7 @@ public class DatabaseGraphController {
 					schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
 				    schemaTopology = new SchemaTopology(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), txtSchemaName.getText(), null);
 					try {
-						schemaTopologyResults = schemaTopology.generateGraph();
+						schemaTopologyResults = schemaTopology.generateGraph(taActionQuery.getText().trim());
 						if (cbOpenInBrowser.isSelected() ) {
 							Browser browser = Browser.prepareNewBrowser();
 							browser.initAndLoad(null);
@@ -271,6 +274,7 @@ public class DatabaseGraphController {
 	public void disableEverything(boolean status) {
 		try {
 			apSchemaTopology.setDisable(status);
+//			taActionQuery.setDisable(status);
 		} catch (Exception e) {
 			Log.logError("DatabaseGraphController.enableEverything(): " + e.getLocalizedMessage());
 		}

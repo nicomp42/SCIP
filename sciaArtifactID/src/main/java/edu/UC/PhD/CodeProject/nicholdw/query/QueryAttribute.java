@@ -26,6 +26,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	private String tableAliasName;		// If the attribute as it appeared in the query referenced a table alias, we will store it here
 	private String expression;
 	private String ID;
+	private Boolean affectedByActionQuery;		// Defaults to false until an action query is applied to the query where this attribute lives
 	private ATTRIBUTE_DISPOSITION attributeDisposition;
 	public enum ATTRIBUTE_DISPOSITION {Select, Add, Drop, Alter};
 	/**
@@ -48,6 +49,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		ID = UUID.randomUUID().toString();
 		this.tableAliasName = tableAliasName;
 		this.setAttributeDisposition(attributeDisposition);
+		affectedByActionQuery = false;
 	}
 	/**
 	 * Create a QueryAttribute object
@@ -69,6 +71,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		this.tableAliasName = tableAliasName;
 		// Default the disposition to Select
 		this.setAttributeDisposition(ATTRIBUTE_DISPOSITION.Select);
+		affectedByActionQuery = false;
 	}
 	/**
 	 * Create a new QueryAttribute object
@@ -90,6 +93,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		this.tableAliasName = tableAliasName;
 		// Default the disposition to Select
 		this.setAttributeDisposition(ATTRIBUTE_DISPOSITION.Select);
+		affectedByActionQuery = false;
 	}
 	public Boolean isConstant() {
 		// TODO: write this
@@ -256,5 +260,11 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	}
 	public void setAttributeDisposition(ATTRIBUTE_DISPOSITION attributeDisposition) {
 		this.attributeDisposition = attributeDisposition;
+	}
+	public Boolean getAffectedByActionQuery() {
+		return affectedByActionQuery;
+	}
+	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
+		this.affectedByActionQuery = affectedByActionQuery;
 	}
 }
