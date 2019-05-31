@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 // Be sure to care about this: https://superuser.com/questions/52157/how-do-i-get-excel-to-import-a-csv-file-with-commas-in-some-of-the-content-field
 // The Excel parser can't handle spaces after commas in the CSV file!
 
