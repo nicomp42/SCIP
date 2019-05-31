@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 // ":style reset" to reset the colors in an existing graph
 
 package gui;
