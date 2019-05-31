@@ -1,0 +1,10 @@
+ALTER TABLE `icecream`.`container` 
+CHANGE COLUMN `Container` `ContainerRenamed` VARCHAR(45) NULL DEFAULT NULL ;
+
+
+ALTER TABLE `testalter`.`ttestalter01` 
+CHANGE COLUMN `DoubleField` `DoubleFieldRenamed` DOUBLE NULL DEFAULT NULL ,
+CHANGE COLUMN `BitField` `BitFieldRenamed` BINARY(1) NULL DEFAULT NULL ;
+
+
+DROP TABLE `testalter`.`ttestalter01`
