@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class Utils {
+
 	/***
 	 * Make the labels in a graph a little easier to read. Or not.
 	 * @param text The text of the label
