@@ -53,7 +53,7 @@ public class DatabaseGraphController {
 	private Stage myStage;
 	SchemaTopology schemaTopology;
 	DatabaseGraphResults schemaTopologyResults;
-	@FXML	private Pane pneFilter, pneQuickGraphs;
+	@FXML	private Pane pneFilter, pneQuickGraphs, pneActionQuery;
 	@FXML	private AnchorPane apSchemaTopology;
 	@FXML	private TextField txtHostName, txtLoginName, txtPassword, txtSchemaName;
 	@FXML	private Button btnLoadSchemaNames, btnLoadSchema, btnProcessSchema, btnApplyFilter, btnAttributesInQueries, btnAttributesNotInQueries;
@@ -178,8 +178,9 @@ public class DatabaseGraphController {
 		cbClearDB.setVisible(visible);
 		cbIncludeSchemaNodes.setVisible(visible);
 		cbOpenInBrowser.setVisible(visible);
-		taActionQuery.setVisible(visible);
-		lblActionQuery.setVisible(visible);
+//		taActionQuery.setVisible(visible);
+//		lblActionQuery.setVisible(visible);
+		pneActionQuery.setVisible(visible);
 	}
 	@FXML
 	private void btnAttributesNotInQueries_OnClick(ActionEvent event) throws InterruptedException {
@@ -217,7 +218,7 @@ public class DatabaseGraphController {
 					schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
 				    schemaTopology = new SchemaTopology(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), txtSchemaName.getText(), null);
 					try {
-						schemaTopologyResults = schemaTopology.generateGraph(taActionQuery.getText().trim());
+						schemaTopologyResults = schemaTopology.generateGraph(taActionQuery.getText().trim(), taActionQueryFile.getText());
 						if (cbOpenInBrowser.isSelected() ) {
 							Browser browser = Browser.prepareNewBrowser();
 							browser.initAndLoad(null);

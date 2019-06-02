@@ -40,10 +40,11 @@ public class ActionQuerys implements Iterable<ActionQuery> {
 	 */
 	public int loadActionQueries(String filePath) {
 		int count = 0;
-		ClassLoader classLoader = ClassLoader.getSystemClassLoader(); 
-		File file = new File(classLoader.getResource(filePath).getFile());
+		File file = null;
 		BufferedReader br = null;
 		try {
+			//ClassLoader classLoader = ClassLoader.getSystemClassLoader(); 
+			file = new File(filePath);
 			br = new BufferedReader(new FileReader(file));
 			String line;
 			while ((line = br.readLine()) != null) {

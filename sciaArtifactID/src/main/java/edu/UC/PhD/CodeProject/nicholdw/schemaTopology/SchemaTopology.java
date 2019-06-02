@@ -6,6 +6,8 @@ package edu.UC.PhD.CodeProject.nicholdw.schemaTopology;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import edu.UC.PhD.CodeProject.nicholdw.ActionQuery;
+import edu.UC.PhD.CodeProject.nicholdw.ActionQuerys;
 import edu.UC.PhD.CodeProject.nicholdw.Attribute;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
@@ -63,7 +65,7 @@ public class SchemaTopology {
 		SchemaTopology schemaTopology = new SchemaTopology(schemaTopologyConfig, "localhost", "root", "Danger42", "schematopologytest", null);
 		try {
 			//SchemaTopologyResults schemaTopologyResults = new SchemaTopologyResults();
-			schemaTopology.generateGraph(null);
+			schemaTopology.generateGraph(null, null);
 		} catch (Exception e) {
 			Log.logError("SchemaTopology.main(): " + e.getLocalizedMessage());
 		}
@@ -87,7 +89,7 @@ public class SchemaTopology {
 		this.schemaTopologyResults = new DatabaseGraphResults();
 		schema = new Schema(schemaName);
 	}
-	public DatabaseGraphResults generateGraph(String actionQuerySQL) throws Exception {
+	public DatabaseGraphResults generateGraph(String actionQuerySQL, String actionQueryFile) throws Exception {
 		boolean status = true;		// Hope for the best
 		schema.loadTables(hostName, userName, password);			// Load the tables for the schema
 		Tables tables = schema.getTables();	// Get the list of loaded tables.
@@ -103,6 +105,16 @@ public class SchemaTopology {
 					actionQueryDefinition.crunchIt();
 					applyActionQuery(actionQueryDefinition);
 				}
+				if ((actionQueryFile != null) && (actionQueryFile.trim().length() > 0)) {
+					// Parse the action querys in the text file and apply them to the schema topology
+					ActionQuerys actionQuerys = new ActionQuerys();
+					actionQuerys.loadActionQueries(actionQueryFile);
+					for (ActionQuery ac : actionQuerys) {	// Yay Iterable interface!
+						QueryDefinition actionQueryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), "myActionQuery", ac.getSql(), schema.getSchemaName());
+						actionQueryDefinition.crunchIt();
+						applyActionQuery(actionQueryDefinition);
+					}
+				}				
 				addNodesToGraph();
 			} else {
 				Log.logError("SchemaTopology.generateGraph(): subset of queries is not yet supported. Only 'all' queries can be processed");
