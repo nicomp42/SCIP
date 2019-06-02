@@ -28,3 +28,24 @@ CREATE TABLE `actionquerytestcase`.`table03` (
   UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
 
 
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `actionquerytestcase`.`View01` AS
+    SELECT 
+        `actionquerytestcase`.`table01`.`stringField` AS `StringField`,
+        `actionquerytestcase`.`table01`.`floatField` AS `floatfield`
+    FROM
+        `actionquerytestcase`.`table01`
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `actionquerytestcase`.`view02` AS
+    SELECT 
+        `actionquerytestcase`.`table02`.`stringField` AS `StringField`,
+        `actionquerytestcase`.`table02`.`floatField` AS `floatfield`
+    FROM
+        `actionquerytestcase`.`table02`

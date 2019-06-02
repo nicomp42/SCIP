@@ -1,0 +1,3 @@
+ALTER TABLE `actionquerytestcase`.`table01` CHANGE COLUMN `stringField` `stringFieldRenamed` VARCHAR(45) NULL DEFAULT NULL ;
+
+DROP TABLE `actionquerytestcase`.`table02`

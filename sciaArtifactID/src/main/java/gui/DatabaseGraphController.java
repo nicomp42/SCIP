@@ -85,6 +85,8 @@ public class DatabaseGraphController {
 		showResultsControls(false);
 		displayWorkingMessage(false);
 		showFilters(false);
+		lblWorking.setVisible(false);
+		lblWorking.setDisable(false);
 	}
 	private void browseForActionQueryFile() {
 		try {
@@ -271,7 +273,7 @@ public class DatabaseGraphController {
 	 * @param status true to display the message, false otherwise.
 	 */
 	private void displayWorkingMessage(boolean status) {
-		lblWorking.setDisable(!status);
+//		lblWorking.setDisable(!status);
 		lblWorking.setVisible(status);
 	}
 	private void showResultsControls(boolean status) {

@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
+import edu.UC.PhD.CodeProject.nicholdw.Attribute;
 import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.OperationalSchemaQueries;
@@ -16,8 +17,10 @@ import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.exception.NotImplementedException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute.ATTRIBUTE_DISPOSITION;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import lib.MySQL;
 
@@ -448,8 +451,20 @@ public class QueryDefinition {
 		    processNestedQueries(this);
 			traverseQueryDefinitions(this);
 			reconcileAliases(this);
+			processSpecialtyQuerys(this);
 		} catch (Exception ex) {
 			Log.logError("QueryDefinition.crunchIt(): " + ex.getLocalizedMessage());
+		}
+	}
+	private static void processSpecialtyQuerys(QueryDefinition qd) {
+		if (qd.getQueryType() instanceof QueryTypeDropTable) {
+			// We need to load all the attributes into the query attribute collection from the table(s) we are dropping
+			for (QueryTable qt: qd.getQueryTables()) {
+				for (Attribute ta: qt.getAttributes()) {
+//					public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
+					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getTableName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
+				}
+			}
 		}
 	}
 	/***
