@@ -11,6 +11,9 @@
 
 package gui;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import javafx.concurrent.Task;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
@@ -41,6 +44,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class DatabaseGraphController {
@@ -52,12 +57,14 @@ public class DatabaseGraphController {
 	@FXML	private AnchorPane apSchemaTopology;
 	@FXML	private TextField txtHostName, txtLoginName, txtPassword, txtSchemaName;
 	@FXML	private Button btnLoadSchemaNames, btnLoadSchema, btnProcessSchema, btnApplyFilter, btnAttributesInQueries, btnAttributesNotInQueries;
-//	@FXML	private ListView<String> lvTables, lvAttributes, lvSchemas;
+	@FXML	private Button btnBrowseForActionQueryFile;
+	//	@FXML	private ListView<String> lvTables, lvAttributes, lvSchemas;
 	@FXML	private TreeView<String> tvSchemas;
 	@FXML	private Label lblSchemaToProcess, lblContentsOfDatabaseHost, lblResults, lblWorking, lblActionQuery;
-	@FXML	private TextArea taResults, taActionQuery;
+	@FXML	private TextArea taResults, taActionQuery, taActionQueryFile;
 	@FXML	private CheckBox cbClearDB, cbIncludeSchemaNodes, cbOpenInBrowser, cbDisplayAttributes, cbDisplayTables, cbDisplayQuerys;
-	@FXML void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {openBrowserWindow();}
+	@FXML	void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {openBrowserWindow();}
+	@FXML	void btnBrowseForActionQueryFile_OnClick(ActionEvent event) {browseForActionQueryFile();}
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("DatabaseGraphController.Initialize() starting...");
@@ -78,6 +85,24 @@ public class DatabaseGraphController {
 		showResultsControls(false);
 		displayWorkingMessage(false);
 		showFilters(false);
+	}
+	private void browseForActionQueryFile() {
+		try {
+		    //File resourcesDirectory = new File("src/test/resources");
+		    //resourcesDirectory.getAbsolutePath();
+			Path resourceDirectory = Paths.get("src","main","resources");
+			FileChooser fileChooser = new FileChooser();
+//			fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+			fileChooser.setInitialDirectory(new File(resourceDirectory.toString()));
+			fileChooser.setTitle("Select the file containing action queries");
+			Stage stage = (Stage) this.btnBrowseForActionQueryFile.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
+			File file = fileChooser.showOpenDialog(stage);
+			if (file != null) {
+				taActionQueryFile.setText(file.getAbsolutePath());
+			}		
+		} catch (Exception ex) {
+			Log.logError("DatabaseGraphController.browseForActionQueryFile(): " + ex.getLocalizedMessage() );
+		}
 	}
 	private void showArtifacts(boolean status) {
 
