@@ -11,6 +11,7 @@ import org.Antlr4MySQLFromANTLRRepo.MySqlParser.FullColumnNameContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.FullIdContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByClauseContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
+import org.Antlr4MySQLFromANTLRRepo.MySqlParser.RenameTableClauseContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.SelectColumnElementContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.TableNameContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.UidContext;
@@ -959,10 +960,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	public void processTerminalNodeRename(ParseTree ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeRename(): RENAME statement qualifier: " + ctx.toString());
 		try {
-			if (ctx.getChild(1).toString().equals("TABLE")) {
+			if (ctx.getParent().getChild(1).toString().equals("TABLE")) {
 				queryDefinition.setQueryType(new QueryTypeRenameTable());
 				// Grab up the table name being renamed and add it to the table list
-				processRenameTableClauseContext((MySqlParser.RenameTableClauseContext)ctx.getChild(2));
+				processRenameTableClauseContext(ctx.getParent().getChild(2));
 			}
 		} catch (Exception ex) {
 			Log.logError("AntlrMySQLListener.processTerminalNodeRename(): " + ex.getLocalizedMessage());

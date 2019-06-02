@@ -50,7 +50,7 @@ public class QueryDefinition {
 	private QueryVariables queryVariables;
 	private QueryTerminalSymbols queryTerminalSymbols;
 	private Stack<Boolean> wildcards;		// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html 
-	
+
 	public QueryDefinition(String hostName, String loginName, String password, QueryType queryType, 
 			               String queryName, String sql, String schemaName) {
 		setQueryType(queryType);
@@ -491,7 +491,6 @@ public class QueryDefinition {
 			reconcileAliases(queryDefinition);
 		}
 	}
-	
 	/**
 	 * Eventually this method should find that all query definitions are either without children or are marked final
 	 * @param queryDefinition
@@ -536,7 +535,7 @@ public class QueryDefinition {
 						// If this is a table, we're done. If it's not a table, it's a query and we need to find that query in the children collection for this Query Definition
 						queryTableProvenance = null;
 						queryAttributeProvenance = null;
-	
+
 						Log.logProgress("QueryDefinition.buildProvenance(): found next table = " + qt.getSchemaName() + "." + qt.getTableName());
 						queryTableProvenance = new QueryTable(qdTmp.getSchemaName(), qdTmp.getQueryName(), new AliasNameClassOLD(""), null);
 						queryAttributeProvenance = qdTmp.getQueryAttributes().findAttribute(currentFCN);
@@ -584,7 +583,6 @@ public class QueryDefinition {
 		}	// while(keepGoing)
 		return queryTablesProvenance;
 	}
-
 	public HashMap<String, Schema>  getUniqueSchemaNames() {
 		// A 'set' is maintained as a collection of unique items
 		HashMap<String, Schema> schemaNames = new HashMap<String, Schema>();
@@ -599,7 +597,6 @@ public class QueryDefinition {
 		}
 		Log.logProgress("QueryDefinition.traverseForUniqueSchemsNames(): finished ");
 	}
-
 	/***
 	 * Unique = SchemaName.TableName
 	 * @return The list of unique SchemaName.TableName entries
@@ -621,7 +618,6 @@ public class QueryDefinition {
 		}
 		Log.logProgress("QueryDefinition.traverseForUniqueTableNames(): finished ");
 	}
-
 	public HashMap<String, QueryAttribute> getUniqueQueryAttributes() {
 		// A 'set' is maintained as a collection of unique items
 		HashMap<String, QueryAttribute> queryAttributes = new HashMap<String, QueryAttribute>();
