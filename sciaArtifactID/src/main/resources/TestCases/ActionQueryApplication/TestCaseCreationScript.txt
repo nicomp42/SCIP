@@ -1,0 +1,30 @@
+CREATE TABLE `actionquerytestcase`.`table01` (
+  `Table01ID` INT NOT NULL AUTO_INCREMENT,
+  `stringField` VARCHAR(45) NULL,
+  `doubleField` DOUBLE NULL,
+  `floatField` FLOAT NULL,
+  `bitField` BIT NULL,
+  PRIMARY KEY (`Table01ID`),
+  UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
+
+
+CREATE TABLE `actionquerytestcase`.`table02` (
+  `Table01ID` INT NOT NULL AUTO_INCREMENT,
+  `stringField` VARCHAR(45) NULL,
+  `doubleField` DOUBLE NULL,
+  `floatField` FLOAT NULL,
+  `bitField` BIT NULL,
+  PRIMARY KEY (`Table01ID`),
+  UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
+
+
+CREATE TABLE `actionquerytestcase`.`table03` (
+  `Table01ID` INT NOT NULL AUTO_INCREMENT,
+  `stringField` VARCHAR(45) NULL,
+  `doubleField` DOUBLE NULL,
+  `floatField` FLOAT NULL,
+  `bitField` BIT NULL,
+  PRIMARY KEY (`Table01ID`),
+  UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
+
+
