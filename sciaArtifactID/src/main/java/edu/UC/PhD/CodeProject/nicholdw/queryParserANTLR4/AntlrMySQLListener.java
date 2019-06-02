@@ -48,6 +48,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDrop;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropView;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeRenameTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.query.FullColumnName;
@@ -385,7 +386,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitGrantStatement(MySqlParser.GrantStatementContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGrantStatement()");}
 	@Override public void enterGrantProxy(MySqlParser.GrantProxyContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterGrantProxy()");}
 	@Override public void exitGrantProxy(MySqlParser.GrantProxyContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitGrantProxy()");}
-	@Override public void enterRenameUser(MySqlParser.RenameUserContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRenameUser()");}
+	@Override public void enterRenameUser(MySqlParser.RenameUserContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterQueryTypeRenameTableUser()");}
 	@Override public void exitRenameUser(MySqlParser.RenameUserContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRenameUser()");}
 	@Override public void enterDetailRevoke(MySqlParser.DetailRevokeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDetailRevoke()");}
 	@Override public void exitDetailRevoke(MySqlParser.DetailRevokeContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDetailRevoke()");}
@@ -427,7 +428,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitDefiniteFullTablePrivLevel(MySqlParser.DefiniteFullTablePrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDefiniteFullTablePrivLevel()");}
 	@Override public void enterDefiniteTablePrivLevel(MySqlParser.DefiniteTablePrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterDefiniteTablePrivLevel()");}
 	@Override public void exitDefiniteTablePrivLevel(MySqlParser.DefiniteTablePrivLevelContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitDefiniteTablePrivLevel()");}
-	@Override public void enterRenameUserClause(MySqlParser.RenameUserClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterRenameUserClause()");}
+	@Override public void enterRenameUserClause(MySqlParser.RenameUserClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterUserClause()");}
 	@Override public void exitRenameUserClause(MySqlParser.RenameUserClauseContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitRenameUserClause()");}
 	@Override public void enterAnalyzeTable(MySqlParser.AnalyzeTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.enterAnalyzeTable()");}
 	@Override public void exitAnalyzeTable(MySqlParser.AnalyzeTableContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitAnalyzeTable()");}
@@ -558,6 +559,17 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		try {
 			Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " Parent Context = " + ctx.getParent().getClass());
 			FullIdContext fullIdContext = (FullIdContext)ctx.getChild(0);
+			processFullIdContext(fullIdContext);
+		} catch (Exception ex) {
+			Log.logError("AntlrMySQLListener.enterTableName(): " + ex.getLocalizedMessage());
+		}
+	}
+	/***
+	 * We have a table name that may or may not have a schema appended to it
+	 * @param fullIdContext
+	 */
+	public void processFullIdContext(FullIdContext fullIdContext) {
+		try {
 			switch (fullIdContext.getChildCount()) {
 			case 1:
 				// Just the table name, no schema
@@ -572,10 +584,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				fullTableNames.add(new FullTableName(fullIdContext.getChild(0).getText(), fullIdContext.getChild(2).getText(), "")); 
 				break;
 			default:
-				Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): too many children found");
+				Log.logQueryParseProgress("processFullIdContext.enterTableName(): too many children found");
 			}
 		} catch (Exception ex) {
-			Log.logError("AntlrMySQLListener.enterTableName(): " + ex.getLocalizedMessage());
+			Log.logError("AntlrMySQLListener.processFullIdContext(): " + ex.getLocalizedMessage());
 		}
 	}
 	@Override public void exitTableName(MySqlParser.TableNameContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitTableName()");}
@@ -868,6 +880,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			queryDefinition.getQueryTerminalSymbols().addQueryTerminalSymbol(new QueryTerminalSymbol(node.getText()));
 		} catch (Exception ex) {}		// Eat the exception? ToDo check this.
 		switch (node.getText().toUpperCase()) {
+		case "RENAME":
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): found RENAME");
+			processTerminalNodeRename(node);
+			break;
 		case "ALTER":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): found ALTER");
 			processTerminalNodeAlter(node);
@@ -936,6 +952,26 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			lastTerminalNode = "UNKNOWN";
 		}
 	}
+	/***
+	 * The SQL begins with RENAME
+	 * @param ctx
+	 */
+	public void processTerminalNodeRename(ParseTree ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeRename(): RENAME statement qualifier: " + ctx.toString());
+		try {
+			if (ctx.getChild(1).toString().equals("TABLE")) {
+				queryDefinition.setQueryType(new QueryTypeRenameTable());
+				// Grab up the table name being renamed and add it to the table list
+				processRenameTableClauseContext((MySqlParser.RenameTableClauseContext)ctx.getChild(2));
+			}
+		} catch (Exception ex) {
+			Log.logError("AntlrMySQLListener.processTerminalNodeRename(): " + ex.getLocalizedMessage());
+		}
+	}
+	public void processRenameTableClauseContext(ParseTree ctx) {
+		FullIdContext fullIdContext = (FullIdContext)ctx.getChild(0);
+		processFullIdContext(fullIdContext);
+	}
 	@Override public void visitErrorNode(ErrorNode node) {Log.logQueryParseProgress("AntlrMySQLListener.visitErrorNode()");}
 
 //	@Override public void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
@@ -983,7 +1019,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				fullTableName.setSchemaName(tableNameContext.getChild(0).getChild(0).getText()); 
 				fullTableName.setTableName(tableNameContext.getChild(0).getChild(2).getText()); 
 				break;
-
 			default:
 				Log.logQueryParseProgress("AntlrMySQLListener.enterAtomTableItem(): too many children found in TableNameContext object (" + tableNameContext.getChildCount() + ")");
 			}

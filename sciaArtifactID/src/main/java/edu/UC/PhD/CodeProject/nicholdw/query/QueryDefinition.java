@@ -21,6 +21,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute.ATTRIBUTE_DISPOSITIO
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeRenameTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import lib.MySQL;
 
@@ -459,6 +460,15 @@ public class QueryDefinition {
 	private static void processSpecialtyQuerys(QueryDefinition qd) {
 		if (qd.getQueryType() instanceof QueryTypeDropTable) {
 			// We need to load all the attributes into the query attribute collection from the table(s) we are dropping
+			for (QueryTable qt: qd.getQueryTables()) {
+				for (Attribute ta: qt.getAttributes()) {
+//					public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
+					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getTableName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
+				}
+			}
+		}
+		if (qd.getQueryType() instanceof QueryTypeRenameTable) {
+			// We need to load all the attributes into the query attribute collection from the table(s) we are renaming
 			for (QueryTable qt: qd.getQueryTables()) {
 				for (Attribute ta: qt.getAttributes()) {
 //					public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
