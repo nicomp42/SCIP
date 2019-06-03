@@ -2,4 +2,4 @@ ALTER TABLE `actionquerytestcase`.`table01` CHANGE COLUMN `stringField` `stringF
 
 DROP TABLE `actionquerytestcase`.`table02`
 
-RENAME TABLE TABLE03A to TABLE03
+RENAME TABLE TABLE03 to TABLE03A

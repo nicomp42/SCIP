@@ -49,3 +49,13 @@ VIEW `actionquerytestcase`.`view02` AS
         `actionquerytestcase`.`table02`.`floatField` AS `floatfield`
     FROM
         `actionquerytestcase`.`table02`
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `actionquerytestcase`.`view03` AS
+    SELECT 
+        `actionquerytestcase`.`table03`.`stringField` AS `StringField`
+    FROM
+        `actionquerytestcase`.`table03`
