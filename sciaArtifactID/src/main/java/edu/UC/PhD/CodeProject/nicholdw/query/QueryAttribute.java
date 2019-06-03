@@ -129,7 +129,7 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	public Boolean hasAliasName(String aliasNameTarget) {
 		Boolean result = false;
 		for (AliasNameClassOLD aliasName: aliasNames) {
-			if (aliasName.equals(aliasNameTarget)) {
+			if (Config.getConfig().compareAliasNames(aliasName.getAliasName(), aliasNameTarget)) {
 				result = true;
 				break;
 			}

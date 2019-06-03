@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class QueryAttributes implements Iterable<QueryAttribute> {
@@ -95,8 +96,8 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 		QueryAttribute result = null;
 		Boolean matchFound = false, needTableMatch = false, needSchemaMatch = false;;
 		try {
-			if (fcn.getSchemaName().trim().length() == 0) { needSchemaMatch = true;}
-			if (fcn.getTableName().trim().length() == 0) { needTableMatch = true;}
+			if (Utils.removeBackQuotes(fcn.getSchemaName()).trim().length() == 0) { needSchemaMatch = true;}
+			if (Utils.removeBackQuotes(fcn.getTableName()).trim().length() == 0) { needTableMatch = true;}
 			
 				// If there's no table name then the attribute name must be sufficient to uniquely identify the attribute
 				for (QueryAttribute queryAttribute : queryAttributes) {

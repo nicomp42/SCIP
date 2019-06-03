@@ -223,7 +223,7 @@ public class QueryDefinition {
 				Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition(): " + ex.getLocalizedMessage());
 			}
 		} else {
-			String query = "SELECT view_definition FROM information_schema.VIEWS where table_schema = " +  MySQL.wrapStringInSingleQuotes(Utils.removeBackQuotes(schemaName)) + " AND table_name=" + MySQL.wrapStringInSingleQuotes(queryName);
+			String query = "SELECT view_definition FROM information_schema.VIEWS where table_schema = " +  MySQL.wrapStringInSingleQuotes(Utils.removeBackQuotes(schemaName)) + " AND table_name=" + MySQL.wrapStringInSingleQuotes(Utils.removeBackQuotes(queryName));
 			java.sql.Connection connection = null;
 			try {
 				connection = new MySQL().connectToDatabase(hostName, schemaName, loginName, password);
@@ -366,7 +366,7 @@ public class QueryDefinition {
 	private static Boolean isItAQuery(String schemaName, String queryName, QueryDefinition qd) {
 	    java.sql.ResultSet resultSet = null;
 		Boolean result = false;			// Assume it's not a query
-		String sql = OperationalSchemaQueries.qQuerybyQueryNameAndSchema.replace("#s", schemaName).replace("#t", queryName);
+		String sql = OperationalSchemaQueries.qQuerybyQueryNameAndSchema.replace("#s", Utils.removeBackQuotes(schemaName)).replace("#t", Utils.removeBackQuotes(queryName));
     	try {
 			resultSet = MySQL.loadResultSet(qd.getHostName(), qd.getloginName(), qd.getPassword(), sql);
 			if (resultSet.first() == true) {result = true;}

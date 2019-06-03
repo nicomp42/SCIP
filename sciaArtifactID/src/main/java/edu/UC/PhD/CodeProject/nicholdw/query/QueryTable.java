@@ -53,7 +53,9 @@ public class QueryTable extends Table {
 	public void setQueryClause(QueryClause queryClause) {this.queryClause = queryClause;}
 	public String toString() {return schemaName + ":" + tableName + ((aliasNames.toString().trim().length() > 0) ? " AS " + aliasNames.toString(): "");}
 	public Boolean getIsQuery() {return isQuery;}
-	public void setIsQuery(Boolean isQuery) {this.isQuery = isQuery;}
+	public void setIsQuery(Boolean isQuery) {
+		this.isQuery = isQuery;
+	}
 	public Boolean getIsProcessed() {return isProcessed;}
 	public void setIsProcessed(Boolean isProcessed) {this.isProcessed = isProcessed;}
 

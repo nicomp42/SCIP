@@ -50,7 +50,8 @@ public class Browser {
 	}
 	// Do everything necessary to open browser window, log in, and display the entire graph.
 	public void initAndLoad(String cypherStatement) {
-		Log.logProgress("Browser.initAndLoad(): " + cypherStatement);
+		Log.logProgress("Browser.initAndLoad(" + cypherStatement + ")" 
+	                  + ((cypherStatement == null || cypherStatement.trim().length() == 0) ? " (no cypher statement provided, that's OK)":""));
 		initBrowser();
 		browseToNeo4j();
 		loginToNeo4j();
