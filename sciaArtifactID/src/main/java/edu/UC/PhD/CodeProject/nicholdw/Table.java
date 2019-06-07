@@ -269,6 +269,9 @@ public class Table {
 		return result;
 	}
 	private static int extractLength(String dataType) {
+/*		if (dataType.equals("RawContig")) {
+			Log.logError("RawContig");
+		}*/
 		// float(2,2) means "use two digits, of which two are used after the decimal point". 
 		int length = -1;
 		try {
@@ -290,7 +293,7 @@ public class Table {
 				}
 			}
 		} catch (Exception ex) {
-			Log.logError("Table.extractLength(): " + ex.getLocalizedMessage());
+			Log.logError("Table.extractLength(): dataType = " + dataType +", " + ex.getLocalizedMessage());
 		}
 		return length;
 	}
