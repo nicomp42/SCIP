@@ -39,7 +39,8 @@ public class QueryAttribute extends QueryComponent implements Name  {
 	 * @param queryClause
 	 * @param attributeDisposition
 	 */
-	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
+	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, 
+			              QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
 		this.setTableName(tableName);
 		aliasNames = new AliasNamesOLD();
 		this.addAliasName (aliasName);

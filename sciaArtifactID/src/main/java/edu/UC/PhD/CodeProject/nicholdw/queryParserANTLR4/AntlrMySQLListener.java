@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import edu.UC.PhD.CodeProject.nicholdw.Attribute;
 import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
@@ -83,7 +84,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		queryDefinition.setQueryType(new QueryTypeUnknown());
 		lastTerminalNode = "";
 		firstVisit = true;
-		queryDefinition.initWildcards();
 	}
 	private void printTerminalNodes(List<TerminalNode> tns) {
 		for (TerminalNode tn : tns) {
@@ -118,19 +118,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void exitSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
-		try {
-			boolean b;
-			b = queryDefinition.popWildcardFlag();
-			{
-				if (b) {
-					// we need all the attributes in all the tables in this select statement
-					for (QueryTable qt: queryDefinition.getQueryTables()) {
-						Attributes as = new Attributes();
-						as = Table.readAttributesFromTableDefinition(qt.getSchemaName(), qt.getTableName());
-					}
-				}
-			}
-		} catch (Exception ex) {}
 	}
 	@Override public void enterSelectElements(MySqlParser.SelectElementsContext ctx) {
 		
@@ -141,7 +128,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logQueryParseProgress("AntlrMySQLListener.enterSelectElements: it's a star!");
 			isAsterisk = true;
 		}
-		queryDefinition.pushWildcardFlag(isAsterisk);
+		queryDefinition.setSelectIsWildcard(isAsterisk);
 	}
 	@Override public void exitSelectElements(MySqlParser.SelectElementsContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectElements: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());

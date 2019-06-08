@@ -5,9 +5,14 @@
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute.ATTRIBUTE_DISPOSITION;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryClause;
+import java.util.Iterator;
+import edu.UC.PhD.CodeProject.nicholdw.Attribute;
+import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
@@ -27,6 +32,13 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 	 */
 	public ArrayList<QueryAttribute> getAttributes (){return queryAttributes;}
 	public QueryAttribute getQueryAttribute(int i) {return queryAttributes.get(i);}
+	
+	public void addTableAttributes(String schemaName, Attributes attributes) {
+		for (Attribute a: attributes) {
+			addAttribute(new QueryAttribute(schemaName, a.getTableName(), a.getAttributeName(), 
+					     (AliasNameClassOLD)null, new QueryClauseSelect(), "", ATTRIBUTE_DISPOSITION.Select));
+		}
+	}
 
 	public void addAttribute(QueryAttribute queryAttribute) {
 		// Don't allow duplicates in the attribute collection

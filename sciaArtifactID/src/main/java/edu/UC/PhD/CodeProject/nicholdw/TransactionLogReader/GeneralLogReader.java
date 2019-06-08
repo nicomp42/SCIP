@@ -90,8 +90,9 @@ public class GeneralLogReader {
 		String currentSchemaName = "";
 		try {
 			SQLUtils.executeActionQuery(connection, "DELETE FROM `seq-am`.tArtifact WHERE ProjectID = " + projectID + ";");		// Clear any artifacts already captured for this project
-
-			java.sql.PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `seq-am`.tadhocquery WHERE ProjectID = " + projectID + " ORDER BY DateTimeStamp ASC");
+			// Be sure to read by adhocqueryID so the records are in physical order. The time stamp doesn't have sufficient resolution
+			String selectSQL = "SELECT * FROM `seq-am`.tadhocquery WHERE ProjectID = " + projectID + " ORDER BY adhocqueryID ASC";
+			java.sql.PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
 			java.sql.ResultSet resultSet = preparedStatement.executeQuery();
 			while(resultSet.next()) {
 				String sql;

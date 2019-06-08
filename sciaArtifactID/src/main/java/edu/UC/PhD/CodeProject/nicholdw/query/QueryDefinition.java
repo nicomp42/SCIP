@@ -14,6 +14,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.OperationalSchemaQueries;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
+import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.exception.NotImplementedException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -49,8 +50,9 @@ public class QueryDefinition {
 	private QueryFunctions queryFunctions;
 	private QueryVariables queryVariables;
 	private QueryTerminalSymbols queryTerminalSymbols;
-	private Stack<Boolean> wildcards;		// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html 
-
+	// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html
+	// However, a wildcard can appear in an ad-hoc query that shows up in the transaction log!
+	private Boolean selectIsWildcard;		 
 	public QueryDefinition(String hostName, String loginName, String password, QueryType queryType, 
 			               String queryName, String sql, String schemaName) {
 		setQueryType(queryType);
@@ -70,11 +72,11 @@ public class QueryDefinition {
 		setQueryFunctions(new QueryFunctions());
 		setQueryVariables(new QueryVariables());
 		setQueryTerminalSymbols(new QueryTerminalSymbols());		
-		setWildcards(new Stack<Boolean>());
+		setSelectIsWildcard(false);
 	}
-	public void initWildcards() {wildcards = new Stack<Boolean>();}
-	public void pushWildcardFlag(Boolean isAsterisk) {wildcards.push(isAsterisk);}
-	public Boolean popWildcardFlag() {return wildcards.pop();}
+//	public void initWildcards() {selectIsWildcard = false;}
+//	public void pushWildcardFlag(Boolean isAsterisk) {wildcards.push(isAsterisk);}
+//	public Boolean popWildcardFlag() {return wildcards.pop();}
 	public CompoundAliases getCompoundAliases() {return compoundAliases;}
 	public void setCompoundAliases(CompoundAliases compoundAliases) {this.compoundAliases = compoundAliases;}
 	/*
@@ -264,6 +266,23 @@ public class QueryDefinition {
 		// 2. A table but no schema, or
 		// 3. A table and a schema.
 		Log.logProgress("QueryDefinition.reconcileAttributes(): processing the query " + this.getSchemaName() + "." + this.getQueryName());
+		try {
+			Log.logProgress("QueryDefinition.reconcileAttributes(): Checking for wildcard in attribute list " + this.getSchemaName() + "." + this.getQueryName());
+			boolean b;
+			b = this.getSelectIsWildcard();
+			if (b) {
+				Log.logProgress("QueryDefinition.reconcileAttributes(): Wildcard found");
+				// we need all the attributes in all the tables in this select statement
+				for (QueryTable qt: this.getQueryTables()) {
+					Attributes as = new Attributes();
+					Log.logProgress("QueryDefinition.reconcileAttributes(): Wildcard found, copying attributes from " + qt.getSchemaName() + "." + qt.getTableName());
+					as = Table.readAttributesFromTableDefinition(qt.getSchemaName(), qt.getTableName());
+					this.getQueryAttributes().addTableAttributes(qt.getSchemaName(), as);
+				}
+			}
+		} catch (Exception ex) {
+			Log.logError("QueryDefinition.reconcileAttributes(): " + ex.getLocalizedMessage());
+		}
 		try {
 			// Make sure every query attribute has a table/query that it belongs to
 			for (QueryAttribute qa : this.getQueryAttributes()) {
@@ -690,10 +709,16 @@ public class QueryDefinition {
 		return queryTerminalSymbols;
 	}
 	public void setQueryTerminalSymbols(QueryTerminalSymbols queryTerminalSymbols) {this.queryTerminalSymbols = queryTerminalSymbols;}
-	public Stack<Boolean> getWildcards() {
+/*	public Stack<Boolean> getWildcards() {
 		return wildcards;
 	}
 	public void setWildcards(Stack<Boolean> wildcards) {
 		this.wildcards = wildcards;
+	} */
+	public Boolean getSelectIsWildcard() {
+		return selectIsWildcard;
+	}
+	public void setSelectIsWildcard(Boolean selectIsWildcard) {
+		this.selectIsWildcard = selectIsWildcard;
 	}
 }
