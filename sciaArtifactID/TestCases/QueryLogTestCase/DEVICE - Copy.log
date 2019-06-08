@@ -15,4 +15,4 @@ Time                 Id Command    Argument
 2019-06-08T16:20:11.330526Z	    3 Query	set autocommit=1
 2019-06-08T16:20:11.348479Z	    3 Query	USE icecream
 2019-06-08T16:20:11.348479Z	    3 Query	SELECT DATABASE()
-2019-06-08T16:20:11.370419Z	    3 Query	SELECT * FROM IceCream
+2019-06-08T16:20:11.371419Z	    3 Query	select * from icecream I inner join container C inner join (select * from flavor F) FF

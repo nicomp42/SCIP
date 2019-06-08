@@ -276,7 +276,7 @@ public class QueryDefinition {
 				for (QueryTable qt: this.getQueryTables()) {
 					Attributes as = new Attributes();
 					Log.logProgress("QueryDefinition.reconcileAttributes(): Wildcard found, copying attributes from " + qt.getSchemaName() + "." + qt.getTableName());
-					as = Table.readAttributesFromTableDefinition(qt.getSchemaName(), qt.getTableName());
+					as = Table.readAttributesFromTableDefinition(qt.getTableName(), qt.getSchemaName());
 					this.getQueryAttributes().addTableAttributes(qt.getSchemaName(), as);
 				}
 			}

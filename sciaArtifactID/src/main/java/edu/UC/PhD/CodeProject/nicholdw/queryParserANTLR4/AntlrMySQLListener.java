@@ -120,7 +120,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSimpleSelect: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void enterSelectElements(MySqlParser.SelectElementsContext ctx) {
-		
+		// TODO: need to differentiate between * and TableName.* in the SQL statement. Right now we are not catching TableName.* at all
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectElements: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 		boolean isAsterisk = false;
 		// If it's an asterisk, we need all the fields in all the tables.
