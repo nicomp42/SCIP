@@ -101,7 +101,7 @@ public class GeneralLogReader {
 				if (parts[0].toUpperCase().equals("USE")) {
 					currentSchemaName = parts[1].replace("`", "");
 				} else {
-					Log.logProgress("GeneralLogReader(): Parsing sql: " + sql);
+					Log.logProgress("GeneralLogReader.extractAndLoadArtifacts(): Parsing sql: " + sql);
 					// OK. Parse the query to get all the artifacts. Woo hoo.
 					QueryDefinition queryDefinition = new QueryDefinition("", "", "", null, "", sql, currentSchemaName);
 					queryDefinition.crunchIt();
@@ -156,6 +156,7 @@ public class GeneralLogReader {
 				MySQLGeneralLogEntry gle = new MySQLGeneralLogEntry(buffer);
 
 				if (gle.getText().toUpperCase().startsWith("USE")) {
+					Log.logProgress("GeneraLogReader.doEverything(): found a USE statement: " + gle.getText().toUpperCase()); 
 					SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(gle.getText().toUpperCase()) + ")");
 				} else {
 					if (gle.getText().toUpperCase().startsWith("ALTER")) {
@@ -163,11 +164,12 @@ public class GeneralLogReader {
 						gle.setText(gle.getText() + " " + buffer.trim());
 					} //					System.out.println(gle.getText());
 					if (mySQLDatabase.isAdHocQuery(gle.toString(), sanitizedSQL, connection) ) {
-						Log.logProgress("GeneraLogReader.doEverything(): " + sanitizedSQL.toString()); 
+						Log.logProgress("GeneraLogReader.doEverything(): sanitized SQL is an ad hoc query: " + sanitizedSQL.toString()); 
 						// It's an ad-hoc query but does it reference a system table? If so, we don't want it
-//						if (!mySQLDatabase.checkForSystemTableInSQL(sanitizedSQL.toString())) {
+						if (!mySQLDatabase.checkForSystemTableInSQL(sanitizedSQL.toString())) {
+							Log.logProgress("GeneraLogReader.doEverything(): adding to artifact database."); 
 							SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(sanitizedSQL.toString()) + ")");
-//						}
+						}
 					}
 				}
 			}

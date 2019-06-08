@@ -127,7 +127,6 @@ public class MySQLDatabase extends DatabaseEngine {
 		return status;
 	}
 
-
 	@Override
 	public boolean isSystemTable(String tableName) throws DatabaseTableException {
 		boolean result = false;

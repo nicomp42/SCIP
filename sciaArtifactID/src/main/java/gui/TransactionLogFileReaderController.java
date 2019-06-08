@@ -105,7 +105,7 @@ public class TransactionLogFileReaderController {
 		}
 	}
 	public void readLogFile(int maxLines) {
-		txaLog.clear();
+		clearLogFileArea();
 		GeneralLogReader glr = new GeneralLogReader();
 		int totalRecords = glr.readFromServer(txaLogFile.getText(), txaLog, maxLines);
 		lblStatus.setText(totalRecords + " record" + (totalRecords != 1 ? "s" : "") + " read.");
@@ -128,7 +128,7 @@ public class TransactionLogFileReaderController {
 	}
 	public void filterToAdHocOnly() {
 		ArrayList<String> myArrayList = getStringsFromTextArea();
-		txaLog.clear();
+		clearLogFileArea();
 		FilterOutEverythingButAdHocSelectQueries(myArrayList);
 		btnCopyQueriesToProject.setVisible(true);
 	}
@@ -156,7 +156,7 @@ public class TransactionLogFileReaderController {
 			}
 			edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
 			for (String s: querys) {
-				// Write the string to the adhocquery table. if we have a project, write that too.
+				// Write the string to the ad-hoc query table. if we have a project, write that too.
 				SQLUtils.executeActionQuery(connectionInformation, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(s) + ")");
 			}
 		} catch (Exception ex) {
@@ -164,9 +164,9 @@ public class TransactionLogFileReaderController {
 		}
 	}
 	public QueryDefinitions ParseAdHocQuerys(ArrayList<String> querys) {
-		MySQLDatabase mySQLDatabase = new MySQLDatabase();		// TODO generalize
+		MySQLDatabase mySQLDatabase = new MySQLDatabase();
 		QueryDefinitions queryDefinitions = new QueryDefinitions();
-		String adHocQueryName = "query";
+		String adHocQueryName = "adhocQuery";
 		int queryCounter = 1;
 		StringBuilder sqlReduced = new StringBuilder();
 		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""));
@@ -200,6 +200,10 @@ public class TransactionLogFileReaderController {
 	}
 	private void clearLogFileArea() {
 		txaLog.clear();
+		// Hide the buttons to process the log file area if the log file area is empty
+		btnParse.setVisible(false);
+		btnFilterToAdHocOnly.setVisible(false);
+		btnCopyQueriesToProject.setVisible(false);
 	}
 	/***
 	 * Read the log, filter down to Ad-hoc queries, write them into the database for the current project. Woo Hoo
@@ -231,7 +235,7 @@ public class TransactionLogFileReaderController {
 	 */
 	private void performEndToEndProcessingOfTransactionLog() {
 		try {
-			txaLog.clear();
+			clearLogFileArea();
 			int projectID = Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName());
 			ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
 			TransactionLogReaderResults transactionLogReaderResults = GeneralLogReader.doEverything(txaLogFile.getText(),

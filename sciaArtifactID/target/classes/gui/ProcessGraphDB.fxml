@@ -75,6 +75,11 @@
                               <Font size="36.0" />
                            </font>
                       </Label>
+                        <Label layoutX="136.0" layoutY="197.0" prefHeight="30.0" prefWidth="548.0" text="Be sure neither graph DB is currently running in Neo4j, else the comparison will fail.">
+                           <font>
+                              <Font name="Arial" size="14.0" />
+                           </font>
+                        </Label>
                   </children>
               </AnchorPane>
             </content>
