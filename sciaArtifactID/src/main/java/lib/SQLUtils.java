@@ -90,7 +90,7 @@ public class SQLUtils {
 	    try {connection.close();}catch(Exception ex) {}
 	}
 	/***
-	 * Execute an action query. The connection must alreadybe open and it is not closed by this method.
+	 * Execute an action query. The connection must already be open and it is not closed by this method.
 	 * @param connection An open connection. It is not closed at the end of this method
 	 * @param sql The sql to be submitted to the DB Engine
 	 */

@@ -143,11 +143,15 @@ public class MySQLDatabase extends DatabaseEngine {
 	 */
 	public boolean checkForSystemTableInSQL(String sql) {
 		boolean status = false;
-		String myParts[] = sql.toString().split(" ");
-		int i = 0;
-		while (!myParts[i].trim().toUpperCase().equals("FROM")) {i++;}
-		i++;
-		status = databaseSystemTables.containsTableName(myParts[i]);
+		try {
+			String myParts[] = sql.toString().split(" ");
+			int i = 0;
+			while (!myParts[i].trim().toUpperCase().equals("FROM")) {i++;}
+			i++;
+			status = databaseSystemTables.containsTableName(myParts[i]);
+		} catch (Exception ex) {
+			Log.logError("MySQLDatabase.checkForSystemTableInSQL(): " + ex.getLocalizedMessage());
+		}
 		return status;
 	}
 }

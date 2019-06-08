@@ -40,13 +40,13 @@ public class GeneralLogReader {
 			br.readLine();
 			br.readLine();
 			br.readLine();
-			
+
 			String buffer;
 			while (true) {
 				buffer = br.readLine();
 				//System.out.println(buffer);
 				MySQLGeneralLogEntry gle = new MySQLGeneralLogEntry(buffer); 
-				 
+
 				if (gle.doWeCare()) {
 					if (gle.getText().toUpperCase().startsWith("ALTER")) {
 						buffer= br.readLine();
@@ -70,9 +70,13 @@ public class GeneralLogReader {
 	 */
 	public static TransactionLogReaderResults doEverything(String logFilePath, ConnectionInformation connectionInformation, int projectID, boolean clearDatabaseFirst) {
 		Log.logProgress("GeneralLogReader.doEverything(" + logFilePath + ")");
-		TransactionLogReaderResults transactionLogReaderResults;
-		transactionLogReaderResults = loadFromTransactionLogIntoDatabase(logFilePath, connectionInformation, projectID, clearDatabaseFirst);
-		extractAndLoadArtifacts(connectionInformation, projectID, transactionLogReaderResults);
+		TransactionLogReaderResults transactionLogReaderResults = null;
+		try {
+			transactionLogReaderResults = loadFromTransactionLogIntoDatabase(logFilePath, connectionInformation, projectID, clearDatabaseFirst);
+			extractAndLoadArtifacts(connectionInformation, projectID, transactionLogReaderResults);
+		} catch (Exception ex) {
+			Log.logError("GeneralLogReader.doEverything(): " + ex.getLocalizedMessage() + " logFilePath = (" + logFilePath + ")");
+		}
 		return transactionLogReaderResults;
 	}
 	private static void extractAndLoadArtifacts(ConnectionInformation connectionInformation, int projectID, TransactionLogReaderResults transactionLogReaderResults) {
