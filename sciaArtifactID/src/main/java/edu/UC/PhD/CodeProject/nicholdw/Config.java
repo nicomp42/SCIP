@@ -102,7 +102,7 @@ public class Config implements Serializable {
 	private ArrayList<Browser> browsers;
 	private SystemDatabaseConnectionInformation systemDatabaseConnectionInformation;
 	private String defaultTransactionLogFilePath = "C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data";
-
+	private String artifactTableName = "tArtifact";
 	public String getDefaultTransactionLogFilePath() {return defaultTransactionLogFilePath;}
 	public void setDefaultTransactionLogFilePath(String defaultTransactionLogFilePath) {this.defaultTransactionLogFilePath = defaultTransactionLogFilePath;}	
 	public String getMySQLDefaultHostname() {return mySQLDefaultHostname;}
@@ -493,6 +493,12 @@ public class Config implements Serializable {
 	 */
 	public void setEnableLogging(Boolean enableLogging) {
 		this.enableLogging = enableLogging;
+	}
+	public String getArtifactTableName() {
+		return artifactTableName;
+	}
+	public void setArtifactTableName(String artifactTableName) {
+		this.artifactTableName = artifactTableName;
 	}
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.

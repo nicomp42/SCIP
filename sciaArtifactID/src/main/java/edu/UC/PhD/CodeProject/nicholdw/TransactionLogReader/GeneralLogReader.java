@@ -10,6 +10,7 @@ import java.io.FileReader;
 
 import com.mysql.jdbc.PreparedStatement;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
@@ -111,7 +112,7 @@ public class GeneralLogReader {
 						} else {
 							schemaName = qa.getSchemaName();
 						} 
-						String sqlInsert = "INSERT INTO `seq-am`.tArtifact(artifact, schemaName, tableName, alias, ProjectID)" +
+						String sqlInsert = "INSERT INTO `seq-am`." + Config.getConfig().getArtifactTableName() + "(artifact, schemaName, tableName, alias, ProjectID)" +
                                      "VALUES(" + 
 								     Utils.quoteMeSingle(qa.getAttributeName()) + 
                                      ", " + 

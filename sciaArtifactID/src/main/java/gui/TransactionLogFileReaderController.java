@@ -63,7 +63,7 @@ public class TransactionLogFileReaderController {
 	@FXML void btnParse_OnClick(ActionEvent event) {ParseAdHocQuerys(getStringsFromTextArea());}
 	@FXML void btnCopyQueriesToProject_OnClick(ActionEvent event) {copyQuerysToProject(getStringsFromTextArea());}
 	@FXML void btnClearLogFileArea_OnClick(ActionEvent event) {clearLogFileArea();}
-	@FXML void btnDoEverything_OnClick(ActionEvent event) {checkToDoEverything();}
+	@FXML void btnDoEverything_OnClick(ActionEvent event) {askToPerformEndToEndProcessingOfTransactionLog();}
 
 	public TransactionLogFileReaderController() {
 	} 
@@ -113,7 +113,7 @@ public class TransactionLogFileReaderController {
 	public void browseForLogFile() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setInitialDirectory(new File(Config.getConfig().getDefaultTransactionLogFilePath()));
-		fileChooser.setTitle("Select the log file");
+		fileChooser.setTitle("Select the log file. It must be available for read operations.");
 		Stage stage = (Stage) this.btnBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
 		File file = fileChooser.showOpenDialog(stage);
 		if (file != null) {
@@ -204,41 +204,56 @@ public class TransactionLogFileReaderController {
 	/***
 	 * Read the log, filter down to Ad-hoc queries, write them into the database for the current project. Woo Hoo
 	 */
-	private void checkToDoEverything() {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Do Everything?");
-		alert.setHeaderText("Read the entire transaction log, filter the ad-hoc queries, copy them to the database for this project. ");
-		alert.setContentText("The log file you selected must be offline and the DB Engine must be running. Are you ready?");
-		alert.showAndWait().ifPresent(rs -> {
-		    if (rs == ButtonType.OK) {
-		    	performEndToEndProcessingOfTransactionLog();
-		    }
-		});
+	private void askToPerformEndToEndProcessingOfTransactionLog() {
+		int projectID = Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName());
+		if (projectID == 0) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Continue without a project?");
+			alert.setHeaderText("Since you have not selected a project, the project ID in the database table, " + Config.getConfig().getArtifactTableName() + " will be zero.");
+			alert.setContentText("You may want to select a project first.");
+			alert.showAndWait().ifPresent(rs -> {
+			    if (rs == ButtonType.OK) {
+					Alert innerAlert = new Alert(AlertType.CONFIRMATION);
+					innerAlert.setTitle("Do Everything?");
+					innerAlert.setHeaderText("Read the entire transaction log, filter the ad-hoc queries, copy them to the database for this project. ");
+					innerAlert.setContentText("The log file you selected must be available for reading and the DB Engine must be running. Are you ready?");
+					innerAlert.showAndWait().ifPresent(innerRs -> {
+					    if (innerRs == ButtonType.OK) {
+						    	performEndToEndProcessingOfTransactionLog();
+					    }
+					});
+			    }
+			});
+		}
 	}
 	/***
 	 * Read the transaction file, filter the ad-hoc queries, write them to the system database
 	 */
 	private void performEndToEndProcessingOfTransactionLog() {
-		txaLog.clear();
-		int projectID = Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName());
-		ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
-		TransactionLogReaderResults transactionLogReaderResults = GeneralLogReader.doEverything(txaLogFile.getText(),
-														          connectionInformation, 
-														          projectID,
-														          true);
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Transaction Log Processing Results");
-		alert.setHeaderText("");
-		String msg = transactionLogReaderResults.getTotalRecords() + " transaction log entries processed."; 
-        msg += "\n";
-        if (transactionLogReaderResults.getLastErrorMsg().trim().length() > 0) {
-        	msg +=  "Last error message: " + transactionLogReaderResults.getLastErrorMsg();
-        } else {
-        	msg += "No error reported.";
-        }
-		alert.setContentText(msg);
-		alert.showAndWait();
-		ReadFromDBIntoTextArea(connectionInformation, projectID, txaLog);
+		try {
+			txaLog.clear();
+			int projectID = Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName());
+			ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
+			TransactionLogReaderResults transactionLogReaderResults = GeneralLogReader.doEverything(txaLogFile.getText(),
+															          connectionInformation, 
+															          projectID,
+															          true);
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Transaction Log Processing Results");
+			alert.setHeaderText("");
+			String msg = transactionLogReaderResults.getTotalRecords() + " transaction log entries processed."; 
+	        msg += "\n";
+	        if (transactionLogReaderResults.getLastErrorMsg().trim().length() > 0) {
+	        	msg +=  "Last error message: " + transactionLogReaderResults.getLastErrorMsg();
+	        } else {
+	        	msg += "No error reported.";
+	        }
+			alert.setContentText(msg);
+			alert.showAndWait();
+			ReadFromDBIntoTextArea(connectionInformation, projectID, txaLog);
+		} catch (Exception ex) {
+			Log.logError("TransactionLogFileReaderController.performEndToEndProcessingOfTransactionLog(): " + ex.getLocalizedMessage());
+		}
 	}
 	private void ReadFromDBIntoTextArea(ConnectionInformation connectionInformation, int projectID, TextArea txaLog) {
 		try {

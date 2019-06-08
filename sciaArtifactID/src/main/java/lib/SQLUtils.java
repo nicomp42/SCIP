@@ -68,7 +68,7 @@ public class SQLUtils {
 	 */
 	public static void executeActionQuery(ConnectionInformation connectionInformation, String sql) {
 		executeActionQuery(connectionInformation.getHostName(), connectionInformation.getSchemaName(), connectionInformation.getLoginName(), connectionInformation.getPassword(), sql);
-	}	
+	}
 	/***
 	 * Execute an action query. The connection is opened and then closed. It will be slow.
 	 * @param hostName
