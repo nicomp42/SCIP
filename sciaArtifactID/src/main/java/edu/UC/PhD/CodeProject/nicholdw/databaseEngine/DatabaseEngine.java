@@ -33,5 +33,4 @@ public abstract class DatabaseEngine {
 	public abstract String getSingleLineCommentDelimiter();
 	
 	public abstract boolean checkForSystemTableInSQL(String SQL);
-
 }

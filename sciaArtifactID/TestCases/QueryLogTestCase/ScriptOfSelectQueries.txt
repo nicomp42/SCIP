@@ -1,6 +1,0 @@
-USE icecream;
-
-SELECT * FROM IceCream;
-SELECT ContainerID FROM IceCream;
-
-SELECT Flavor, Container FROM (IceCream I INNER JOIN container C ON I.ContainerID = C.ContainerID) INNER JOIN Flavor F ON I.FlavorID = F.FlavorID ORDER BY Flavor, Container
