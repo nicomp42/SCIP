@@ -12,8 +12,9 @@ import com.mysql.jdbc.PreparedStatement;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
-import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngine;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.MySQLDatabaseEngine;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
@@ -83,7 +84,7 @@ public class GeneralLogReader {
 	private static void extractAndLoadArtifacts(ConnectionInformation connectionInformation, int projectID, TransactionLogReaderResults transactionLogReaderResults) {
 		Log.logProgress("GeneralLogReader.processTransactionLogRecordsInDatabase()");
 		int totalQueriesProcessed = 0;
-		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", 
+		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation("", 
 				                                                     connectionInformation.getHostName(), 
 				                                                     connectionInformation.getLoginName(),
 				                                                     connectionInformation.getPassword(),""));
@@ -139,8 +140,8 @@ public class GeneralLogReader {
 		TransactionLogReaderResults transactionLogReaderResults = new TransactionLogReaderResults();
 		int totalRecords = 0;
 		StringBuilder sanitizedSQL = new StringBuilder();
-		MySQLDatabase mySQLDatabase = new MySQLDatabase();		// TODO generalize
-		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", 
+		DatabaseEngine databaseEngine = Config.getConfig().getDatabaseEngine();
+		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation("", 
 																																		connectionInformation.getHostName(), 
 																																		connectionInformation.getLoginName(),
 																																		connectionInformation.getPassword(),""));
@@ -164,10 +165,10 @@ public class GeneralLogReader {
 						buffer= br.readLine();
 						gle.setText(gle.getText() + " " + buffer.trim());
 					} //					System.out.println(gle.getText());
-					if (mySQLDatabase.isAdHocQuery(gle.toString(), sanitizedSQL, connection) ) {
+					if (databaseEngine.isAdHocQuery(gle.toString(), sanitizedSQL, connection) ) {
 						Log.logProgress("GeneraLogReader.doEverything(): sanitized SQL is an ad hoc query: " + sanitizedSQL.toString()); 
 						// It's an ad-hoc query but does it reference a system table? If so, we don't want it
-						if (!mySQLDatabase.checkForSystemTableInSQL(sanitizedSQL.toString())) {
+						if (!databaseEngine.checkForSystemTableInSQL(sanitizedSQL.toString())) {
 							Log.logProgress("GeneraLogReader.doEverything(): adding to artifact database."); 
 							SQLUtils.executeActionQuery(connection, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(sanitizedSQL.toString()) + ")");
 						}

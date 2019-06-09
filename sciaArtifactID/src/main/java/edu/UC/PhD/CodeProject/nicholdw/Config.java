@@ -17,9 +17,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformations;
-import edu.UC.PhD.CodeProject.nicholdw.database.SystemDatabaseConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformations;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngine;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngineFactory;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.SystemDatabaseConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngineFactory.DATABASE_ENGINE_TYPE;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import gui.DebugController;
@@ -61,7 +64,14 @@ public class Config implements Serializable {
 	 * Defaults are used here because we don't know any better at this point in the execution of the program
 	 */
 	private Config() {
+		try {
+			setDatabaseEngine(DatabaseEngineFactory.createDatabaseEngine(DATABASE_ENGINE_TYPE.MySQL));	// MySQL, etc.
+		} catch (Exception ex) {
+			System.out.println("Config.Config(): Unable to create database engine.");
+			Log.logError("Config.Config(): Unable to create database engine.");
+		}
 	}
+	private DatabaseEngine databaseEngine;
 	private final String version = "0.06";
 	private final int mySQLDefaultPort = 3306;
 	private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -499,6 +509,16 @@ public class Config implements Serializable {
 	}
 	public void setArtifactTableName(String artifactTableName) {
 		this.artifactTableName = artifactTableName;
+	}
+	public DatabaseEngine getDatabaseEngine() {
+		return databaseEngine;
+	}
+	/**
+	 * Store the desired database engine object. This only happens in Config. It's private
+	 * @param databaseEngine
+	 */
+	private void setDatabaseEngine(DatabaseEngine databaseEngine) {
+		this.databaseEngine = databaseEngine;
 	}
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.

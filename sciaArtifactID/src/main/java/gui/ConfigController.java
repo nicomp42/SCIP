@@ -7,8 +7,8 @@ import java.util.Optional;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
-import edu.UC.PhD.CodeProject.nicholdw.database.SystemDatabaseConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.SystemDatabaseConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

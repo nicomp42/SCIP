@@ -1,7 +1,7 @@
 package edu.UC.PhD.CodeProject.nicholdw.testCase;
 
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformations;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformations;
 import edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.EvolutionOperator;
 import edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.EvolutionOperatorException;
 import edu.UC.PhD.CodeProject.nicholdw.evolutionOperators.Schema;

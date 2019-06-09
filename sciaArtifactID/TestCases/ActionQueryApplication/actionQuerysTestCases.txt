@@ -1,0 +1,13 @@
+-- Rename a column in a table
+ALTER TABLE `actionquerytestcase`.`table01` CHANGE COLUMN `stringField` `stringFieldRenamed` VARCHAR(45) NULL DEFAULT NULL ;
+
+-- Delete a column in a table
+ALTER TABLE `actionquerytestcase`.`table01` 
+DROP COLUMN `doubleField`;
+
+
+-- Delete a table from a schema
+DROP TABLE `actionquerytestcase`.`table01`
+
+-- Rename a table in a schema
+RENAME TABLE table01 to table01a

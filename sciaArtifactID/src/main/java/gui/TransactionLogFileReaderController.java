@@ -10,8 +10,9 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.GeneralLogReader;
 import edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader.TransactionLogReaderResults;
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
-import edu.UC.PhD.CodeProject.nicholdw.database.MySQLDatabase;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngine;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.MySQLDatabaseEngine;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.FullColumnName;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
@@ -133,12 +134,12 @@ public class TransactionLogFileReaderController {
 		btnCopyQueriesToProject.setVisible(true);
 	}
 	public void FilterOutEverythingButAdHocSelectQueries(ArrayList<String> lines) {
-		MySQLDatabase mySQLDatabase = new MySQLDatabase();		// TODO generalize
+		DatabaseEngine databaseEngine = Config.getConfig().getDatabaseEngine();		// TODO generalize
 		StringBuilder sanitizedSQL = new StringBuilder();
-		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""));
+		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""));
 		for (String s: lines) {
-			if (mySQLDatabase.isAdHocQuery(s, sanitizedSQL, connection) ) {
-				if (!mySQLDatabase.checkForSystemTableInSQL(sanitizedSQL.toString())) {
+			if (databaseEngine.isAdHocQuery(s, sanitizedSQL, connection) ) {
+				if (!databaseEngine.checkForSystemTableInSQL(sanitizedSQL.toString())) {
 					txaLog.appendText(sanitizedSQL + "\n");
 				}
 			}
@@ -154,7 +155,7 @@ public class TransactionLogFileReaderController {
 					projectID = Config.getConfig().getProjectID(currentProjectName);
 				} catch (Exception ex) {}
 			}
-			edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
+			edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
 			for (String s: querys) {
 				// Write the string to the ad-hoc query table. if we have a project, write that too.
 				SQLUtils.executeActionQuery(connectionInformation, "INSERT INTO `seq-am`.`tadhocquery` (projectID, SQLStatement) VALUES(" + String.valueOf(projectID) + ", " + Utils.QuoteMeDouble(s) + ")");
@@ -164,16 +165,16 @@ public class TransactionLogFileReaderController {
 		}
 	}
 	public QueryDefinitions ParseAdHocQuerys(ArrayList<String> querys) {
-		MySQLDatabase mySQLDatabase = new MySQLDatabase();
+		DatabaseEngine databaseEngine = Config.getConfig().getDatabaseEngine();
 		QueryDefinitions queryDefinitions = new QueryDefinitions();
 		String adHocQueryName = "adhocQuery";
 		int queryCounter = 1;
 		StringBuilder sqlReduced = new StringBuilder();
-		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""));
+		java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),""));
 		try {
 			for (String s: querys) {
-				if (mySQLDatabase.isAdHocQuery(s, sqlReduced, connection) ) {
-					if (!mySQLDatabase.checkForSystemTableInSQL(sqlReduced.toString())) {
+				if (databaseEngine.isAdHocQuery(s, sqlReduced, connection) ) {
+					if (!databaseEngine.checkForSystemTableInSQL(sqlReduced.toString())) {
 						QueryDefinition queryDefinition = new QueryDefinition(txtHostName.getText(), 
 								                                              txtLoginName.getText(), 
 								                                              txtPassword.getText(), 
@@ -237,7 +238,7 @@ public class TransactionLogFileReaderController {
 		try {
 			clearLogFileArea();
 			int projectID = Config.getConfig().getProjectID(Config.getConfig().getCurrentSchemaChangeImpactProject().getProjectName());
-			ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
+			ConnectionInformation connectionInformation = new edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation("", txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(),"");
 			TransactionLogReaderResults transactionLogReaderResults = GeneralLogReader.doEverything(txaLogFile.getText(),
 															          connectionInformation, 
 															          projectID,
@@ -261,7 +262,7 @@ public class TransactionLogFileReaderController {
 	}
 	private void ReadFromDBIntoTextArea(ConnectionInformation connectionInformation, int projectID, TextArea txaLog) {
 		try {
-			java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation("", 
+			java.sql.Connection connection = SQLUtils.openJDBCConnection(new edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation("", 
 	                connectionInformation.getHostName(), 
 	                connectionInformation.getLoginName(),
 	                connectionInformation.getPassword(),""));

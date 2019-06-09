@@ -2,7 +2,7 @@
  * Bill Nicholson
  * nicholdw@ucmail.uc.edu
  */
-package edu.UC.PhD.CodeProject.nicholdw.database;
+package edu.UC.PhD.CodeProject.nicholdw.databaseEngine;
 
 import java.io.Serializable;
 

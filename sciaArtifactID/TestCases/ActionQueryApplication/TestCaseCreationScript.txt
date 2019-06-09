@@ -1,0 +1,61 @@
+CREATE TABLE `actionquerytestcase`.`table01` (
+  `Table01ID` INT NOT NULL AUTO_INCREMENT,
+  `stringField` VARCHAR(45) NULL,
+  `doubleField` DOUBLE NULL,
+  `floatField` FLOAT NULL,
+  `bitField` BIT NULL,
+  PRIMARY KEY (`Table01ID`),
+  UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
+
+
+CREATE TABLE `actionquerytestcase`.`table02` (
+  `Table01ID` INT NOT NULL AUTO_INCREMENT,
+  `stringField` VARCHAR(45) NULL,
+  `doubleField` DOUBLE NULL,
+  `floatField` FLOAT NULL,
+  `bitField` BIT NULL,
+  PRIMARY KEY (`Table01ID`),
+  UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
+
+
+CREATE TABLE `actionquerytestcase`.`table03` (
+  `Table01ID` INT NOT NULL AUTO_INCREMENT,
+  `stringField` VARCHAR(45) NULL,
+  `doubleField` DOUBLE NULL,
+  `floatField` FLOAT NULL,
+  `bitField` BIT NULL,
+  PRIMARY KEY (`Table01ID`),
+  UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
+
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `actionquerytestcase`.`View01` AS
+    SELECT 
+        `actionquerytestcase`.`table01`.`stringField` AS `StringField`,
+        `actionquerytestcase`.`table01`.`floatField` AS `floatfield`
+    FROM
+        `actionquerytestcase`.`table01`
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `actionquerytestcase`.`view02` AS
+    SELECT 
+        `actionquerytestcase`.`table02`.`stringField` AS `StringField`,
+        `actionquerytestcase`.`table02`.`floatField` AS `floatfield`
+    FROM
+        `actionquerytestcase`.`table02`
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `actionquerytestcase`.`view03` AS
+    SELECT 
+        `actionquerytestcase`.`table03`.`stringField` AS `StringField`
+    FROM
+        `actionquerytestcase`.`table03`

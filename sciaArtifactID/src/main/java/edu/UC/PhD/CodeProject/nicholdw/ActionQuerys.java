@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngine;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.MySQLDatabaseEngine;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import sun.misc.ClassLoaderUtil;
 /***
@@ -39,6 +41,7 @@ public class ActionQuerys implements Iterable<ActionQuery> {
 	 * @return the number of lines read
 	 */
 	public int loadActionQueries(String filePath) {
+		DatabaseEngine databaseEngine = Config.getConfig().getDatabaseEngine();		// TODO generalize
 		int count = 0;
 		File file = null;
 		BufferedReader br = null;
@@ -48,7 +51,9 @@ public class ActionQuerys implements Iterable<ActionQuery> {
 			br = new BufferedReader(new FileReader(file));
 			String line;
 			while ((line = br.readLine()) != null) {
-				if (line.trim().length() > 0) {actionQuerys.add(new ActionQuery(line.trim()));}
+				if ((line.trim().length() > 0) && (!line.trim().startsWith(databaseEngine.getSingleLineCommentDelimiter()))) {
+					actionQuerys.add(new ActionQuery(line.trim()));
+				}
 				count++;
 			}
 		} catch (Exception ex) {

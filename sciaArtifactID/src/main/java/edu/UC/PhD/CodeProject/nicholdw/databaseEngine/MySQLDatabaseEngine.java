@@ -1,4 +1,4 @@
-package edu.UC.PhD.CodeProject.nicholdw.database;
+package edu.UC.PhD.CodeProject.nicholdw.databaseEngine;
 
 import java.util.ArrayList;
 
@@ -12,11 +12,11 @@ import lib.SQLUtils;
  * @author nicomp
  *
  */
-public class MySQLDatabase extends DatabaseEngine {
+public class MySQLDatabaseEngine extends DatabaseEngine {
 
 	private DatabaseTables databaseSystemTables;
 
-	public MySQLDatabase() {
+	public MySQLDatabaseEngine() {
 		databaseSystemTables = new DatabaseTables();
 		// Add the system tables that will show up in the transaction log. We will ignore them.
 		try {
@@ -140,6 +140,7 @@ public class MySQLDatabase extends DatabaseEngine {
 	 * @param sql The SQL statement to check
 	 * @return True if the table immediately after the FROM keyword is a system table, false otherwise
 	 */
+	@Override
 	public boolean checkForSystemTableInSQL(String sql) {
 		boolean status = false;
 		try {
@@ -152,5 +153,10 @@ public class MySQLDatabase extends DatabaseEngine {
 			Log.logError("MySQLDatabase.checkForSystemTableInSQL(): " + ex.getLocalizedMessage());
 		}
 		return status;
+	}
+
+	@Override
+	public String getSingleLineCommentDelimiter() {
+		return "--";
 	}
 }

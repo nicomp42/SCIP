@@ -27,7 +27,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Schemas;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
-import edu.UC.PhD.CodeProject.nicholdw.database.ConnectionInformation;
+import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;

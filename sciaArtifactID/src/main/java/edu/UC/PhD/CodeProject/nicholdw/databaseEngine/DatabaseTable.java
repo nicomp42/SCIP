@@ -1,4 +1,4 @@
-package edu.UC.PhD.CodeProject.nicholdw.database;
+package edu.UC.PhD.CodeProject.nicholdw.databaseEngine;
 
 /***
  * A table in a database
