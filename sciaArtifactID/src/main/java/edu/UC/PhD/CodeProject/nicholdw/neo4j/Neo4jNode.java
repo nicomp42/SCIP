@@ -11,7 +11,9 @@ package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -192,11 +194,15 @@ public class Neo4jNode {
 	 * 
 	 * @param n1
 	 * @param n2
+	 * @param keysToIgnore an array of key names that should be ignored in the comparison, or null if none should be ignored
 	 * @return True if the nodes have the same relationships, properties, and labels
 	 */
-	public static boolean compareNodes(Neo4jNode n1, Neo4jNode n2) {
+	public static boolean compareNodes(Neo4jNode n1, Neo4jNode n2, String[] propertyKeysToSkip) {
 		Log.logProgress("Neo4jNode.CompareNodes(): Comparing Node IDs " + n1.getNodeID() + " & " + n2.getNodeID());
+		List<String> ListOfPropertyKeysToSkip = Arrays.asList(propertyKeysToSkip);
 		Boolean isEqual = false;
+		int countOfKeysIgnored;
+		countOfKeysIgnored = 0;
 		try {
 			// Compare labels, if any
 			if (BagUtils.compareBags(n1.getLabels(), n2.getLabels())) {
@@ -208,18 +214,25 @@ public class Neo4jNode {
 				if (n1.getProperties().getNeo4jProperties().size() == n2.getProperties().getNeo4jProperties().size()) {
 					Log.logProgress("Neo4jNode.CompareNodes(): property counts match.");
 					for (Entry<String, Neo4jProperty> neo4jPropertyEntry : n1.getProperties().getNeo4jProperties().entrySet()) {
-						Neo4jProperty neo4jProperty = (Neo4jProperty) neo4jPropertyEntry.getValue();
-						Neo4jProperty neo4jPropertyFound = n2.getProperties().findProperty(neo4jProperty);
-						if (neo4jPropertyFound != null) {
-							neo4jPropertyFound.setMatched(true);
-							neo4jProperty.setMatched(true);
-							Log.logProgress("Neo4jNode.CompareNodes(): found a property match.");
+						String key;
+						key = neo4jPropertyEntry.getKey();
+						if (ListOfPropertyKeysToSkip.contains(key)) {
+							Log.logProgress("Neo4jNode.CompareNodes(): skipping property with key name of " + key);
+							countOfKeysIgnored++;
+						} else {
+							Neo4jProperty neo4jProperty = (Neo4jProperty) neo4jPropertyEntry.getValue();
+							Neo4jProperty neo4jPropertyFound = n2.getProperties().findProperty(neo4jProperty);
+							if (neo4jPropertyFound != null) {
+								neo4jPropertyFound.setMatched(true);
+								neo4jProperty.setMatched(true);
+								Log.logProgress("Neo4jNode.CompareNodes(): found a property match.");
+							}
 						}
 					}
 					// Did all the node properties match up?
-					if (n1.getProperties().countMatchedFlags() == n1.getProperties().getNeo4jProperties().size() && 
-						n2.getProperties().countMatchedFlags() == n2.getProperties().getNeo4jProperties().size()) {
-						Log.logProgress("Neo4jNode.CompareNodes(): ALL properties match.");
+					if ((n1.getProperties().countMatchedFlags() + countOfKeysIgnored) == n1.getProperties().getNeo4jProperties().size() && 
+						(n2.getProperties().countMatchedFlags() + countOfKeysIgnored) == n2.getProperties().getNeo4jProperties().size()) {
+						Log.logProgress("Neo4jNode.CompareNodes(): ALL properties match." + countOfKeysIgnored + " keys were ignored.");
 
 						// Compare relationships, if any
 						n1.getNeo4jRelationships().clearMatchedFlags();

@@ -80,13 +80,13 @@ public class Neo4jNodes {
 			neo4jNode.log();
 		}
 	}
- 	public static Neo4jNode findNode(Neo4jNode targetNode, Neo4jNodes db) {
+ /*	public static Neo4jNode findNode(Neo4jNode targetNode, Neo4jNodes db) {
  		Neo4jNode foundNode = null;
  		for (Neo4jNode neo4jNode: db.getNeo4jNodes()) {
             if (Neo4jNode.compareNodes(targetNode, neo4jNode) == true) {foundNode = neo4jNode; break;}
  		}
  		return foundNode;
- 	}
+ 	} */  // Moved to Neo4jDB class
  	/***
  	 * Look up a node based on the ID
  	 * @param nodeID The Node ID to look up

@@ -71,7 +71,7 @@ public class ProcessGraphDBController {
 	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblCompareWorking, lblSaveToXMLFile, lblContentsOfGraphDB;
 	@FXML	private Label lblLoadWorking;
 	@FXML	private Pane pneDBResults, pneDBLoad;
-	@FXML	private CheckBox cbHideRelationships;
+	@FXML	private CheckBox cbHideRelationships, cbIgnoreKey;
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessGraphDBController.Initialize() starting...");
@@ -158,6 +158,7 @@ public class ProcessGraphDBController {
 		Neo4jNodes neo4jNodes02 = new Neo4jNodes();
 		btnDBCompare.setVisible(false);
 		btnDBCompare.setDisable(true);
+		cbHideRelationships.setVisible(false);
 		clearResults();
 		displayComparisonResultsControls(false);
 		lblCompareWorking.setVisible(true);
@@ -167,7 +168,9 @@ public class ProcessGraphDBController {
 	        @Override public Void call() throws InterruptedException {
 	        	// Do not access any controls in here. An exception will be thrown. It's ugly.
 	    		try {
-	    			Neo4jDB.compareDatabases(txaGraphDB01FilePath.getText().trim(), txaGraphDB02FilePath.getText().trim(), false, neo4jNodes01, neo4jNodes02);
+	    			String [] keysToIgnore = {"Key"};
+	    			if (cbIgnoreKey.isSelected()) {keysToIgnore = null; }
+	    			Neo4jDB.compareDatabases(txaGraphDB01FilePath.getText().trim(), txaGraphDB02FilePath.getText().trim(), false, neo4jNodes01, neo4jNodes02, keysToIgnore);
 	    		} catch (Exception ex) {
 	    			Log.logError("ProcessGraphDBController.CompareDB().Task: " + ex.getLocalizedMessage());
 	    		} finally {
@@ -181,6 +184,7 @@ public class ProcessGraphDBController {
 			displayComparisonResultsControls(true);
 			btnDBCompare.setVisible(true);
 			btnDBCompare.setDisable(false);
+			cbHideRelationships.setVisible(true);
 			disableDBSelectionControls(false);
 			if (neo4jNodes01.countUnmatchedNodes() == 0 && neo4jNodes02.countUnmatchedNodes() == 0) {
 				//lblResults.setStyle("-fx-background-color:green; -fx-font-color:white;");

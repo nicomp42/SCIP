@@ -114,8 +114,13 @@ public class Neo4jDB {
 	 *            and processed. Make sure logging is turned on.
 	 * @return
 	 */
-	public static boolean compareDatabases(String filePath01, String filePath02, boolean writeToLog, Neo4jNodes neo4jUnmatchedNodes01, Neo4jNodes neo4jUnmatchedNodes02) {
+	public static boolean compareDatabases(String filePath01, String filePath02, boolean writeToLog, Neo4jNodes neo4jUnmatchedNodes01, Neo4jNodes neo4jUnmatchedNodes02, String[] keysToIgnore) {
 		Log.logProgress("Neo4jUtils.compareDatabases(): comparing " + filePath01 + " and " + filePath02);
+		if (keysToIgnore != null && keysToIgnore.length > 0) {
+			for (String k: keysToIgnore) {
+				Log.logProgress("Neo4jUtils.compareDatabases(): ignoring the key '" + k + "'");
+			}
+		}
 		boolean isEqual = true;
 		Neo4jNodes db01, db02;
 		db01 = readDatabase(filePath01);
@@ -130,7 +135,7 @@ public class Neo4jDB {
 			db02.clearMatchedFlags();
 			for (Neo4jNode neo4jNode : db01.getNeo4jNodes()) {
 				Neo4jNode foundNode;
-				foundNode = findNode(neo4jNode, db02);
+				foundNode = findNode(neo4jNode, db02, keysToIgnore);
 				if (foundNode == null) {
 					Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " not found.");
 					isEqual = false;
@@ -348,7 +353,7 @@ public class Neo4jDB {
 		Neo4jDB.uri = "bolt://localhost:" + dbmsConnectorBoltPort;
 	}
 
-	public static Neo4jNode findNode(Neo4jNode targetNode, Neo4jNodes db) {
+/*	public static Neo4jNode findNode(Neo4jNode targetNode, Neo4jNodes db) {
 		Neo4jNode foundNode = null;
 		for (Neo4jNode neo4jNode : db.getNeo4jNodes()) {
 			if (Neo4jNode.compareNodes(targetNode, neo4jNode) == true) {
@@ -358,7 +363,16 @@ public class Neo4jDB {
 		}
 		return foundNode;
 	}
-
+*/
+ 	public static Neo4jNode findNode(Neo4jNode targetNode, Neo4jNodes db, String[] keysToIgnore) {
+ 		Neo4jNode foundNode = null;
+ 		for (Neo4jNode neo4jNode: db.getNeo4jNodes()) {
+            if (Neo4jNode.compareNodes(targetNode, neo4jNode, keysToIgnore) == true) {foundNode = neo4jNode; break;}
+ 		}
+ 		return foundNode;
+ 	}
+	
+	
 	/**
 	 * This is useful for finding attributes in a schema topology graph that are not
 	 * referenced by any queries
