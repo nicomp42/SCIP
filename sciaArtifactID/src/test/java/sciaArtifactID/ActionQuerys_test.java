@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package sciaArtifactID;
 
 import static org.junit.Assert.assertEquals;
@@ -12,9 +16,8 @@ class ActionQuerys_test {
 	@Test
 	void test() {
 		ActionQuerys actionQuerys = new ActionQuerys();
-		actionQuerys.loadActionQueries("ActionQuerys/actionQuerysUnitTest.txt");
+		// File path is relative to src/main/test/resources folder, not the src/main/resources folder!. 
+		actionQuerys.loadActionQueries("actionQuerysUnitTest.txt");
     	assertEquals("Action Querys read from text file", 4, actionQuerys.getSize());
-
 	}
-
 }

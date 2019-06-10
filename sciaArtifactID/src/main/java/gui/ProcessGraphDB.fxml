@@ -63,7 +63,7 @@
 
 				      <Label layoutX="16.0" layoutY="104.0" text="Location of Graph DB 2" />
 				      <TextArea fx:id="txaGraphDB02FilePath" layoutX="19.0" layoutY="136.0" prefHeight="54.0" prefWidth="781.0" />
-				      <Button fx:id="btnDB02Browse" layoutX="188.0" layoutY="99.0" mnemonicParsing="false" onAction="#btnDB01Browse_OnClick" text="Browse for DB 2" />
+				      <Button fx:id="btnDB02Browse" layoutX="188.0" layoutY="99.0" mnemonicParsing="false" onAction="#btnDB02Browse_OnClick" text="Browse for DB 2" />
                       <Label fx:id="lblDB01UnmatchedNodes" layoutX="23.0" layoutY="230.0" text="DB 1 Unmatched Nodes" />
 
 				      <Button fx:id="btnDBCompare" layoutX="719.0" layoutY="199.0" mnemonicParsing="false" onAction="#btnDBCompare_OnClick" text="Compare" />
@@ -80,6 +80,7 @@
                               <Font name="Arial" size="14.0" />
                            </font>
                         </Label>
+                        <CheckBox fx:id="cbHideRelationships" layoutX="569.0" layoutY="230.0" mnemonicParsing="false" onAction="#cbHideRelationships_OnClick" prefHeight="17.0" prefWidth="224.0" text="Hide relationships in results display" />
                   </children>
               </AnchorPane>
             </content>

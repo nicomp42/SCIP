@@ -1,3 +1,8 @@
+/*
+ * Bill Nicholsonm
+ * nicholdw@ucmail.uc.edu
+ */
+
 package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 
 import java.util.ArrayList;

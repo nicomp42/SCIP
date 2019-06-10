@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ public class ActionQuerys implements Iterable<ActionQuery> {
 	}
 	/***
 	 * Read from a line-based text file
-	 * @param filePath The location and name of the file
+	 * @param filePath The location and name of the file. It's an absolute file path!
 	 * @return the number of lines read
 	 */
 	public int loadActionQueries(String filePath) {
@@ -47,6 +48,9 @@ public class ActionQuerys implements Iterable<ActionQuery> {
 		BufferedReader br = null;
 		try {
 			//ClassLoader classLoader = ClassLoader.getSystemClassLoader(); 
+			// getClass().getResourceAsStream("/
+//			URL tmpURL = this.getClass().getResource(filePath);
+//			String tmp = tmpURL.toString();
 			file = new File(filePath);
 			br = new BufferedReader(new FileReader(file));
 			String line;

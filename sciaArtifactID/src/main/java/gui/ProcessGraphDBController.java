@@ -43,6 +43,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -70,6 +71,7 @@ public class ProcessGraphDBController {
 	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblCompareWorking, lblSaveToXMLFile, lblContentsOfGraphDB;
 	@FXML	private Label lblLoadWorking;
 	@FXML	private Pane pneDBResults, pneDBLoad;
+	@FXML	private CheckBox cbHideRelationships;
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessGraphDBController.Initialize() starting...");
@@ -108,7 +110,8 @@ public class ProcessGraphDBController {
 	}
 	@FXML private void btnDBSubmit_OnClick(ActionEvent event) {loadDB();}
 	@FXML private void btnDBCompare_OnClick(ActionEvent event) {CompareDB();}
-	
+	@FXML private void cbHideRelationships_OnClick(ActionEvent event) {processCBHideRelationships();}
+	private void processCBHideRelationships() {}	// We read the state of this control when displaying the results of a DB Compare
 	private void loadDB() {
 		Log.logProgress("ProcessGraphDBController.loadDB() " + txaGraphDBFilePath.getText().trim());
 		displayLoadGraphDBResults(false);
@@ -187,10 +190,18 @@ public class ProcessGraphDBController {
 				lblResults.setText("The graphs are not equivalent.");
 			}
 			for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
-				txaDB01Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+				if (cbHideRelationships.isSelected()) {
+					txaDB01Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));					
+				} else {
+					txaDB01Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+				}
 			}
 			for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
-				txaDB02Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+				if (cbHideRelationships.isSelected()) {
+					txaDB02Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
+				} else {
+					txaDB02Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+				}
 			}
 	      });
 	    // Do the comparison work in a separate thread

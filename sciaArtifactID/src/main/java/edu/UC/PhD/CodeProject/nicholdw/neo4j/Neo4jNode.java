@@ -1,4 +1,9 @@
 /*
+ * Bill Nicholsonm
+ * nicholdw@ucmail.uc.edu
+ */
+
+/*
  * In mathematics, a bag (multi-set) is an unordered collection of elements with duplicates.
  */
 
@@ -148,6 +153,13 @@ public class Neo4jNode {
 		for (Neo4jRelationship neo4jRelationship : this.getNeo4jRelationships().getNeo4jRelationships()) {
 			string += "\n\t\t" + neo4jRelationship.toString();
 		}
+		return string;
+	}
+	public String toStringNoRelationships() {
+		String string = "Node[" + nodeID + "]: " + labels.toString() + " : " + getProperties().toString();
+//		for (Neo4jRelationship neo4jRelationship : this.getNeo4jRelationships().getNeo4jRelationships()) {
+//			string += "\n\t\t" + neo4jRelationship.toString();
+//		}
 		return string;
 	}
 
