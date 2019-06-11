@@ -6,8 +6,13 @@
 
 package gui;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -66,12 +71,13 @@ public class ProcessGraphDBController {
 
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaGraphDBFilePath, txaDBResults, txaSaveToXMLFile;
-	@FXML	private TextArea txaGraphDB01FilePath, txaDB01Results, txaGraphDB02FilePath, txaDB02Results;
-	@FXML	private Button btnDBSubmit, btnDBBrowse, btnDBCompare, btnDB01Browse, btnDB02Browse, btnXMLBrowse;
+	@FXML	private TextArea txaGraphDB01FilePath, txaDB01Results, txaGraphDB02FilePath, txaDB02Results, txaSaveResultsToThisFolder;
+	@FXML	private Button btnDBSubmit, btnDBBrowse, btnDBCompare, btnDB01Browse, btnDB02Browse, btnXMLBrowse, btnSaveResultsToThisFolderBrowse, btnSaveResultsToThisFolder;
 	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblCompareWorking, lblSaveToXMLFile, lblContentsOfGraphDB;
 	@FXML	private Label lblLoadWorking;
 	@FXML	private Pane pneDBResults, pneDBLoad;
-	@FXML	private CheckBox cbHideRelationships, cbIgnoreKey;
+	@FXML	private CheckBox cbHideRelationships, cbIgnoreKey, cbTables, cbRelationships, cbAttributes;
+	@FXML	private Label lblSaveResultsToThisFolder;
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessGraphDBController.Initialize() starting...");
@@ -88,6 +94,9 @@ public class ProcessGraphDBController {
 		txaGraphDBFilePath.setText("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01");
 		txaSaveToXMLFile.setText("c:\\Temp\\foo.xml");
 		displayLoadGraphDBResults(false);
+		cbTables.setSelected(true);
+		cbRelationships.setSelected(true);
+		cbAttributes.setSelected(true);
 	}
 	private void displayLoadGraphDBResults(boolean visible) {
 		pneDBResults.setVisible(visible);
@@ -98,6 +107,10 @@ public class ProcessGraphDBController {
 		lblResults.setVisible(visible);
 		txaDB01Results.setVisible(visible);
 		txaDB02Results.setVisible(visible);
+		lblSaveResultsToThisFolder.setVisible(visible);
+		txaSaveResultsToThisFolder.setVisible(visible);
+		btnSaveResultsToThisFolderBrowse.setVisible(visible);
+		btnSaveResultsToThisFolder.setVisible(visible);
 	}
 	private void disableDBSelectionControls(boolean disable) {
 		txaGraphDB01FilePath.setDisable(disable);
@@ -109,9 +122,53 @@ public class ProcessGraphDBController {
 		pneDBLoad.setDisable(disable);
 	}
 	@FXML private void btnDBSubmit_OnClick(ActionEvent event) {loadDB();}
+	@FXML private void btnSaveResultsToThisFolder_OnClick(ActionEvent event) {saveResultsToThisFolder();}
+	@FXML private void btnSaveResultsToThisFolderBrowse_OnClick(ActionEvent event) {SaveResultsToThisFolderBrowse();}
 	@FXML private void btnDBCompare_OnClick(ActionEvent event) {CompareDB();}
 	@FXML private void cbHideRelationships_OnClick(ActionEvent event) {processCBHideRelationships();}
 	private void processCBHideRelationships() {}	// We read the state of this control when displaying the results of a DB Compare
+	private void saveResultsToThisFolder() {
+		try {
+			String directory = txaSaveResultsToThisFolder.getText();
+			if (directory.trim().length() > 0) {
+				saveResults(directory, txaGraphDB01FilePath.getText(), txaDB01Results);
+				saveResults(directory, txaGraphDB02FilePath.getText(), txaDB02Results);
+			}
+		} catch (Exception ex) {
+			Log.logError("ProcessGraphController.saveResultsToThisFolder(): " + ex.getLocalizedMessage());
+ 		} finally {
+		}
+	}
+	private void saveResults(String targetDirectory, String sourceOfGraph, TextArea txaResults) {
+		BufferedWriter bw = null;
+		try {
+			File f = new File(sourceOfGraph);
+			Path p = Paths.get(f.toURI());
+			String file = p.getFileName().toString();
+			String db1File = targetDirectory + "\\" + file.toString() + ".txt";
+			bw = new BufferedWriter(new FileWriter(db1File));
+			String crlf = System.getProperty("line.separator");
+			for (String line : txaResults.getText().split("\\n")) {
+				bw.write(line + crlf);
+			}
+		} catch (Exception ex) {
+			Log.logError("ProcessGraphController.saveResults(): " + ex.getLocalizedMessage());
+ 		} finally {
+			try {bw.close();} catch(Exception ex) {}
+		}
+	}
+	private void SaveResultsToThisFolderBrowse() {
+		try {
+			DirectoryChooser directoryChooser = new DirectoryChooser();
+			directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+			directoryChooser.setTitle("Select the location for the results files");
+			Stage stage = (Stage) this.btnSaveResultsToThisFolderBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
+			File file = directoryChooser.showDialog(stage);
+			if (file != null) {txaSaveResultsToThisFolder.setText(file.getAbsolutePath());}
+		} catch (Exception ex) {
+			Log.logError("ProcessGraphController.SaveResultsToThisFolderBrowse(): " + ex.getLocalizedMessage());
+		}
+	}
 	private void loadDB() {
 		Log.logProgress("ProcessGraphDBController.loadDB() " + txaGraphDBFilePath.getText().trim());
 		displayLoadGraphDBResults(false);
@@ -159,6 +216,7 @@ public class ProcessGraphDBController {
 		btnDBCompare.setVisible(false);
 		btnDBCompare.setDisable(true);
 		cbHideRelationships.setVisible(false);
+		cbIgnoreKey.setVisible(false);
 		clearResults();
 		displayComparisonResultsControls(false);
 		lblCompareWorking.setVisible(true);
@@ -166,10 +224,9 @@ public class ProcessGraphDBController {
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
 	        @Override public Void call() throws InterruptedException {
-	        	// Do not access any controls in here. An exception will be thrown. It's ugly.
 	    		try {
-	    			String [] keysToIgnore = {"Key"};
-	    			if (cbIgnoreKey.isSelected()) {keysToIgnore = null; }
+	    			String [] keysToIgnore = {"key"};
+	    			if (!cbIgnoreKey.isSelected()) {keysToIgnore = null; }
 	    			Neo4jDB.compareDatabases(txaGraphDB01FilePath.getText().trim(), txaGraphDB02FilePath.getText().trim(), false, neo4jNodes01, neo4jNodes02, keysToIgnore);
 	    		} catch (Exception ex) {
 	    			Log.logError("ProcessGraphDBController.CompareDB().Task: " + ex.getLocalizedMessage());
@@ -186,27 +243,8 @@ public class ProcessGraphDBController {
 			btnDBCompare.setDisable(false);
 			cbHideRelationships.setVisible(true);
 			disableDBSelectionControls(false);
-			if (neo4jNodes01.countUnmatchedNodes() == 0 && neo4jNodes02.countUnmatchedNodes() == 0) {
-				//lblResults.setStyle("-fx-background-color:green; -fx-font-color:white;");
-				lblResults.setText("The graphs are equivalent.");
-			} else {
-				//lblResults.setStyle("-fx-background-color:red; -fx-font-color:white;");
-				lblResults.setText("The graphs are not equivalent.");
-			}
-			for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
-				if (cbHideRelationships.isSelected()) {
-					txaDB01Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));					
-				} else {
-					txaDB01Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
-				}
-			}
-			for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
-				if (cbHideRelationships.isSelected()) {
-					txaDB02Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
-				} else {
-					txaDB02Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
-				}
-			}
+			cbIgnoreKey.setVisible(true);
+			displayResults(neo4jNodes01, neo4jNodes02);
 	      });
 	    // Do the comparison work in a separate thread
 	    Thread thread = new Thread(task);
@@ -248,5 +286,33 @@ public class ProcessGraphDBController {
 		Stage stage = (Stage) this.btnDB02Browse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
 		File file = directoryChooser.showDialog(stage);
 		if (file != null) {txaGraphDB02FilePath.setText(file.getAbsolutePath());}
+	}
+	/**
+	 * Copy the results of the comparison to the form controls
+	 * @param neo4jNodes01 Results from DB 01
+	 * @param neo4jNodes02 Results from DB 02
+	 */
+	private void displayResults(Neo4jNodes neo4jNodes01, Neo4jNodes neo4jNodes02) {
+		if (neo4jNodes01.countUnmatchedNodes() == 0 && neo4jNodes02.countUnmatchedNodes() == 0) {
+			//lblResults.setStyle("-fx-background-color:green; -fx-font-color:white;");
+			lblResults.setText("The graphs are equivalent.");
+		} else {
+			//lblResults.setStyle("-fx-background-color:red; -fx-font-color:white;");
+			lblResults.setText("The graphs are not equivalent.");
+		}
+		for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
+			if (cbHideRelationships.isSelected()) {
+				txaDB01Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));					
+			} else {
+				txaDB01Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+			}
+		}
+		for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
+			if (cbHideRelationships.isSelected()) {
+				txaDB02Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
+			} else {
+				txaDB02Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+			}
+		}
 	}
 }

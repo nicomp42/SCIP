@@ -110,7 +110,7 @@ public class Neo4jDB {
 	 * @param filePath02
 	 *            File path to the folder containing the second graph
 	 * @param writeToLog
-	 *            If true, the graphs will be written to the log after that are read
+	 *            If true, the graphs will be written to the log after they are read
 	 *            and processed. Make sure logging is turned on.
 	 * @return
 	 */

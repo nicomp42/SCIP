@@ -244,7 +244,12 @@ public class SchemaTopology {
 				                         + "'" 
 				                         + ", name:'" 
 				                         + Utils.cleanForGraph(attribute.getAttributeName()) 
-				                         + "'})");
+				                         + "'"
+				                         + ", table:'"
+				                         + Utils.cleanForGraph(attribute.getTableName()) 
+				                         + "'"
+				                         + "}"
+				                         + ")");
 				// Add the relationship between the table and the attribute now because we have everything we need.
 				Neo4jDB.submitNeo4jQuery("MATCH (t:" + tableNodeLabel     
 						               + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "'}), "

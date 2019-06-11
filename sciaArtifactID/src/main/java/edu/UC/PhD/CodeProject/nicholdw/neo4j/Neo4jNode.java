@@ -199,7 +199,9 @@ public class Neo4jNode {
 	 */
 	public static boolean compareNodes(Neo4jNode n1, Neo4jNode n2, String[] propertyKeysToSkip) {
 		Log.logProgress("Neo4jNode.CompareNodes(): Comparing Node IDs " + n1.getNodeID() + " & " + n2.getNodeID());
-		List<String> ListOfPropertyKeysToSkip = Arrays.asList(propertyKeysToSkip);
+		Log.logProgress("Neo4jNode.CompareNodes(): Comparing Node IDs " + n1.toStringNoRelationships() + " & " + n2.toStringNoRelationships());
+		List<String> ListOfPropertyKeysToSkip = new ArrayList<String>();
+		if (propertyKeysToSkip != null) {ListOfPropertyKeysToSkip = Arrays.asList(propertyKeysToSkip);}
 		Boolean isEqual = false;
 		int countOfKeysIgnored;
 		countOfKeysIgnored = 0;
@@ -218,20 +220,26 @@ public class Neo4jNode {
 						key = neo4jPropertyEntry.getKey();
 						if (ListOfPropertyKeysToSkip.contains(key)) {
 							Log.logProgress("Neo4jNode.CompareNodes(): skipping property with key name of " + key);
-							countOfKeysIgnored++;
-						} else {
 							Neo4jProperty neo4jProperty = (Neo4jProperty) neo4jPropertyEntry.getValue();
-							Neo4jProperty neo4jPropertyFound = n2.getProperties().findProperty(neo4jProperty);
+							Neo4jProperty neo4jPropertyFound = n2.getProperties().findPropertyByName(neo4jProperty);
 							if (neo4jPropertyFound != null) {
 								neo4jPropertyFound.setMatched(true);
 								neo4jProperty.setMatched(true);
-								Log.logProgress("Neo4jNode.CompareNodes(): found a property match.");
+								Log.logProgress("Neo4jNode.CompareNodes(): found a property match .");
+							}
+						} else {
+							Neo4jProperty neo4jProperty = (Neo4jProperty) neo4jPropertyEntry.getValue();
+							Neo4jProperty neo4jPropertyFound = n2.getProperties().findPropertyByNameAndAllValues(neo4jProperty);
+							if (neo4jPropertyFound != null) {
+								neo4jPropertyFound.setMatched(true);
+								neo4jProperty.setMatched(true);
+								Log.logProgress("Neo4jNode.CompareNodes(): found a property and values match.");
 							}
 						}
 					}
 					// Did all the node properties match up?
-					if ((n1.getProperties().countMatchedFlags() + countOfKeysIgnored) == n1.getProperties().getNeo4jProperties().size() && 
-						(n2.getProperties().countMatchedFlags() + countOfKeysIgnored) == n2.getProperties().getNeo4jProperties().size()) {
+					if ((n1.getProperties().countMatchedFlags()) == n1.getProperties().getNeo4jProperties().size() && 
+						(n2.getProperties().countMatchedFlags()) == n2.getProperties().getNeo4jProperties().size()) {
 						Log.logProgress("Neo4jNode.CompareNodes(): ALL properties match." + countOfKeysIgnored + " keys were ignored.");
 
 						// Compare relationships, if any

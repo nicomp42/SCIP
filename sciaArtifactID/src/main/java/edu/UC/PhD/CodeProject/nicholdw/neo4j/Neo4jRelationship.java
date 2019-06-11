@@ -71,7 +71,7 @@ public class Neo4jRelationship {
 				r2.getProperties().clearMatchedFlags();
 				for (Entry<String, Neo4jProperty> neo4jPropertyEntry : r1.getProperties().getNeo4jProperties().entrySet()) {
 					Neo4jProperty neo4jProperty = (Neo4jProperty) neo4jPropertyEntry.getValue();
-					Neo4jProperty neo4jPropertyFound = r2.getProperties().findProperty(neo4jProperty);
+					Neo4jProperty neo4jPropertyFound = r2.getProperties().findPropertyByNameAndAllValues(neo4jProperty);
 					if (neo4jPropertyFound != null) {
 						neo4jProperty.setMatched(true);
 						neo4jPropertyFound.setMatched(true);

@@ -47,11 +47,30 @@ public class Neo4jProperties {
     	return count;
     }
     /***
+     * Scan the property list for the same property name only. The values are ignored
+     * @param neo4jProperty
+     * @return the property that was found or null if not found
+     */
+    public Neo4jProperty findPropertyByName(Neo4jProperty neo4jProperty) {
+    	Neo4jProperty found = null;
+    	for (Entry<String, Neo4jProperty> neo4jPropertyEntry : neo4jProperties.entrySet()) {
+    		Neo4jProperty neo4jPropertyTest = (Neo4jProperty)(neo4jPropertyEntry).getValue();
+    		if (!neo4jPropertyTest.isMatched() && neo4jPropertyTest.getName().equals(neo4jProperty.getName())) {	
+//    			if (BagUtils.compareBags(neo4jPropertyTest.getNeo4jPropertyValues().getPropertyValues(), neo4jProperty.getNeo4jPropertyValues().getPropertyValues())) {
+    				found = neo4jPropertyTest;
+    				break;
+ //   			}
+    		}
+    	}
+    	return found;
+    }
+
+    /***
      * Scan the property list for the same {property name & bag of values}
      * @param neo4jProperty
      * @return the property that was found or null if not found
      */
-    public Neo4jProperty findProperty(Neo4jProperty neo4jProperty) {
+    public Neo4jProperty findPropertyByNameAndAllValues(Neo4jProperty neo4jProperty) {
     	Neo4jProperty found = null;
     	for (Entry<String, Neo4jProperty> neo4jPropertyEntry : neo4jProperties.entrySet()) {
     		Neo4jProperty neo4jPropertyTest = (Neo4jProperty)(neo4jPropertyEntry).getValue();
