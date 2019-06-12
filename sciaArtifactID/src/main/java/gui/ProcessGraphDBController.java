@@ -9,64 +9,33 @@ package gui;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.net.URI;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Optional;
-
-import edu.UC.PhD.CodeProject.nicholdw.Config;
-import edu.UC.PhD.CodeProject.nicholdw.Schema;
-import edu.UC.PhD.CodeProject.nicholdw.Schemas;
-import edu.UC.PhD.CodeProject.nicholdw.Utils;
-import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNode;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNodes;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jXML;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitionFileProcessing;
-import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchema;
-import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchemas;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
-import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
-import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/*
+ 		Some controls I may use later in the DB comparison logic
+        <CheckBox fx:id="cbTables" layoutX="17.0" layoutY="195.0" mnemonicParsing="false" text="Tables" />
+        <CheckBox fx:id="cbAttributes" layoutX="17.0" layoutY="217.0" mnemonicParsing="false" text="Attributes" />
+        <CheckBox fx:id="cbRelationships" layoutX="17.0" layoutY="238.0" mnemonicParsing="false" text="Relationships" />
+        <Label layoutX="19.0" layoutY="174.0" text="Artifacts to include in results" />
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1ffff9" height="97.0" layoutX="9.0" layoutY="171.0" opacity="0.06" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" width="200.0" />
+ */
 public class ProcessGraphDBController {
 
 	@FXML	private AnchorPane apMainWindow;
@@ -76,7 +45,8 @@ public class ProcessGraphDBController {
 	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblCompareWorking, lblSaveToXMLFile, lblContentsOfGraphDB;
 	@FXML	private Label lblLoadWorking;
 	@FXML	private Pane pneDBResults, pneDBLoad;
-	@FXML	private CheckBox cbHideRelationships, cbIgnoreKey, cbTables, cbRelationships, cbAttributes;
+	@FXML	private CheckBox cbHideRelationships, cbIgnoreKey;
+//	@FXML	private CheckBox cbTables, cbRelationships, cbAttributes;
 	@FXML	private Label lblSaveResultsToThisFolder;
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
@@ -94,9 +64,9 @@ public class ProcessGraphDBController {
 		txaGraphDBFilePath.setText("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01");
 		txaSaveToXMLFile.setText("c:\\Temp\\foo.xml");
 		displayLoadGraphDBResults(false);
-		cbTables.setSelected(true);
-		cbRelationships.setSelected(true);
-		cbAttributes.setSelected(true);
+//		cbTables.setSelected(true);
+//		cbRelationships.setSelected(true);
+//		cbAttributes.setSelected(true);
 	}
 	private void displayLoadGraphDBResults(boolean visible) {
 		pneDBResults.setVisible(visible);
@@ -131,15 +101,17 @@ public class ProcessGraphDBController {
 		try {
 			String directory = txaSaveResultsToThisFolder.getText();
 			if (directory.trim().length() > 0) {
-				saveResults(directory, txaGraphDB01FilePath.getText(), txaDB01Results);
-				saveResults(directory, txaGraphDB02FilePath.getText(), txaDB02Results);
+				String title = "Unmatched artifacts in " + txaGraphDB01FilePath.getText() + " when compared to " + txaGraphDB02FilePath.getText();
+				saveResults(title, directory, txaGraphDB01FilePath.getText(), txaDB01Results);
+				title = "Unmatched artifacts in " + txaGraphDB02FilePath.getText() + " when compared to " + txaGraphDB01FilePath.getText();
+				saveResults(title, directory, txaGraphDB02FilePath.getText(), txaDB02Results);
 			}
 		} catch (Exception ex) {
 			Log.logError("ProcessGraphController.saveResultsToThisFolder(): " + ex.getLocalizedMessage());
  		} finally {
 		}
 	}
-	private void saveResults(String targetDirectory, String sourceOfGraph, TextArea txaResults) {
+	private void saveResults(String title, String targetDirectory, String sourceOfGraph, TextArea txaResults) {
 		BufferedWriter bw = null;
 		try {
 			File f = new File(sourceOfGraph);
@@ -148,8 +120,13 @@ public class ProcessGraphDBController {
 			String db1File = targetDirectory + "\\" + file.toString() + ".txt";
 			bw = new BufferedWriter(new FileWriter(db1File));
 			String crlf = System.getProperty("line.separator");
-			for (String line : txaResults.getText().split("\\n")) {
-				bw.write(line + crlf);
+			bw.write(title + crlf);
+			if (txaResults.getText().trim().length() > 0) {
+				for (String line : txaResults.getText().trim().split("\\n")) {
+					bw.write(line + crlf);
+				}
+			} else {
+				bw.write("There are no unmatched artifacts in the graph.");
 			}
 		} catch (Exception ex) {
 			Log.logError("ProcessGraphController.saveResults(): " + ex.getLocalizedMessage());

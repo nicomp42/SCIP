@@ -87,11 +87,6 @@
                         <TextArea fx:id="txaSaveResultsToThisFolder" layoutX="172.0" layoutY="770.0" prefHeight="31.0" prefWidth="422.0" />
                         <Button fx:id="btnSaveResultsToThisFolderBrowse" layoutX="600.0" layoutY="773.0" mnemonicParsing="false" onAction="#btnSaveResultsToThisFolderBrowse_OnClick" text="..." />
                         <Button fx:id="btnSaveResultsToThisFolder" layoutX="644.0" layoutY="773.0" mnemonicParsing="false" onAction="#btnSaveResultsToThisFolder_OnClick" text="Save" />
-                        <CheckBox fx:id="cbTables" layoutX="17.0" layoutY="195.0" mnemonicParsing="false" text="Tables" />
-                        <CheckBox fx:id="cbAttributes" layoutX="17.0" layoutY="217.0" mnemonicParsing="false" text="Attributes" />
-                        <CheckBox fx:id="cbRelationships" layoutX="17.0" layoutY="238.0" mnemonicParsing="false" text="Relationships" />
-                        <Label layoutX="19.0" layoutY="174.0" text="Artifacts to include in results" />
-                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1ffff9" height="97.0" layoutX="9.0" layoutY="171.0" opacity="0.06" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" width="200.0" />
                   </children>
               </AnchorPane>
             </content>
