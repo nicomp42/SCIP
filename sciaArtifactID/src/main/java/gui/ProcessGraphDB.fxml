@@ -81,7 +81,7 @@
                               <Font name="Arial" size="14.0" />
                            </font>
                         </Label>
-                        <CheckBox fx:id="cbHideRelationships" layoutX="552.0" layoutY="180.0" mnemonicParsing="false" onAction="#cbHideRelationships_OnClick" prefHeight="17.0" prefWidth="234.0" text="Hide relationships in results for nodes" />
+                        <CheckBox fx:id="cbHideRelationships"  layoutX="552.0" layoutY="180.0" mnemonicParsing="false" onAction="#cbHideRelationships_OnClick" prefHeight="17.0" prefWidth="234.0" text="Hide relationships in results for nodes" />
                         <CheckBox fx:id="cbIgnoreKey" layoutX="552.0" layoutY="203.0" mnemonicParsing="false" text="Ignore Key property" />
                         <Label fx:id="lblSaveResultsToThisFolder" layoutX="19.0" layoutY="777.0" text="Save results to this folder:" />
                         <TextArea fx:id="txaSaveResultsToThisFolder" layoutX="161.0" layoutY="770.0" prefHeight="31.0" prefWidth="422.0" />

@@ -40,7 +40,7 @@ public class Neo4jNode {
 	private Neo4jRelationships neo4jRelationships;
 	private long nodeID; // The Node ID established by the GraphDB engine
 	private boolean matched;
-	public enum MATCHED_STATE {Unknown, NodeAndRelationships, NodeOnly};
+	public enum MATCHED_STATE {Unmatched, NodeAndRelationships, NodeOnly};
 
 	public Neo4jNode() {
 		labels = new ArrayList<String>();
@@ -49,7 +49,7 @@ public class Neo4jNode {
 		matched = false;
 	}
 	public MATCHED_STATE computeMatchedState() {
-		MATCHED_STATE matchedState = MATCHED_STATE.Unknown;
+		MATCHED_STATE matchedState = MATCHED_STATE.Unmatched;
 		if (matched) {
 			matchedState = MATCHED_STATE.NodeOnly;
 			if (countUnmatchedRelationships() == 0) {

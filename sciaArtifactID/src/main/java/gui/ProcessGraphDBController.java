@@ -312,37 +312,46 @@ public class ProcessGraphDBController {
 	 * @param neo4jNodes02 Results from DB 02
 	 */
 	private void displayResults(Neo4jNodes neo4jNodes01, Neo4jNodes neo4jNodes02) {
-		if (neo4jNodes01.countUnmatchedNodes() == 0 && neo4jNodes02.countUnmatchedNodes() == 0
-				&& neo4jNodes01.countUnmatchedRelationships() == 0 && neo4jNodes02.countUnmatchedRelationships() == 0) {
+		for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
+			writeLineOfResults(neo4jNode, txaDB01Results);
+		}
+		for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
+			writeLineOfResults(neo4jNode, txaDB02Results);
+		}
+		if (txaDB02Results.getText().trim().length() == 0 && txaDB02Results.getText().trim().length() == 0) {
 			//lblResults.setStyle("-fx-background-color:green; -fx-font-color:white;");
 			lblResults.setText("The graphs are equivalent.");
 		} else {
 			//lblResults.setStyle("-fx-background-color:red; -fx-font-color:white;");
 			lblResults.setText("The graphs are not equivalent.");
-			for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
+		}
+	}
+	
+	private void writeLineOfResults(Neo4jNode neo4jNode, TextArea textArea) {
+		switch (neo4jNode.computeMatchedState()) {
+			case Unmatched:
+				// Display the node and since the node is not matched, display all the relationships into the node
 				if (cbHideRelationships.isSelected()) {
-					txaDB01Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));					
+					textArea.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
 				} else {
-					txaDB01Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+					textArea.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
 				}
 				for (Neo4jRelationship neo4jRelationship : neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
 					if (!neo4jRelationship.isMatched()) {
-						txaDB01Results.appendText(neo4jRelationship.toString() + System.getProperty("line.separator"));
+						textArea.appendText(neo4jRelationship.toString() + System.getProperty("line.separator"));
 					}
 				}
-			}			
-			for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
-				if (cbHideRelationships.isSelected()) {
-					txaDB02Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
-				} else {
-					txaDB02Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
-				}
+				break;
+			case NodeOnly:
+				// The node matched, just display the relationships that don't match
 				for (Neo4jRelationship neo4jRelationship : neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
 					if (!neo4jRelationship.isMatched()) {
-						txaDB01Results.appendText(neo4jRelationship.toString() + System.getProperty("line.separator"));
+						textArea.appendText(neo4jRelationship.toString() + System.getProperty("line.separator"));
 					}
 				}
-			}
+				break;
+			default:
+				break;
 		}
 	}
 }
