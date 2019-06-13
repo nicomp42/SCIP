@@ -1,5 +1,5 @@
 /*
- * Bill Nicholsonm
+ * Bill Nicholson
  * nicholdw@ucmail.uc.edu
  */
 

@@ -59,18 +59,18 @@
 				      <Label layoutX="17.0" layoutY="8.0" text="Location of Graph DB 1" />
 
 				      <TextArea fx:id="txaGraphDB01FilePath" layoutX="17.0" layoutY="38.0" prefHeight="30.0" prefWidth="781.0" />
-				      <TextArea fx:id="txaDB01Results" layoutX="19.0" layoutY="294.0" prefHeight="213.0" prefWidth="781.0" />
+				      <TextArea fx:id="txaDB01Results" layoutX="19.0" layoutY="309.0" prefHeight="198.0" prefWidth="781.0" />
 				      <Button fx:id="btnDB01Browse" layoutX="186.0" layoutY="3.0" mnemonicParsing="false" onAction="#btnDB01Browse_OnClick" text="Browse for DB 1" />
 
 				      <Label layoutX="17.0" layoutY="79.0" text="Location of Graph DB 2" />
 				      <TextArea fx:id="txaGraphDB02FilePath" layoutX="17.0" layoutY="111.0" prefHeight="30.0" prefWidth="781.0" />
 				      <Button fx:id="btnDB02Browse" layoutX="188.0" layoutY="74.0" mnemonicParsing="false" onAction="#btnDB02Browse_OnClick" text="Browse for DB 2" />
-                      <Label fx:id="lblDB01UnmatchedNodes" layoutX="23.0" layoutY="270.0" text="DB 1 Unmatched Artifacts" />
+                      <Label fx:id="lblDB01UnmatchedNodes" layoutX="23.0" layoutY="284.0" text="DB 1 Unmatched Artifacts" />
 
 				      <Button fx:id="btnDBCompare" layoutX="719.0" layoutY="154.0" mnemonicParsing="false" onAction="#btnDBCompare_OnClick" text="Compare" />
                       <Label fx:id="lblDB02UnmatchedNodes" layoutX="23.0" layoutY="519.0" text="DB 2 Unmatched Artifacts" />
 
-				      <TextArea fx:id="txaDB02Results" layoutX="19.0" layoutY="543.0" prefHeight="222.0" prefWidth="781.0" />
+				      <TextArea fx:id="txaDB02Results" layoutX="19.0" layoutY="543.0" prefHeight="198.0" prefWidth="781.0" />
                       <Label fx:id="lblCompareWorking" layoutX="328.0" layoutY="423.0" rotate="-45.0" text="Working..." visible="false">
                            <font>
                               <Font size="36.0" />
@@ -82,12 +82,12 @@
                            </font>
                         </Label>
                         <CheckBox fx:id="cbHideRelationships" layoutX="552.0" layoutY="180.0" mnemonicParsing="false" onAction="#cbHideRelationships_OnClick" prefHeight="17.0" prefWidth="234.0" selected="true" text="Hide relationships in results for nodes" visible="false" />
-                        <CheckBox fx:id="cbIgnoreKey" layoutX="552.0" layoutY="203.0" mnemonicParsing="false" text="Ignore Key property" />
+                        <CheckBox fx:id="cbIgnoreKey" layoutX="24.0" layoutY="180.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="296.0" text="Ignore Key property when comparing artifacts" />
                         <Label fx:id="lblSaveResultsToThisFolder" layoutX="19.0" layoutY="777.0" text="Save results to this folder:" />
                         <TextArea fx:id="txaSaveResultsToThisFolder" layoutX="161.0" layoutY="770.0" prefHeight="31.0" prefWidth="422.0" />
                         <Button fx:id="btnSaveResultsToThisFolderBrowse" layoutX="594.0" layoutY="773.0" mnemonicParsing="false" onAction="#btnSaveResultsToThisFolderBrowse_OnClick" text="..." />
                         <Button fx:id="btnSaveResultsToThisFolder" layoutX="628.0" layoutY="773.0" mnemonicParsing="false" onAction="#btnSaveResultsToThisFolder_OnClick" text="Save" />
-                        <Button fx:id="btnExportDB01ResultsToGraph" layoutX="552.0" layoutY="266.0" mnemonicParsing="false" onAction="#btnExportDB01ResultsToGraph_OnClick" text="Export to Graph" />
+                        <Button fx:id="btnExportDB01ResultsToGraph" layoutX="552.0" layoutY="280.0" mnemonicParsing="false" onAction="#btnExportDB01ResultsToGraph_OnClick" text="Export to Graph" />
                         <Button fx:id="btnExportDB02ResultsToGraph" layoutX="552.0" layoutY="515.0" mnemonicParsing="false" onAction="#btnExportDB02ResultsToGraph_OnClick" text="Export to Graph" />
                   </children>
               </AnchorPane>

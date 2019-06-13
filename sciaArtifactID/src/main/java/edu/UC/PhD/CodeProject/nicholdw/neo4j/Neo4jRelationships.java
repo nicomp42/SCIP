@@ -27,7 +27,7 @@ public class Neo4jRelationships {
 				break;
 			}
 		}		
-		return neo4jRelationship;
+		return found;
 	}
 	
 	public void clearMatchedFlags() {

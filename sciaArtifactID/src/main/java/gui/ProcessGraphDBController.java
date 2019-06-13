@@ -6,6 +6,7 @@
 
 package gui;
 
+import java.awt.Panel;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,6 +28,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
@@ -35,18 +37,23 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 /*
- 		Some controls I may use later in the DB comparison logic
-        <CheckBox fx:id="cbTables" layoutX="17.0" layoutY="195.0" mnemonicParsing="false" text="Tables" />
-        <CheckBox fx:id="cbAttributes" layoutX="17.0" layoutY="217.0" mnemonicParsing="false" text="Attributes" />
-        <CheckBox fx:id="cbRelationships" layoutX="17.0" layoutY="238.0" mnemonicParsing="false" text="Relationships" />
-        <Label layoutX="19.0" layoutY="174.0" text="Artifacts to include in results" />
-        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1ffff9" height="97.0" layoutX="9.0" layoutY="171.0" opacity="0.06" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" width="200.0" />
+ Some controls I may use later in the DB comparison logic
+    <Pane fx:id="pnlResultsToDisplay" layoutX="25.0" layoutY="210.0" prefHeight="70.0" prefWidth="223.0" visible="false">
+       <children>
+          <RadioButton layoutX="14.0" layoutY="6.0" mnemonicParsing="false" text="Unmatched Nodes" />
+          <RadioButton fx:id="cbDisplayUnmatchedRelationships" layoutX="14.0" layoutY="27.0" mnemonicParsing="false" text="Unmatched Relationships" />
+          <RadioButton fx:id="cbDisplayUnmatchedBoth" layoutX="14.0" layoutY="48.0" mnemonicParsing="false" text="Both" />
+       </children>
+    </Pane>
  */
 public class ProcessGraphDBController {
 
 	private Neo4jNodes neo4jNodes01 = null;
 	private Neo4jNodes neo4jNodes02 = null;
-
+//	We aren't using these, yet.	
+//	@FXML	private Panel pnlResultsToDisplay;
+//	@FXML	private RadioButton rbDisplayUnmatchedNodes, rbDisplayUnmatchedRelationships, rbDisplayUnmatchedBoth;
+	
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaGraphDBFilePath, txaDBResults, txaSaveToXMLFile;
 	@FXML	private TextArea txaGraphDB01FilePath, txaDB01Results, txaGraphDB02FilePath, txaDB02Results, txaSaveResultsToThisFolder;
@@ -260,7 +267,7 @@ public class ProcessGraphDBController {
 			displayComparisonResultsControls(true);
 			btnDBCompare.setVisible(true);
 			btnDBCompare.setDisable(false);
-			cbHideRelationships.setVisible(true);
+//			cbHideRelationships.setVisible(true);  		// We are defaulting this to true and not letting the user change it.
 			disableDBSelectionControls(false);
 			cbIgnoreKey.setVisible(true);
 			displayResults(neo4jNodes01, neo4jNodes02);
@@ -332,13 +339,13 @@ public class ProcessGraphDBController {
 			case Unmatched:
 				// Display the node and since the node is not matched, display all the relationships into the node
 				if (cbHideRelationships.isSelected()) {
-					textArea.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
+					textArea.appendText("Unmatched Node: " + neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
 				} else {
 					textArea.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
 				}
 				for (Neo4jRelationship neo4jRelationship : neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
 					if (!neo4jRelationship.isMatched()) {
-						textArea.appendText(neo4jRelationship.toString() + System.getProperty("line.separator"));
+						textArea.appendText("Unmatched Relationship: " + neo4jRelationship.toString() + System.getProperty("line.separator"));
 					}
 				}
 				break;
@@ -346,7 +353,7 @@ public class ProcessGraphDBController {
 				// The node matched, just display the relationships that don't match
 				for (Neo4jRelationship neo4jRelationship : neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
 					if (!neo4jRelationship.isMatched()) {
-						textArea.appendText(neo4jRelationship.toString() + System.getProperty("line.separator"));
+						textArea.appendText("Unmatched Relationship: " + neo4jRelationship.toString() + System.getProperty("line.separator"));
 					}
 				}
 				break;

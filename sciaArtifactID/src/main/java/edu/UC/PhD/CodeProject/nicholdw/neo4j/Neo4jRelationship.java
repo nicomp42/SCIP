@@ -18,11 +18,13 @@ public class Neo4jRelationship {
 	private Neo4jProperties neo4jProperties;
     private String name;
     private boolean matched;
+	private long nodeID; // The Node ID established by the GraphDB engine. This may overlap a Node ID!
 
 	public Neo4jRelationship() {
 		labels = new ArrayList<String>();
 		neo4jProperties = new Neo4jProperties();
 		matched = false;
+		nodeID = -1;		// Invalid ode ID
 	}
     public long getStartNodeID() {
 		return startNodeID;
@@ -33,8 +35,8 @@ public class Neo4jRelationship {
 	public long getEndNodeID() {
 		return endNodeID;
 	}
-	public void setEndNodeID(long otherNodeID) {
-		this.endNodeID = otherNodeID;
+	public void setEndNodeID(long endNodeID) {
+		this.endNodeID = endNodeID;
 	}
 	public RelationshipType getRelationshipType() {
 		return relationshipType;
@@ -70,7 +72,7 @@ public class Neo4jRelationship {
 			return "{no name}";
 		}
 	}
-	public String toString() {return name + ": " + neo4jProperties.toString() + " [" + getStartNodeID() + "]---[" + getEndNodeID() + "]";}
+	public String toString() {return "Relationship ID = " + nodeID + " " + name + ": property = " + neo4jProperties.toString() + " [" + getStartNodeID() + "]---[" + getEndNodeID() + "]";}
 
 	public static boolean compareRelationships(Neo4jRelationship r1, Neo4jRelationship r2) {
 		Log.logProgress("Neo4jRelationship.compareRelationships(): comparing " + r1.getName() + " and " + r2.getName());
@@ -102,5 +104,11 @@ public class Neo4jRelationship {
 	}
 	public void setMatched(boolean matched) {
 		this.matched = matched;
+	}
+	public long getNodeID() {
+		return nodeID;
+	}
+	public void setNodeID(long nodeID) {
+		this.nodeID = nodeID;
 	}
 }

@@ -1,8 +1,10 @@
+/* 
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -166,7 +168,6 @@ public class Neo4jDB {
 					}
 				}
 			}
-				
 			if (db01.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) == 0 && db02.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) == 0) {
 				Log.logProgress("Neo4jDB.compareDatabases(): No unmatched nodes"); 
 			} else {

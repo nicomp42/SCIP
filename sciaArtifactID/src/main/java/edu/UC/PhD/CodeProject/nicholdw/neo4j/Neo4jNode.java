@@ -38,7 +38,7 @@ public class Neo4jNode {
 	// private HashMap<String, Neo4jPropertyValues> properties;
 	private Neo4jProperties neo4jProperties;
 	private Neo4jRelationships neo4jRelationships;
-	private long nodeID; // The Node ID established by the GraphDB engine
+	private long nodeID; // The Node ID established by the GraphDB engine. This may overlap a Relationship ID!
 	private MATCHED_STATE matchedState;
 	public enum MATCHED_STATE {Unmatched, NodeAndRelationships, NodeOnly};
 
@@ -70,6 +70,7 @@ public class Neo4jNode {
 		try {
 			for (org.neo4j.graphdb.Relationship relationship : relationships) {
 				Neo4jRelationship r = new Neo4jRelationship();
+				r.setNodeID(relationship.getId());
 				r.setStartNodeID(relationship.getStartNodeId());
 				r.setEndNodeID(relationship.getEndNodeId());
 				r.setRelationshipType(relationship.getType());
@@ -169,14 +170,14 @@ public class Neo4jNode {
 	}
 
 	public String toString() {
-		String string = "Node[" + nodeID + "]: " + labels.toString() + " : " + getProperties().toString();
+		String string = "Node ID = " + nodeID + ": label = " + labels.toString() + " : property = " + getProperties().toString();
 		for (Neo4jRelationship neo4jRelationship : this.getNeo4jRelationships().getNeo4jRelationships()) {
 			string += "\n\t\t" + neo4jRelationship.toString();
 		}
 		return string;
 	}
 	public String toStringNoRelationships() {
-		String string = "Node[" + nodeID + "]: " + labels.toString() + " : " + getProperties().toString();
+		String string = "Node ID = " + nodeID + ": label = " + labels.toString() + " : property = " + getProperties().toString();
 //		for (Neo4jRelationship neo4jRelationship : this.getNeo4jRelationships().getNeo4jRelationships()) {
 //			string += "\n\t\t" + neo4jRelationship.toString();
 //		}
@@ -262,22 +263,27 @@ public class Neo4jNode {
 						matchedState = MATCHED_STATE.NodeOnly;		// So far we have this. Now check the relationships
 
 						// Compare relationships, if any
-						n1.getNeo4jRelationships().clearMatchedFlags();
-						n2.getNeo4jRelationships().clearMatchedFlags();
-						for (Neo4jRelationship neo4jRelationship : n1.getNeo4jRelationships().getNeo4jRelationships()) {
-							Neo4jRelationship neo4jRelationshipFound = n2.getNeo4jRelationships().findRelationship(neo4jRelationship);
-							if (neo4jRelationshipFound != null) {
-								neo4jRelationship.setMatched(true);
-								neo4jRelationshipFound.setMatched(true);
-								Log.logProgress("Neo4jNode.CompareNodes(): found a relationship match.");
-							}
-						}
-						// Did all the relationship properties match up?
-						if (n1.getNeo4jRelationships().countMatchedFlags() == n2.getNeo4jRelationships().getNeo4jRelationships().size() && 
-							n2.getNeo4jRelationships().countMatchedFlags() == n2.getNeo4jRelationships().getNeo4jRelationships().size()) {
-							Log.logProgress("Neo4jNode.CompareNodes(): ALL relationships match.");
-							// If we get this far, the nodes are equal. Woo hoo
+						if (n1.getNeo4jRelationships().getNeo4jRelationships().size() == 0 && 
+							n2.getNeo4jRelationships().getNeo4jRelationships().size() == 0) {
 							matchedState = MATCHED_STATE.NodeAndRelationships;
+						} else if (n1.getNeo4jRelationships().getNeo4jRelationships().size() == n2.getNeo4jRelationships().getNeo4jRelationships().size()) {
+							n1.getNeo4jRelationships().clearMatchedFlags();
+							n2.getNeo4jRelationships().clearMatchedFlags();
+							for (Neo4jRelationship neo4jRelationship : n1.getNeo4jRelationships().getNeo4jRelationships()) {
+								Neo4jRelationship neo4jRelationshipFound = n2.getNeo4jRelationships().findRelationship(neo4jRelationship);
+								if (neo4jRelationshipFound != null) {
+									neo4jRelationship.setMatched(true);
+									neo4jRelationshipFound.setMatched(true);
+									Log.logProgress("Neo4jNode.CompareNodes(): found a relationship match.");
+								}
+							}
+							// Did all the relationship properties match up?
+							if (n1.getNeo4jRelationships().countMatchedFlags() == n1.getNeo4jRelationships().getNeo4jRelationships().size() && 
+								n2.getNeo4jRelationships().countMatchedFlags() == n2.getNeo4jRelationships().getNeo4jRelationships().size()) {
+								Log.logProgress("Neo4jNode.CompareNodes(): ALL relationships match.");
+								// If we get this far, the nodes are equal. Woo hoo
+								matchedState = MATCHED_STATE.NodeAndRelationships;
+							}
 						}
 					}
 				} else {
