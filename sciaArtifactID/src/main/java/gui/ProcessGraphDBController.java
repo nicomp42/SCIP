@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
+
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNode;
@@ -19,10 +21,13 @@ import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jXML;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
@@ -98,20 +103,28 @@ public class ProcessGraphDBController {
 	@FXML private void cbHideRelationships_OnClick(ActionEvent event) {processCBHideRelationships();}
 	private void processCBHideRelationships() {}	// We read the state of this control when displaying the results of a DB Compare
 	private void saveResultsToThisFolder() {
+		Boolean statusDB1 = false, statusDB2 = false;
 		try {
 			String directory = txaSaveResultsToThisFolder.getText();
 			if (directory.trim().length() > 0) {
 				String title = "Unmatched artifacts in " + txaGraphDB01FilePath.getText() + " when compared to " + txaGraphDB02FilePath.getText();
-				saveResults(title, directory, txaGraphDB01FilePath.getText(), txaDB01Results);
+				statusDB1 = saveResults(title, directory, txaGraphDB01FilePath.getText(), txaDB01Results);
 				title = "Unmatched artifacts in " + txaGraphDB02FilePath.getText() + " when compared to " + txaGraphDB01FilePath.getText();
-				saveResults(title, directory, txaGraphDB02FilePath.getText(), txaDB02Results);
+				statusDB2 = saveResults(title, directory, txaGraphDB02FilePath.getText(), txaDB02Results);
 			}
 		} catch (Exception ex) {
 			Log.logError("ProcessGraphController.saveResultsToThisFolder(): " + ex.getLocalizedMessage());
  		} finally {
+ 			if (statusDB1 && statusDB2) {
+ 	    		Alert alert = new Alert(AlertType.INFORMATION);
+ 	    		alert.setTitle("Results saved.");
+ 	    		alert.setHeaderText("Results were written to files.");
+ 	    		alert.showAndWait();
+ 			}
 		}
 	}
-	private void saveResults(String title, String targetDirectory, String sourceOfGraph, TextArea txaResults) {
+	private Boolean saveResults(String title, String targetDirectory, String sourceOfGraph, TextArea txaResults) {
+		Boolean allIsWell = true;
 		BufferedWriter bw = null;
 		try {
 			File f = new File(sourceOfGraph);
@@ -120,7 +133,7 @@ public class ProcessGraphDBController {
 			String db1File = targetDirectory + "\\" + file.toString() + ".txt";
 			bw = new BufferedWriter(new FileWriter(db1File));
 			String crlf = System.getProperty("line.separator");
-			bw.write(title + crlf);
+			if (title.length() > 0) {bw.write(title + crlf);}
 			if (txaResults.getText().trim().length() > 0) {
 				for (String line : txaResults.getText().trim().split("\\n")) {
 					bw.write(line + crlf);
@@ -129,10 +142,17 @@ public class ProcessGraphDBController {
 				bw.write("There are no unmatched artifacts in the graph.");
 			}
 		} catch (Exception ex) {
+			allIsWell = false;
+    		Alert alert = new Alert(AlertType.ERROR);
+    		alert.setTitle("Error during save");
+    		alert.setHeaderText("");
+    		alert.setContentText(ex.getLocalizedMessage());
+    		alert.showAndWait();
 			Log.logError("ProcessGraphController.saveResults(): " + ex.getLocalizedMessage());
  		} finally {
 			try {bw.close();} catch(Exception ex) {}
 		}
+		return allIsWell;
 	}
 	private void SaveResultsToThisFolderBrowse() {
 		try {
