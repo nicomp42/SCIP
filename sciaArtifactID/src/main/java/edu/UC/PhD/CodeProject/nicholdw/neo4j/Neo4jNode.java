@@ -266,7 +266,8 @@ public class Neo4jNode {
 						if (n1.getNeo4jRelationships().getNeo4jRelationships().size() == 0 && 
 							n2.getNeo4jRelationships().getNeo4jRelationships().size() == 0) {
 							matchedState = MATCHED_STATE.NodeAndRelationships;
-						} else if (n1.getNeo4jRelationships().getNeo4jRelationships().size() == n2.getNeo4jRelationships().getNeo4jRelationships().size()) {
+						} else /*if (n1.getNeo4jRelationships().getNeo4jRelationships().size() == n2.getNeo4jRelationships().getNeo4jRelationships().size()) */ {
+//							Check the relationships even if the counts don't match because some might match.  
 							n1.getNeo4jRelationships().clearMatchedFlags();
 							n2.getNeo4jRelationships().clearMatchedFlags();
 							for (Neo4jRelationship neo4jRelationship : n1.getNeo4jRelationships().getNeo4jRelationships()) {

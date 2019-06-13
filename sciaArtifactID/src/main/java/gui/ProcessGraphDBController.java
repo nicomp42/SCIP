@@ -325,7 +325,7 @@ public class ProcessGraphDBController {
 		for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
 			writeLineOfResults(neo4jNode, txaDB02Results);
 		}
-		if (txaDB02Results.getText().trim().length() == 0 && txaDB02Results.getText().trim().length() == 0) {
+		if (txaDB01Results.getText().trim().length() == 0 && txaDB02Results.getText().trim().length() == 0) {
 			//lblResults.setStyle("-fx-background-color:green; -fx-font-color:white;");
 			lblResults.setText("The graphs are equivalent.");
 		} else {

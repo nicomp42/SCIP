@@ -154,7 +154,7 @@ public class Neo4jDB {
 			}
 			// Next, check for a match of just the node name/properties, ignoring the relationships
 			Log.logProgress("Neo4jUtils.compareDatabases(): Checking for node name/property matches of unmatched nodes...");
-			for (Neo4jNode neo4jNode : db01.getNeo4jNodes()) {
+			for (Neo4jNode neo4jNode: db01.getNeo4jNodes()) {
 				Neo4jNode foundNode;
 				if (neo4jNode.getMatchedState() == MATCHED_STATE.Unmatched) {
 					foundNode = findNode(neo4jNode, db02, keysToIgnore, MATCHED_STATE.NodeOnly);
