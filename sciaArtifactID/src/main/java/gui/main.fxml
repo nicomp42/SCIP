@@ -87,7 +87,7 @@
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                 </MenuItem>
-	            <MenuItem fx:id="mnuProcessGraphDB" mnemonicParsing="false" onAction="#mnuToolsProcessGraphDB_OnAction" text="Process a Graph Database">
+	            <MenuItem fx:id="mnuProcessGraphDB" mnemonicParsing="false" onAction="#mnuToolsProcessGraphDB_OnAction" text="Graph Database Tools">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="G" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>

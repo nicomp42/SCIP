@@ -40,12 +40,30 @@ public class Neo4jNode {
 	private Neo4jRelationships neo4jRelationships;
 	private long nodeID; // The Node ID established by the GraphDB engine
 	private boolean matched;
+	public enum MATCHED_STATE {Unknown, NodeAndRelationships, NodeOnly};
 
 	public Neo4jNode() {
 		labels = new ArrayList<String>();
 		neo4jProperties = new Neo4jProperties(); // new HashMap<String, Neo4jPropertyValues>();
 		neo4jRelationships = new Neo4jRelationships();
 		matched = false;
+	}
+	public MATCHED_STATE computeMatchedState() {
+		MATCHED_STATE matchedState = MATCHED_STATE.Unknown;
+		if (matched) {
+			matchedState = MATCHED_STATE.NodeOnly;
+			if (countUnmatchedRelationships() == 0) {
+				matchedState = MATCHED_STATE.NodeAndRelationships;
+			}
+		}
+		return matchedState;
+	}
+	public int countUnmatchedRelationships() {
+		int count = 0;
+		for (Neo4jRelationship neo4jRelationship: neo4jRelationships.getNeo4jRelationships()) {
+			count += (neo4jRelationship.isMatched() ? 1 : 0);
+		}
+		return count;
 	}
 
 	public void addRelationships(Iterable<Relationship> relationships) {
@@ -255,10 +273,10 @@ public class Neo4jNode {
 						}
 						// Did all the relationship properties match up?
 						if (n1.getNeo4jRelationships().countMatchedFlags() == n1.getNeo4jRelationships().getNeo4jRelationships().size() && 
-								n2.getProperties().countMatchedFlags() == n2.getProperties().getNeo4jProperties().size()) {
-								Log.logProgress("Neo4jNode.CompareNodes(): ALL properties match.");
-								// If we get this far, the nodes are equal. Woo hoo
-								isEqual = true;
+							n2.getNeo4jRelationships().countMatchedFlags() == n2.getNeo4jRelationships().getNeo4jRelationships().size()) {
+							Log.logProgress("Neo4jNode.CompareNodes(): ALL relationships match.");
+							// If we get this far, the nodes are equal. Woo hoo
+							isEqual = true;
 						}
 					}
 				} else {

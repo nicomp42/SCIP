@@ -59,8 +59,19 @@ public class Neo4jRelationship {
 	public void setName(String name) {
 		this.name = name;
 	}
+	/**
+	 * Format the name property. If it's blank, replace it with a message saying so.
+	 * @return The formatted name
+	 */
+	public String formatName() {
+		if (name.trim().length() > 0) {
+			return name.trim();
+		} else {
+			return "{no name}";
+		}
+	}
 	public String toString() {return name + ": " + neo4jProperties.toString() + " [" + getStartNodeID() + "]---[" + getEndNodeID() + "]";}
-	
+
 	public static boolean compareRelationships(Neo4jRelationship r1, Neo4jRelationship r2) {
 		Log.logProgress("Neo4jRelationship.compareRelationships(): comparing " + r1.getName() + " and " + r2.getName());
 		boolean match = false;

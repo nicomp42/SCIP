@@ -24,7 +24,13 @@ public class Neo4jNodes {
 	public void addNeo4jNode(Neo4jNode neo4jNode) {
 		neo4jNodes.add(neo4jNode);
 	}
-
+	public int countUnmatchedRelationships() {
+		int count = 0;
+		for (Neo4jNode neo4jNode : neo4jNodes) {
+			count += neo4jNode.countUnmatchedRelationships();
+		}
+		return count;
+	}
 	/***
 	 * Not the best solution because it returns a reference to a private class member
 	 * @return The reference to the list of Neo4j Nodes stored in the object

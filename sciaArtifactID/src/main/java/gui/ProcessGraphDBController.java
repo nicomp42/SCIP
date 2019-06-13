@@ -17,6 +17,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNode;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNodes;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jRelationship;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jXML;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -43,10 +44,14 @@ import javafx.stage.Stage;
  */
 public class ProcessGraphDBController {
 
+	private Neo4jNodes neo4jNodes01 = null;
+	private Neo4jNodes neo4jNodes02 = null;
+
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaGraphDBFilePath, txaDBResults, txaSaveToXMLFile;
 	@FXML	private TextArea txaGraphDB01FilePath, txaDB01Results, txaGraphDB02FilePath, txaDB02Results, txaSaveResultsToThisFolder;
-	@FXML	private Button btnDBSubmit, btnDBBrowse, btnDBCompare, btnDB01Browse, btnDB02Browse, btnXMLBrowse, btnSaveResultsToThisFolderBrowse, btnSaveResultsToThisFolder;
+	@FXML	private Button btnDBSubmit, btnDBBrowse, btnDBCompare, btnDB01Browse, btnDB02Browse, btnXMLBrowse;
+	@FXML	private Button btnSaveResultsToThisFolderBrowse, btnSaveResultsToThisFolder, btnExportDB01ResultsToGraph, btnExportDB02ResultsToGraph;
 	@FXML 	private Label lblDB01UnmatchedNodes, lblDB02UnmatchedNodes, lblResults, lblCompareWorking, lblSaveToXMLFile, lblContentsOfGraphDB;
 	@FXML	private Label lblLoadWorking;
 	@FXML	private Pane pneDBResults, pneDBLoad;
@@ -73,6 +78,21 @@ public class ProcessGraphDBController {
 //		cbRelationships.setSelected(true);
 //		cbAttributes.setSelected(true);
 	}
+	@FXML
+	private void btnExportDB01ResultsToGraph_OnClick(ActionEvent event) {
+		exportToGraph();
+	}
+	@FXML
+	private void btnExportDB02ResultsToGraph_OnClick(ActionEvent event) {
+		exportToGraph();
+	}
+	/**
+	 * Export the results of the comparison to the currently open graph
+	 * Make sure there is a currently open graph
+	 */
+	private void exportToGraph() {
+		
+	}
 	private void displayLoadGraphDBResults(boolean visible) {
 		pneDBResults.setVisible(visible);
 	}
@@ -86,6 +106,8 @@ public class ProcessGraphDBController {
 		txaSaveResultsToThisFolder.setVisible(visible);
 		btnSaveResultsToThisFolderBrowse.setVisible(visible);
 		btnSaveResultsToThisFolder.setVisible(visible);
+		btnExportDB01ResultsToGraph.setVisible(visible);
+		btnExportDB02ResultsToGraph.setVisible(visible);
 	}
 	private void disableDBSelectionControls(boolean disable) {
 		txaGraphDB01FilePath.setDisable(disable);
@@ -208,8 +230,8 @@ public class ProcessGraphDBController {
 	}
 	private void CompareDB() {
 		Log.logProgress("ProcessGraphDB.CompareDB(): " + txaGraphDB01FilePath.getText().trim() + ", " + txaGraphDB02FilePath.getText().trim());
-		Neo4jNodes neo4jNodes01 = new Neo4jNodes();
-		Neo4jNodes neo4jNodes02 = new Neo4jNodes();
+		neo4jNodes01 = new Neo4jNodes();
+		neo4jNodes02 = new Neo4jNodes();
 		btnDBCompare.setVisible(false);
 		btnDBCompare.setDisable(true);
 		cbHideRelationships.setVisible(false);
@@ -290,25 +312,36 @@ public class ProcessGraphDBController {
 	 * @param neo4jNodes02 Results from DB 02
 	 */
 	private void displayResults(Neo4jNodes neo4jNodes01, Neo4jNodes neo4jNodes02) {
-		if (neo4jNodes01.countUnmatchedNodes() == 0 && neo4jNodes02.countUnmatchedNodes() == 0) {
+		if (neo4jNodes01.countUnmatchedNodes() == 0 && neo4jNodes02.countUnmatchedNodes() == 0
+				&& neo4jNodes01.countUnmatchedRelationships() == 0 && neo4jNodes02.countUnmatchedRelationships() == 0) {
 			//lblResults.setStyle("-fx-background-color:green; -fx-font-color:white;");
 			lblResults.setText("The graphs are equivalent.");
 		} else {
 			//lblResults.setStyle("-fx-background-color:red; -fx-font-color:white;");
 			lblResults.setText("The graphs are not equivalent.");
-		}
-		for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
-			if (cbHideRelationships.isSelected()) {
-				txaDB01Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));					
-			} else {
-				txaDB01Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
-			}
-		}
-		for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
-			if (cbHideRelationships.isSelected()) {
-				txaDB02Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
-			} else {
-				txaDB02Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+			for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
+				if (cbHideRelationships.isSelected()) {
+					txaDB01Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));					
+				} else {
+					txaDB01Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+				}
+				for (Neo4jRelationship neo4jRelationship : neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
+					if (!neo4jRelationship.isMatched()) {
+						txaDB01Results.appendText(neo4jRelationship.toString() + System.getProperty("line.separator"));
+					}
+				}
+			}			
+			for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
+				if (cbHideRelationships.isSelected()) {
+					txaDB02Results.appendText(neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
+				} else {
+					txaDB02Results.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+				}
+				for (Neo4jRelationship neo4jRelationship : neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
+					if (!neo4jRelationship.isMatched()) {
+						txaDB01Results.appendText(neo4jRelationship.toString() + System.getProperty("line.separator"));
+					}
+				}
 			}
 		}
 	}
