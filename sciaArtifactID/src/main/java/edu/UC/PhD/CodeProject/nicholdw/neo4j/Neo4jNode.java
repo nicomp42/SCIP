@@ -39,23 +39,23 @@ public class Neo4jNode {
 	private Neo4jProperties neo4jProperties;
 	private Neo4jRelationships neo4jRelationships;
 	private long nodeID; // The Node ID established by the GraphDB engine
-	private boolean matched;
+	private MATCHED_STATE matchedState;
 	public enum MATCHED_STATE {Unmatched, NodeAndRelationships, NodeOnly};
 
 	public Neo4jNode() {
 		labels = new ArrayList<String>();
 		neo4jProperties = new Neo4jProperties(); // new HashMap<String, Neo4jPropertyValues>();
 		neo4jRelationships = new Neo4jRelationships();
-		matched = false;
+		matchedState = MATCHED_STATE.Unmatched;
 	}
 	public MATCHED_STATE computeMatchedState() {
-		MATCHED_STATE matchedState = MATCHED_STATE.Unmatched;
+/*		MATCHED_STATE matchedState = MATCHED_STATE.Unmatched;
 		if (matched) {
 			matchedState = MATCHED_STATE.NodeOnly;
 			if (countUnmatchedRelationships() == 0) {
 				matchedState = MATCHED_STATE.NodeAndRelationships;
 			}
-		}
+		}*/
 		return matchedState;
 	}
 	public int countUnmatchedRelationships() {
@@ -213,14 +213,14 @@ public class Neo4jNode {
 	 * @param n1
 	 * @param n2
 	 * @param keysToIgnore an array of key names that should be ignored in the comparison, or null if none should be ignored
-	 * @return True if the nodes have the same relationships, properties, and labels
+	 * @return The state of the match
 	 */
-	public static boolean compareNodes(Neo4jNode n1, Neo4jNode n2, String[] propertyKeysToSkip) {
-		Log.logProgress("Neo4jNode.CompareNodes(): Comparing Node IDs " + n1.getNodeID() + " & " + n2.getNodeID());
-		Log.logProgress("Neo4jNode.CompareNodes(): Comparing Node IDs " + n1.toStringNoRelationships() + " & " + n2.toStringNoRelationships());
+	public static MATCHED_STATE compareNodes(Neo4jNode n1, Neo4jNode n2, String[] propertyKeysToSkip) {
+		Log.logProgress("Neo4jNode.CompareNodes(): Comparing Nodes " + n1.toString() + " & " + n2.toString());
+//		Log.logProgress("Neo4jNode.CompareNodes(): with relationships " + n1.toStringNoRelationships() + " & " + n2.toStringNoRelationships());
 		List<String> ListOfPropertyKeysToSkip = new ArrayList<String>();
 		if (propertyKeysToSkip != null) {ListOfPropertyKeysToSkip = Arrays.asList(propertyKeysToSkip);}
-		Boolean isEqual = false;
+		MATCHED_STATE matchedState = MATCHED_STATE.Unmatched;
 		int countOfKeysIgnored;
 		countOfKeysIgnored = 0;
 		try {
@@ -259,6 +259,7 @@ public class Neo4jNode {
 					if ((n1.getProperties().countMatchedFlags()) == n1.getProperties().getNeo4jProperties().size() && 
 						(n2.getProperties().countMatchedFlags()) == n2.getProperties().getNeo4jProperties().size()) {
 						Log.logProgress("Neo4jNode.CompareNodes(): ALL properties match." + countOfKeysIgnored + " keys were ignored.");
+						matchedState = MATCHED_STATE.NodeOnly;		// So far we have this. Now check the relationships
 
 						// Compare relationships, if any
 						n1.getNeo4jRelationships().clearMatchedFlags();
@@ -272,11 +273,11 @@ public class Neo4jNode {
 							}
 						}
 						// Did all the relationship properties match up?
-						if (n1.getNeo4jRelationships().countMatchedFlags() == n1.getNeo4jRelationships().getNeo4jRelationships().size() && 
+						if (n1.getNeo4jRelationships().countMatchedFlags() == n2.getNeo4jRelationships().getNeo4jRelationships().size() && 
 							n2.getNeo4jRelationships().countMatchedFlags() == n2.getNeo4jRelationships().getNeo4jRelationships().size()) {
 							Log.logProgress("Neo4jNode.CompareNodes(): ALL relationships match.");
 							// If we get this far, the nodes are equal. Woo hoo
-							isEqual = true;
+							matchedState = MATCHED_STATE.NodeAndRelationships;
 						}
 					}
 				} else {
@@ -288,7 +289,7 @@ public class Neo4jNode {
 		} catch (Exception ex) {
 			Log.logError("Neo4jUtils.compareNodes(): " + ex.getLocalizedMessage());
 		}
-		return isEqual;
+		return matchedState;
 	}
 
 	/***
@@ -305,11 +306,11 @@ public class Neo4jNode {
 		}
 	}
 
-	public boolean isMatched() {
-		return matched;
+	public MATCHED_STATE getMatchedState() {
+		return matchedState;
 	}
 
-	public void setMatched(boolean matched) {
-		this.matched = matched;
+	public void setMatchedState(MATCHED_STATE matchedState) {
+		this.matchedState = matchedState;
 	}
 }

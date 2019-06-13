@@ -25,6 +25,7 @@ import org.neo4j.io.fs.FileUtils;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.exception.NotImplementedException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNode.MATCHED_STATE;
 
 public class Neo4jDB {
 
@@ -133,22 +134,44 @@ public class Neo4jDB {
 		try {
 			db01.clearMatchedFlags();
 			db02.clearMatchedFlags();
+			// First look for complete matches
+			Log.logProgress("Neo4jUtils.compareDatabases(): Checking for complete matches of unmatched nodes...");
 			for (Neo4jNode neo4jNode : db01.getNeo4jNodes()) {
 				Neo4jNode foundNode;
-				foundNode = findNode(neo4jNode, db02, keysToIgnore);
-				if (foundNode == null) {
-					Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " not found.");
-					isEqual = false;
-				} else {
-					neo4jNode.setMatched(true);
-					foundNode.setMatched(true);
+				if (neo4jNode.getMatchedState() == MATCHED_STATE.Unmatched) {
+					foundNode = findNode(neo4jNode, db02, keysToIgnore, MATCHED_STATE.NodeAndRelationships);
+					if (foundNode == null) {
+						Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " complete match not found.");
+						isEqual = false;
+					} else {
+						Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " complete match FOUND.");
+						neo4jNode.setMatchedState(MATCHED_STATE.NodeAndRelationships);
+						foundNode.setMatchedState(MATCHED_STATE.NodeAndRelationships);
+					}
 				}
 			}
-			if (db01.countUnmatchedNodes() == 0 && db02.countUnmatchedNodes() == 0) {
+			// Next, check for a match of just the node name/properties, ignoring the relationships
+			Log.logProgress("Neo4jUtils.compareDatabases(): Checking for node name/property matches of unmatched nodes...");
+			for (Neo4jNode neo4jNode : db01.getNeo4jNodes()) {
+				Neo4jNode foundNode;
+				if (neo4jNode.getMatchedState() == MATCHED_STATE.Unmatched) {
+					foundNode = findNode(neo4jNode, db02, keysToIgnore, MATCHED_STATE.NodeOnly);
+					if (foundNode == null) {
+						Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " node match not found.");
+						isEqual = false;
+					} else {
+						Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " node match FOUND.");
+						neo4jNode.setMatchedState(MATCHED_STATE.NodeOnly);
+						foundNode.setMatchedState(MATCHED_STATE.NodeOnly);
+					}
+				}
+			}
+				
+			if (db01.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) == 0 && db02.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) == 0) {
 				Log.logProgress("Neo4jDB.compareDatabases(): No unmatched nodes"); 
 			} else {
 				isEqual = false;
-				Log.logProgress("Neo4jDB.compareDatabases(): " + db01.countUnmatchedNodes() + " unmatched nodes in first DB, " + db02.countUnmatchedNodes() + " unmatched nodes in second DB");
+				Log.logProgress("Neo4jDB.compareDatabases(): " + db01.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) + " unmatched nodes in first DB, " + db02.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) + " unmatched nodes in second DB");
 				db01.printUnmatchedNodes();
 				db02.printUnmatchedNodes();
 				if (neo4jUnmatchedNodes01 != null) {db01.copyUnmatchedNodes(neo4jUnmatchedNodes01);}
@@ -364,15 +387,15 @@ public class Neo4jDB {
 		return foundNode;
 	}
 */
- 	public static Neo4jNode findNode(Neo4jNode targetNode, Neo4jNodes db, String[] keysToIgnore) {
+ 	public static Neo4jNode findNode(Neo4jNode targetNode, Neo4jNodes db, String[] keysToIgnore, MATCHED_STATE desiredMatchedState) {
  		Neo4jNode foundNode = null;
  		for (Neo4jNode neo4jNode: db.getNeo4jNodes()) {
-            if (Neo4jNode.compareNodes(targetNode, neo4jNode, keysToIgnore) == true) {foundNode = neo4jNode; break;}
+ 			if (neo4jNode.getMatchedState() == MATCHED_STATE.Unmatched) {
+ 				if (Neo4jNode.compareNodes(targetNode, neo4jNode, keysToIgnore) == desiredMatchedState) {foundNode = neo4jNode; break;}
+ 			}
  		}
  		return foundNode;
  	}
-	
-	
 	/**
 	 * This is useful for finding attributes in a schema topology graph that are not
 	 * referenced by any queries

@@ -53,27 +53,27 @@ public class Main {
 		 System.out.println("Done.");
 	 }
 	 private static void testCase01() {
-		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01",
-				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a",
-				 									true, null, null);
-		 System.out.println("Result of comparison = " + isEqual);
+//		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01",
+//				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase01a",
+//				 									true, null, null);
+//		 System.out.println("Result of comparison = " + isEqual);
 	 }
 	 private static void testCase02() {
-		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase02",
-				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase02a",
-				 									true, null, null);
-		 System.out.println("Result of comparison = " + isEqual);
+//		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase02",
+//				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase02a",
+//				 									true, null, null);
+//		 System.out.println("Result of comparison = " + isEqual);
 	 }
 	 private static void testCase03() {
-		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase03",
-				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase03a",
-				 									true, null, null);
-		 System.out.println("Result of comparison = " + isEqual);
+//		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase03",
+//				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase03a",
+//				 									true, null, null);
+//		 System.out.println("Result of comparison = " + isEqual);
 	 }
 	 private static void testCase04() {
-		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase04",
-				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase04a",
-				 									true, null, null);
-		 System.out.println("Result of comparison = " + isEqual);
+//		 Boolean isEqual = Neo4jDB.compareDatabases("C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase04",
+//				 									"C:\\Users\\nicomp\\git\\SCIP\\sciaArtifactID\\TestCases\\CompareGraphs\\TestCase04a",
+//				 									true, null, null);
+//		 System.out.println("Result of comparison = " + isEqual);
 	 }
 }

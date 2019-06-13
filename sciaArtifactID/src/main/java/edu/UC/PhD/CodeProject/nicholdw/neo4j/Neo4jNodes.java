@@ -8,6 +8,7 @@ package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 import java.util.ArrayList;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNode.MATCHED_STATE;
 
 /***
  * A collection of Neo4jNode objects and some utilities to manipulate them
@@ -45,7 +46,7 @@ public class Neo4jNodes {
 	}
 	public void clearMatchedFlags() {
 		for (Neo4jNode neo4jNode : neo4jNodes) {
-			neo4jNode.setMatched(false);
+			neo4jNode.setMatchedState(MATCHED_STATE.Unmatched);
 		}
 	}
 	/***
@@ -54,7 +55,7 @@ public class Neo4jNodes {
 	 */
 	public void copyUnmatchedNodes(Neo4jNodes neo4jNodesUnmatched) {
 		for (Neo4jNode neo4jNode : neo4jNodes) {
-			if (!neo4jNode.isMatched()) {
+			if (neo4jNode.getMatchedState() != MATCHED_STATE.NodeAndRelationships) {
 				neo4jNodesUnmatched.addNeo4jNode(neo4jNode);
 			}
 		}
@@ -62,12 +63,13 @@ public class Neo4jNodes {
 	
 	/***
 	 * After a comparison of two graphs, count the number of unmatched nodes in the object.
-	 * @return The count of unmatched nodes
+	 * @param desiredMatchState the matched state to check for. 
+	 * @return The count of nodes that do not have desiredMatchState
 	 */
-	public int countUnmatchedNodes() {
+	public int countUnmatchedNodes(MATCHED_STATE desiredMatchState) {
 		int unmatchedNodes = 0;
 		for (Neo4jNode neo4jNode : neo4jNodes) {
-			if (!neo4jNode.isMatched()) {unmatchedNodes++;}
+			if (neo4jNode.getMatchedState() != desiredMatchState) {unmatchedNodes++;}
 		}
 		return unmatchedNodes;
 	}
@@ -108,7 +110,7 @@ public class Neo4jNodes {
  	}
  	public void printUnmatchedNodes() {
 		for (Neo4jNode neo4jNode : neo4jNodes) {
-			if (!neo4jNode.isMatched()) {
+			if (neo4jNode.getMatchedState() != MATCHED_STATE.NodeAndRelationships) {
 				Log.logProgress("Neo4jNodes.printUnmatchedNodes()" + neo4jNode.toString());
 			}
 		}

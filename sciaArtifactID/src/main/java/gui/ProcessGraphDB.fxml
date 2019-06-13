@@ -52,7 +52,7 @@
             <content>
               <AnchorPane fx:id="SaveResultsToThisFolder" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 	              <children>
-                        <Label fx:id="lblResults" layoutX="296.0" layoutY="252.0" prefHeight="21.0" prefWidth="246.0">
+                        <Label fx:id="lblResults" layoutX="128.0" layoutY="227.0" prefHeight="27.0" prefWidth="408.0">
                            <font>
                               <Font name="Arial" size="24.0" />
                            </font></Label>
@@ -67,7 +67,7 @@
 				      <Button fx:id="btnDB02Browse" layoutX="188.0" layoutY="74.0" mnemonicParsing="false" onAction="#btnDB02Browse_OnClick" text="Browse for DB 2" />
                       <Label fx:id="lblDB01UnmatchedNodes" layoutX="23.0" layoutY="270.0" text="DB 1 Unmatched Artifacts" />
 
-				      <Button fx:id="btnDBCompare" layoutX="719.0" layoutY="148.0" mnemonicParsing="false" onAction="#btnDBCompare_OnClick" text="Compare" />
+				      <Button fx:id="btnDBCompare" layoutX="719.0" layoutY="154.0" mnemonicParsing="false" onAction="#btnDBCompare_OnClick" text="Compare" />
                       <Label fx:id="lblDB02UnmatchedNodes" layoutX="23.0" layoutY="519.0" text="DB 2 Unmatched Artifacts" />
 
 				      <TextArea fx:id="txaDB02Results" layoutX="19.0" layoutY="543.0" prefHeight="222.0" prefWidth="781.0" />
@@ -76,12 +76,12 @@
                               <Font size="36.0" />
                            </font>
                       </Label>
-                        <Label layoutX="136.0" layoutY="144.0" prefHeight="30.0" prefWidth="548.0" text="Be sure neither graph DB is currently running in Neo4j, else the comparison will fail.">
+                        <Label layoutX="136.0" layoutY="150.0" prefHeight="30.0" prefWidth="548.0" text="Be sure neither graph DB is currently running in Neo4j, else the comparison will fail.">
                            <font>
                               <Font name="Arial" size="14.0" />
                            </font>
                         </Label>
-                        <CheckBox fx:id="cbHideRelationships"  layoutX="552.0" layoutY="180.0" mnemonicParsing="false" onAction="#cbHideRelationships_OnClick" prefHeight="17.0" prefWidth="234.0" text="Hide relationships in results for nodes" />
+                        <CheckBox fx:id="cbHideRelationships" layoutX="552.0" layoutY="180.0" mnemonicParsing="false" onAction="#cbHideRelationships_OnClick" prefHeight="17.0" prefWidth="234.0" selected="true" text="Hide relationships in results for nodes" visible="false" />
                         <CheckBox fx:id="cbIgnoreKey" layoutX="552.0" layoutY="203.0" mnemonicParsing="false" text="Ignore Key property" />
                         <Label fx:id="lblSaveResultsToThisFolder" layoutX="19.0" layoutY="777.0" text="Save results to this folder:" />
                         <TextArea fx:id="txaSaveResultsToThisFolder" layoutX="161.0" layoutY="770.0" prefHeight="31.0" prefWidth="422.0" />
