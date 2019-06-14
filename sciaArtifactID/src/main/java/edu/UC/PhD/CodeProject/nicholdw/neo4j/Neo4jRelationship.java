@@ -72,7 +72,7 @@ public class Neo4jRelationship {
 			return "{no name}";
 		}
 	}
-	public String toString() {return "Relationship ID = " + nodeID + " " + name + ": property = " + neo4jProperties.toString() + " [" + getStartNodeID() + "]---[" + getEndNodeID() + "]";}
+	public String toString() {return "Relationship ID = " + nodeID + " type = {" + name + "} property = " + neo4jProperties.toString() + " [" + getStartNodeID() + "]---[" + getEndNodeID() + "]";}
 
 	public static boolean compareRelationships(Neo4jRelationship r1, Neo4jRelationship r2) {
 		Log.logProgress("Neo4jRelationship.compareRelationships(): comparing " + r1.getName() + " and " + r2.getName());

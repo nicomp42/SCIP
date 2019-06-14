@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -319,12 +321,26 @@ public class ProcessGraphDBController {
 	 * @param neo4jNodes02 Results from DB 02
 	 */
 	private void displayResults(Neo4jNodes neo4jNodes01, Neo4jNodes neo4jNodes02) {
+		// Use a HashMap to eliminate duplicates from each of the two results sets.
+		// A missing relationship would appear in both nodes that it connects.
+		HashMap<String, Neo4jNode> db01HashMap = new HashMap<String, Neo4jNode>();
+		HashMap<String, Neo4jNode> db02HashMap = new HashMap<String, Neo4jNode>();
 		for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
-			writeLineOfResults(neo4jNode, txaDB01Results);
+			formatLineOfResults(neo4jNode, db01HashMap);
 		}
 		for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
-			writeLineOfResults(neo4jNode, txaDB02Results);
+			formatLineOfResults(neo4jNode, db02HashMap);
 		}
+        for (Map.Entry<String, Neo4jNode> entry : db01HashMap.entrySet()) {
+			writeLineOfResults(entry.getKey(), txaDB01Results);        	
+        }
+        for (Map.Entry<String, Neo4jNode> entry : db02HashMap.entrySet()) {
+			writeLineOfResults(entry.getKey(), txaDB02Results);        	
+        }
+
+//		for (Neo4jNode neo4jNode: neo4jNodes02.getNeo4jNodes()) {
+//			writeLineOfResults(neo4jNode, txaDB02Results);
+//		}
 		if (txaDB01Results.getText().trim().length() == 0 && txaDB02Results.getText().trim().length() == 0) {
 			//lblResults.setStyle("-fx-background-color:green; -fx-font-color:white;");
 			lblResults.setText("The graphs are equivalent.");
@@ -333,19 +349,18 @@ public class ProcessGraphDBController {
 			lblResults.setText("The graphs are not equivalent.");
 		}
 	}
-	
-	private void writeLineOfResults(Neo4jNode neo4jNode, TextArea textArea) {
+	private void formatLineOfResults(Neo4jNode neo4jNode, HashMap<String, Neo4jNode> myHashMap) {
 		switch (neo4jNode.computeMatchedState()) {
 			case Unmatched:
 				// Display the node and since the node is not matched, display all the relationships into the node
 				if (cbHideRelationships.isSelected()) {
-					textArea.appendText("Unmatched Node: " + neo4jNode.toStringNoRelationships() + System.getProperty("line.separator"));
+					myHashMap.put("Unmatched Node: " + neo4jNode.toStringNoRelationships(), neo4jNode);
 				} else {
-					textArea.appendText(neo4jNode.toString() + System.getProperty("line.separator"));
+					myHashMap.put(neo4jNode.toString(), neo4jNode);
 				}
 				for (Neo4jRelationship neo4jRelationship : neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
 					if (!neo4jRelationship.isMatched()) {
-						textArea.appendText("Unmatched Relationship: " + neo4jRelationship.toString() + System.getProperty("line.separator"));
+						myHashMap.put("Unmatched Relationship: " + neo4jRelationship.toString(), neo4jNode);
 					}
 				}
 				break;
@@ -353,12 +368,16 @@ public class ProcessGraphDBController {
 				// The node matched, just display the relationships that don't match
 				for (Neo4jRelationship neo4jRelationship : neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
 					if (!neo4jRelationship.isMatched()) {
-						textArea.appendText("Unmatched Relationship: " + neo4jRelationship.toString() + System.getProperty("line.separator"));
+						myHashMap.put("Unmatched Relationship: " + neo4jRelationship.toString(), neo4jNode);
 					}
 				}
 				break;
 			default:
 				break;
 		}
+	}
+	
+	private void writeLineOfResults(String text, TextArea textArea) {
+		textArea.appendText(text + System.lineSeparator());
 	}
 }
