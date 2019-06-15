@@ -6,7 +6,6 @@
 
 package gui;
 
-import java.awt.Panel;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -14,8 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNode;
@@ -27,10 +24,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
@@ -89,18 +84,19 @@ public class ProcessGraphDBController {
 	}
 	@FXML
 	private void btnExportDB01ResultsToGraph_OnClick(ActionEvent event) {
-		exportToGraph();
+		exportToGraph(neo4jNodes01);
 	}
 	@FXML
 	private void btnExportDB02ResultsToGraph_OnClick(ActionEvent event) {
-		exportToGraph();
+		exportToGraph(neo4jNodes02);
 	}
 	/**
 	 * Export the results of the comparison to the currently open graph
 	 * Make sure there is a currently open graph
 	 */
-	private void exportToGraph() {
-		
+	private void exportToGraph(Neo4jNodes neo4jNodes) {
+		Neo4jDB neo4jDB = new Neo4jDB("Graph", "", neo4jNodes);
+		neo4jDB.exportToGraph();
 	}
 	private void displayLoadGraphDBResults(boolean visible) {
 		pneDBResults.setVisible(visible);

@@ -21,6 +21,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 /***
@@ -32,8 +33,8 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
  */
 public class Neo4jNode {
 
-	private String value;
-	private String key;
+//	private String value;
+//	private String key;
 	private ArrayList<String> labels;
 	// private HashMap<String, Neo4jPropertyValues> properties;
 	private Neo4jProperties neo4jProperties;
@@ -319,5 +320,22 @@ public class Neo4jNode {
 
 	public void setMatchedState(MATCHED_STATE matchedState) {
 		this.matchedState = matchedState;
+	}
+	/***
+	 * Build a labels string for use in a cypher CREATE statement.
+	 * The leading colon is not added here. 
+	 * @return
+	 */
+	public static String formatLabels(Neo4jNode neo4jNode) {
+		String results = "";
+		String colon = "";
+		for (String label: neo4jNode.getLabels()) {
+			results += colon + Utils.QuoteMeBack(label);
+			colon = ":";
+		}
+		return results;
+	}
+	public static String formatNeo4jProperties(Neo4jNode neo4jNode) {
+		return neo4jNode.getProperties().formatNeo4jProperties();
 	}
 }

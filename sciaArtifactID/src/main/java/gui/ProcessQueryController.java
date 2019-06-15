@@ -141,7 +141,7 @@ public class ProcessQueryController /* extends Application */ {
 		try {
 			String CSVFolder = txaCSVFolder.getText().trim();
 			if (CSVFolder.length() != 0) {
-				Neo4jDB.setNeo4jConnectionParameters("neo4j", "Danger42");			// TODO generalize this
+				Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());			// TODO generalize this
 				QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jFilePrefix(), QueryDefinitionFileProcessing.cypherQueries, "");	// Folder defaults to the import folder in the Neo4j project structure
 			} else {
 	    		Alert alert = new Alert(AlertType.ERROR);		// http://code.makery.ch/blog/javafx-dialogs-official/

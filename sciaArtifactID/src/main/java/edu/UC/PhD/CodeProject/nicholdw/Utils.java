@@ -15,10 +15,19 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.sql.ResultSet;
 
+import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class Utils {
-
+	
+	/**
+	 * Make sure the DB is loaded into Neo4j
+	 */
+	public static void openBrowserWindow() {
+		Browser browser = new Browser(Browser.getNextBrowserSerialNumber().toString());
+		Config.getConfig().addBrowser(browser);
+		browser.initAndLoad(null);
+	}
 	/***
 	 * Make the labels in a graph a little easier to read. Or not.
 	 * @param text The text of the label

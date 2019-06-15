@@ -3,13 +3,31 @@ package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
+
 public class Neo4jProperties {
     private HashMap<String, Neo4jProperty> neo4jProperties;
 
     public Neo4jProperties() {
     	neo4jProperties = new HashMap<String, Neo4jProperty>();
     }
-    
+    /**
+     * Format for use in a cypher CREATE statement
+     * @return
+     */
+    public String formatNeo4jProperties() {
+    	StringBuilder results = new StringBuilder();    
+    	String comma = "";
+    	for (Entry<String, Neo4jProperty> neo4jPropertyEntry : neo4jProperties.entrySet()) {
+    		results.append(comma);		// It's blank the first time through this loop
+    		results.append(Utils.QuoteMeBack(neo4jPropertyEntry.getKey()).toString());
+    		results.append(":");
+    		results.append(Utils.QuoteMeDouble(((Neo4jProperty)neo4jPropertyEntry.getValue()).toStringForCypher()));
+    		comma = ",";
+    	}
+    	return results.toString();
+    }	
+
     public String toString() {
     	StringBuilder sb = new StringBuilder("(");
     	String space = " ";

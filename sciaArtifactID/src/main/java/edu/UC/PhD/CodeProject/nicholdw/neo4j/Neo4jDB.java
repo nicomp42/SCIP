@@ -25,6 +25,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.io.fs.FileUtils;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.exception.NotImplementedException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jNode.MATCHED_STATE;
@@ -256,16 +257,16 @@ public class Neo4jDB {
 	 * Execute an action query against the database. It must be started and
 	 * listening on port #dbmsConnectorBoltPort.
 	 * 
-	 * @param sql
+	 * @param cypher
 	 *            The action query to be executed.
 	 * @throws Exception
 	 */
-	public static void ExecActionQuery(final String sql) throws Exception {
+	public static void ExecActionQuery(final String cypher) throws Exception {
 		// Don't call getDriver here. The driver should already be configured by
 		// whomever called this method
 		// getDriver();
 		try (Session session = driver.session()) {
-			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "query = " + sql);
+			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "query = " + cypher);
 			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "session is " + (session.isOpen() ? "" : "not ") + "open");
 			// If there is no active db, then this method call causes all kind of errors
 			// that we can't catch.
@@ -278,8 +279,8 @@ public class Neo4jDB {
 				public String execute(Transaction tx) {
 					try {
 						// StatementResult result = tx.run( sql );
-						Log.logNeo4jQueryHistory(sql);
-						tx.run(sql);
+						Log.logNeo4jQueryHistory(cypher);
+						tx.run(cypher);
 						tx.success();
 						tx.close();
 					} catch (Exception ex) {
@@ -488,6 +489,63 @@ public class Neo4jDB {
 		} catch (Exception ex) {
 			status = false;
 		}
+		return status;
+	}
+	/**
+	 * Process all the Neo4jNodes in the object. The graph must be open in Neo4j.
+	 */
+	public void exportToGraph() {
+//		if (Neo4jDB.getDriver() == null) {
+			driver = null;
+			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+			Neo4jDB.getDriver();
+//		}		
+		Neo4jDB.clearDB();
+		try {
+			// Add all the nodes first
+			for (Neo4jNode neo4jNode: neo4jNodes.getNeo4jNodes()) {
+				String nodeLabel;			// See the SCIP.grass file at https://github.com/nicomp42/scipGrass/blob/master/grass.css for node types!
+				switch (neo4jNode.getMatchedState()) {
+				case Unmatched:
+					nodeLabel = "Unmatched";
+					addNodeToGraph(neo4jNode, nodeLabel);
+					break;
+				case NodeOnly:
+					nodeLabel = "Matched";
+					addNodeToGraph(neo4jNode, nodeLabel);
+					break;
+				case NodeAndRelationships:
+					nodeLabel = "Matched";
+					addNodeToGraph(neo4jNode, nodeLabel);
+					break;
+				default:
+					// we should never get here
+					break;
+				}
+			}
+			// Now add the relationships. There will be duplicates
+		} catch (Exception ex) {
+			Log.logError("Neo4jDB.exportToGraph(): " + ex.getLocalizedMessage());
+		}
+		Utils.openBrowserWindow();
+	}
+	public static Boolean addNodeToGraph(Neo4jNode neo4jNode, String nodeLabel) {
+		// CREATE (n:MyLabel:`AppleLabel`{ `Name` : "MAC the Node", `Feel`:"cRUNCHY", `State`:"Ripe",  Disposition : "Happy" })
+		Boolean status = true;
+		String cypher = "CREATE (n:" + 
+						Neo4jNode.formatLabels(neo4jNode) +
+						":" + nodeLabel +
+						"{" +
+						Neo4jNode.formatNeo4jProperties(neo4jNode) +
+						"}" + 
+						")";
+		try {
+			Neo4jDB.ExecActionQuery(cypher);
+			status = true;
+		} catch (Exception ex) {
+			Log.logError("Neo4jDB.addNodeToGraph(): " + ex.getLocalizedMessage());
+			status = false;
+		} finally {}
 		return status;
 	}
 }

@@ -71,7 +71,8 @@ public class QueryDefinitionFileProcessing {
 					Log.logProgress("QueryDefinitionFileProcessing.executeCypherQueries(): Executing " + query);
 					Neo4jDB.ExecActionQuery(query);
 				} catch (Exception e) {
-					Log.logError("QueryDefinitionFileProcessing.executeCypherQueries(): " + e.getLocalizedMessage());}
+					Log.logError("QueryDefinitionFileProcessing.executeCypherQueries(): " + e.getLocalizedMessage());
+				}
 			}
 		} catch (Exception ex) {
 			Log.logError("QueryDefinitionFileProcessing.executeCypherQueries(): " + ex.getLocalizedMessage());

@@ -616,7 +616,7 @@ public class Main extends Application {
 	private void clearNeo4jDB() {
 		Log.logProgress("Main.clearNeo4jDB()...");
 		try {
-		// If we are not connected to a DB, do it now. We are guessing the credentials from our default values in the Config class
+		// If we are not connected to the open DB, do it now. We are guessing the credentials from our default values in the Config class
 		if (Neo4jDB.getDriver() == null) {
 			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 			Neo4jDB.getDriver();
@@ -719,9 +719,7 @@ public class Main extends Application {
 		}
 	}
 	private void openBrowserWindow() {
-		Browser browser = new Browser(Browser.getNextBrowserSerialNumber().toString());
-		Config.getConfig().addBrowser(browser);
-		browser.initAndLoad(null);
+		Utils.openBrowserWindow();
 	}
 	private void openTransactionLogFileReaderWindow() {
 		try {

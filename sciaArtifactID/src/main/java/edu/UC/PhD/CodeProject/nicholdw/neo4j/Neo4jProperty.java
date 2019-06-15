@@ -67,4 +67,9 @@ public class Neo4jProperty {
 		sb.append("}");
 		return sb.toString();
 	}
+	public String toStringForCypher() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(neo4jPropertyValues.getPropertyValues()[0]);	// There can't be more than one, so we'll just get the first one.
+		return sb.toString();
+	}
 }
