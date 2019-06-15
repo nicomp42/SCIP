@@ -368,6 +368,9 @@ public class ProcessGraphDBController {
 					}
 				}
 				break;
+			case NodeAndRelationships:
+				
+				break;
 			default:
 				break;
 		}

@@ -118,7 +118,7 @@ public class Neo4jDB {
 	 *            and processed. Make sure logging is turned on.
 	 * @return
 	 */
-	public static boolean compareDatabases(String filePath01, String filePath02, boolean writeToLog, Neo4jNodes neo4jUnmatchedNodes01, Neo4jNodes neo4jUnmatchedNodes02, String[] keysToIgnore) {
+	public static boolean compareDatabases(String filePath01, String filePath02, boolean writeToLog, Neo4jNodes neo4jNodes01, Neo4jNodes neo4jNodes02, String[] keysToIgnore) {
 		Log.logProgress("Neo4jUtils.compareDatabases(): comparing " + filePath01 + " and " + filePath02);
 		if (keysToIgnore != null && keysToIgnore.length > 0) {
 			for (String k: keysToIgnore) {
@@ -126,23 +126,23 @@ public class Neo4jDB {
 			}
 		}
 		boolean isEqual = true;
-		Neo4jNodes db01, db02;
-		db01 = readDatabase(filePath01);
-		db02 = readDatabase(filePath02);
+//		Neo4jNodes db01, db02;
+		readDatabase(filePath01, neo4jNodes01);
+		readDatabase(filePath02, neo4jNodes02);
 		if (writeToLog) {
-			db01.log();
-			db02.log();
+			neo4jNodes01.log();
+			neo4jNodes02.log();
 		}
 //		try (org.neo4j.graphdb.Transaction tx = graphDB.beginTx()) {
 		try {
-			db01.clearMatchedFlags();
-			db02.clearMatchedFlags();
+			neo4jNodes01.clearMatchedFlags();
+			neo4jNodes02.clearMatchedFlags();
 			// First look for complete matches
 			Log.logProgress("Neo4jUtils.compareDatabases(): Checking for complete matches of unmatched nodes...");
-			for (Neo4jNode neo4jNode : db01.getNeo4jNodes()) {
+			for (Neo4jNode neo4jNode : neo4jNodes01.getNeo4jNodes()) {
 				Neo4jNode foundNode;
 				if (neo4jNode.getMatchedState() == MATCHED_STATE.Unmatched) {
-					foundNode = findNode(neo4jNode, db02, keysToIgnore, MATCHED_STATE.NodeAndRelationships);
+					foundNode = findNode(neo4jNode, neo4jNodes02, keysToIgnore, MATCHED_STATE.NodeAndRelationships);
 					if (foundNode == null) {
 						Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " complete match not found.");
 						isEqual = false;
@@ -155,10 +155,10 @@ public class Neo4jDB {
 			}
 			// Next, check for a match of just the node name/properties, ignoring the relationships
 			Log.logProgress("Neo4jUtils.compareDatabases(): Checking for node name/property matches of unmatched nodes...");
-			for (Neo4jNode neo4jNode: db01.getNeo4jNodes()) {
+			for (Neo4jNode neo4jNode: neo4jNodes01.getNeo4jNodes()) {
 				Neo4jNode foundNode;
 				if (neo4jNode.getMatchedState() == MATCHED_STATE.Unmatched) {
-					foundNode = findNode(neo4jNode, db02, keysToIgnore, MATCHED_STATE.NodeOnly);
+					foundNode = findNode(neo4jNode, neo4jNodes02, keysToIgnore, MATCHED_STATE.NodeOnly);
 					if (foundNode == null) {
 						Log.logProgress("Neo4jUtils.compareDatabases(): node " + neo4jNode.toString() + " node match not found.");
 						isEqual = false;
@@ -169,15 +169,15 @@ public class Neo4jDB {
 					}
 				}
 			}
-			if (db01.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) == 0 && db02.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) == 0) {
+			if (neo4jNodes01.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) == 0 && neo4jNodes02.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) == 0) {
 				Log.logProgress("Neo4jDB.compareDatabases(): No unmatched nodes"); 
 			} else {
 				isEqual = false;
-				Log.logProgress("Neo4jDB.compareDatabases(): " + db01.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) + " unmatched nodes in first DB, " + db02.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) + " unmatched nodes in second DB");
-				db01.printUnmatchedNodes();
-				db02.printUnmatchedNodes();
-				if (neo4jUnmatchedNodes01 != null) {db01.copyUnmatchedNodes(neo4jUnmatchedNodes01);}
-				if (neo4jUnmatchedNodes02 != null) {db02.copyUnmatchedNodes(neo4jUnmatchedNodes02);}
+				Log.logProgress("Neo4jDB.compareDatabases(): " + neo4jNodes01.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) + " unmatched nodes in first DB, " + neo4jNodes02.countUnmatchedNodes(MATCHED_STATE.NodeAndRelationships) + " unmatched nodes in second DB");
+				neo4jNodes01.printUnmatchedNodes();
+				neo4jNodes02.printUnmatchedNodes();
+//				if (neo4jNodes01 != null) {db01.copyUnmatchedNodes(neo4jNodes01);}
+//				if (neo4jNodes02 != null) {db02.copyUnmatchedNodes(neo4jNodes02);}
 			}
 		} catch (Exception ex) {
 			Log.logError("Neo4jUtils.compareDatabases(): " + ex.getMessage());
