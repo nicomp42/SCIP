@@ -138,6 +138,22 @@ public class Utils {
 	public static String QuoteMeDouble(String sb) {
 		return "\"" + sb + "\"";
 	}
+	/**
+	 * Wrap a string in double quotes
+	 * @param sb What to be wrapped
+	 * @return sb wrapped in double quotes
+	 */
+	public static String QuoteMeDouble(int sb) {
+		return "\"" + String.valueOf(sb) + "\"";
+	}
+	/**
+	 * Wrap a string in double quotes
+	 * @param sb What to be wrapped
+	 * @return sb wrapped in double quotes
+	 */
+	public static String QuoteMeDouble(long sb) {
+		return "\"" + String.valueOf(sb) + "\"";
+	}
 
 	public static int ExportMySQLResultSetToCSV(ResultSet rs, String filePath) {
 		int count = 0;

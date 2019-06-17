@@ -501,6 +501,7 @@ public class Neo4jDB {
 			Neo4jDB.getDriver();
 //		}		
 		Neo4jDB.clearDB();
+		int newID  = 1;
 		try {
 			// Add all the nodes first
 			for (Neo4jNode neo4jNode: neo4jNodes.getNeo4jNodes()) {
@@ -508,14 +509,18 @@ public class Neo4jDB {
 				switch (neo4jNode.getMatchedState()) {
 				case Unmatched:
 					nodeLabel = "Unmatched";
+					neo4jNode.setNewID(newID++);
 					addNodeToGraph(neo4jNode, nodeLabel);
 					break;
 				case NodeOnly:
 					nodeLabel = "Matched";
+					neo4jNode.setNewID(newID++);
 					addNodeToGraph(neo4jNode, nodeLabel);
+					newID++;
 					break;
 				case NodeAndRelationships:
 					nodeLabel = "Matched";
+					neo4jNode.setNewID(newID);
 					addNodeToGraph(neo4jNode, nodeLabel);
 					break;
 				default:
@@ -524,10 +529,51 @@ public class Neo4jDB {
 				}
 			}
 			// Now add the relationships. There will be duplicates
+			for (Neo4jNode neo4jNode: neo4jNodes.getNeo4jNodes()) {
+				String relationshipLabel;			// See the SCIP.grass file at https://github.com/nicomp42/scipGrass/blob/master/grass.css for relationship types!
+				for (Neo4jRelationship neo4jRelationship: neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
+					if (neo4jRelationship.isMatched()) {
+						relationshipLabel = "Matched";
+					} else {
+						relationshipLabel = "Unmatched";
+					}
+					addRelationshipToGraph(neo4jNode, neo4jRelationship, relationshipLabel);
+				}
+			}			
 		} catch (Exception ex) {
 			Log.logError("Neo4jDB.exportToGraph(): " + ex.getLocalizedMessage());
 		}
 		Utils.openBrowserWindow();
+	}
+	/**
+	 * Don't call this until all the nodes have been added
+	 * @param neo4jNode The node that contains the relationship
+	 * @param neo4jRelationship The relationship to be added to the graph
+	 * @param relationshipLabel The Label that tells us if it's a matched or unmatched relationship
+	 */
+	public static Boolean addRelationshipToGraph(Neo4jNode neo4jNode, Neo4jRelationship neo4jRelationship, String relationshipLabel) {
+//		MATCH (a:Artist),(b:Album)
+//		WHERE a.Name = "Strapping Young Lad" AND b.Name = "Heavy as a Really Heavy Thing"
+//		CREATE (a)-[r:RELEASED]->(b)
+		Boolean status = true;
+
+		// We have to match two nodes
+		String cypher = "MATCH (a),(b)" +
+				" WHERE ID(a.nodeID) = " +
+				String.valueOf(neo4jRelationship.getStartNodeID()) +
+				" AND" +
+				" ID(b.nodeID) = " + String.valueOf(neo4jRelationship.getEndNodeID()) +
+				" CREATE (a)-[r:" +
+				neo4jRelationship.getRelationshipType() +
+				"]->(b)";
+		try {
+			Neo4jDB.ExecActionQuery(cypher);
+			status = true;
+		} catch (Exception ex) {
+			Log.logError("Neo4jDB.addRelationshipToGraph(): " + ex.getLocalizedMessage());
+			status = false;
+		} finally {}
+		return status;
 	}
 	public static Boolean addNodeToGraph(Neo4jNode neo4jNode, String nodeLabel) {
 		// CREATE (n:MyLabel:`AppleLabel`{ `Name` : "MAC the Node", `Feel`:"cRUNCHY", `State`:"Ripe",  Disposition : "Happy" })
@@ -536,7 +582,9 @@ public class Neo4jDB {
 						Neo4jNode.formatLabels(neo4jNode) +
 						":" + nodeLabel +
 						"{" +
-						Neo4jNode.formatNeo4jProperties(neo4jNode) +
+						Neo4jNode.formatNeo4jProperties(neo4jNode) + 
+						", `NewID`:" + Utils.QuoteMeDouble(neo4jNode.getNewID()) +
+						", `nodeID`:" + Utils.QuoteMeDouble(neo4jNode.getNodeID()) +
 						"}" + 
 						")";
 		try {

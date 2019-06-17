@@ -24,7 +24,7 @@ public class Neo4jRelationship {
 		labels = new ArrayList<String>();
 		neo4jProperties = new Neo4jProperties();
 		matched = false;
-		nodeID = -1;		// Invalid ode ID
+		nodeID = -1;		// Invalid node ID
 	}
     public long getStartNodeID() {
 		return startNodeID;

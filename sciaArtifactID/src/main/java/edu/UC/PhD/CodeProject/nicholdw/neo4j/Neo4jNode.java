@@ -42,6 +42,7 @@ public class Neo4jNode {
 	private long nodeID; // The Node ID established by the GraphDB engine. This may overlap a Relationship ID!
 	private MATCHED_STATE matchedState;
 	public enum MATCHED_STATE {Unmatched, NodeAndRelationships, NodeOnly};
+	private int newID;	// When we add this node to a new graph this will be unique
 
 	public Neo4jNode() {
 		labels = new ArrayList<String>();
@@ -337,5 +338,19 @@ public class Neo4jNode {
 	}
 	public static String formatNeo4jProperties(Neo4jNode neo4jNode) {
 		return neo4jNode.getProperties().formatNeo4jProperties();
+	}
+	/**
+	 * When we add a new node to a graph this will be unique
+	 * @return the value of this ID for this node
+	 */
+	public int getNewID() {
+		return newID;
+	}
+	/**
+	 * When we add a new node to a graph this will be unique
+	 * @param newID
+	 */
+	public void setNewID(int newID) {
+		this.newID = newID;
 	}
 }
