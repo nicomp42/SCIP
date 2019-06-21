@@ -559,10 +559,10 @@ public class Neo4jDB {
 
 		// We have to match two nodes
 		String cypher = "MATCH (a),(b)" +
-				" WHERE ID(a.nodeID) = " +
-				String.valueOf(neo4jRelationship.getStartNodeID()) +
+				" WHERE a.nodeID = " +
+				Utils.QuoteMeDouble(String.valueOf(neo4jRelationship.getStartNodeID())) +
 				" AND" +
-				" ID(b.nodeID) = " + String.valueOf(neo4jRelationship.getEndNodeID()) +
+				" b.nodeID = " + Utils.QuoteMeDouble(String.valueOf(neo4jRelationship.getEndNodeID())) +
 				" CREATE (a)-[r:" +
 				neo4jRelationship.getRelationshipType() +
 				"]->(b)";

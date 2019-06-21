@@ -17837,3 +17837,71 @@
 2019-06-15 11:27:37 DEBUG MainClientExec:285 - Connection can be kept alive indefinitely
 2019-06-15 11:27:37 DEBUG PoolingHttpClientConnectionManager:320 - Connection [id: 0][route: {}->http://localhost:6668] can be kept alive indefinitely
 2019-06-15 11:27:37 DEBUG PoolingHttpClientConnectionManager:326 - Connection released: [id: 0][route: {}->http://localhost:6668][total kept alive: 1; route allocated: 1 of 2000; total allocated: 1 of 2000]
+2019-06-19 19:07:08 DEBUG RequestAddCookies:123 - CookieSpec selected: default
+2019-06-19 19:07:08 DEBUG RequestAuthCache:77 - Auth cache not set in the context
+2019-06-19 19:07:08 DEBUG PoolingHttpClientConnectionManager:255 - Connection request: [route: {}->http://localhost:43868][total kept alive: 0; route allocated: 0 of 2000; total allocated: 0 of 2000]
+2019-06-19 19:07:08 DEBUG PoolingHttpClientConnectionManager:288 - Connection leased: [id: 0][route: {}->http://localhost:43868][total kept alive: 0; route allocated: 1 of 2000; total allocated: 1 of 2000]
+2019-06-19 19:07:08 DEBUG MainClientExec:235 - Opening connection {}->http://localhost:43868
+2019-06-19 19:07:08 DEBUG DefaultHttpClientConnectionOperator:139 - Connecting to localhost/127.0.0.1:43868
+2019-06-19 19:07:08 DEBUG DefaultHttpClientConnectionOperator:146 - Connection established 127.0.0.1:11204<->127.0.0.1:43868
+2019-06-19 19:07:08 DEBUG DefaultManagedHttpClientConnection:88 - http-outgoing-0: set socket timeout to 10800000
+2019-06-19 19:07:08 DEBUG MainClientExec:256 - Executing request POST /session HTTP/1.1
+2019-06-19 19:07:08 DEBUG MainClientExec:261 - Target auth state: UNCHALLENGED
+2019-06-19 19:07:08 DEBUG MainClientExec:267 - Proxy auth state: UNCHALLENGED
+2019-06-19 19:07:08 DEBUG headers:133 - http-outgoing-0 >> POST /session HTTP/1.1
+2019-06-19 19:07:08 DEBUG headers:136 - http-outgoing-0 >> Content-Type: application/json; charset=utf-8
+2019-06-19 19:07:08 DEBUG headers:136 - http-outgoing-0 >> Content-Length: 456
+2019-06-19 19:07:08 DEBUG headers:136 - http-outgoing-0 >> Host: localhost:43868
+2019-06-19 19:07:08 DEBUG headers:136 - http-outgoing-0 >> Connection: Keep-Alive
+2019-06-19 19:07:08 DEBUG headers:136 - http-outgoing-0 >> User-Agent: Apache-HttpClient/4.5.3 (Java/1.8.0_201)
+2019-06-19 19:07:08 DEBUG headers:136 - http-outgoing-0 >> Accept-Encoding: gzip,deflate
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "POST /session HTTP/1.1[\r][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "Content-Type: application/json; charset=utf-8[\r][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "Content-Length: 456[\r][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "Host: localhost:43868[\r][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "Connection: Keep-Alive[\r][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "User-Agent: Apache-HttpClient/4.5.3 (Java/1.8.0_201)[\r][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "Accept-Encoding: gzip,deflate[\r][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "[\r][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "{[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "  "desiredCapabilities": {[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "    "moz:firefoxOptions": {[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "      "prefs": {},[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "      "args": [][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "    }[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "  },[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "  "requiredCapabilities": {},[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "  "capabilities": {[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "    "desiredCapabilities": {[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "      "moz:firefoxOptions": {[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "        "prefs": {},[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "        "args": [][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "      }[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "    },[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "    "requiredCapabilities": {},[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "    "alwaysMatch": {},[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "    "firstMatch": [[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "      {[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "        "moz:firefoxOptions": {[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "          "prefs": {},[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "          "args": [][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "        }[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "      }[\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "    ][\n]"
+2019-06-19 19:07:08 DEBUG wire:73 - http-outgoing-0 >> "  }[\n]"
+2019-06-19 19:07:08 DEBUG wire:87 - http-outgoing-0 >> "}"
+2019-06-19 19:07:09 DEBUG wire:73 - http-outgoing-0 << "HTTP/1.1 500 Internal Server Error[\r][\n]"
+2019-06-19 19:07:09 DEBUG wire:73 - http-outgoing-0 << "content-type: application/json; charset=utf-8[\r][\n]"
+2019-06-19 19:07:09 DEBUG wire:73 - http-outgoing-0 << "cache-control: no-cache[\r][\n]"
+2019-06-19 19:07:09 DEBUG wire:73 - http-outgoing-0 << "content-length: 81[\r][\n]"
+2019-06-19 19:07:09 DEBUG wire:73 - http-outgoing-0 << "date: Wed, 19 Jun 2019 23:07:08 GMT[\r][\n]"
+2019-06-19 19:07:09 DEBUG wire:73 - http-outgoing-0 << "[\r][\n]"
+2019-06-19 19:07:09 DEBUG wire:87 - http-outgoing-0 << "{"value":{"error":"unknown error","message":"permission denied","stacktrace":""}}"
+2019-06-19 19:07:09 DEBUG headers:122 - http-outgoing-0 << HTTP/1.1 500 Internal Server Error
+2019-06-19 19:07:09 DEBUG headers:125 - http-outgoing-0 << content-type: application/json; charset=utf-8
+2019-06-19 19:07:09 DEBUG headers:125 - http-outgoing-0 << cache-control: no-cache
+2019-06-19 19:07:09 DEBUG headers:125 - http-outgoing-0 << content-length: 81
+2019-06-19 19:07:09 DEBUG headers:125 - http-outgoing-0 << date: Wed, 19 Jun 2019 23:07:08 GMT
+2019-06-19 19:07:09 DEBUG MainClientExec:285 - Connection can be kept alive indefinitely
+2019-06-19 19:07:09 DEBUG PoolingHttpClientConnectionManager:320 - Connection [id: 0][route: {}->http://localhost:43868] can be kept alive indefinitely
+2019-06-19 19:07:09 DEBUG PoolingHttpClientConnectionManager:326 - Connection released: [id: 0][route: {}->http://localhost:43868][total kept alive: 1; route allocated: 1 of 2000; total allocated: 1 of 2000]
