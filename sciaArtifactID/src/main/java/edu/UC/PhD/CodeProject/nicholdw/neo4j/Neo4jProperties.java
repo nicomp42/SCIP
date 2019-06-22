@@ -26,7 +26,7 @@ public class Neo4jProperties {
     		comma = ",";
     	}
     	return results.toString();
-    }	
+    }
 
     public String toString() {
     	StringBuilder sb = new StringBuilder("(");

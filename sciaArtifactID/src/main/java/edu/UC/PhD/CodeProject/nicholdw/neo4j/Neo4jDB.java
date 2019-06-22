@@ -6,6 +6,7 @@ package edu.UC.PhD.CodeProject.nicholdw.neo4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -502,6 +503,7 @@ public class Neo4jDB {
 //		}		
 		Neo4jDB.clearDB();
 		int newID  = 1;
+		ArrayList<String> usedNodeIDs = new ArrayList<String>();
 		try {
 			// Add all the nodes first
 			for (Neo4jNode neo4jNode: neo4jNodes.getNeo4jNodes()) {
@@ -532,40 +534,48 @@ public class Neo4jDB {
 			for (Neo4jNode neo4jNode: neo4jNodes.getNeo4jNodes()) {
 				String relationshipLabel;			// See the SCIP.grass file at https://github.com/nicomp42/scipGrass/blob/master/grass.css for relationship types!
 				for (Neo4jRelationship neo4jRelationship: neo4jNode.getNeo4jRelationships().getNeo4jRelationships()) {
-					if (neo4jRelationship.isMatched()) {
-						relationshipLabel = "Matched";
-					} else {
-						relationshipLabel = "Unmatched";
+					if (!usedNodeIDs.contains(String.valueOf(neo4jRelationship.getID()))) {
+						if (neo4jRelationship.isMatched()) {
+							relationshipLabel = "Matched";
+						} else {
+							relationshipLabel = "Unmatched";
+						}
+						addRelationshipToGraph(neo4jNode, neo4jRelationship, relationshipLabel);
+						usedNodeIDs.add(String.valueOf(neo4jRelationship.getID()));
 					}
-					addRelationshipToGraph(neo4jNode, neo4jRelationship, relationshipLabel);
 				}
-			}			
+			}
 		} catch (Exception ex) {
 			Log.logError("Neo4jDB.exportToGraph(): " + ex.getLocalizedMessage());
 		}
 		Utils.openBrowserWindow();
 	}
 	/**
-	 * Don't call this until all the nodes have been added
+	 * Don't call this until all the nodes have been added.
+	 * (Since Neo4j relationships do not have labels... we add it to the relationship type)
 	 * @param neo4jNode The node that contains the relationship
 	 * @param neo4jRelationship The relationship to be added to the graph
-	 * @param relationshipLabel The Label that tells us if it's a matched or unmatched relationship
+	 * @param relationshipLabel The label that tells us if it's a matched or unmatched relationship.
 	 */
 	public static Boolean addRelationshipToGraph(Neo4jNode neo4jNode, Neo4jRelationship neo4jRelationship, String relationshipLabel) {
 //		MATCH (a:Artist),(b:Album)
 //		WHERE a.Name = "Strapping Young Lad" AND b.Name = "Heavy as a Really Heavy Thing"
 //		CREATE (a)-[r:RELEASED]->(b)
 		Boolean status = true;
-
+		String properties = neo4jRelationship.getProperties().formatNeo4jProperties();
 		// We have to match two nodes
 		String cypher = "MATCH (a),(b)" +
-				" WHERE a.nodeID = " +
-				Utils.QuoteMeDouble(String.valueOf(neo4jRelationship.getStartNodeID())) +
-				" AND" +
-				" b.nodeID = " + Utils.QuoteMeDouble(String.valueOf(neo4jRelationship.getEndNodeID())) +
-				" CREATE (a)-[r:" +
-				neo4jRelationship.getRelationshipType() +
-				"]->(b)";
+						" WHERE a.OriginalID = " +
+						Utils.QuoteMeDouble(String.valueOf(neo4jRelationship.getStartNodeID())) +
+						" AND" +
+						" b.OriginalID = " + Utils.QuoteMeDouble(String.valueOf(neo4jRelationship.getEndNodeID())) +
+						" CREATE (a)-[r:" +
+						Utils.QuoteMeBack(neo4jRelationship.getRelationshipType() +	"(" + relationshipLabel + ")") +
+						"{" + 
+						((properties.trim().length() > 0) ? (properties + ",") : "") + 
+						" `OriginalID`:" + Utils.QuoteMeDouble(neo4jRelationship.getID()) +
+						"}" +
+						"]->(b)";
 		try {
 			Neo4jDB.ExecActionQuery(cypher);
 			status = true;
@@ -578,13 +588,14 @@ public class Neo4jDB {
 	public static Boolean addNodeToGraph(Neo4jNode neo4jNode, String nodeLabel) {
 		// CREATE (n:MyLabel:`AppleLabel`{ `Name` : "MAC the Node", `Feel`:"cRUNCHY", `State`:"Ripe",  Disposition : "Happy" })
 		Boolean status = true;
+		String nodeProperties = Neo4jNode.formatNeo4jProperties(neo4jNode);
 		String cypher = "CREATE (n:" + 
 						Neo4jNode.formatLabels(neo4jNode) +
 						":" + nodeLabel +
 						"{" +
-						Neo4jNode.formatNeo4jProperties(neo4jNode) + 
-						", `NewID`:" + Utils.QuoteMeDouble(neo4jNode.getNewID()) +
-						", `nodeID`:" + Utils.QuoteMeDouble(neo4jNode.getNodeID()) +
+						((nodeProperties.trim().length() > 0) ? nodeProperties + ", " : "") + 
+						"`NewID`:" + Utils.QuoteMeDouble(neo4jNode.getNewID()) +
+						", `OriginalID`:" + Utils.QuoteMeDouble(neo4jNode.getNodeID()) +
 						"}" + 
 						")";
 		try {

@@ -72,7 +72,7 @@ public class Neo4jNode {
 		try {
 			for (org.neo4j.graphdb.Relationship relationship : relationships) {
 				Neo4jRelationship r = new Neo4jRelationship();
-				r.setNodeID(relationship.getId());
+				r.setID(relationship.getId());
 				r.setStartNodeID(relationship.getStartNodeId());
 				r.setEndNodeID(relationship.getEndNodeId());
 				r.setRelationshipType(relationship.getType());
