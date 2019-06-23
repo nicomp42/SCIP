@@ -38,7 +38,7 @@
         <tabs>
           <Tab text="Main">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="698.0" prefWidth="773.0">
+              <AnchorPane fx:id="apMain" minHeight="0.0" minWidth="0.0" prefHeight="698.0" prefWidth="773.0">
                  <children>
          
          <Pane fx:id="pneFilter" layoutX="5.0" layoutY="536.0" prefHeight="103.0" prefWidth="548.0" style="-fx-background-color: #D3D3D3;">
@@ -87,12 +87,12 @@
             	<Button fx:id="btnBrowseForActionQueryFile" layoutX="491.0" layoutY="77.0" onAction="#btnBrowseForActionQueryFile_OnClick" text="..." />
             </children>
          </Pane>
-         <Label fx:id="lblWorking" layoutX="239.0" layoutY="293.0" prefHeight="99.0" prefWidth="235.0" rotate="-45.0" text="Working..." textFill="#64ff64">
+         <Label fx:id="lblWorking" alignment="CENTER" contentDisplay="CENTER" layoutX="239.0" layoutY="293.0" prefHeight="99.0" prefWidth="235.0" rotate="-45.0" text="Working..." textFill="#64ff64">
             <font>
                <Font name="Arial" size="48.0" />
             </font>
             <effect>
-               <ColorAdjust />
+               <ColorAdjust brightness="-0.05" contrast="-0.12" saturation="0.14" />
             </effect>
          </Label>
          </children>

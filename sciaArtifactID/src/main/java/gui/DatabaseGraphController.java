@@ -54,7 +54,7 @@ public class DatabaseGraphController {
 	SchemaTopology schemaTopology;
 	DatabaseGraphResults schemaTopologyResults;
 	@FXML	private Pane pneFilter, pneQuickGraphs, pneActionQuery;
-	@FXML	private AnchorPane apSchemaTopology;
+	@FXML	private AnchorPane apMain;
 	@FXML	private TextField txtHostName, txtLoginName, txtPassword, txtSchemaName;
 	@FXML	private Button btnLoadSchemaNames, btnLoadSchema, btnProcessSchema, btnApplyFilter, btnAttributesInQueries, btnAttributesNotInQueries;
 	@FXML	private Button btnBrowseForActionQueryFile;
@@ -85,8 +85,6 @@ public class DatabaseGraphController {
 		showResultsControls(false);
 		displayWorkingMessage(false);
 		showFilters(false);
-		lblWorking.setVisible(false);
-		lblWorking.setDisable(false);
 	}
 	private void browseForActionQueryFile() {
 		try {
@@ -275,6 +273,7 @@ public class DatabaseGraphController {
 	private void displayWorkingMessage(boolean status) {
 //		lblWorking.setDisable(!status);
 		lblWorking.setVisible(status);
+		lblWorking.setStyle("-fx-opacity: 1.0;");
 	}
 	private void showResultsControls(boolean status) {
 		taResults.setVisible(status);
@@ -301,14 +300,14 @@ public class DatabaseGraphController {
 
 	public void disableEverything(boolean status) {
 		try {
-			apSchemaTopology.setDisable(status);
+			apMain.setDisable(status);	// This also disables the "Working..." message!
 //			taActionQuery.setDisable(status);
 		} catch (Exception e) {
 			Log.logError("DatabaseGraphController.enableEverything(): " + e.getLocalizedMessage());
 		}
 	}
 	/**
-	 * apply the graph filters selected by the user in the pneFilter pane
+	 * Apply the graph filters selected by the user in the pneFilter pane
 	 */
 	public void applyFilters() {
 		// match (n) where n:Table or n:Attribute return n
