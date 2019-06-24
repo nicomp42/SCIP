@@ -33,7 +33,7 @@ public class Schema {
 	private QueryDefinitions queryDefinitions;	// Queries in this schema
 	private Attributes attributes;		// A big jumble of all the attributes in all the tables in the schema. See OperationalSchemaQueries.qAttributesbySchema
 	private ForeignKeys foreignKeys;	// A big jumble of all the foreign keys in all the tables in the schema. See OperationalSchemaQueries.qForeignKeysbySchema
-	private java.sql.Connection connection;
+//	private java.sql.Connection connection;
 
 	/**
 	 * Load all the query/view definitions in this schema into our collection
@@ -111,12 +111,12 @@ public class Schema {
 		schema.exportQueryDefinitionsToCSV("c:\\temp\\foo");
 	}
 */
-	public Schema(String name) {
-		setSchemaName(name);
+	public Schema(String schemaName) {
+		setSchemaName(schemaName);
 		tables = new Tables();
 		setAttributes(new Attributes());
 		foreignKeys = new ForeignKeys();
-		connection = null;
+//		connection = null;
 		setQueryDefinitions(new QueryDefinitions());
 	}
 	/**
@@ -157,7 +157,9 @@ public class Schema {
 		int count = 0;
 	    java.sql.ResultSet resultSet = null;
 		// Read the schema names from the mySQL server and populate the list
+		java.sql.Connection connection = null;
 		try {
+			connection = new MySQL().connectToDatabase(hostName, schemaName, loginName, password);
 			String sql = OperationalSchemaQueries.qTablesBySchemaName.replace("#", schemaName);
 		    try {
 		    	resultSet = MySQL.loadResultSet(hostName, loginName, password, sql);
@@ -175,7 +177,9 @@ public class Schema {
 		int count = 0;		// ToDo make this value do something
 	    java.sql.ResultSet resultSet = null;
 		// Read the schema names from the mySQL server and populate the list
+		java.sql.Connection connection = null;
 		try {
+			connection = new MySQL().connectToDatabase(hostName, schemaName, loginName, password);
 			String sql = OperationalSchemaQueries.qAttributesbySchema.replace("#s", schemaName);
 		    try {
 		    	resultSet = MySQL.loadResultSet(hostName, loginName, password, sql);
@@ -193,7 +197,9 @@ public class Schema {
 		int count = 0;		// ToDo make this value do something
 	    java.sql.ResultSet resultSet = null;
 		// Read the schema names from the mySQL server and populate the list
+		java.sql.Connection connection = null;
 		try {
+			connection = new MySQL().connectToDatabase(hostName, schemaName, loginName, password);
 			String sql = OperationalSchemaQueries.qForeignKeysbySchema.replace("#s", schemaName);
 		    try {
 		    	resultSet = MySQL.loadResultSet(hostName, loginName, password, sql);
@@ -207,6 +213,7 @@ public class Schema {
 	public int loadForeignKeys(String hostName, String loginName, String password) {
 		// Read the attribute names and isPrimaryKey values from the mySQL server and populate the Attribute list
 		int count = 0;
+		java.sql.Connection connection = null;
 		try {
 			connection = new MySQL().connectToDatabase(hostName, Config.getConfig().getInformationSchemaName(), loginName, password);
 			String sql = OperationalSchemaQueries.qForeignKeysbySchema.replace("#s", schemaName);
@@ -241,8 +248,9 @@ public class Schema {
 	public int loadAttributes(String hostName, String loginName, String password) {
 		// Read the attribute names and isPrimaryKey values from the mySQL server and populate the Attribute list
 		int count = 0;
+		java.sql.Connection connection = null;
 		try {
-			connection = new MySQL().connectToDatabase(hostName, Config.getConfig().getInformationSchemaName(), loginName, password);
+			connection = new MySQL().connectToDatabase(hostName, schemaName, loginName, password);
 			String sql = OperationalSchemaQueries.qAttributesbySchema.replace("#s", schemaName);
 
 			java.sql.PreparedStatement preparedStatement = null;
@@ -273,7 +281,9 @@ public class Schema {
 	public int loadTables(String hostName, String loginName, String password) {
 		// Read the schema names from the mySQL server and populate the list
 		int count = 0;
+		java.sql.Connection connection = null;
 		try {
+			connection = new MySQL().connectToDatabase(hostName, schemaName, loginName, password);
 			String sql = OperationalSchemaQueries.qTablesBySchemaName.replace("#", Utils.removeBackQuotes(schemaName));
 		    try {
 		    	java.sql.ResultSet resultSet = MySQL.loadResultSet(hostName, loginName, password, sql);
