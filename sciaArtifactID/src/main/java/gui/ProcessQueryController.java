@@ -127,7 +127,7 @@ public class ProcessQueryController /* extends Application */ {
 		if (CSVFolder.length() != 0) {
 			CSVFolder = Utils.formatPath(CSVFolder);
 			CSVFolder = Utils.cleanPath(CSVFolder);
-			QueryDefinitionFileProcessing.generateQueryDefinitionCSVFile(CSVFolder + Config.getConfig().getNeo4jFilePrefix(), rootQueryDefinition);
+			QueryDefinitionFileProcessing.generateQueryDefinitionCSVFiles(CSVFolder + Config.getConfig().getNeo4jFilePrefix(), rootQueryDefinition);
 		} else {
     		Alert alert = new Alert(AlertType.ERROR);		// http://code.makery.ch/blog/javafx-dialogs-official/
     		alert.setTitle("File path needed");

@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.apache.lucene.queryparser.surround.parser.QueryParser;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 //import gudusoft.gsqlparser.TGSqlParser;
 
@@ -51,8 +52,13 @@ public class QueryDefinitions implements Iterable<QueryDefinition> {
 		return QueryDefinitions;
 	}
 
-	public void addQueryDefinition(QueryDefinition QueryDefinition) {
-		QueryDefinitions.add(QueryDefinition);
+	public void addQueryDefinition(QueryDefinition queryDefinition) {
+		Log.logProgress("QueryDefinitions.addQueryDefinition(): adding " + queryDefinition.getSchemaName() + "." + queryDefinition.getQueryName());
+		if (this.findQueryDefinitionBySchemaAndTableName(queryDefinition.getSchemaName(), queryDefinition.getQueryName()) == null) {
+			QueryDefinitions.add(queryDefinition);
+		} else {
+			Log.logProgress("QueryDefinitions.addQueryDefinition(): duplicate query definition so it will not be added.");
+		}
 	}
 
 	@Override

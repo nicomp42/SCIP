@@ -45,8 +45,8 @@ public class QueryDefinitionFileProcessing {
 	private static final String tableSuffix = "Tables" + Config.getConfig().getCSVFileExtension();
 	private static final String attributeSuffix = "Attributes" + Config.getConfig().getCSVFileExtension();
 
-	public static void generateQueryDefinitionCSVFile(String fileNamePrefix, QueryDefinition qd) {
-		Log.logProgress("QueryDefinitionToCSV.generateQueryDefinitionCSVFile()");
+	public static void generateQueryDefinitionCSVFiles(String fileNamePrefix, QueryDefinition qd) {
+		Log.logProgress("QueryDefinitionFileProcessing.generateQueryDefinitionCSVFile()");
 		writeRootQuery(fileNamePrefix + rootQuerySuffix, qd);
 		writeSchemas(fileNamePrefix + schemaSuffix, qd);
 		writeQueryAttributes(fileNamePrefix + attributeSuffix, qd);
@@ -82,8 +82,9 @@ public class QueryDefinitionFileProcessing {
 	private static void writeRootQuery(String fileName, QueryDefinition qd) {
 		try {
 			boolean fileExists = false;
-			Log.logProgress("QueryDefinitionFileProcessing.QueryDefinitionFileProcessing(): ");
+			Log.logProgress("QueryDefinitionFileProcessing.writeRootQuery():");
 			File f = new File(fileName);
+			Log.logProgress("QueryDefinitionFileProcessing.writeRootQuery(): writing to " + f.toPath());
 			try {
 				Files.deleteIfExists(f.toPath());
 			} catch (Exception ex) {
@@ -120,6 +121,7 @@ public class QueryDefinitionFileProcessing {
 			boolean fileExists = false;
 			Log.logProgress("QueryDefinitionFileProcessing.writeSchemas(): ");
 			File f = new File(fileName);
+			Log.logProgress("QueryDefinitionFileProcessing.writeSchemas(): writing to " + f.toPath());
 			try {
 				Files.deleteIfExists(f.toPath());}
 			catch (Exception ex) {
@@ -156,6 +158,7 @@ public class QueryDefinitionFileProcessing {
 			boolean fileExists = false;
 			Log.logProgress("QueryDefinitionFileProcessing.writeTables(): ");
 			File f = new File(fileName);
+			Log.logProgress("QueryDefinitionFileProcessing.writeTables(): writing to " + f.toPath());
 			try {Files.deleteIfExists(f.toPath());} catch (Exception ex) {}
 //			if (f.exists()) {fileExists = true;}
 
@@ -189,6 +192,7 @@ public class QueryDefinitionFileProcessing {
 			boolean fileExists = false;
 			Log.logProgress("QueryDefinitionFileProcessing.writeQueryAttributes(): ");
 			File f = new File(fileName);
+			Log.logProgress("QueryDefinitionFileProcessing.writeQueryAttributes(): writing to " + f.toPath());
 			try {Files.deleteIfExists(f.toPath());} catch (Exception ex) {}
 //			if (f.exists()) {fileExists = true;}
 
