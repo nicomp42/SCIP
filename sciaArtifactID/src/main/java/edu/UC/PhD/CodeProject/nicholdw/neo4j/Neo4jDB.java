@@ -266,8 +266,8 @@ public class Neo4jDB {
 		// Don't call getDriver here. The driver should already be configured by
 		// whomever called this method
 		// getDriver();
+		Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "query = " + cypher);
 		try (Session session = driver.session()) {
-			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "query = " + cypher);
 			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "session is " + (session.isOpen() ? "" : "not ") + "open");
 			// If there is no active db, then this method call causes all kind of errors
 			// that we can't catch.
@@ -280,7 +280,7 @@ public class Neo4jDB {
 				public String execute(Transaction tx) {
 					try {
 						// StatementResult result = tx.run( sql );
-						Log.logNeo4jQueryHistory(cypher);
+//						Log.logNeo4jQueryHistory(cypher);
 						tx.run(cypher);
 						tx.success();
 						tx.close();

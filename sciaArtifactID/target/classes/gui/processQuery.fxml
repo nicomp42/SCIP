@@ -45,7 +45,7 @@
       </MenuBar>
       <TabPane fx:id="tpnQueryProcessing" layoutX="10.0" layoutY="30.0" prefHeight="543.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="30.0">
         <tabs>
-            <Tab fx:id="tabProcessAQuery" text="Process a Query">
+            <Tab fx:id="tabProcessAQuery" text="Process a View">
               <content>
                 <AnchorPane fx:id="apnProcessAQuery" minHeight="0.0" minWidth="0.0" prefHeight="755.0" prefWidth="968.0">
                      <children>
@@ -56,14 +56,16 @@
                         <TextField id="txtPqLoginName" fx:id="txtPqLoginName" layoutX="189.0" layoutY="44.0" text="root" />
                         <TextField id="txtPqPassword" fx:id="txtPqPassword" layoutX="189.0" layoutY="69.0" text="Danger42" />
                         <Button id="btnLoadPqSchemaNames" fx:id="btnLoadPqSchemaNames" layoutX="189.0" layoutY="104.0" mnemonicParsing="false" onAction="#btnLoadPqSchemaNames_OnClick" text="Load from Host" textFill="OLIVE" />
-                        <Label fx:id="lblQueryToProcess" layoutX="14.0" layoutY="147.0" text="Query to Process" />
+                        <Label fx:id="lblQueryToProcess" layoutX="14.0" layoutY="147.0" text="View to Process" />
                         <TextField id="txtPqSchemaName" fx:id="txtPqQueryName" layoutX="189.0" layoutY="143.0" prefHeight="25.0" prefWidth="257.0" AnchorPane.leftAnchor="189.0" />
     	                <Label fx:id="lblContentsOfDatabaseHost" layoutX="738.0" layoutY="11.0" prefHeight="17.0" prefWidth="173.0" text="Contents of Database Host" />
 	                    <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnSavePqSchemaArtifactsToCSVFiles" layoutX="452.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnSavePqSchemaArtifactsToCSVFiles_OnClick" text="Save Artifacts to CSV Files" />
-                        <Button id="btnLoadPqSQueries" fx:id="btnProcessQuery" layoutX="452.0" layoutY="143.0" mnemonicParsing="false" onAction="#btnProcessQuery_OnClick" text="Process Query" textFill="TEAL" />
+                        <Button id="btnLoadPqSQueries" fx:id="btnProcessQuery" layoutX="452.0" layoutY="143.0" mnemonicParsing="false" onAction="#btnProcessQuery_OnClick" text="Process View" textFill="TEAL" />
+                        <CheckBox fx:id="cbClearDB" contentDisplay="RIGHT" layoutX="452.0" layoutY="241.0" mnemonicParsing="false" text="Clear graph before exporting" />
+                        <CheckBox fx:id="cbOpenInBrowser" contentDisplay="RIGHT" layoutX="452.0" layoutY="262.0" mnemonicParsing="false" text="Open graph in browser after exporting" />
     	                <TreeView id="tvSchemasAndQueries" fx:id="tvSchemasAndQueries" layoutX="738.0" layoutY="29.0" onMouseClicked="#tvSchemasAndQueries_OnClicked" prefHeight="659.0" prefWidth="228.0" />
 
-                        <Label fx:id="lblAttributesReferencedInTheQuery" layoutX="15.0" layoutY="236.0" text="Attributes referenced in the query (double-click for provenance)">
+                        <Label fx:id="lblAttributesReferencedInTheQuery" layoutX="15.0" layoutY="262.0" text="Attributes referenced in the view (double-click for provenance)">
                            <tooltip>
                               <Tooltip text="Double-click an attribute for provenance">
                                  <font>
@@ -71,7 +73,7 @@
                                  </font>
                               </Tooltip>
                            </tooltip></Label>
-                        <ListView id="lvPqAttributes" fx:id="lvPqAttributes" layoutX="15.0" layoutY="261.0" onMouseClicked="#lvPqAttributes_OnClick" prefHeight="200.0" prefWidth="693.0">  <effect>  <DropShadow /> </effect>
+                        <ListView id="lvPqAttributes" fx:id="lvPqAttributes" layoutX="15.0" layoutY="288.0" onMouseClicked="#lvPqAttributes_OnClick" prefHeight="173.0" prefWidth="693.0">  <effect>  <DropShadow /> </effect>
                            <tooltip>
                               <Tooltip text="Double-click an attribute for provenance">
                                  <font>
@@ -80,7 +82,7 @@
                               </Tooltip>
                            </tooltip></ListView>
 
-                        <Label fx:id="lblTablesReferencedInTheQuery" layoutX="15.0" layoutY="465.0" text="Tables/queries referenced in the query" />
+                        <Label fx:id="lblTablesReferencedInTheQuery" layoutX="15.0" layoutY="465.0" text="Tables/views referenced in the view" />
                         <ListView id="lvPqTables" fx:id="lvPqTables" layoutX="15.0" layoutY="486.0" prefHeight="200.0" prefWidth="338.0"> <effect> <DropShadow />  </effect></ListView>
 
 	                    <Label fx:id="lblSchemasReferencedInTheQuery" layoutX="370.0" layoutY="465.0" text="Schemas referenced in the query" />
@@ -90,7 +92,7 @@
                         <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnExportCSVFilesToNeo4j" layoutX="452.0" layoutY="210.0" mnemonicParsing="false" onAction="#btnExportCSVFilesToNeo4j_OnClick" text="Export CSV Files to Neo4j" />
                         <Label fx:id="lblCSVFolder" layoutX="14.0" layoutY="177.0" prefHeight="25.0" prefWidth="167.0" text="Destination Folder for CSV Files" />
                         <TextArea fx:id="txaCSVFolder" layoutX="188.0" layoutY="177.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the the import folder of the current Neo4j DB." />
-                        <Button fx:id="btnBrowseForCSVFolder" layoutX="650.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
+                        <Button fx:id="btnBrowseForCSVFolder" layoutX="615.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
                      </children>
                   </AnchorPane>
               </content>

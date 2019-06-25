@@ -37,6 +37,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -65,6 +66,7 @@ public class ProcessQueryController /* extends Application */ {
 	private String qSimpleTable = "select testInt from ttablea";		// Can't be more simple!
 
 	@FXML	private AnchorPane apMainWindow;
+	@FXML	private CheckBox cbClearDB, cbOpenInBrowser;
 	@FXML	private TextArea txaSQL, txaCSVFolder;
 	@FXML	private TextField txtPqHostName, txtPqLoginName, txtPqPassword, txtPqQueryName;
 	@FXML	private Button btnLoadPqSchemaNames, btnLoadPqSQueries, btnSavePqSchemaArtifactsToCSVFiles, btnProcessQuery, btnExportCSVFilesToNeo4j, btnBrowseForCSVFolder;
@@ -141,8 +143,16 @@ public class ProcessQueryController /* extends Application */ {
 		try {
 			String CSVFolder = txaCSVFolder.getText().trim();
 			if (CSVFolder.length() != 0) {
+				if (cbClearDB.isSelected()) {
+					Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),  Config.getConfig().getNeo4jDBDefaultPassword());
+					Neo4jDB.clearDB();
+				}
 				Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());			// TODO generalize this
 				QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jFilePrefix(), QueryDefinitionFileProcessing.cypherQueries, "");	// Folder defaults to the import folder in the Neo4j project structure
+				if (cbOpenInBrowser.isSelected() ) {
+					Browser browser = Browser.prepareNewBrowser();
+					browser.initAndLoad(null);
+				}
 			} else {
 	    		Alert alert = new Alert(AlertType.ERROR);		// http://code.makery.ch/blog/javafx-dialogs-official/
 	    		alert.setTitle("File path needed");
@@ -237,6 +247,8 @@ public class ProcessQueryController /* extends Application */ {
 		lblCSVFolder.setVisible(visible);
 		txaCSVFolder.setVisible(visible);
 		btnBrowseForCSVFolder.setVisible(visible);
+		cbClearDB.setVisible(visible);
+		cbOpenInBrowser.setVisible(visible);
 	}
 
 	@FXML

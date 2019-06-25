@@ -99,9 +99,9 @@ public class QueryDefinitionFileProcessing {
 				writer.append("QueryName");
 				writer.append('\n');
 			}
-			writer.append(qd.getSchemaName());
+			writer.append(Utils.cleanForGraph(qd.getSchemaName()));
 			writer.append(",");
-			writer.append(qd.getQueryName());
+			writer.append(Utils.cleanForGraph(qd.getQueryName()));
 			writer.append('\n');
 
 			writer.flush();
@@ -138,7 +138,7 @@ public class QueryDefinitionFileProcessing {
 			// Iterating over keys only
 			for (String schemaName : schemas.keySet()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
 				Log.logProgress("QueryDefinitionFileProcessing.writeSchemas(): Schemas = " + schemaName);
-				writer.append(schemaName);
+				writer.append(Utils.cleanForGraph(schemaName));
 				writer.append('\n');
 			}
 			writer.flush();
@@ -174,11 +174,11 @@ public class QueryDefinitionFileProcessing {
 			HashMap<String, QueryTable> queryTables = qd.getUniqueTableNames();
 			for (QueryTable queryTable : queryTables.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
 				Log.logProgress("QueryDefinitionToCSV.writeTables(): table = " + queryTable.getSchemaName() + "." + queryTable.getTableName());
-				writer.append(queryTable.getContainingQueryName());
+				writer.append(Utils.cleanForGraph(queryTable.getContainingQueryName()));
 				writer.append(",");
-				writer.append(queryTable.getSchemaName());
+				writer.append(Utils.cleanForGraph(queryTable.getSchemaName()));
 				writer.append(",");
-				writer.append(queryTable.getTableName());
+				writer.append(Utils.cleanForGraph(queryTable.getTableName()));
 				writer.append('\n');
 			}
 			writer.flush();
@@ -207,17 +207,17 @@ public class QueryDefinitionFileProcessing {
 				writer.append("DataType");
 				writer.append('\n');
 			}
-			HashMap<String, QueryAttribute> queryAttributes = qd.getUniqueQueryAttributes();
+			HashMap<String, QueryAttribute> queryAttributes = qd.getUniqueQueryAttributes(false);
 
 			Log.logProgress("QueryDefinitionFileProcessing.writeQueryAttributes(): writing attributes");
 			for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
-				writer.append(queryAttribute.getAttributeName());
+				writer.append(Utils.cleanForGraph(queryAttribute.getAttributeName()));
 				writer.append(",");
-				writer.append(queryAttribute.getTableName());
+				writer.append(Utils.cleanForGraph(queryAttribute.getTableName()));
 				writer.append(",");
-				writer.append(queryAttribute.getSchemaName());
+				writer.append(Utils.cleanForGraph(queryAttribute.getSchemaName()));
 				writer.append(",");
-				writer.append(qd.getQueryAttributeDataType(queryAttribute));
+				writer.append(Utils.cleanForGraph(qd.getQueryAttributeDataType(queryAttribute)));
 //				writer.append(",");
 //				writer.append(queryAttribute.get.getTableName());
 				writer.append('\n');

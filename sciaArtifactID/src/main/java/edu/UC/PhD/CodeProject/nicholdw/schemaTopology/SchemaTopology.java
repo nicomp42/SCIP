@@ -261,7 +261,7 @@ public class SchemaTopology {
 	}
 	private void addQueryToAttributeRelationships() {
 		for (QueryDefinition queryDefinition : queryDefinitions) {
-			HashMap<String, QueryAttribute> queryAttributes = queryDefinition.getUniqueQueryAttributes();
+			HashMap<String, QueryAttribute> queryAttributes = queryDefinition.getUniqueQueryAttributes(true);
 			// traverse queryAttributes and add a relation from the query to the attribute
 			for (QueryAttribute queryAttribute: queryAttributes.values()) {
 				String neo4jQuery;

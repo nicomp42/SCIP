@@ -72,7 +72,7 @@
                         <KeyCodeCombination alt="UP" code="B" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                 </MenuItem>
-	            <MenuItem fx:id="mnuProcessAQuery" mnemonicParsing="false" onAction="#mnuEditProcessAQuery_OnAction" text="Process A Query">
+	            <MenuItem fx:id="mnuProcessAQuery" mnemonicParsing="false" onAction="#mnuEditProcessAQuery_OnAction" text="Process A View">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -195,7 +195,7 @@
                         <Button id="btnSaveDwhSchemaArtifactsToCSVFiles" fx:id="btnSaveDwhSchemaArtifactsToCSVFiles" layoutX="331.0" layoutY="181.0" mnemonicParsing="false" onAction="#btnSaveDwhSchemaArtifactsToCSVFiles_OnClick" text="Save Artifacts to CSV Files" />
                         <Label layoutX="14.0" layoutY="147.0" text="Schema" />
                         <ListView id="lvDwhQuerys" fx:id="lvDwhQuerys" layoutX="15.0" layoutY="503.0" prefHeight="178.0" prefWidth="338.0" />
-                        <Label layoutX="15.0" layoutY="480.0" text="Querys" />
+                        <Label layoutX="15.0" layoutY="480.0" text="Views" />
                      </children>
                   </AnchorPane>
               </content>

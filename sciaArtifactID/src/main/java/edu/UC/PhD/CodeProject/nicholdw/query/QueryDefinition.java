@@ -637,26 +637,26 @@ public class QueryDefinition {
 		}
 		Log.logProgress("QueryDefinition.traverseForUniqueTableNames(): finished ");
 	}
-	public HashMap<String, QueryAttribute> getUniqueQueryAttributes() {
+	public HashMap<String, QueryAttribute> getUniqueQueryAttributes(boolean tablesOnly) {
 		// A 'set' is maintained as a collection of unique items
 		HashMap<String, QueryAttribute> queryAttributes = new HashMap<String, QueryAttribute>();
-		traverseForUniqueAttributes(this, queryAttributes);
+		traverseForUniqueAttributes(this, queryAttributes, tablesOnly);
 		return queryAttributes;
 	}
-	private void traverseForUniqueAttributes(QueryDefinition qd, HashMap<String, QueryAttribute> attributes) {
+	private void traverseForUniqueAttributes(QueryDefinition qd, HashMap<String, QueryAttribute> attributes, boolean tablesOnly) {
 		Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): " + qd.getSchemaName() + "." + qd.getQueryName() );
 		for (QueryAttribute queryAttribute : qd.getQueryAttributes()) {
 			Boolean isItAQuery;
 			isItAQuery = QueryDefinition.isItAQuery(queryAttribute.getSchemaName(), queryAttribute.getTableName(), qd);
 			Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): checking " + queryAttribute.getSchemaName() +  queryAttribute.getTableName() + "." + queryAttribute.getAttributeName() );
 			// We only want attributes that are in the originating table, or are a constant because a query can define a constant.
-			if (!isItAQuery || queryAttribute.isConstant())  {
+			if (!isItAQuery || !tablesOnly || queryAttribute.isConstant())  {
 				Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): adding " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName() );
 				attributes.put(queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName(), queryAttribute);
 			}
 		}
 		for (QueryDefinition qdChild: qd.children) {
-			traverseForUniqueAttributes(qdChild, attributes);
+			traverseForUniqueAttributes(qdChild, attributes, tablesOnly);
 		}
 		Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): finished ");
 	}
