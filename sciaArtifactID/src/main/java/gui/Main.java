@@ -299,7 +299,7 @@ public class Main extends Application {
 			stage.initModality(Modality.NONE);
 			stage.setOpacity(1);
 			//stage.setTitle("Process A Query");
-			stage.setTitle(Config.getConfig().getApplicationTitle() + " - Process a Query");
+			stage.setTitle(Config.getConfig().getApplicationTitle() + " - Process a View");
 			stage.setResizable(false);
 			stage.setScene(new Scene(root, 988, 833));
 			stage.show();

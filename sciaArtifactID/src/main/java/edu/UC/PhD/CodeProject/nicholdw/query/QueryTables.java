@@ -78,9 +78,22 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		{
 			return queryTables;
 		}
-
-		public void addQueryTable(QueryTable queryTable) {
-			queryTables.add(queryTable);
+		/***
+		 * Add a query table
+		 * @param queryTableNew The QueryTable to look for
+		 * @return True if the table was added, false if it already exists 
+		 */
+		public Boolean addQueryTable(QueryTable queryTableNew) {
+			Boolean queryTableAdded = false;
+				QueryTable queryTableExists = null;
+				queryTableExists = lookupBySchemaAndTable(queryTableNew.getSchemaName(), queryTableNew.getTableName());
+				if (queryTableExists == null) {
+					queryTables.add(queryTableNew);
+					queryTableAdded = false;
+				} else {
+					queryTableAdded = true;
+				}
+				return queryTableAdded;
 		}
 
 		@Override

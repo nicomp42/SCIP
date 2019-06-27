@@ -2,42 +2,28 @@ package edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Stack;
-
 import org.Antlr4MySQLFromANTLRRepo.NestingLevel;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.FullColumnNameContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.FullIdContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByClauseContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
-import org.Antlr4MySQLFromANTLRRepo.MySqlParser.RenameTableClauseContext;
-import org.Antlr4MySQLFromANTLRRepo.MySqlParser.SelectColumnElementContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.TableNameContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.UidContext;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import edu.UC.PhD.CodeProject.nicholdw.Attribute;
-import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
-import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClassOLD;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAlias;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAliases;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClause;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseOrderBy;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseSelect;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseUndefined;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseUnknown;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseWhere;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTerminalSymbol;
@@ -65,6 +51,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	private QueryClause queryClause;
 	private QueryTable currentQueryTable;
 	private boolean includeAllFields;
+	private String currentAlias;
 
 	FullColumnNames fullColumnNames;
 	ArrayList<FullTableName> fullTableNames;	
@@ -84,6 +71,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		queryDefinition.setQueryType(new QueryTypeUnknown());
 		lastTerminalNode = "";
 		firstVisit = true;
+		currentAlias = "";
 	}
 	private void printTerminalNodes(List<TerminalNode> tns) {
 		for (TerminalNode tn : tns) {
@@ -146,19 +134,24 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	}
 	@Override public void exitSelectColumnElement(MySqlParser.SelectColumnElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectColumnElement: " + ctx.getText());
+		clearCurrentAlias();
 	}
 	@Override public void enterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
 		// ToDo capture this as a function and store it somewhere
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectFunctionElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+		processEnterSelectFunctionElement(ctx);
 	}
 	@Override public void exitSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectFunctionElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+		processExitSelectFunctionElement(ctx);
 	}
 	@Override public void enterSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectExpressionElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+		processEnterSelectExpressionElement(ctx);
 	}
 	@Override public void exitSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitSelectExpressionElement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+		processExitSelectExpressionElement(ctx);
 	}
 	@Override public void enterSelectIntoVariables(MySqlParser.SelectIntoVariablesContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSelectIntoVariables: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
@@ -1366,7 +1359,12 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logError("processFullColumnNameContext(): unrecognized number of children (" + ctx.children.size() +")");
 			break;
 		}
+		fullColumnName.addAliasName(new AliasNameClassOLD(currentAlias));
 		fullColumnNames.addFullColumnName(fullColumnName);
+		
+	}
+	private void processExitSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
+		clearCurrentAlias();
 	}
 	private void processSelectColumnElementContext(MySqlParser.SelectColumnElementContext ctx) {
 //		String foo = " " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop();
@@ -1398,7 +1396,42 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			MySqlParser.UidContext alias = (UidContext) ctx.children.get(ctx.children.size()-1);
 			fullColumnName.addAliasName(new AliasNameClassOLD(alias.getStop().getText()));
 		}
+		fullColumnName.addAliasName(new AliasNameClassOLD(currentAlias));
+		
 		fullColumnNames.addFullColumnName(fullColumnName);
+	}
+	private void clearCurrentAlias() {
+		currentAlias = "";
+	}
+	private void processEnterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
+		// Figure out what the alias is, if any
+		ParseTree aliasMaybe = ctx.getChild(ctx.getChildCount()-1);  
+		currentAlias = checkForAlias(aliasMaybe);
+	}
+	private void processEnterSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
+		// Figure out what the alias is, if any
+		ParseTree aliasMaybe = ctx.getChild(ctx.getChildCount()-1);  
+		currentAlias = checkForAlias(aliasMaybe);
+	}
+	private String checkForAlias(ParseTree alias) {
+		String aliasName = "";
+		try {
+		if (alias instanceof MySqlParser.UidContext) {
+			//	It's an alias
+			aliasName = alias.getChild(alias.getChildCount()-1).getText();
+			Log.logQueryParseProgress("checkForAlias(): found alias = #" + aliasName + "#");
+		} else {
+			aliasName = "";	// There is no alias
+			Log.logQueryParseProgress("checkForAlias(): No alias found");
+		}
+		} catch (Exception ex) {
+			Log.logQueryParseProgress("checkForAlias(): ERROR: " + ex.getLocalizedMessage());
+			Log.logError("checkForAlias(): " + ex.getLocalizedMessage());
+		}
+		return aliasName;
+	}
+	private void processExitSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
+		clearCurrentAlias();
 	}
 	/************************************************************************************************
 	 * Static (internal) classes follow
