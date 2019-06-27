@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class FullColumnNames implements Iterable<FullColumnName> {
 
@@ -23,21 +24,29 @@ public class FullColumnNames implements Iterable<FullColumnName> {
 	public FullColumnName get(int i) {return fullColumnNames.get(i);}
 
 	public void addFullColumnName(FullColumnName fullColumnName) {
-		// Don't allow duplicates in the attribute collection: check schema/table/attribute and check that if either rawData is non-blank then they must not match
-		boolean matchFound = false;
-		for (FullColumnName fcn : fullColumnNames) {
-			if (Config.getConfig().compareAttributeNames(fcn.getAttributeName(), fullColumnName.getAttributeName()) &&
-			    Config.getConfig().compareSchemaNames(fcn.getSchemaName(), fullColumnName.getSchemaName()) &&
-				Config.getConfig().compareTableNames(fcn.getTableName(), fullColumnName.getTableName())) {
-				if ((fullColumnName.getRawData().toUpperCase().equals(fcn.getRawData().toUpperCase())) &&
-					(fullColumnName.getRawData().length() > 0 || fcn.getRawData().length() > 0)) {
-					matchFound = true;
-					break;
+		try {
+			// Don't allow duplicates in the attribute collection: check schema/table/attribute and check that if either rawData is non-blank then they must not match
+			boolean matchFound = false;
+			for (FullColumnName fcn : fullColumnNames) {
+				if (Config.getConfig().compareAttributeNames(fcn.getAttributeName(), fullColumnName.getAttributeName()) &&
+				    Config.getConfig().compareSchemaNames(fcn.getSchemaName(), fullColumnName.getSchemaName()) &&
+					Config.getConfig().compareTableNames(fcn.getTableName(), fullColumnName.getTableName())) {
+	//				if ((fullColumnName.getRawData().trim().toUpperCase().equals(fcn.getRawData().trim().toUpperCase())) &&
+	//					(fullColumnName.getRawData().length() == 0 || fcn.getRawData().length() > 0)) {
+						matchFound = true;
+						// Just in case the FCN we are adding has some new alias names...
+						for (AliasNameClassOLD anc: fullColumnName.getAliasNames()) {
+							fcn.addAliasName(new AliasNameClassOLD(anc));
+						}
+						break;
+	//				}
 				}
 			}
-		}
-		if (!matchFound) {
-			fullColumnNames.add(fullColumnName);
+			if (!matchFound) {
+				fullColumnNames.add(fullColumnName);
+			}
+		} catch (Exception ex) {
+			Log.logError("FullColumnNames.addFullColumnName(): " + ex.getLocalizedMessage());
 		}
 	}
 	public void clear() {fullColumnNames.clear();}

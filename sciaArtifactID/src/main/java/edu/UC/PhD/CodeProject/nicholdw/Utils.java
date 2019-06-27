@@ -258,5 +258,19 @@ public class Utils {
 			return tmp;
 		}
 	}
+	/**
+	 * Check an artifact name to see if it's blank, except for the delimiters that the database engine might use
+	 * @param artifactName
+	 * @return True if it's blank, false otherwise
+	 */
+	public static Boolean isBlank(String artifactName) {
+		Boolean isBlankFlag = false;
+		String tmp = artifactName.trim();
+		if (tmp.startsWith("`") && tmp.endsWith("`") && tmp.length() == 2) {
+			isBlankFlag = true;
+		}
+		return isBlankFlag;
+	}
+
 }
 

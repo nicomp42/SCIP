@@ -629,6 +629,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logError("processUidContext(): unrecognized number of children (" + ctx.children.size() +")");
 			break;
 		}
+		fullColumnName.addAliasName(new AliasNameClassOLD(currentAlias));
 		fullColumnNames.addFullColumnName(fullColumnName);
 	}
 	@Override public void exitUid(MySqlParser.UidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUid()");}

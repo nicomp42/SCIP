@@ -30,9 +30,18 @@ public class AliasNamesOLD implements Iterable<AliasNameClassOLD> {
 	 * Add a alias name to the collection. Dups and blanks will be ignored.
 	 * @param aliasNameClass
 	 */
-	public void addAliasName(AliasNameClassOLD aliasNameClass) {
-		if (aliasNameClass.getAliasName().trim().length() > 0) {
-			if (!this.contains(aliasNameClass) ) {aliasNames.add(new AliasNameClassOLD(aliasNameClass));}
+	public void addAliasName(AliasNameClassOLD aliasNameClassOLD) {
+		Boolean found = false;
+		if (aliasNameClassOLD.getAliasName().trim().length() > 0) {
+			for (AliasNameClassOLD ancOLD : aliasNames) {
+				if (ancOLD.equals(aliasNameClassOLD)) {
+					found = true;
+					break;
+				}
+			}
+			if (found == false) {
+				aliasNames.add(new AliasNameClassOLD(aliasNameClassOLD));
+			}
 		}
 	}
 	public void addAliasNames(AliasNamesOLD aliasNames) {

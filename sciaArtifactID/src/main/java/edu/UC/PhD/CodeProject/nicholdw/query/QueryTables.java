@@ -129,9 +129,9 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 				// Look through all the tables
 				for (QueryTable queryTable: queryTables) {
 					// Check the schema name first or skip it if the attribute has no schema name
-					if (queryAttribute.getSchemaName().length() == 0 || (Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) == true)) {
+					if (Utils.isBlank(queryAttribute.getSchemaName()) || (Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) == true)) {
 						// Check the table name for a match or skip if it the attribute has no table name
-						if (queryAttribute.getTableName().length() == 0 || (Config.getConfig().compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true)) {
+						if (Utils.isBlank(queryAttribute.getTableName()) || (Config.getConfig().compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true)) {
 							if (queryTable.findAttribute(queryAttribute.getAttributeName()) != null) {
 								Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): found the attribute in table " + queryTable.toString());
 								queryTableResult = queryTable;

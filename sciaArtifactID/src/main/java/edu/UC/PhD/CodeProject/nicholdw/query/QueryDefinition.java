@@ -288,7 +288,7 @@ public class QueryDefinition {
 			for (QueryAttribute qa : this.getQueryAttributes()) {
 				Log.logProgress("QueryDefinition.reconcileAttributes(): processing the attribute " + qa.toString());
 //				Log.logProgress("QueryDefinition.reconcileAttributes(): attribute = " + qa.toString());
-				if ((qa.getTableName().length() > 0) && (qa.getSchemaName().length() > 0)) {
+				if (!Utils.isBlank(qa.getTableName()) && !Utils.isBlank(qa.getSchemaName())) {
 					Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a schema and a table. Checking to see it it's a table alias.");
 					// However, the table name could be an alias name. We need to use the actual table name rather than the table alias.
 					// found = false
