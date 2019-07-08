@@ -250,8 +250,8 @@ public class Schema {
 		int count = 0;
 		java.sql.Connection connection = null;
 		try {
-			connection = new MySQL().connectToDatabase(hostName, schemaName, loginName, password);
-			String sql = OperationalSchemaQueries.qAttributesbySchema.replace("#s", schemaName);
+			connection = new MySQL().connectToDatabase(hostName, Utils.cleanForGraph(schemaName), loginName, password);
+			String sql = OperationalSchemaQueries.qAttributesbySchema.replace("#s", Utils.cleanForGraph(schemaName));
 
 			java.sql.PreparedStatement preparedStatement = null;
 		    try {
@@ -314,14 +314,15 @@ public class Schema {
 	
 	public static String formatSchemaName(String schemaName) {
 		if (schemaName == null) {
-			return "``";
+			return "";
 		} else {
-			if (schemaName.trim().startsWith("`") && schemaName.trim().endsWith("`")) {
+			return Utils.cleanForGraph(schemaName);
+/*			if (schemaName.trim().startsWith("`") && schemaName.trim().endsWith("`")) {
 				return schemaName.trim();
 			} else {
 				return Utils.QuoteMeBack(schemaName.trim());
 			}
-		}		
+*/		}		
 	}
 	public Attributes getAttributes() {return attributes;}
 	public void setAttributes(Attributes attributes) {this.attributes = attributes;}

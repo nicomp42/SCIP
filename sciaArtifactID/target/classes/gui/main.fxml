@@ -149,10 +149,12 @@
                         <Label layoutX="15.0" layoutY="243.0" text="Tables" />
                         <ListView id="lvOperationalAttributes" fx:id="lvOperationalAttributes" layoutX="369.0" layoutY="263.0" prefHeight="200.0" prefWidth="358.0" />
                         <Label layoutX="369.0" layoutY="243.0" text="Attributes" />
-                        <ListView id="lvOperationalForeignKeys" fx:id="lvOperationalForeignKeys" layoutX="368.0" layoutY="503.0" prefHeight="179.0" prefWidth="360.0" />
+                        <ListView id="lvOperationalForeignKeys" fx:id="lvOperationalForeignKeys" layoutX="368.0" layoutY="503.0" prefHeight="200.0" prefWidth="360.0" />
                         <Label layoutX="368.0" layoutY="480.0" text="Foreign Keys" />
                         <Button id="btnSaveOperationalSchemaArtifactsToCSVFiles" fx:id="btnSaveOperationalSchemaArtifactsToCSVFiles" layoutX="356.0" layoutY="200.0" mnemonicParsing="false" onAction="#btnSaveOperationalSchemaArtifactsToCSVFiles_OnClick" text="Save Artifacts to CSV Files" />
                         <Label layoutX="21.0" layoutY="169.0" text="Schema" />
+                        <ListView fx:id="lvOperationalQuerys" layoutX="15.0" layoutY="503.0" prefHeight="200.0" prefWidth="338.0" />
+                        <Label layoutX="15.0" layoutY="480.0" prefHeight="17.0" prefWidth="80.0" text="Views" />
                      </children>
                   </AnchorPane>
             </content>

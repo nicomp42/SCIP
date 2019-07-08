@@ -80,7 +80,7 @@ public class Main extends Application {
 	@FXML private TextField txtOperationalHostName, txtOperationalLoginName, txtOperationalPassword, txtProjectHomeDirectory, txtProjectName, txtNeo4jConfigFile, txtNeo4jDBName, txtOperationalSchemaName;
 	@FXML private TextField txtDwhHostName, txtDwhLoginName, txtDwhPassword, txtDwhUserHome, txtDwhSchemaName;
 	@FXML private AnchorPane apMainWindow;
-	@FXML private ListView<String> lvOperationalSchemaNames, lvOperationalTables, lvOperationalAttributes, lvOperationalForeignKeys, lvETLLayer;
+	@FXML private ListView<String> lvOperationalSchemaNames, lvOperationalTables, lvOperationalAttributes, lvOperationalForeignKeys, lvOperationalQuerys, lvETLLayer;
 	@FXML private ListView<String> lvDwhSchemaNames, lvDwhTables, lvDwhAttributes, lvDwhForeignKeys, lvDwhQuerys;
 	@FXML private Button btnSaveOperationalSchemaArtifactsToCSVFiles, btnPentahoProjectDirectory, btnCreateGraphDB, btnDatabaseFilePath, btnCreateDatabase, btnImportFromCSVFiles, btnLoadOperationalSchemaArtifacts, btnSavePentahoArtifactsToCSVFiles, btnLoadOperationalSchemaNames;
 	@FXML private Button btnSaveDwhSchemaArtifactsToCSVFiles, btnLoadDwhSchemaArtifacts, btnLoadDwhSchemaNames, btnBrowse;
@@ -465,6 +465,7 @@ public class Main extends Application {
 			loadTableNames(lvOperationalTables,  selectedSchemaName, txtOperationalHostName.getText(), txtOperationalLoginName.getText(), txtOperationalPassword.getText());
 			loadAttributes(lvOperationalAttributes,  selectedSchemaName, txtOperationalHostName.getText(), txtOperationalLoginName.getText(), txtOperationalPassword.getText());
 			loadForeignKeys(lvOperationalForeignKeys,  selectedSchemaName, txtOperationalHostName.getText(), txtOperationalLoginName.getText(), txtOperationalPassword.getText());
+			loadQueryNames(lvOperationalQuerys,  selectedSchemaName, txtOperationalHostName.getText(), txtOperationalLoginName.getText(), txtOperationalPassword.getText());
 			btnSaveOperationalSchemaArtifactsToCSVFiles.setVisible(true);
 		} else {
 			(new Alert(Alert.AlertType.INFORMATION, "Please enter a schema name", ButtonType.OK)).showAndWait();
@@ -482,7 +483,7 @@ public class Main extends Application {
 		ForeignKeys foreignKeys;
 		foreignKeys = schema.getForeignKeys();	// Get the list of loaded foreign keys.
 		for (ForeignKey foreignKey : foreignKeys) {
-			lv.getItems().add(foreignKey.getTableName() + "." + foreignKey.getForeignKeyName());
+			lv.getItems().add(foreignKey.getDisplayName());
 		}
 		return lv.getItems().size();
 	}
@@ -514,7 +515,7 @@ public class Main extends Application {
 		Tables tables;
 		tables = schema.getTables();	// Get the list of loaded tables.
 		for (Table table : tables) {
-			lv.getItems().add(table.getTableName());
+			lv.getItems().add(Utils.cleanForGraph(table.getTableName()));
 		}
 		return lv.getItems().size();
 	}

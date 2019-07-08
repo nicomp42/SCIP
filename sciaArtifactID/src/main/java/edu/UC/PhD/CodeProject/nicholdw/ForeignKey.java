@@ -19,6 +19,9 @@ public class ForeignKey {
 		this.referencedAttributeName = referencedAttributeName;
 		this.foreignKeyName = foreignKeyName;
 	}
+	public String getDisplayName() {
+		return this.getForeignKeyName() + " (" + this.getTableName() + "." + this.getAttributeName() + "->" + this.getReferencedTableName() + "." + this.getReferencedAttributeName() + ")";
+	}
 	public String getReferencedTableName() {return referencedTableName;}
 	public String getReferencedAttributeName() {return referencedAttributeName;}
 	public String getForeignKeyName(){ return foreignKeyName;}
