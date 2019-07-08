@@ -22,40 +22,46 @@ import edu.nicholdw.PhD.CodeProject.ETL.ETLGraphController;
  * @author nicomp
  */
 public class ImportFromCSVIntoGraphDB {
-
-	public void ImportIntoGraphDB(SchemaChangeImpactProject scip, ArrayList<SchemaChangeImpactProjectComponent> schemaChangeImpactProjectComponents ) {	//,  String architectureLayer) throws IOException {
+	public enum enumResults {NO_ERROR, COULD_NOT_CONNECT_TO_GRAPHDB, UNKNOWN_ERROR, DIRECTORY_MISSING, COULD_NOT_COPY_TO_IMPORT_FOLDER};
+	public enumResults ImportIntoGraphDB(SchemaChangeImpactProject scip, ArrayList<SchemaChangeImpactProjectComponent> schemaChangeImpactProjectComponents ) {	//,  String architectureLayer) throws IOException {
+		enumResults results = enumResults.NO_ERROR; 
 		try {
 			File neo4jGraphDBSchemaFile = new File(scip.getNeo4jGraphDBFilePath());
 			if (!neo4jGraphDBSchemaFile.exists()) {	// Is the directory present?
 				Log.logError("ImportFromCSVIntoGraphDB.ImportIntoGraphDB(): error accessing " + scip.getNeo4jGraphDBFilePath() + " Please export the schema information as CSV files first and try again");
+				results = enumResults.DIRECTORY_MISSING;
 			} else {
 				OperationalSchemaGraphController operationalSchemaGraphController = new OperationalSchemaGraphController();
 				Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 				if (Neo4jDB.getDriver() == null) {
 					Log.logError("GenerateGraphFromOperationalSchema.ImportIntoGraphDB(): Could not connect to Neo4j. Make sure that the database is running");
+					results = enumResults.COULD_NOT_CONNECT_TO_GRAPHDB;
 				} else {
-					scip.copyDirectoryStructures();
-					// We must use a relative path because Neo4j assumes the "import" folder in the Neo4j database environment.
-					// There is a subdirectory under the Neo4j import folder for each type of schema.
+					if (scip.copyDirectoryStructures()) {
+						// We must use a relative path because Neo4j assumes the "import" folder in the Neo4j database environment.
+						// There is a subdirectory under the Neo4j import folder for each type of schema.
 
-					for (SchemaChangeImpactProjectComponent schemaChangeImpactProjectComponent: schemaChangeImpactProjectComponents) {
-						if (schemaChangeImpactProjectComponent instanceof Operational) {
-							operationalSchemaGraphController.generateOperationalSchemaGraph(scip);
+						for (SchemaChangeImpactProjectComponent schemaChangeImpactProjectComponent: schemaChangeImpactProjectComponents) {
+							if (schemaChangeImpactProjectComponent instanceof Operational) {
+								operationalSchemaGraphController.generateOperationalSchemaGraph(scip);
+							}
+							if (schemaChangeImpactProjectComponent instanceof OpsIds) {
+								ETLGraphController etlGraphController = new ETLGraphController();
+								etlGraphController.generateETLStepNodes(scip, SchemaChangeImpactProject.opsIdsSubdirectory);
+								etlGraphController.generateRelationships(scip, SchemaChangeImpactProject.opsIdsSubdirectory);
+							}
+							if (schemaChangeImpactProjectComponent instanceof IdsDwh) {
+								ETLGraphController etlGraphController = new ETLGraphController();
+								etlGraphController.generateETLStepNodes(scip, SchemaChangeImpactProject.idsDwhSubdirectory);
+								etlGraphController.generateRelationships(scip, SchemaChangeImpactProject.idsDwhSubdirectory);
+							}
+							if (schemaChangeImpactProjectComponent instanceof DwhQueries) {
+								QueryGraphController queryGraphController = new QueryGraphController();
+								queryGraphController.generateQueryNodesAndDependencies(scip);
+							}
 						}
-						if (schemaChangeImpactProjectComponent instanceof OpsIds) {
-							ETLGraphController etlGraphController = new ETLGraphController();
-							etlGraphController.generateETLStepNodes(scip, SchemaChangeImpactProject.opsIdsSubdirectory);
-							etlGraphController.generateRelationships(scip, SchemaChangeImpactProject.opsIdsSubdirectory);
-						}
-						if (schemaChangeImpactProjectComponent instanceof IdsDwh) {
-							ETLGraphController etlGraphController = new ETLGraphController();
-							etlGraphController.generateETLStepNodes(scip, SchemaChangeImpactProject.idsDwhSubdirectory);
-							etlGraphController.generateRelationships(scip, SchemaChangeImpactProject.idsDwhSubdirectory);
-						}
-						if (schemaChangeImpactProjectComponent instanceof DwhQueries) {
-							QueryGraphController queryGraphController = new QueryGraphController();
-							queryGraphController.generateQueryNodesAndDependencies(scip);
-						}
+					} else {
+						results = enumResults.COULD_NOT_COPY_TO_IMPORT_FOLDER;
 					}
 				}
 			}
@@ -75,6 +81,8 @@ public class ImportFromCSVIntoGraphDB {
 	//		}
 		} catch (Exception ex) {
 			Log.logError("ImportFromCSVIntoGraphDB.ImportIntoGraphDB(): " + ex.getLocalizedMessage(), ex.getStackTrace());
+			results = enumResults.UNKNOWN_ERROR;
 		}
+		return results;
 	}
 }

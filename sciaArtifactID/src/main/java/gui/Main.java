@@ -528,8 +528,8 @@ public class Main extends Application {
 		lv.getItems().clear();
 		Schema schema = new Schema(schemaName);
 		schema.loadTables(hostName, loginName, password);			// Load the tables for the schema
-		Tables tables;
-		//    	QueryDefinitions queryDefinitions = schema.getQueryDefinitions();
+//		Tables tables;
+//    	QueryDefinitions queryDefinitions = schema.getQueryDefinitions();
 		ArrayList<String> queryNames = Schema.readQueryNames(hostName, schemaName, loginName, password);
 		for (String queryName : queryNames) {
 			lv.getItems().add(queryName);

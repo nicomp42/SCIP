@@ -51,6 +51,7 @@ public class ETLToCSV {
 		Log.logProgress("ETLToCSV.deleteCSVFiles(): Number of files to be deleted:" + listOfFiles.length + " from " + foldername);
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
+				Log.logProgress("ETLToCSV.deleteCSVFiles(): Deleting:" + listOfFiles[i].toString());
 				listOfFiles[i].delete();
 			}
 		}
@@ -74,6 +75,7 @@ public class ETLToCSV {
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
+				Log.logProgress("ETLToCSV.generateOutputStepsCsvData(): File = " + listOfFiles[i].getName());
 				List<OutputStep> outputSteps = xmlparser.parseXMLForOutputSteps(pentahoProjectDirectory+"/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateOutputStepsCsvFile(csvPath, outputSteps);
 			}
@@ -91,6 +93,7 @@ public class ETLToCSV {
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
+				Log.logProgress("ETLToCSV.generateOutputStepsCsvData(): File = " + listOfFiles[i].getName());
 				List<OutputStep> outputSteps = xmlparser.parseXMLForOutputSteps(pentahoProjectDirectory+"/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateOutputStepsCsvFile(csvPath, outputSteps);
 			}
@@ -102,6 +105,7 @@ public class ETLToCSV {
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
+				Log.logProgress("ETLToCSV.generateInputStepsCsvData(): File = " + listOfFiles[i].getName());
 				//One transformation can be read from multiple data sources
 				List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps(pentahoProjectDirectory+"/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateInputStepsCsvFile(csvPath, inputSteps);
@@ -114,6 +118,7 @@ public class ETLToCSV {
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
+				Log.logProgress("ETLToCSV.generateInputStepsCsvData(): File = " + listOfFiles[i].getName());
 				//One transformation can be read from multiple data sources
 				List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps(pentahoProjectDirectory+"/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateInputStepsCsvFile(csvPath, inputSteps);
@@ -126,6 +131,7 @@ public class ETLToCSV {
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
+				Log.logProgress("ETLToCSV.generateDBLookupStepCsvData(): File = " + listOfFiles[i].getName());
 				//One transformation can be reading from multiple data sources
 				List<DBLookupStep> dblookupsteps= xmlparser.parseXMLForDBLookupSteps(pentahoProjectDirectory+"/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateDBLookupCsvFile(csvPath, dblookupsteps);
@@ -133,26 +139,25 @@ public class ETLToCSV {
 		}
 	}
 	public void generateDimensionLookupUpdateStepCsvData(String csvPath){
-
 		XMLParser xmlparser=new XMLParser();
 		File folder = new File(pentahoProjectDirectory);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
+				Log.logProgress("ETLToCSV.generateDimensionLookupUpdateStepCsvData(): File = " + listOfFiles[i].getName());
 				List<DimLookupUpdateStep> dimlookupupdatesteps = xmlparser.parseXMLForDimLookupUpdateSteps(pentahoProjectDirectory + "/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateDimLookupUpdateCsvFile(csvPath, dimlookupupdatesteps);
 			}
 		}
 	}
 	public void generateCombinationLookupUpdateStepCsvData(String csvPath){
-
 		XMLParser xmlparser=new XMLParser();
 		File folder = new File(pentahoProjectDirectory);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
-//				System.out.println("**********File " + listOfFiles[i].getName());
-				List<CombinationLookupUpdateStep> combinationlookupupdatesteps=
+				Log.logProgress("ETLToCSV.generateCombinationLookupUpdateStepCsvData(): File = " + listOfFiles[i].getName());
+				List<CombinationLookupUpdateStep> combinationlookupupdatesteps =
 						xmlparser.parseXMLForCombinationLookupUpdateSteps(pentahoProjectDirectory + "/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateCombLookupUpdateCsvFile(csvPath, combinationlookupupdatesteps);
 
@@ -160,13 +165,12 @@ public class ETLToCSV {
 		}
 	}
 	public void generateDBJoinStepCsvData(String csvPath){
-
 		XMLParser xmlparser=new XMLParser();
 		File folder = new File(pentahoProjectDirectory);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
-				System.out.println("**********File " + listOfFiles[i].getName());
+				Log.logProgress("ETLToCSV.generateDBJoinStepCsvData(): File = " + listOfFiles[i].getName());
 				//One transformation can be reading from multiple data sources
 				List<DBJoinStep> dbjoinsteps = xmlparser.parseXMLForDBJoinSteps(pentahoProjectDirectory + "/" + listOfFiles[i].getName());
 				ETLExcelExporter.generateDBJoinCsvFile(csvPath, dbjoinsteps);

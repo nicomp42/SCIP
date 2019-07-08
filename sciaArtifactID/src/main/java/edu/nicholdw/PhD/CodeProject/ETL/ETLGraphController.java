@@ -53,7 +53,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateInputStepNodes()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-										+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "input_steps.csv\" AS line "
+										+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "input_steps.csv\" AS line "
 										+ "MERGE (st:Step{name: line.StepName, transname: line.TransformationName,"
 										+ "steptype:\""+ "TableInput\"," + "layer:\'"+etlLayer+"\'})");
 		} catch (Exception ex) {
@@ -64,7 +64,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateOutputStepNodes()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "output_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "output_steps.csv\" AS line "
 								+ "MERGE (st:Step{name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType, layer:\'"+etlLayer+"\'})");
 
@@ -77,7 +77,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateDBLookupStepNodes()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dblookup_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dblookup_steps.csv\" AS line "
 								+ "MERGE (st:Step{name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType, layer:\'"+etlLayer+"\'})");
 		} catch (Exception ex) {
@@ -88,7 +88,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateDBJoinStepNodes()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dbjoin_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dbjoin_steps.csv\" AS line "
 								+ "MERGE (st:Step{name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType, layer:\'"+etlLayer+"\'})");
 
@@ -100,7 +100,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateDimLookupUpdateStepNodes()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
 								+ "MERGE (st:Step{name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType, update_lookup:line.isUpdateStep, layer:\'"+etlLayer+"\'})");
 
@@ -112,7 +112,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateCombinationLookupUpdateStepNodes()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "comblookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "comblookupupdate_steps.csv\" AS line "
 								+ "MERGE (st:Step{name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType, layer:\'"+etlLayer+"\'})");
 		} catch (Exception ex) {
@@ -123,7 +123,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateDimLookupUpdateDependencyRelationships()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
 								+ " MATCH (a:Attribute{name: (line.AttributeName), schema:(line.DatabaseName), "
 								+ "relation: line.TableName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
@@ -131,7 +131,7 @@ public class ETLGraphController {
 								+ " MERGE (st)-[:Impacts]->(a)");
 
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
 								+ "MATCH (a:Attribute{name: (line.AttributeName), schema:(line.DatabaseName), "
 								+ "relation: line.TableName})"
 								+ "MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
@@ -145,7 +145,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateCombinationLookupUpdateDependencyRelationships()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "comblookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "comblookupupdate_steps.csv\" AS line "
 								+ " MATCH (a:Attribute{name: (line.AttributeName), schema:(line.DatabaseName), "
 								+ "relation: line.TableName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
@@ -159,7 +159,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateETLToDWHDependencyRelationships()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "output_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "output_steps.csv\" AS line "
 								+ " MATCH (a:Attribute{name: (line.AttributeName), schema:(line.DatabaseName), "
 								+ "relation: line.TableName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
@@ -173,7 +173,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateDBLookupDependencyRelationships()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dblookup_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dblookup_steps.csv\" AS line "
 								+ " MATCH (a:Attribute{name: (line.AttributeName), schema:(line.DatabaseName), "
 								+ "relation: line.TableName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
@@ -187,7 +187,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateInputStepNodes()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dbjoin_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dbjoin_steps.csv\" AS line "
 								+ " MATCH (a:Attribute{name: (line.AttributeName), schema:(line.DatabaseName), "
 								+ "relation: line.TableName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
@@ -201,7 +201,7 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateReconciledToETLDependencyRelationships()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "input_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "input_steps.csv\" AS line "
 								+ " MATCH (a:Attribute{name: line.AttributeName, schema:line.DatabaseName, "
 								+ "relation: line.TableName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
@@ -241,28 +241,28 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateRelationToETLStepRelationships()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "input_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "input_steps.csv\" AS line "
 								+ " MATCH (a:Relation{name: line.TableName, schema:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, steptype:\'"
 								+ "TableInput\'" + "})"
 								+ " MERGE (a)-[:Impacts]->(st)");
 
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-							+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dblookup_steps.csv\" AS line "
+							+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dblookup_steps.csv\" AS line "
 							+ " MATCH (a:Relation{name: line.TableName, schema:line.DatabaseName})"
 							+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 							+ "steptype: line.StepType})"
 							+ " MERGE (a)-[:Impacts]->(st)");
 
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-							+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
+							+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
 							+ " MATCH (a:Relation{name: line.TableName, schema:line.DatabaseName})"
 							+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 							+ "steptype: line.StepType}) WHERE st.update_lookup=\'Lookup\'"
 							+ " MERGE (a)-[:Impacts]->(st)");
 
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-							+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dbjoin_steps.csv\" AS line "
+							+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dbjoin_steps.csv\" AS line "
 							+ " MATCH (a:Relation{name: (line.TableName), schema:(line.DatabaseName)})"
 							+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 							+ "steptype: line.StepType})"
@@ -276,21 +276,21 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateETLStepToRelationRelationships()...");
 		try {
 				Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "output_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "output_steps.csv\" AS line "
 								+ " MATCH (a:Relation{name: line.TableName, schema:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType})"
 								+ " MERGE (st)-[:Impacts]->(a)");
 
 				Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
 								+ " MATCH (a:Relation{name:line.TableName, schema:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType}) WHERE st.update_lookup=\'Update\'"
 								+ " MERGE (st)-[:Impacts]->(a)");
 
 				Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "comblookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "comblookupupdate_steps.csv\" AS line "
 								+ " MATCH (a:Relation{name: (line.TableName), schema:(line.DatabaseName)})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType})"
@@ -303,28 +303,28 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateSchemaToETLStepRelationships()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "input_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "input_steps.csv\" AS line "
 								+ " MATCH (a:Schema{name:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, steptype:\'"
 								+ "TableInput\'" + "})"
 								+ " MERGE (a)-[:Impacts]->(st)");
 
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dblookup_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dblookup_steps.csv\" AS line "
 								+ " MATCH (a:Schema{name:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType})"
 								+ " MERGE (a)-[:Impacts]->(st)");
 
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
 								+ " MATCH (a:Schema{name:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType}) WHERE st.update_lookup=\'Lookup\'"
 								+ " MERGE (a)-[:Impacts]->(st)");
 
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dbjoin_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dbjoin_steps.csv\" AS line "
 								+ " MATCH (a:Schema{name:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType})"
@@ -338,21 +338,21 @@ public class ETLGraphController {
 		Log.logProgress("ETLGraphController.generateETLStepToSchemaRelationships()...");
 		try {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "output_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "output_steps.csv\" AS line "
 								+ " MATCH (a:Schema{name:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType})"
 								+ " MERGE (st)-[:Impacts]->(a)");
 
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "dimlookupupdate_steps.csv\" AS line "
 								+ " MATCH (a:Schema{name:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType}) WHERE st.update_lookup=\'Update\'"
 								+ " MERGE (st)-[:Impacts]->(a)");
 
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
-								+ Config.getConfig().getNeo4jFilePrefix() + Utils.formatPath(etlLayer) + "comblookupupdate_steps.csv\" AS line "
+								+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "comblookupupdate_steps.csv\" AS line "
 								+ " MATCH (a:Schema{name:line.DatabaseName})"
 								+ " MATCH (st:Step {name: line.StepName, transname: line.TransformationName, "
 								+ "steptype: line.StepType})"

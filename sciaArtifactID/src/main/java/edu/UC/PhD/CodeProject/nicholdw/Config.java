@@ -80,7 +80,7 @@ public class Config implements Serializable {
 	private final Boolean useCaseSensitiveTableNameComparison = false;
 	private final Boolean useCaseSensitiveSchemaNameComparison = false;
 	private final Boolean useCaseSensitiveQueryNameComparison = false;
-	private final String applicationTitle = "SEQ-AM: Schema, ETL, Queries,Artifact Management";
+	private final String applicationTitle = "SEQ-AM: Schema, ETL, Queries, and Artifact Management";
 	private final String[] ETLLayers = {"ids-dwh", "op-ids"};		// ids =  Intermediate Data Store
 	private final String neo4jFilesPath_Relative = "neo4j";
 	private final String attributeNamePrefix = "Attribute";

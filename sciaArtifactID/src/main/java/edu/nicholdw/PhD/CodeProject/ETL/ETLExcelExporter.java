@@ -47,7 +47,7 @@ public class ETLExcelExporter {
 				writer.append('\n');
 			}
  			for (OutputStep stepObj : steps) {
-				Log.logProgress("ETLExcelExporter.generateOutputStepsCsvFile(): " + stepObj);
+				Log.logProgress("ETLExcelExporter.generateOutputStepsCsvFile(): " + stepObj.getStepName());
 				for (int index = 0; index < stepObj.getAttributes().size(); index++) {
 					writer.append(stepObj.getTransName());
 					writer.append(',');
@@ -77,13 +77,12 @@ public class ETLExcelExporter {
 	public static void generateInputStepsCsvFile(String sFileName, List<TableInputStep> steps) {
 		try {
 			boolean fileExists = false;
-			System.out.println("Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateInputStepsCsvFile(): Exporting to Excel");
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
 			FileWriter writer = new FileWriter(sFileName, true);
 			if (!fileExists) {
-
 				writer.append("TransformationName");
 				writer.append(',');
 				writer.append("StepName");
@@ -91,12 +90,11 @@ public class ETLExcelExporter {
 				writer.append("DatabaseName");
 				writer.append(',');
 				writer.append("SQL");
-
 				writer.append('\n');
 			}
 
 			for (TableInputStep stepObj : steps) {
-				// TODO need to parse this query
+				Log.logProgress("ETLExcelExporter.generateInputStepsCsvFile(): Step " + stepObj.getStepName());			
 				QueryDefinition qd = new QueryDefinition("", "", "", new QueryTypeSelect(), stepObj.getTransName() + ":" + stepObj.getStepName(), stepObj.getSql(), stepObj.getDbName());		// Query Name, SQL, Schema Name
 				QueryParser qp = new QueryParser();
 				qp.parseQuery(qd);
@@ -121,11 +119,10 @@ public class ETLExcelExporter {
 		}
 	}
 
-	public static void generateDBJoinCsvFile(String sFileName,
-			List<DBJoinStep> steps) {
+	public static void generateDBJoinCsvFile(String sFileName, List<DBJoinStep> steps) {
 		try {
 			boolean fileExists = false;
-			System.out.println("Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateDBJoinCsvFile(): Exporting to Excel");
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
@@ -144,9 +141,8 @@ public class ETLExcelExporter {
 
 				writer.append('\n');
 			}
-
 			for (DBJoinStep stepObj : steps) {
-				// System.out.println("ExcelExporter:"+stepObj);
+				Log.logProgress("ETLExcelExporter.generateDBJoinCsvFile(): Step " + stepObj.getStepName());			
 
 				writer.append(stepObj.getTransName().trim());
 				writer.append(',');
@@ -160,9 +156,7 @@ public class ETLExcelExporter {
 
 				writer.append("\"" + stepObj.getSql().replaceAll("[\\t\\n\\r\\s]", " ").trim() + "\"");
 				writer.append('\n');
-
 			}
-
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
@@ -170,11 +164,10 @@ public class ETLExcelExporter {
 		}
 	}
 
-	public static void generateDBLookupCsvFile(String sFileName,
-			List<DBLookupStep> steps) {
+	public static void generateDBLookupCsvFile(String sFileName, List<DBLookupStep> steps) {
 		try {
 			boolean fileExists = false;
-			System.out.println("Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateDBLookupCsvFile(): Exporting to Excel");			
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
@@ -194,12 +187,9 @@ public class ETLExcelExporter {
 				writer.append("AttributeName");
 				writer.append('\n');
 			}
-
 			for (DBLookupStep stepObj : steps) {
-				System.out.println("\tExcelExporter:" + stepObj);
-
+				Log.logProgress("ETLExcelExporter.generateDBLookupCsvFile(): Step " + stepObj.getStepName());			
 				for (int index = 0; index < stepObj.getAttributes().size(); index++) {
-
 					writer.append(stepObj.getTransName());
 					writer.append(',');
 					writer.append(stepObj.getStepName());
@@ -212,9 +202,7 @@ public class ETLExcelExporter {
 					writer.append(',');
 					writer.append(stepObj.getAttributes().get(index));
 					writer.append('\n');
-
 				}
-
 			}
 			writer.flush();
 			writer.close();
@@ -223,11 +211,10 @@ public class ETLExcelExporter {
 		}
 	}
 
-	public static void generateDimLookupUpdateCsvFile(String sFileName,
-			List<DimLookupUpdateStep> steps) {
+	public static void generateDimLookupUpdateCsvFile(String sFileName,	List<DimLookupUpdateStep> steps) {
 		try {
 			boolean fileExists = false;
-			System.out.println("Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateDimLookupUpdateCsvFile(): Exporting to Excel");			
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
@@ -249,12 +236,9 @@ public class ETLExcelExporter {
 				writer.append("isUpdateStep");
 				writer.append('\n');
 			}
-
 			for (DimLookupUpdateStep stepObj : steps) {
-				System.out.println("\tExcelExporter:" + stepObj);
-
+				Log.logProgress("ETLExcelExporter.generateDimLookupUpdateCsvFile(): Step " + stepObj.getStepName());			
 				for (int index = 0; index < stepObj.getAttributes().size(); index++) {
-
 					writer.append(stepObj.getTransName());
 					writer.append(',');
 					writer.append(stepObj.getStepName());
@@ -267,14 +251,13 @@ public class ETLExcelExporter {
 					writer.append(',');
 					writer.append(stepObj.getAttributes().get(index));
 					writer.append(',');
-					if (stepObj.isUpdateStep() == true)
+					if (stepObj.isUpdateStep() == true) {
 						writer.append("Update");
-					else
+					} else {
 						writer.append("Lookup");
+					}
 					writer.append('\n');
-
 				}
-
 			}
 			writer.flush();
 			writer.close();
@@ -283,17 +266,15 @@ public class ETLExcelExporter {
 		}
 	}
 
-	public static void generateCombLookupUpdateCsvFile(String sFileName,
-			List<CombinationLookupUpdateStep> steps) {
+	public static void generateCombLookupUpdateCsvFile(String sFileName, List<CombinationLookupUpdateStep> steps) {
 		try {
 			boolean fileExists = false;
-			System.out.println("Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateCombLookupUpdateCsvFile(): Exporting to Excel");			
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
 			FileWriter writer = new FileWriter(sFileName, true);
 			if (!fileExists) {
-
 				writer.append("TransformationName");
 				writer.append(',');
 				writer.append("StepName");
@@ -309,10 +290,8 @@ public class ETLExcelExporter {
 			}
 
 			for (CombinationLookupUpdateStep stepObj : steps) {
-				System.out.println("\tExcelExporter:" + stepObj);
-
+				Log.logProgress("ETLExcelExporter.generateCombLookupUpdateCsvFile(): Step " + stepObj.getStepName());			
 				for (int index = 0; index < stepObj.getAttributes().size(); index++) {
-
 					writer.append(stepObj.getTransName());
 					writer.append(',');
 					writer.append(stepObj.getStepName());
@@ -325,9 +304,7 @@ public class ETLExcelExporter {
 					writer.append(',');
 					writer.append(stepObj.getAttributes().get(index));
 					writer.append('\n');
-
 				}
-
 			}
 			writer.flush();
 			writer.close();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.effect.*?>
@@ -202,30 +203,39 @@
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab fx:id="tabNeo4j" text="Neo4j">
+            <Tab fx:id="tabNeo4j" text="Graph DB">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="18.0" text="Database Name" />
                         <Label layoutX="20.0" layoutY="51.0" text="Database Path" visible="false" />
-                        <TextField id="txtNeo4jDBName" fx:id="txtNeo4jDBName" layoutX="114.0" layoutY="14.0" prefHeight="25.0" prefWidth="224.0" promptText="Database Name" text="Test" />
-                        <Button id="btnCreateGraphDB" fx:id="btnCreateGraphDB" layoutX="348.0" layoutY="14.0" mnemonicParsing="false" onAction="#btnCreateGraphDB_OnClick" text="Create Graph DB" />
                         <Label layoutX="14.0" layoutY="469.0" text="Neo4j Config File" />
                         <TextField id="txtUserHome" fx:id="txtNeo4jConfigFile" editable="false" layoutX="114.0" layoutY="465.0" prefHeight="25.0" prefWidth="630.0" />
-                        <Pane layoutX="114.0" layoutY="51.0" prefHeight="200.0" prefWidth="363.0" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-style: solid;">
+                        <Pane fx:id="pneGraphDBImport" layoutX="7.0" layoutY="90.0" prefHeight="200.0" prefWidth="363.0" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-style: solid;">
                            <children>
-                              <Label fx:id="lblNeo4jWarning" layoutX="175.0" layoutY="124.0" prefHeight="32.0" prefWidth="180.0" text="(Your Neo4j DB must be started...)" />
+                              <Label fx:id="lblNeo4jWarning" layoutX="38.0" layoutY="150.0" prefHeight="32.0" prefWidth="180.0" text="Graph DB must be started" />
                               <Button id="btnImportFromCSVFiles" fx:id="btnImportFromCSVFiles" layoutX="38.0" layoutY="127.0" mnemonicParsing="false" onAction="#btnImportFromCSVFiles_OnClick" text="Import From CSV Files" />
                               <CheckBox fx:id="cbOperationalSchemaCSVFiles" layoutX="38.0" layoutY="34.0" mnemonicParsing="false" onAction="#cbCSVFiles_OnAction" text="Operational Schema CSV Files" />
                               <CheckBox fx:id="cbETLCSVFiles" layoutX="38.0" layoutY="64.0" mnemonicParsing="false" onAction="#cbCSVFiles_OnAction" text="ETL CSV Files" />
                               <CheckBox fx:id="cbDWCSVFiles" layoutX="38.0" layoutY="93.0" mnemonicParsing="false" onAction="#cbCSVFiles_OnAction" text="DW CSV Files" />
-                              <Label layoutX="38.0" layoutY="6.0" text="Components that can be imported" />
+                              <Label layoutX="6.0" layoutY="6.0" text="Components that can be imported">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font></Label>
                            </children></Pane>
                         <ImageView id="imgNeo4jReminder" fx:id="imgNeo4jReminder" fitHeight="150.0" fitWidth="200.0" layoutX="503.0" layoutY="176.0" pickOnBounds="true" preserveRatio="true" rotate="-4.0">
                            <image>
                               <Image url="@../../../../images/Neo4jVisualReminder.PNG" />
                            </image>
                         </ImageView>
+                        <Pane fx:id="pneGraphDB" layoutX="7.0" layoutY="7.0" prefHeight="75.0" prefWidth="541.0" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-style: solid;">
+                           <children>
+                              <Label layoutX="378.0" layoutY="41.0" text="Graph DB must not be started" />
+                              <Button id="btnCreateGraphDB" fx:id="btnCreateGraphDB" layoutX="378.0" layoutY="14.0" mnemonicParsing="false" onAction="#btnCreateGraphDB_OnClick" text="Create Graph DB" />
+                              <Label layoutX="8.0" layoutY="18.0" text="Graph DB Name" />
+                              <TextField id="txtNeo4jDBName" fx:id="txtNeo4jDBName" layoutX="100.0" layoutY="14.0" prefHeight="25.0" prefWidth="224.0" promptText="Database Name" text="Test" />
+                              <Label layoutX="100.0" layoutY="41.0" text="This name will be created inside the project" />
+                           </children>
+                        </Pane>
                      </children>
                   </AnchorPane>
               </content>

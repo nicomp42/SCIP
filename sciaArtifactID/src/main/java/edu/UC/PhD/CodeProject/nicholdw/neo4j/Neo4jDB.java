@@ -268,7 +268,7 @@ public class Neo4jDB {
 		// getDriver();
 		Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "query = " + cypher);
 		try (Session session = driver.session()) {
-			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "session is " + (session.isOpen() ? "" : "not ") + "open");
+			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + " session is " + (session.isOpen() ? "" : "not ") + "open");
 			// If there is no active db, then this method call causes all kind of errors
 			// that we can't catch.
 			// We will eventually end up in the catch block, below, but only after numerous
@@ -319,8 +319,7 @@ public class Neo4jDB {
 			graphDB = dbFactory.newEmbeddedDatabase(new File(dbPath));
 			// This doesn't work: "There is no procedure with the name
 			// `dbms.security.changePassword` registered for this database instance."
-			// graphDB.execute("CALL dbms.security.changePassword(" + "\"" + "Danger42" +
-			// "\")" );
+			// graphDB.execute("CALL dbms.security.changePassword(" + "\"" + "Danger42" + "\")" );
 
 			// TODO: At this point the DB will need to be manually started from the Neo4j
 			// desktop app because I don't know another way to do it programmatically.
