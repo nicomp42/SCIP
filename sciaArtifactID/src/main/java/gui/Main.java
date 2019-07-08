@@ -715,7 +715,7 @@ public class Main extends Application {
 			stc.setStage(stage);
 			stage.show();
 		} catch (Exception ex) {
-			Log.logError("Main.openSchemaTopologyWindow():" + ex.getLocalizedMessage());
+			Log.logError("Main.openDatabaseGraphWindow():" + ex.getLocalizedMessage());
 		}
 	}
 	private void openBrowserWindow() {

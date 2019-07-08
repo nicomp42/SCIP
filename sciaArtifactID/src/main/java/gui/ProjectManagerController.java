@@ -4,7 +4,6 @@
  */
 package gui;
 
-import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -13,8 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -41,9 +38,9 @@ public class ProjectManagerController /* extends Application */ {
 		try {
 			setTheScene();
 		} catch (Exception e) {
-			Log.logError("ProjectManager.Initialize(): " + e.getLocalizedMessage());
+			Log.logError("ProjectManagerController.Initialize(): " + e.getLocalizedMessage());
 		}
-		Log.logProgress("ProjectManager.Initialize() complete");
+		Log.logProgress("ProjectManagerController.Initialize() complete");
 	}
 //	private void closeMe() {
 //	    Stage stage = (Stage) btnAboutOK.getScene().getWindow();	// get a handle to the stage
@@ -79,7 +76,7 @@ public class ProjectManagerController /* extends Application */ {
 			pmc.setStage(stage);
 			stage.show();
 		} catch (Exception ex) {
-			Log.logError("Main.openProjectManagerWindow():" + ex.getLocalizedMessage());
+			Log.logError("ProjectManagerController.openProjectManagerWindow():" + ex.getLocalizedMessage());
 		}
 	}	
 }

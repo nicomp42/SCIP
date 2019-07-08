@@ -430,7 +430,7 @@
     <created_date>2018/09/09 08:58:12.643</created_date>
     <modified_user>-</modified_user>
     <modified_date>2018/09/09 08:58:12.643</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -618,37 +618,6 @@
     </hop>
   </order>
   <step>
-    <name>StoreInspection</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>storeinspection schema</connection>
-    <sql>select * from storeinspection.storeinspection order by employeenumber</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>96</xloc>
-      <yloc>64</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>HR </name>
     <type>TableInput</type>
     <description/>
@@ -674,8 +643,72 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>112</xloc>
-      <yloc>240</yloc>
+      <xloc>80</xloc>
+      <yloc>192</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Merge Join</name>
+    <type>MergeJoin</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <join_type>INNER</join_type>
+    <step1>HR </step1>
+    <step2>StoreInspection</step2>
+    <keys_1>
+      <key>EmployeeNumber</key>
+    </keys_1>
+    <keys_2>
+      <key>EmployeeNumber</key>
+    </keys_2>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>336</xloc>
+      <yloc>192</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>StoreInspection</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>storeinspection schema</connection>
+    <sql>select * from storeinspection.storeinspection order by employeenumber</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>80</xloc>
+      <yloc>32</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -742,39 +775,6 @@
     </remotesteps>
     <GUI>
       <xloc>560</xloc>
-      <yloc>176</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Merge Join</name>
-    <type>MergeJoin</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <join_type>INNER</join_type>
-    <step1>HR </step1>
-    <step2>StoreInspection</step2>
-    <keys_1>
-      <key>EmployeeNumber</key>
-    </keys_1>
-    <keys_2>
-      <key>EmployeeNumber</key>
-    </keys_2>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>336</xloc>
       <yloc>192</yloc>
       <draw>Y</draw>
     </GUI>

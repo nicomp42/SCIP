@@ -127,11 +127,11 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		SchemaChangeImpactProject scip = null;
 		Log.logProgress("SchemaChangeImpactProject.load(): attempting to load " + filePathWithFileName);
 		try {
-	         FileInputStream fileIn = new FileInputStream(filePathWithFileName);
-	         ObjectInputStream in = new ObjectInputStream(fileIn);
-	         scip = (SchemaChangeImpactProject) in.readObject();
-	         in.close();
-	         fileIn.close();
+			 FileInputStream fileIn = new FileInputStream(filePathWithFileName);
+			 ObjectInputStream in = new ObjectInputStream(fileIn);
+			 scip = (SchemaChangeImpactProject) in.readObject();
+			 in.close();
+			 fileIn.close();
 	 		Log.logProgress("SchemaChangeImpactProject.load(): " + filePathWithFileName + " is loaded.");
 		} catch (Exception ex) {
 			Log.logError("SchemaChangeImpactProject.load()" + ex.getLocalizedMessage() + " file = " + filePathWithFileName);
