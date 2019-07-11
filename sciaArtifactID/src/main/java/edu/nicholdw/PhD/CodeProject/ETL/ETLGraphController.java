@@ -4,10 +4,8 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
-import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 

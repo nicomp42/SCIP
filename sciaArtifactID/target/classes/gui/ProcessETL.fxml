@@ -31,12 +31,12 @@
    	    		      <Button fx:id="btnETLSubmit" layoutX="17.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnETLSubmit_OnClick" text="Submit" />
                               <Button fx:id="btnCreateGraph" layoutX="94.0" layoutY="233.0" mnemonicParsing="false" onAction="#btnCreateGraph_OnClick" text="Create Graph">
                               </Button>
-                              <CheckBox fx:id="cbClearDB" layoutX="240.0" layoutY="239.0" mnemonicParsing="false" text="Clear Graph Before Create" />
+                              <CheckBox fx:id="cbClearDB" layoutX="240.0" layoutY="239.0" mnemonicParsing="false" text="Clear Graph Before Creation" />
                      </children>
                   </Pane>
                   <Pane fx:id="pneETLResults" layoutX="1.0" layoutY="278.0" prefHeight="384.0" prefWidth="780.0">
                      <children>
-	   	                <Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL Job" />
+	   	                <Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL File" />
 				      <TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
         				<tabs>
           					<Tab text="Steps">
@@ -78,36 +78,36 @@
 		   			      	</Tab>
           					<Tab text="Step Names">
 					            <content>
-              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
                  <children>
-      		   			      				<TextArea fx:id="txaStepNamesResults" layoutX="5.0" layoutY="5.0" />
+      		   			      				<TextArea fx:id="txaStepNamesResults" layoutX="5.0" layoutY="5.0" prefWidth="700" />
                  </children>
    		   			      			</AnchorPane>
    		   			      		</content>
 		   			      	</Tab>
           					<Tab text="Output Steps">
 					            <content>
-              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
                  <children>
-      		   			      				<TextArea fx:id="txaOutputStepResults" layoutX="5.0" layoutY="5.0" />
+      		   			      				<TextArea fx:id="txaOutputStepResults" layoutX="5.0" layoutY="5.0" prefWidth="700" />
                  </children>
    		   			      			</AnchorPane>
    		   			      		</content>
 		   			      	</Tab>
           					<Tab text="Input Steps">
 					            <content>
-              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
                  <children>
-      		   			      				<TextArea fx:id="txaInputStepResults" layoutX="5.0" layoutY="5.0" />
+      		   			      				<TextArea fx:id="txaInputStepResults" layoutX="5.0" layoutY="5.0" prefWidth="700" />
                  </children>
    		   			      			</AnchorPane>
    		   			      		</content>
 		   			      	</Tab>
           					<Tab text="Join Steps">
 					            <content>
-              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="300">
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
                  <children>
-      		   			      				<TextArea fx:id="txaJoinStepResults" layoutX="5.0" layoutY="5.0" />
+      		   			      				<TextArea fx:id="txaJoinStepResults" layoutX="5.0" layoutY="5.0"  prefWidth="700" />
                  </children>
    		   			      			</AnchorPane>
    		   			      		</content>
