@@ -1,0 +1,68 @@
+CREATE TABLE `actionquerytestcase`.`table01` (
+  `Table01ID` INT NOT NULL AUTO_INCREMENT,
+  `stringField` VARCHAR(45) NULL,
+  `doubleField` DOUBLE NULL,
+  `floatField` FLOAT NULL,
+  `bitField` BIT NULL,
+  PRIMARY KEY (`Table01ID`),
+  UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
+
+
+CREATE TABLE `actionquerytestcase`.`table02` (
+  `Table02ID` INT NOT NULL AUTO_INCREMENT,
+  `stringField` VARCHAR(45) NULL,
+  `doubleField` DOUBLE NULL,
+  `floatField` FLOAT NULL,
+  `bitField` BIT NULL,
+  PRIMARY KEY (`Table01ID`),
+  UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
+
+
+CREATE TABLE `actionquerytestcase`.`table03` (
+  `Table03ID` INT NOT NULL AUTO_INCREMENT,
+  `stringField` VARCHAR(45) NULL,
+  `doubleField` DOUBLE NULL,
+  `floatField` FLOAT NULL,
+  `bitField` BIT NULL,
+  PRIMARY KEY (`Table01ID`),
+  UNIQUE INDEX `Table01ID_UNIQUE` (`Table01ID` ASC));
+
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `actionquerytestcase`.`view01` AS
+    SELECT 
+        `actionquerytestcase`.`table01`.`stringField` AS `table01-StringField`,
+        `actionquerytestcase`.`table01`.`doubleField` AS `table01-doublefield`,
+        `actionquerytestcase`.`table01`.`floatField` AS `table01-floatfield`,
+        `actionquerytestcase`.`table01`.`bitField` AS `table01-bitfield`,
+        `actionquerytestcase`.`table02`.`floatField` AS `table02-floatField`,
+        `actionquerytestcase`.`table03`.`bitField` AS `table03-bitfield`
+    FROM
+        ((`actionquerytestcase`.`table01`
+        JOIN `actionquerytestcase`.`table02`)
+        JOIN `actionquerytestcase`.`table03`)
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `actionquerytestcase`.`view02` AS
+    SELECT 
+        `actionquerytestcase`.`table02`.`stringField` AS `StringField`,
+        `actionquerytestcase`.`table02`.`floatField` AS `floatfield`
+    FROM
+        `actionquerytestcase`.`table02`
+
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `actionquerytestcase`.`view03` AS
+    SELECT 
+        `actionquerytestcase`.`table03`.`stringField` AS `StringField`,
+        `actionquerytestcase`.`table03`.`floatField` AS `FloatField`
+    FROM
+        `actionquerytestcase`.`table03`

@@ -1,0 +1,3 @@
+AttributeName,TableName,SchemaName,DataType
+`stringField`,`table01`,`actionquerytestcase`,varchar
+`floatField`,`table01`,`actionquerytestcase`,float

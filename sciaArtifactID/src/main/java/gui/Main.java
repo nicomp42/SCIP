@@ -540,14 +540,14 @@ public class Main extends Application {
 	protected void btnImportFromCSVFiles_OnClick(ActionEvent event) {
 		//String selectedSchemaName = lvSchemaNames.getSelectionModel().getSelectedItem();
 		gather(Config.getConfig().getCurrentSchemaChangeImpactProject());
-		ImportFromCSVIntoGraphDB gg = new ImportFromCSVIntoGraphDB();
+		ImportFromCSVIntoGraphDB myImport = new ImportFromCSVIntoGraphDB();
 		try {
 			ArrayList<SchemaChangeImpactProjectComponent> schemaChangeImpactProjectComponent = new ArrayList<SchemaChangeImpactProjectComponent>();
 			if (cbOperationalSchemaCSVFiles.isSelected()) {schemaChangeImpactProjectComponent.add(new Operational());}
 			if (cbETLCSVFiles.isSelected()) {schemaChangeImpactProjectComponent.add(new OpsIds());}
 			if (cbETLCSVFiles.isSelected()) {schemaChangeImpactProjectComponent.add(new IdsDwh());}
 			if (cbDWCSVFiles.isSelected()) {schemaChangeImpactProjectComponent.add(new DwhQueries());}
-			gg.ImportIntoGraphDB(Config.getConfig().getCurrentSchemaChangeImpactProject(), schemaChangeImpactProjectComponent);		//, "convertToGraph", "operational schema");
+			myImport.ImportIntoGraphDB(Config.getConfig().getCurrentSchemaChangeImpactProject(), schemaChangeImpactProjectComponent);		//, "convertToGraph", "operational schema");
 		} catch(Exception ex) {
 			Log.logError("btnImportFromCSVFiles_OnClick(): " + ex.getLocalizedMessage());
 		}

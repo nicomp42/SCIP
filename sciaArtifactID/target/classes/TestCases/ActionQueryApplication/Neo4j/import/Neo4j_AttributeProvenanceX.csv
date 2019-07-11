@@ -1,0 +1,2 @@
+NodeType,Key,SchemaName,TableName,AttributeName,DataType,PreviousKey
+SubNode,`myschema01`.`mytable01`.`myAttribute01`,`myschema01`,`mytable01`,,int,`myschema01`.`myview06`.`myAttribute01`

@@ -1,0 +1,22 @@
+-- Populate TestCase02a. See also populateTestCase02.txt for the companion script
+-- This has an extra Node: BodyOfWater: Ocean
+MATCH (n) DETACH DELETE n;
+--
+CREATE (n:Fish { species: 'Bass'}),
+       (a:Fish { species: 'Walleye'}),
+       (b:Fish { species: 'Trout'}),
+       (c:BodyOfWater { type: 'Lake'}),
+       (d:BodyOfWater { type: 'River'}),
+       (e:BodyOfWater { type: 'Ocean'})
+
+;
+--
+MATCH (a:Fish),(b:BodyOfWater)
+WHERE a.species = 'Bass' AND b.type = 'Lake'
+CREATE (a)-[r:`Lives in` {description: 'swims in'}]->(b);
+--
+MATCH (a:Fish),(b:BodyOfWater)
+WHERE a.species = 'Trout' AND b.type = 'River'
+CREATE (a)-[r:`Lives in` {description: 'swims in'}]->(b);
+--
+

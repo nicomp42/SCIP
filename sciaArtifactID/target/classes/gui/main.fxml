@@ -164,12 +164,13 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="18.0" text="Pentaho ETL Directory (XML Format)" />
+                        <Label layoutX="34.0" layoutY="18.0" text="Pentaho ETL Directory " />
                         <Button id="PentahoProjectDirectory" fx:id="PentahoProjectDirectory" layoutX="697.0" layoutY="35.0" mnemonicParsing="false" onAction="#btnPentahoProjectDirectory_OnClick" text="..." />
                         <ListView id="lvETLLayer" fx:id="lvETLLayer" layoutX="214.0" layoutY="85.0" prefHeight="87.0" prefWidth="200.0" visible="false" />
                         <CheckBox fx:id="cbAllETLLayers" layoutX="214.0" layoutY="180.0" mnemonicParsing="false" text="All ETL Layers" visible="false" />
                         <Button id="btnSavePentahoArtifactsToCSVFiles" fx:id="btnSavePentahoArtifactsToCSVFiles" layoutX="214.0" layoutY="215.0" mnemonicParsing="false" onAction="#btnSavePentahoArtifactsToCSVFiles_OnClick" text="Save Artifacts to CSV Files" />
                         <TextArea id="txaPentahoProjectDirectory" fx:id="txaPentahoProjectDirectory" layoutX="214.0" layoutY="18.0" prefHeight="58.0" prefWidth="474.0" wrapText="true" />
+                        <Label layoutX="34.0" layoutY="39.0" text="(XML files will be processed)" />
                      </children>
                   </AnchorPane>
               </content>
