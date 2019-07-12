@@ -80,7 +80,7 @@
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
                  <children>
-      		   			      				<TextArea fx:id="txaStepNamesResults" layoutX="5.0" layoutY="5.0" prefWidth="700" />
+      		   			      				<TextArea fx:id="txaStepNamesResults" layoutX="5.0" layoutY="5.0" prefWidth="800" />
                  </children>
    		   			      			</AnchorPane>
    		   			      		</content>
@@ -89,7 +89,7 @@
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
                  <children>
-      		   			      				<TextArea fx:id="txaOutputStepResults" layoutX="5.0" layoutY="5.0" prefWidth="700" />
+      		   			      				<TextArea fx:id="txaOutputStepResults" layoutX="5.0" layoutY="5.0" prefWidth="800" />
                  </children>
    		   			      			</AnchorPane>
    		   			      		</content>
@@ -98,7 +98,7 @@
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
                  <children>
-      		   			      				<TextArea fx:id="txaInputStepResults" layoutX="5.0" layoutY="5.0" prefWidth="700" />
+      		   			      				<TextArea fx:id="txaInputStepResults" layoutX="5.0" layoutY="5.0" prefWidth="800" />
                  </children>
    		   			      			</AnchorPane>
    		   			      		</content>
@@ -107,7 +107,16 @@
 					            <content>
               						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
                  <children>
-      		   			      				<TextArea fx:id="txaJoinStepResults" layoutX="5.0" layoutY="5.0"  prefWidth="700" />
+      		   			      				<TextArea fx:id="txaJoinStepResults" layoutX="5.0" layoutY="5.0"  prefWidth="800" />
+                 </children>
+   		   			      			</AnchorPane>
+   		   			      		</content>
+		   			      	</Tab>
+          					<Tab text="Jobs">
+					            <content>
+              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
+                 <children>
+      		   			      				<TextArea fx:id="txaETLJobs" layoutX="5.0" layoutY="5.0"  prefWidth="800" />
                  </children>
    		   			      			</AnchorPane>
    		   			      		</content>

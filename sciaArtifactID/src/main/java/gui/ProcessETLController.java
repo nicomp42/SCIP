@@ -23,6 +23,8 @@ import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnection;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnections;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLJob;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLJobs;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
@@ -49,7 +51,7 @@ public class ProcessETLController {
 	@FXML	private TableView<GUIETLStep> tvETLSteps;
 	@FXML	private TableView<GUIETLConnection> tvETLConnections;
 	@FXML	private AnchorPane apMainWindow;
-	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults;
+	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults, txaETLJobs;
 	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
@@ -161,6 +163,10 @@ public class ProcessETLController {
 	private void disableETLLoadSelectionControls(boolean disable) {
 		pneETLLoad.setDisable(disable);
 	}
+	/**
+	 * Process the XML file that contains some Pentaho steps. It could be a .ktr (transformation) or a .kjb (job) 
+	 * @param xmlFilePath Physical file path to the disk file. We'll take it from there.
+	 */
 	private void loadETL(String xmlFilePath) {
 		etlProcess = new ETLProcess();
 		Log.logProgress("ProcessETLController.loadDB() " + txaETLFilePath.getText().trim());
@@ -173,6 +179,7 @@ public class ProcessETLController {
 		ArrayList<DBJoinStep> js = new ArrayList<DBJoinStep>();
 		ArrayList<String> stepNames = new ArrayList<String>();
 		ArrayList<String> connectionNames = new ArrayList<String>();
+		ETLJobs etlJobs = new ETLJobs();
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
 	        @Override public Void call() throws InterruptedException {
@@ -185,6 +192,7 @@ public class ProcessETLController {
 	    				myXMLParser.parseXMLForOutputSteps(xmlFilePath, os);
 	    				myXMLParser.parseXMLForInputSteps(xmlFilePath, is);
 	    				myXMLParser.parseXMLForDBJoinSteps(xmlFilePath, js);
+	    				myXMLParser.getETLJobs(xmlFilePath, etlJobs);
 	    				Log.logProgress("ProcessETLController.loadETL(): parsing complete.");
 	    			} catch (Exception ex) {
 	    				Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());
@@ -242,6 +250,10 @@ public class ProcessETLController {
 				for (DBJoinStep joinStep: js) {
 					txaJoinStepResults.appendText(joinStep.toString() + System.getProperty("line.separator"));
 				}
+				// Does the file reference other jobs?
+				for (ETLJob etlJob : etlJobs) {
+					txaETLJobs.appendText(etlJob.toString() + System.getProperty("line.separator"));
+				}
 				// Copy the collection of steps to the table view control on the GUI
 				loadTableViewWithETLSteps(etlProcess.getETLSteps());
 				displayLoadETLResults(true);
@@ -268,6 +280,7 @@ public class ProcessETLController {
 			txaInputStepResults.clear();
 			txaJoinStepResults.clear();
 			txaStepNamesResults.clear();
+			txaETLJobs.clear();
 		}
 		/**
 		 * A place to write interesting data for browsing
@@ -291,7 +304,7 @@ public class ProcessETLController {
 				stage.show();
 //				dataBrowseController.appendToTextArea("Data Browse Window");
 			} catch (Exception ex) {
-				Log.logError("DataBrowse.openDataBrowseWindow():" + ex.getLocalizedMessage());
+				Log.logError("DataBrowse.openDataBrowse():" + ex.getLocalizedMessage());
 			}
 			return dataBrowseController;
 		}
