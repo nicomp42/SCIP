@@ -39,7 +39,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class XMLParser {
 	public static Document dom;
-	
+/*	
 	public static void main(String[] args) {
 		Log.logProgress("XMLParser.main(): ");
 		try {
@@ -51,14 +51,14 @@ public class XMLParser {
 		} catch (Exception ex) {
 			Log.logError("XMLParser.main(): " + ex.getLocalizedMessage());
 		}
-	}
+	}*/
 	public List<OutputStep> parseXMLForOutputSteps(String xmlFilePath){
 		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
 		parseXMLForOutputSteps(xmlFilePath, outputSteps);
 		return outputSteps;
 	}
 	public void parseXMLForOutputSteps(String xmlFilePath, List<OutputStep> outputSteps) {
-		Log.logProgress("XMLParser.parseXMLForOutputSteps(" + xmlFilePath + ")");
+		Log.logProgress("XMLParser.parseXMLForOutputSteps(): " + xmlFilePath);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
@@ -75,15 +75,16 @@ public class XMLParser {
 			for(String step:listOfAllSteps){
 				int stepType=getStepType(xpath, doc, step);
 				switch(stepType){
-				case 0:
-					outputStep = InsertUpdateStepParser.parseXMLForInsertUpdateStep(doc, xpath, step);
-					outputSteps.add(outputStep);
-					break;
-				case 1:
-					outputStep = TableOutputStepParser.parseXMLForTableOutputStep(doc, xpath, step);
-					outputSteps.add(outputStep);
-					break;
-				default: break;
+					case 0:
+						outputStep = InsertUpdateStepParser.parseXMLForInsertUpdateStep(doc, xpath, step, xmlFilePath);
+						outputSteps.add(outputStep);
+						break;
+					case 1:
+						outputStep = TableOutputStepParser.parseXMLForTableOutputStep(doc, xpath, step, xmlFilePath);
+						outputSteps.add(outputStep);
+						break;
+					default: 
+						break;
 				}
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -113,7 +114,7 @@ public class XMLParser {
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
 			for(String stepname:listOfAllStepNames){
-				tableinputStep=TableInputStepParser.parseXMLByStepName(doc, xpath, stepname);
+				tableinputStep=TableInputStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath);
 				inputSteps.add(tableinputStep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -186,7 +187,7 @@ public class XMLParser {
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
 			for(String stepname:listOfAllStepNames){
-				dbjoinstep=DBJoinStepParser.parseXMLByStepName(doc, xpath, stepname);
+				dbjoinstep=DBJoinStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath);
 				dbJoinSteps.add(dbjoinstep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {

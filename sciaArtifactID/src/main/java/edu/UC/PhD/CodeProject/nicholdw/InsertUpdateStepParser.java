@@ -16,37 +16,26 @@ import org.w3c.dom.NodeList;
 
 public class InsertUpdateStepParser {
 
-	public static OutputStep parseXMLForInsertUpdateStep(Document doc,
-			XPath xpath, String step) {
+	public static OutputStep parseXMLForInsertUpdateStep(Document doc, XPath xpath, String step, String xmlFilePath) {
 		OutputStep stepObject = null;
-
 		String transname = getTransformationName(doc, xpath);
-
 		String dbname = getDatabaseName(doc, xpath, step);
 		String tableName = getTableName(doc, xpath, step);
-
 		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, step);
-
-		stepObject = new OutputStep(transname, step, "Insert/Update", dbname,
-				tableName, fieldnames);
-
+		stepObject = new OutputStep(transname, step, "Insert/Update", dbname, tableName, fieldnames, xmlFilePath);
 		return stepObject;
 	}
 
-	private static String getDatabaseName(Document doc, XPath xpath,
-			String stepname) {
+	private static String getDatabaseName(Document doc, XPath xpath, String stepname) {
 		String connectionname = null;
 		String dbname = null;
 
 		try {
 
-			XPathExpression expr = xpath.compile("/transformation/step[name=\'"
-					+ stepname + "\']/connection/text()");
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/connection/text()");
 			connectionname = (String) expr.evaluate(doc, XPathConstants.STRING);
 
-			XPathExpression dbexpr = xpath
-					.compile("/transformation/connection[name='"
-							+ connectionname + "']/database/text()");
+			XPathExpression dbexpr = xpath.compile("/transformation/connection[name='" + connectionname + "']/database/text()");
 			dbname = (String) dbexpr.evaluate(doc, XPathConstants.STRING);
 
 		} catch (XPathExpressionException e) {
@@ -55,16 +44,13 @@ public class InsertUpdateStepParser {
 		return dbname;
 	}
 
-	private static List<String> getDatabaseFieldNames(Document doc,
-			XPath xpath, String stepname) {
+	private static List<String> getDatabaseFieldNames(Document doc,	XPath xpath, String stepname) {
 		List<String> list = new ArrayList<String>();
 		try {
 			// create XPathExpression object
-			XPathExpression expr = xpath.compile("/transformation/step[name=\'"
-					+ stepname + "\']/lookup/value/name/text()");
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/lookup/value/name/text()");
 			// evaluate expression result on XML document
-			NodeList nodes = (NodeList) expr.evaluate(doc,
-					XPathConstants.NODESET);
+			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 			for (int i = 0; i < nodes.getLength(); i++)
 				list.add(nodes.item(i).getNodeValue());
 		} catch (XPathExpressionException e) {
@@ -76,22 +62,18 @@ public class InsertUpdateStepParser {
 	private static String getTransformationName(Document doc, XPath xpath) {
 		String name = null;
 		try {
-			XPathExpression expr = xpath
-					.compile("/transformation/info/name/text()");
+			XPathExpression expr = xpath.compile("/transformation/info/name/text()");
 			name = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-
 		return name;
 	}
 
-	private static String getTableName(Document doc, XPath xpath,
-			String stepname) {
+	private static String getTableName(Document doc, XPath xpath, String stepname) {
 		String tablename = null;
 		try {
-			XPathExpression expr = xpath.compile("/transformation/step[name=\'"
-					+ stepname + "\']/lookup/table/text()");
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/lookup/table/text()");
 			tablename = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
@@ -99,5 +81,4 @@ public class InsertUpdateStepParser {
 
 		return tablename;
 	}
-
 }

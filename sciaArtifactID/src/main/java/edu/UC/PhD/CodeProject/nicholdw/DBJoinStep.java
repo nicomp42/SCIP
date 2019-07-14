@@ -5,6 +5,8 @@ public class DBJoinStep {
 	private String stepName;
 	private String dbName;
 	private String sql;
+	private String xmlFilename;
+
 	
 	public String getSql() {
 		return sql;
@@ -43,12 +45,21 @@ public class DBJoinStep {
 		this.dbName = dbName;
 	}
 
-	public DBJoinStep(String transName, String stepName, String dbName,	String sql) {
+	public DBJoinStep(String transName, String stepName, String dbName,	String sql, String xmlFilename) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
 		this.dbName = dbName;
 		this.sql = sql;
+		this.xmlFilename = xmlFilename;
+	}
+
+	public String getXmlFilename() {
+		return xmlFilename;
+	}
+
+	public void setXmlFilename(String xmlFilename) {
+		this.xmlFilename = xmlFilename;
 	}
 	
 }

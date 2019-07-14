@@ -13,13 +13,13 @@ import org.w3c.dom.Document;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class TableInputStepParser {
-	public static TableInputStep parseXMLByStepName(Document doc, XPath xpath, String stepname) {
+	public static TableInputStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String xmlFilename) {
 
 		TableInputStep stepObject = null;
 		String transname = getTransformationName(doc, xpath);
 		String dbname = getDatabaseName(doc, xpath, stepname);
 		String sql = getSQL(doc, xpath, stepname);
-		stepObject = new TableInputStep(transname, stepname, dbname, sql);
+		stepObject = new TableInputStep(transname, stepname, dbname, sql, xmlFilename);
 		return stepObject;
 	}
 

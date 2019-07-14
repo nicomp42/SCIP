@@ -35,7 +35,15 @@ public class ETLJobs implements Iterable<ETLJob> {
 	public void addETLJob(ETLJob ETLJob) {
 		ETLJobs.add(new ETLJob(ETLJob));
 	}
-	
+	/**
+	 * Add all jobs from another ETLJobs object. Deep copy of each ETLJob object!
+	 * @param etlJobs
+	 */
+	public void addETLJobs(ETLJobs etlJobs) {
+		for (ETLJob etlJob: etlJobs) {
+			addETLJob(new ETLJob(etlJob));
+		}
+	}
 	public String toString() {
 		String result = "";
 		String crlf = "";

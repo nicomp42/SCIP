@@ -169,14 +169,14 @@ public class ProcessETLController {
 	 */
 	private void loadETL(String xmlFilePath) {
 		etlProcess = new ETLProcess();
-		Log.logProgress("ProcessETLController.loadDB() " + txaETLFilePath.getText().trim());
+		Log.logProgress("ProcessETLController.loadETL() " + xmlFilePath);
 		displayLoadETLResults(false);
 		disableETLLoadSelectionControls(true);
 		lblWorking.setVisible(true);
 		clearResultsControls();
-		ArrayList<OutputStep> os = new ArrayList<OutputStep>();
-		ArrayList<TableInputStep> is = new ArrayList<TableInputStep>();
-		ArrayList<DBJoinStep> js = new ArrayList<DBJoinStep>();
+		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
+		ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
+		ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
 		ArrayList<String> stepNames = new ArrayList<String>();
 		ArrayList<String> connectionNames = new ArrayList<String>();
 		ETLJobs etlJobs = new ETLJobs();
@@ -187,13 +187,8 @@ public class ProcessETLController {
 	    		try {
 	    			try {
 	    				XMLParser myXMLParser = new XMLParser();
-	    				myXMLParser.getStepNames(xmlFilePath, stepNames);
-	    				myXMLParser.getConnectionNames(xmlFilePath, connectionNames);
-	    				myXMLParser.parseXMLForOutputSteps(xmlFilePath, os);
-	    				myXMLParser.parseXMLForInputSteps(xmlFilePath, is);
-	    				myXMLParser.parseXMLForDBJoinSteps(xmlFilePath, js);
-	    				myXMLParser.getETLJobs(xmlFilePath, etlJobs);
-	    				Log.logProgress("ProcessETLController.loadETL(): parsing complete.");
+	    				processETLFile(myXMLParser, xmlFilePath);
+	    				Log.logProgress("ProcessETLController.loadETL().Task: parsing complete.");
 	    			} catch (Exception ex) {
 	    				Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());
 	    			}
@@ -202,6 +197,21 @@ public class ProcessETLController {
 	    		} finally {
 	    		}
 	        	return null;
+	        }
+	        public void processETLFile(XMLParser myXMLParser, String myXMLFilePath) {
+				Log.logProgress("ProcessETLController.loadETL().Task.processETLJob(): parsing XML file at " + myXMLFilePath);
+				myXMLParser.getStepNames(myXMLFilePath, stepNames);
+				myXMLParser.getConnectionNames(myXMLFilePath, connectionNames);
+				myXMLParser.parseXMLForOutputSteps(myXMLFilePath, outputSteps);
+				myXMLParser.parseXMLForInputSteps(myXMLFilePath, tableInputSteps);
+				myXMLParser.parseXMLForDBJoinSteps(myXMLFilePath, dbJoinSteps);
+				ETLJobs tmpETLJobs = new ETLJobs();
+				myXMLParser.getETLJobs(myXMLFilePath, tmpETLJobs);
+				for (ETLJob etlJob : tmpETLJobs) {
+					Log.logProgress("ProcessETLController.loadETL().Task.processETLFile(): parsing XML JOB file at " + etlJob.getFilename());
+					processETLFile(myXMLParser, etlJob.getFilename());
+				}
+				etlJobs.addETLJobs(tmpETLJobs);
 	        }
 	    };
 	    task.setOnSucceeded(e -> {
@@ -241,13 +251,13 @@ public class ProcessETLController {
 							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
 							                                         ));
 				}
-				for (OutputStep outputStep: os) {
+				for (OutputStep outputStep: outputSteps) {
 					txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
 				}
-				for (TableInputStep inputStep: is) {
+				for (TableInputStep inputStep: tableInputSteps) {
 					txaInputStepResults.appendText(inputStep.toString() + System.getProperty("line.separator"));
 				}
-				for (DBJoinStep joinStep: js) {
+				for (DBJoinStep joinStep: dbJoinSteps) {
 					txaJoinStepResults.appendText(joinStep.toString() + System.getProperty("line.separator"));
 				}
 				// Does the file reference other jobs?

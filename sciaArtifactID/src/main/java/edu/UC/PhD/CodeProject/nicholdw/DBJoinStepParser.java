@@ -8,13 +8,13 @@ import org.w3c.dom.Document;
 
 public class DBJoinStepParser {
 	
-	public static DBJoinStep parseXMLByStepName(Document doc, XPath xpath, String stepname){
+	public static DBJoinStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String xmlFilename){
 		
 		DBJoinStep stepObject=null;
 		 String transname = getTransformationName(doc, xpath);
          String dbname = getDatabaseName(doc, xpath,stepname);
          String sql=getSQL(doc,xpath, stepname);	            
-         stepObject=new DBJoinStep(transname,stepname, dbname, sql);
+         stepObject=new DBJoinStep(transname,stepname, dbname, sql, xmlFilename);
 		return stepObject;
 			
 	}
