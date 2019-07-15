@@ -18,6 +18,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
 import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
@@ -42,6 +43,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -126,22 +128,22 @@ public class ProcessETLController {
 	private void browseETL() {
 		try {
 			btnETLSubmit.setVisible(false);
-			FileChooser fileChooser = new FileChooser();
+			DirectoryChooser directoryChooser = new DirectoryChooser();
 			String userHome = System.getProperty("user.home");
-			fileChooser.setInitialDirectory(new File(userHome + "/"));
+			directoryChooser.setInitialDirectory(new File(userHome + "/"));
 			// Try to use the previous file path that was selected by the user
 			try {
 				String currentDir = txaETLFilePath.getText().trim();
 				if (currentDir.length() > 0) {
 					File file = (new File(txaETLFilePath.getText())).getParentFile();
-					fileChooser.setInitialDirectory(file);
+					directoryChooser.setInitialDirectory(file);
 				}
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.browseETL directoryChooser(): " + ex.getLocalizedMessage());
 			}
-			fileChooser.setTitle("Select ETL File");
+			directoryChooser.setTitle("Select ETL File");
 			Stage stage = (Stage) this.btnETLBrowse.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
-			File file = (fileChooser.showOpenDialog(stage));
+			File file = (directoryChooser.showDialog(stage));
 			if (file != null) {
 				txaETLFilePath.setText(file.getAbsolutePath());
 				btnETLSubmit.setVisible(true);
@@ -187,7 +189,8 @@ public class ProcessETLController {
 	    		try {
 	    			try {
 	    				XMLParser myXMLParser = new XMLParser();
-	    				processETLFile(myXMLParser, xmlFilePath);
+	    				myXMLParser.setXMLFilePathPrefix(Utils.getPathWithoutFilename(xmlFilePath));
+	    				processETLFile(myXMLParser, Utils.getFilenameWithoutPath(xmlFilePath));
 	    				Log.logProgress("ProcessETLController.loadETL().Task: parsing complete.");
 	    			} catch (Exception ex) {
 	    				Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());
@@ -200,16 +203,16 @@ public class ProcessETLController {
 	        }
 	        public void processETLFile(XMLParser myXMLParser, String myXMLFilePath) {
 				Log.logProgress("ProcessETLController.loadETL().Task.processETLJob(): parsing XML file at " + myXMLFilePath);
-				myXMLParser.getStepNames(myXMLFilePath, stepNames);
-				myXMLParser.getConnectionNames(myXMLFilePath, connectionNames);
-				myXMLParser.parseXMLForOutputSteps(myXMLFilePath, outputSteps);
-				myXMLParser.parseXMLForInputSteps(myXMLFilePath, tableInputSteps);
-				myXMLParser.parseXMLForDBJoinSteps(myXMLFilePath, dbJoinSteps);
+				myXMLParser.getStepNames(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, stepNames);
+				myXMLParser.getConnectionNames(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, connectionNames);
+				myXMLParser.parseXMLForOutputSteps(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, outputSteps);
+				myXMLParser.parseXMLForInputSteps(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, tableInputSteps);
+				myXMLParser.parseXMLForDBJoinSteps(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, dbJoinSteps);
 				ETLJobs tmpETLJobs = new ETLJobs();
-				myXMLParser.getETLJobs(myXMLFilePath, tmpETLJobs);
+				myXMLParser.getETLJobs(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, tmpETLJobs);
 				for (ETLJob etlJob : tmpETLJobs) {
 					Log.logProgress("ProcessETLController.loadETL().Task.processETLFile(): parsing XML JOB file at " + etlJob.getFilename());
-					processETLFile(myXMLParser, etlJob.getFilename());
+					processETLFile(myXMLParser, etlJob.getFilenameWithoutPenthoPrefix());
 				}
 				etlJobs.addETLJobs(tmpETLJobs);
 	        }

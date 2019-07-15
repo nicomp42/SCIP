@@ -39,6 +39,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class XMLParser {
 	public static Document dom;
+	private String XMLFilePathPrefix;
 /*	
 	public static void main(String[] args) {
 		Log.logProgress("XMLParser.main(): ");
@@ -52,6 +53,15 @@ public class XMLParser {
 			Log.logError("XMLParser.main(): " + ex.getLocalizedMessage());
 		}
 	}*/
+	/***
+	 * Lop off the file name from the end of a fully qualified path or a relative path 
+	 * @param filePath
+	 * @return Everything but the file name
+	 */
+	public static String extractFilePathPrefix(String filePath) {
+		int idx = filePath.lastIndexOf("\\");
+		return filePath.substring(0, idx);
+	}
 	public List<OutputStep> parseXMLForOutputSteps(String xmlFilePath){
 		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
 		parseXMLForOutputSteps(xmlFilePath, outputSteps);
@@ -514,6 +524,12 @@ public class XMLParser {
 		switch (stepType) {
 		 
 		}
+	}
+	public String getXMLFilePathPrefix() {
+		return XMLFilePathPrefix;
+	}
+	public void setXMLFilePathPrefix(String xMLFilePathPrefix) {
+		XMLFilePathPrefix = xMLFilePathPrefix;
 	}
 	
 }

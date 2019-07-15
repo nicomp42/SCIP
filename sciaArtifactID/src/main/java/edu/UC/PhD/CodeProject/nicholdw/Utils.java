@@ -19,7 +19,37 @@ import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class Utils {
-	
+	/**
+	 * Chop off the prefix of the filename where the job is stored.
+	 * @return Just the filename with the prefix removed. 
+	 */
+	public static String getFilenameWithoutPath(String myFilename) {
+		String result = myFilename;
+		// ${Internal.Entry.Current.Directory}/KettleJobReconciledToDataWarehouse.kjb
+		int backslashIdx = myFilename.lastIndexOf("\\");
+		int slashIdx = myFilename.lastIndexOf("/");
+		int maxIdx = (backslashIdx > slashIdx) ? backslashIdx : slashIdx;
+		if (maxIdx > 0) {
+			result = myFilename.substring(maxIdx + 1);
+		}
+		return result;
+	}
+	/**
+	 * Chop off the prefix of the filename where the job is stored.
+	 * @return Just the path with the filename removed. 
+	 */
+	public static String getPathWithoutFilename(String myFilename) {
+		String result = myFilename;
+		// ${Internal.Entry.Current.Directory}/KettleJobReconciledToDataWarehouse.kjb
+		int backslashIdx = myFilename.lastIndexOf("\\");
+		int slashIdx = myFilename.lastIndexOf("/");
+		int maxIdx = (backslashIdx > slashIdx) ? backslashIdx : slashIdx;
+		if (maxIdx > 0) {
+			result = myFilename.substring(0, maxIdx) + "\\";
+		}
+		return result;
+	}
+
 	/**
 	 * Make sure the DB is loaded into Neo4j
 	 */

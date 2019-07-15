@@ -23,7 +23,7 @@ public class ETLJob {
 		setDescription(etlJob.getDescription());
 	}
 	public String toString() {
-		return jobName + ":" + getFilenameWithoutPrefix() + ((description.length() > 0) ? ":" + description : "");
+		return jobName + ":" + getFilenameWithoutPenthoPrefix() + ((description.length() > 0) ? ":" + description : "");
 	}
 	public String getJobName() {
 		return jobName;
@@ -47,12 +47,12 @@ public class ETLJob {
 	 * Chop off the prefix of the filename where the job is stored.
 	 * @return Just the filename with the prefix removed. 
 	 */
-	public String getFilenameWithoutPrefix() {
+	public String getFilenameWithoutPenthoPrefix() {
 		String result = filename;
 		// ${Internal.Entry.Current.Directory}/KettleJobReconciledToDataWarehouse.kjb
 		int slashIdx = filename.indexOf("/");
-		if (slashIdx > 0) {
-			result = filename.substring(slashIdx);
+		if (slashIdx >= 0) {
+			result = filename.substring(slashIdx + 1);
 		}
 		return result;
 	}
