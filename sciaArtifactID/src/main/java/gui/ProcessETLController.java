@@ -50,6 +50,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
@@ -191,6 +193,31 @@ public class ProcessETLController {
 		}	
 		return files;
 	}
+	@FXML
+	public void txaETLFilePath_OnClick(MouseEvent event) {
+		if (event.getButton() == MouseButton.PRIMARY) {
+			int clickCount = 0;
+			clickCount = event.getClickCount();
+			if (clickCount == 2) { // It's a double click! Stuff in the default path for a test case.
+				txaETLFilePath.setText("C:\\Temp\\ThrowawayProject\\ThrowawayProject\\ETLJob");
+			}
+		}
+	}
+	@FXML
+	public void tvETLTransformationFiles_OnClick(MouseEvent event) {
+		if (event.getButton() == MouseButton.PRIMARY) {
+			int clickCount = 0;
+			clickCount = event.getClickCount();
+			if (clickCount == 2) { // It's a double click!
+				GUIetlTransformationFile g = tvETLTransformationFiles.getSelectionModel().getSelectedItem();
+				g.setEtlStage("YAY!");
+				System.out.println(g.getFileName());
+				int idx = tvETLTransformationFiles.getSelectionModel().getSelectedIndex();
+				tvETLTransformationFiles.getItems().set(idx, g);
+			}
+		}
+	}
+
 	/***
 	 * Load a TableView control with Transformation file names
 	 * @param tableView The TableView to be loaded

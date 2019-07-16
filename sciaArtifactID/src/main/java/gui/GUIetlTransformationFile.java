@@ -17,8 +17,9 @@ public class GUIetlTransformationFile {
         this("", "");
 	}
 
-    public GUIetlTransformationFile(String fileName, String etlType) {
+    public GUIetlTransformationFile(String fileName, String etlStage) {
     	setFileName(fileName);
+    	setEtlStage(etlStage);
     }
 
 	public String getFileName() {
@@ -35,7 +36,7 @@ public class GUIetlTransformationFile {
 	 */
 	
 	public void setEtlStage(String etlStage) {
-		setEtlStage(etlStage);
+		this.etlStage.set(etlStage);
 	}
 	public String getEtlStage() {
 		return this.etlStage.get();
