@@ -1,9 +1,9 @@
-/TestCases/
-/ConnectionInformation/
-/edu/
 /gui/
+/edu/
+/org/
+/ConnectionInformation/
+/TestCases/
 /images/
 /lib/
-/org/
 /test/
 /META-INF/

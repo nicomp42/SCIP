@@ -61,7 +61,7 @@ import javafx.scene.control.TableView;
 public class ProcessETLController {
 	@FXML	private TableView<GUIETLStep> tvETLSteps;
 	@FXML	private TableView<GUIETLConnection> tvETLConnections;
-	@FXML	private TableView<GUIETLTransformationFile> tvETLTransformationFiles;
+	@FXML	private TableView<GUIetlTransformationFile> tvETLTransformationFiles;
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults, txaETLJobs;
 	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph;
@@ -196,12 +196,8 @@ public class ProcessETLController {
 	 * @param tableView The TableView to be loaded
 	 * @param etlSteps The set of ETL steps
 	 */
-	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIETLTransformationFile> tableView, ETLTransformationFiles etlTransformationFiles) {
-        ObservableList<gui.GUIETLTransformationFile> data = tableView.getItems();
-        data.clear();
-        for (ETLTransformationFile etlTransformationFile : etlTransformationFiles) {
-   	        data.add(new gui.GUIETLTransformationFile(etlTransformationFile.getFileName()));
-   		}
+	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView, ETLTransformationFiles etlTransformationFiles) {
+		ETLTransformationFile.loadTableViewWithTransformationFileNames(tableView, etlTransformationFiles);
     }
 	/**
 	 * Process the XML file that contains some Pentaho steps. It could be a .ktr (transformation) or a .kjb (job) 
@@ -211,7 +207,7 @@ public class ProcessETLController {
 		ArrayList<String> files = readDirectory(xmlFilePath);
 		ETLTransformationFiles etlTransformationFiles = new ETLTransformationFiles();
 		for (String file : files) {
-			etlTransformationFiles.add(new ETLTransformationFile(file));
+			etlTransformationFiles.add(new ETLTransformationFile(file, ETLTransformationFile.etlStageUnknown));
 		}
 		loadTableViewWithTransformationFileNames(tvETLTransformationFiles, etlTransformationFiles);
 

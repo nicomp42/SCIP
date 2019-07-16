@@ -33,9 +33,15 @@
                            <children>
                               <TableView fx:id="tvETLTransformationFiles" prefHeight="200.0" prefWidth="780.0">
                                 <columns>
-                                  <TableColumn editable="false" prefWidth="75.0" text="File Name" 
+                                  <TableColumn editable="false" prefWidth="75.0" text="File Name">
 	   								<cellValueFactory>
-	                                	<PropertyValueFactory property="fileName" /></cellValueFactory>
+	                                	<PropertyValueFactory property="fileName" />
+	                                </cellValueFactory>
+                                  </TableColumn>
+                                  <TableColumn editable="false" prefWidth="75.0" text="ETL Stage">
+	   								<cellValueFactory>
+	                                	<PropertyValueFactory property="etlStage" />
+	                                </cellValueFactory>
                                   </TableColumn>
                                 </columns>
                               </TableView>
@@ -59,11 +65,11 @@
 									<children>
 										<Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL File" />
 										<TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
-							<tabs>
+											<tabs>
 												<Tab text="Steps">
 													<content>
 														<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="600">
-	                 						<children>
+	                 										<children>
 	      		   			      				<TableView fx:id="tvETLSteps" layoutX="5.0" layoutY="5.0" prefHeight="400.0" prefWidth="793.0">  
 	   										     <columns>
 	   										          <TableColumn prefWidth="113.0" text="Step Name">
