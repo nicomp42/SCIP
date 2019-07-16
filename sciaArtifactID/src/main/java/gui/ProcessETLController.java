@@ -6,6 +6,12 @@
 
 package gui;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,7 +35,10 @@ import edu.nicholdw.PhD.CodeProject.ETL.ETLJobs;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFile;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFiles;
 import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -52,13 +61,14 @@ import javafx.scene.control.TableView;
 public class ProcessETLController {
 	@FXML	private TableView<GUIETLStep> tvETLSteps;
 	@FXML	private TableView<GUIETLConnection> tvETLConnections;
+	@FXML	private TableView<GUIETLTransformationFile> tvETLTransformationFiles;
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults, txaETLJobs;
 	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
 	@FXML	private CheckBox cbClearDB;
-	@FXML	private Pane pneETLResults, pneETLLoad;
+	@FXML	private Pane pneETLResults, pneETLLoad, pneCreateGraph, pneFiles;
 	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETL(txaETLFilePath.getText().trim());}
 	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
 	@FXML	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
@@ -165,11 +175,46 @@ public class ProcessETLController {
 	private void disableETLLoadSelectionControls(boolean disable) {
 		pneETLLoad.setDisable(disable);
 	}
+	private ArrayList<String> readDirectory(String xmlFilePath) {
+		Log.logProgress("ProcessETLController.readDirectory(): " + xmlFilePath);
+		Path tmpPath = Paths.get(xmlFilePath);
+		ArrayList<String> files = new ArrayList<String>();
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(tmpPath, "*.{ktr}")) {
+		    for (Path entry: stream) {
+		    	files.add(entry.toAbsolutePath().toString());
+		        System.out.println(entry.getFileName());
+		    }
+		} catch (IOException x) {
+		    // IOException can never be thrown by the iteration.
+		    // In this snippet, it can // only be thrown by newDirectoryStream.
+		    System.err.println(x);
+		}	
+		return files;
+	}
+	/***
+	 * Load a TableView control with Transformation file names
+	 * @param tableView The TableView to be loaded
+	 * @param etlSteps The set of ETL steps
+	 */
+	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIETLTransformationFile> tableView, ETLTransformationFiles etlTransformationFiles) {
+        ObservableList<gui.GUIETLTransformationFile> data = tableView.getItems();
+        data.clear();
+        for (ETLTransformationFile etlTransformationFile : etlTransformationFiles) {
+   	        data.add(new gui.GUIETLTransformationFile(etlTransformationFile.getFileName()));
+   		}
+    }
 	/**
 	 * Process the XML file that contains some Pentaho steps. It could be a .ktr (transformation) or a .kjb (job) 
 	 * @param xmlFilePath Physical file path to the disk file. We'll take it from there.
 	 */
 	private void loadETL(String xmlFilePath) {
+		ArrayList<String> files = readDirectory(xmlFilePath);
+		ETLTransformationFiles etlTransformationFiles = new ETLTransformationFiles();
+		for (String file : files) {
+			etlTransformationFiles.add(new ETLTransformationFile(file));
+		}
+		loadTableViewWithTransformationFileNames(tvETLTransformationFiles, etlTransformationFiles);
+
 		etlProcess = new ETLProcess();
 		Log.logProgress("ProcessETLController.loadETL() " + xmlFilePath);
 		displayLoadETLResults(false);

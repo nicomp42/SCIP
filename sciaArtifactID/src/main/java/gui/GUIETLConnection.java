@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class GUIETLConnection {
 
-	// These field names must match the cellValueFactory names in the fxml file!
+// These field names must match the cellValueFactory names in the fxml file!
 //	<cellValueFactory>
 //        <PropertyValueFactory property="name" />
 //  </cellValueFactory>
