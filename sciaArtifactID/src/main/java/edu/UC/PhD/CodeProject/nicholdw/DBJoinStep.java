@@ -7,7 +7,6 @@ public class DBJoinStep {
 	private String sql;
 	private String xmlFilename;
 
-	
 	public String getSql() {
 		return sql;
 	}

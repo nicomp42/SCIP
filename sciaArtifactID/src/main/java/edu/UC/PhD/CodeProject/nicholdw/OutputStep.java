@@ -15,8 +15,9 @@ public class OutputStep {
 	private String tableName;
 	private List<String> attributes=new ArrayList<String>();
 	private String xmlFilename;
+	private String xmlFilePath;
 
-	public OutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilename) {
+	public OutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilePath, String xmlFilename) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
@@ -25,6 +26,7 @@ public class OutputStep {
 		this.tableName = tableName;
 		this.attributes = attributes;
 		this.xmlFilename = xmlFilename;
+		this.xmlFilePath = xmlFilePath;
 	}
 	public String getTransName() {
 		return transName;
@@ -74,5 +76,11 @@ public class OutputStep {
 	}
 	public void setXmlFilename(String xmlFilename) {
 		this.xmlFilename = xmlFilename;
+	}
+	public String getXmlFilePath() {
+		return xmlFilePath;
+	}
+	public void setXmlFilePath(String xmlFilePath) {
+		this.xmlFilePath = xmlFilePath;
 	}
 }

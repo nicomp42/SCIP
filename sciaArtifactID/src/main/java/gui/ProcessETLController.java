@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -23,6 +24,7 @@ import org.w3c.dom.Document;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
 import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -38,6 +40,8 @@ import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFile;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFiles;
 import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -66,14 +70,15 @@ public class ProcessETLController {
 	@FXML	private TableView<GUIetlTransformationFile> tvETLTransformationFiles;
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults, txaETLJobs;
-	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph;
+	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph, btnProcessETLTransformationFiles;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
 	@FXML	private CheckBox cbClearDB;
 	@FXML	private Pane pneETLResults, pneETLLoad, pneCreateGraph, pneFiles;
-	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETL(txaETLFilePath.getText().trim());}
+	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETLTransformationFiles(txaETLFilePath.getText().trim());}
 	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
 	@FXML	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
+	@FXML	private void btnProcessETLTransformationFiles_OnClick(ActionEvent event) {processETLTransformationFiles(Utils.formatPath(txaETLFilePath.getText().trim()));}
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessETLController.Initialize() starting...");
@@ -103,9 +108,28 @@ public class ProcessETLController {
 		loadTableViewWithETLSteps(new ETLSteps());		// Load nothing. 
 		addDoubleClickHandler();
 		dataBrowseController = null;
-		cbClearDB.setVisible(false);
 		displayLoadETLResults(false);
 		btnETLSubmit.setVisible(false);
+		displayETLProcessControls(false);
+		txaETLFilePath.focusedProperty().addListener(new ChangeListener<Boolean>(){
+		    @Override
+		    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+	            if (newValue){
+	                // txaETLFilePath has focus
+	            	checkToEnableSubmitButton();
+	            } else {
+	                // txaETLFilePath does not have the focus
+	            	checkToEnableSubmitButton();
+	            }
+		    }
+		});
+	}
+	private void checkToEnableSubmitButton() {
+		if (txaETLFilePath.getText() != null && txaETLFilePath.getText().trim().length() > 0) {
+			btnETLSubmit.setVisible(true);
+		} else {
+			btnETLSubmit.setVisible(false);
+		}
 	}
 	/***
 	 * Set up the event handler when the user double-clicks on an ETL step
@@ -116,7 +140,7 @@ public class ProcessETLController {
 		    row.setOnMouseClicked(event -> {
 		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
 		        	GUIETLStep guiETLStep = row.getItem();
-		            System.out.println(guiETLStep.toString());
+//		            System.out.println(guiETLStep.toString());
 		            if (dataBrowseController == null) {
 		            	dataBrowseController = openDataBrowse();
 		            } 
@@ -184,7 +208,7 @@ public class ProcessETLController {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(tmpPath, "*.{ktr}")) {
 		    for (Path entry: stream) {
 		    	files.add(entry.toAbsolutePath().toString());
-		        System.out.println(entry.getFileName());
+//		        System.out.println(entry.getFileName());
 		    }
 		} catch (IOException x) {
 		    // IOException can never be thrown by the iteration.
@@ -199,23 +223,25 @@ public class ProcessETLController {
 			int clickCount = 0;
 			clickCount = event.getClickCount();
 			if (clickCount == 2) { // It's a double click! Stuff in the default path for a test case.
-				txaETLFilePath.setText("C:\\Temp\\ThrowawayProject\\ThrowawayProject\\ETLJob");
+				txaETLFilePath.setText("C:\\Temp\\ThrowawayProject\\ThrowawayProject\\ETLJob\\");
 			}
 		}
 	}
 	@FXML
 	public void tvETLTransformationFiles_OnClick(MouseEvent event) {
-		if (event.getButton() == MouseButton.PRIMARY) {
-			int clickCount = 0;
-			clickCount = event.getClickCount();
-			if (clickCount == 2) { // It's a double click!
-				GUIetlTransformationFile g = tvETLTransformationFiles.getSelectionModel().getSelectedItem();
-				g.setEtlStage("YAY!");
-				System.out.println(g.getFileName());
-				int idx = tvETLTransformationFiles.getSelectionModel().getSelectedIndex();
-				tvETLTransformationFiles.getItems().set(idx, g);
+		try {
+			if (event.getButton() == MouseButton.PRIMARY) {
+				int clickCount = 0;
+				clickCount = event.getClickCount();
+				if (clickCount == 2) { // It's a double click!
+					GUIetlTransformationFile g = tvETLTransformationFiles.getSelectionModel().getSelectedItem();
+					g.setEtlStage(ETLTransformationFile.getNextETLStage(g.getEtlStage()));
+	//				System.out.println(g.getFileName());
+					int idx = tvETLTransformationFiles.getSelectionModel().getSelectedIndex();
+					tvETLTransformationFiles.getItems().set(idx, g);
+				}
 			}
-		}
+		} catch (Exception ex) {}
 	}
 
 	/***
@@ -230,16 +256,28 @@ public class ProcessETLController {
 	 * Process the XML file that contains some Pentaho steps. It could be a .ktr (transformation) or a .kjb (job) 
 	 * @param xmlFilePath Physical file path to the disk file. We'll take it from there.
 	 */
-	private void loadETL(String xmlFilePath) {
+	private void loadETLTransformationFiles(String xmlFilePath) {
+		Log.logProgress("processETLTransformationFiles.loadETLTransformationFiles() " + xmlFilePath);
 		ArrayList<String> files = readDirectory(xmlFilePath);
 		ETLTransformationFiles etlTransformationFiles = new ETLTransformationFiles();
 		for (String file : files) {
-			etlTransformationFiles.add(new ETLTransformationFile(file, ETLTransformationFile.etlStageUnknown));
+			etlTransformationFiles.add(new ETLTransformationFile(file));
 		}
 		loadTableViewWithTransformationFileNames(tvETLTransformationFiles, etlTransformationFiles);
-
+		displayETLProcessControls(true);
+	}
+	private void displayETLProcessControls(Boolean visible) {
+		btnProcessETLTransformationFiles.setVisible(visible);
+		btnCreateGraph.setVisible(visible);
+		cbClearDB.setVisible(visible);
+	}
+	/**
+	 * Take apart all the select transformation files
+	 * @param xmlFilePath The directory where all the files are. The files are in the Table View control tvETLTransformationFiles
+	 */
+	private void processETLTransformationFiles(String xmlFilePath) {
 		etlProcess = new ETLProcess();
-		Log.logProgress("ProcessETLController.loadETL() " + xmlFilePath);
+		Log.logProgress("ProcessETLController.processETLTransformationFiles() " + xmlFilePath);
 		displayLoadETLResults(false);
 		disableETLLoadSelectionControls(true);
 		lblWorking.setVisible(true);
@@ -247,9 +285,9 @@ public class ProcessETLController {
 		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
 		ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
 		ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
-		ArrayList<String> stepNames = new ArrayList<String>();
+		ArrayList<StepName> stepNames = new ArrayList<StepName>();
 		ArrayList<String> connectionNames = new ArrayList<String>();
-		ETLJobs etlJobs = new ETLJobs();
+//		ETLJobs etlJobs = new ETLJobs();
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
 	        @Override public Void call() throws InterruptedException {
@@ -257,8 +295,20 @@ public class ProcessETLController {
 	    		try {
 	    			try {
 	    				XMLParser myXMLParser = new XMLParser();
-	    				myXMLParser.setXMLFilePathPrefix(Utils.getPathWithoutFilename(xmlFilePath));
-	    				processETLFile(myXMLParser, Utils.getFilenameWithoutPath(xmlFilePath));
+	    				myXMLParser.setXMLFilePathPrefix(xmlFilePath);
+	    				// Step through the selected files in the TableView control
+	    				GUIetlTransformationFile g;
+	    				int idx =  0;
+	    				while (true) {
+	    					try {
+			    				g = tvETLTransformationFiles.getItems().get(idx);
+			    				if (ETLTransformationFile.isStageUnknown(g.getEtlStage()) == false) {
+			    					Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Processing " + g.getFileName());
+			    					processETLFile(myXMLParser, g.getFileName(), g.getEtlStage());
+			    				}
+		    					idx++;
+	    					} catch (Exception ex) {break;}
+	    				}
 	    				Log.logProgress("ProcessETLController.loadETL().Task: parsing complete.");
 	    			} catch (Exception ex) {
 	    				Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());
@@ -269,20 +319,20 @@ public class ProcessETLController {
 	    		}
 	        	return null;
 	        }
-	        public void processETLFile(XMLParser myXMLParser, String myXMLFilePath) {
-				Log.logProgress("ProcessETLController.loadETL().Task.processETLJob(): parsing XML file at " + myXMLFilePath);
-				myXMLParser.getStepNames(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, stepNames);
-				myXMLParser.getConnectionNames(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, connectionNames);
-				myXMLParser.parseXMLForOutputSteps(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, outputSteps);
-				myXMLParser.parseXMLForInputSteps(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, tableInputSteps);
-				myXMLParser.parseXMLForDBJoinSteps(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, dbJoinSteps);
-				ETLJobs tmpETLJobs = new ETLJobs();
-				myXMLParser.getETLJobs(myXMLParser.getXMLFilePathPrefix() + myXMLFilePath, tmpETLJobs);
-				for (ETLJob etlJob : tmpETLJobs) {
-					Log.logProgress("ProcessETLController.loadETL().Task.processETLFile(): parsing XML JOB file at " + etlJob.getFilename());
-					processETLFile(myXMLParser, etlJob.getFilenameWithoutPenthoPrefix());
-				}
-				etlJobs.addETLJobs(tmpETLJobs);
+	        public void processETLFile(XMLParser myXMLParser, String myXMLFileName, String etlStage) {
+				Log.logProgress("ProcessETLController.loadETL().Task.processETLJob(): parsing XML file at " + myXMLFileName + ", stage = " + etlStage);
+				myXMLParser.getStepNames(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, stepNames);
+				myXMLParser.getConnectionNames(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, connectionNames);
+				myXMLParser.parseXMLForOutputSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, outputSteps);
+				myXMLParser.parseXMLForInputSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, tableInputSteps);
+//				myXMLParser.parseXMLForDBJoinSteps(myXMLParser.getXMLFilePathPrefix() + myXMLFileName, dbJoinSteps);
+//				ETLJobs tmpETLJobs = new ETLJobs();
+//				myXMLParser.getETLJobs(myXMLParser.getXMLFilePathPrefix() + myXMLFileName, tmpETLJobs);
+//				for (ETLJob etlJob : tmpETLJobs) {
+//					Log.logProgress("ProcessETLController.loadETL().Task.processETLFile(): parsing XML JOB file at " + etlJob.getFilename());
+//					processETLFile(myXMLParser, etlJob.getFilenameWithoutPenthoPrefix());
+//				}
+//				etlJobs.addETLJobs(tmpETLJobs);
 	        }
 	    };
 	    task.setOnSucceeded(e -> {
@@ -293,25 +343,28 @@ public class ProcessETLController {
 			factory.setNamespaceAware(true);
 			DocumentBuilder builder;
 			Document doc = null;
+			XPath xpath = null;
 			try {
-				builder = factory.newDocumentBuilder();
-				doc = builder.parse(xmlFilePath);
-				XPathFactory xpathFactory = XPathFactory.newInstance();
-				XPath xpath = xpathFactory.newXPath();
-				int counter = 0;
-				for (String stepName: stepNames) {
+				for (StepName stepName: stepNames) {
+					builder = factory.newDocumentBuilder();
+					doc = builder.parse(xmlFilePath + stepName.getFileName());
+					XPathFactory xpathFactory = XPathFactory.newInstance();
+					xpath = xpathFactory.newXPath();
+					// Get # lines that were already in the TextArea and use are the line number for each new line we add.
+					int counter = 0;
+					try {counter = txaStepNamesResults.getText().split("\n").length - 1 ;} catch (Exception ex) {}
 					String tmp, stepType, sql, table, connection;
 					counter++;
 					tmp = String.valueOf(counter) + ": ";
-					tmp += stepName;
-					stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName);
-					sql = myXMLParser.getSQL(xpath, doc, stepName);
-					table = myXMLParser.getSomethingInAStep(xpath, doc, stepName, "table");
-					connection = myXMLParser.getSomethingInAStep(xpath, doc, stepName, "connection");
+					tmp += stepName.toString();
+					stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
+					sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());
+					table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "table");
+					connection = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "connection");
 					tmp += " (" + stepType +  ")";
 					txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
 					// Add this new step to the collection of steps
-					etlProcess.getETLSteps().addETLStep(new ETLStep(stepName, stepType, sql, table, connection));
+					etlProcess.getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection));
 				}
 				//ETLConnections etlConnections = new ETLConnections();
 				for (String connectionName: connectionNames) {
@@ -332,9 +385,9 @@ public class ProcessETLController {
 					txaJoinStepResults.appendText(joinStep.toString() + System.getProperty("line.separator"));
 				}
 				// Does the file reference other jobs?
-				for (ETLJob etlJob : etlJobs) {
-					txaETLJobs.appendText(etlJob.toString() + System.getProperty("line.separator"));
-				}
+//				for (ETLJob etlJob : etlJobs) {
+//					txaETLJobs.appendText(etlJob.toString() + System.getProperty("line.separator"));
+//				}
 				// Copy the collection of steps to the table view control on the GUI
 				loadTableViewWithETLSteps(etlProcess.getETLSteps());
 				displayLoadETLResults(true);
@@ -361,7 +414,7 @@ public class ProcessETLController {
 			txaInputStepResults.clear();
 			txaJoinStepResults.clear();
 			txaStepNamesResults.clear();
-			txaETLJobs.clear();
+//			txaETLJobs.clear();
 		}
 		/**
 		 * A place to write interesting data for browsing

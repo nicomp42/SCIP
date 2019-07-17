@@ -15,20 +15,21 @@ public class TableInputStep {
 	private String dbName;
 	private String sql;
 	private String xmlFilePath;
+	private String fileName;
 
 	@Override
 	public String toString() {
-		return "TableInputStep [transName=" + transName + ", stepName="
-				+ stepName + ", dbName=" + dbName + ", sql=" + sql + "]";
+		return "TableInputStep [transName=" + transName + ", stepName="	+ stepName + ", dbName=" + dbName + ", sql=" + sql + "]";
 	}
 
-	public TableInputStep(String transName, String stepName, String dbName,	String sql, String xmlFilepath) {
+	public TableInputStep(String transName, String stepName, String dbName,	String sql, String xmlFilepath, String fileName) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
 		this.dbName = dbName;
 		this.sql = sql;
 		this.setXmlFilePath(xmlFilepath);
+		this.setFileName(fileName);
 	}
 
 	public String getTransName() {
@@ -62,6 +63,14 @@ public class TableInputStep {
 
 	public void setXmlFilePath(String xmlFilePath) {
 		this.xmlFilePath = xmlFilePath;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }

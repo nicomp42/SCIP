@@ -16,16 +16,15 @@ import org.w3c.dom.NodeList;
 
 public class InsertUpdateStepParser {
 
-	public static OutputStep parseXMLForInsertUpdateStep(Document doc, XPath xpath, String step, String xmlFilePath) {
+	public static OutputStep parseXMLForInsertUpdateStep(Document doc, XPath xpath, String step, String xmlFilePath, String fileName) {
 		OutputStep stepObject = null;
 		String transname = getTransformationName(doc, xpath);
 		String dbname = getDatabaseName(doc, xpath, step);
 		String tableName = getTableName(doc, xpath, step);
 		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, step);
-		stepObject = new OutputStep(transname, step, "Insert/Update", dbname, tableName, fieldnames, xmlFilePath);
+		stepObject = new OutputStep(transname, step, "Insert/Update", dbname, tableName, fieldnames, xmlFilePath, fileName);
 		return stepObject;
 	}
-
 	private static String getDatabaseName(Document doc, XPath xpath, String stepname) {
 		String connectionname = null;
 		String dbname = null;
@@ -43,7 +42,6 @@ public class InsertUpdateStepParser {
 		}
 		return dbname;
 	}
-
 	private static List<String> getDatabaseFieldNames(Document doc,	XPath xpath, String stepname) {
 		List<String> list = new ArrayList<String>();
 		try {
@@ -58,7 +56,6 @@ public class InsertUpdateStepParser {
 		}
 		return list;
 	}
-
 	private static String getTransformationName(Document doc, XPath xpath) {
 		String name = null;
 		try {
@@ -69,7 +66,6 @@ public class InsertUpdateStepParser {
 		}
 		return name;
 	}
-
 	private static String getTableName(Document doc, XPath xpath, String stepname) {
 		String tablename = null;
 		try {
@@ -78,7 +74,6 @@ public class InsertUpdateStepParser {
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-
 		return tablename;
 	}
 }

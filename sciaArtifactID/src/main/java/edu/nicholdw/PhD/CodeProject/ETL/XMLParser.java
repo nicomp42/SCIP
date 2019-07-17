@@ -32,6 +32,7 @@ import edu.UC.PhD.CodeProject.nicholdw.DimLookupUpdateStep;
 import edu.UC.PhD.CodeProject.nicholdw.DimensionLookupStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.InsertUpdateStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStepParser;
@@ -39,7 +40,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class XMLParser {
 	public static Document dom;
-	private String XMLFilePathPrefix;
+	private String xmlFilePathPrefix;
 /*	
 	public static void main(String[] args) {
 		Log.logProgress("XMLParser.main(): ");
@@ -62,12 +63,12 @@ public class XMLParser {
 		int idx = filePath.lastIndexOf("\\");
 		return filePath.substring(0, idx);
 	}
-	public List<OutputStep> parseXMLForOutputSteps(String xmlFilePath){
+	public List<OutputStep> parseXMLForOutputSteps(String xmlFilePath, String fileName){
 		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
-		parseXMLForOutputSteps(xmlFilePath, outputSteps);
+		parseXMLForOutputSteps(xmlFilePath, fileName, outputSteps);
 		return outputSteps;
 	}
-	public void parseXMLForOutputSteps(String xmlFilePath, List<OutputStep> outputSteps) {
+	public void parseXMLForOutputSteps(String xmlFilePath, String fileName, List<OutputStep> outputSteps) {
 		Log.logProgress("XMLParser.parseXMLForOutputSteps(): " + xmlFilePath);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -76,7 +77,7 @@ public class XMLParser {
 		OutputStep outputStep=null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath);
+			doc = builder.parse(xmlFilePath + fileName);
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several steps */
@@ -86,11 +87,11 @@ public class XMLParser {
 				int stepType=getStepType(xpath, doc, step);
 				switch(stepType){
 					case 0:
-						outputStep = InsertUpdateStepParser.parseXMLForInsertUpdateStep(doc, xpath, step, xmlFilePath);
+						outputStep = InsertUpdateStepParser.parseXMLForInsertUpdateStep(doc, xpath, step, xmlFilePath, fileName);
 						outputSteps.add(outputStep);
 						break;
 					case 1:
-						outputStep = TableOutputStepParser.parseXMLForTableOutputStep(doc, xpath, step, xmlFilePath);
+						outputStep = TableOutputStepParser.parseXMLForTableOutputStep(doc, xpath, step, xmlFilePath, fileName);
 						outputSteps.add(outputStep);
 						break;
 					default: 
@@ -102,13 +103,13 @@ public class XMLParser {
 		}
 		//return outputSteps;
 	}
-	public List<TableInputStep> parseXMLForInputSteps(String xmlFilePath){
+	public List<TableInputStep> parseXMLForInputSteps(String xmlFilePath, String fileName){
 		ArrayList<TableInputStep> inputSteps = new ArrayList<TableInputStep>();
-		parseXMLForInputSteps(xmlFilePath, inputSteps);
+		parseXMLForInputSteps(xmlFilePath, fileName, inputSteps);
 		return inputSteps;
 	}
-	public void parseXMLForInputSteps(String xmlFilePath, ArrayList<TableInputStep> inputSteps){
-		Log.logProgress("XMLParser.parseXMLForInputSteps(" + xmlFilePath + ")");
+	public void parseXMLForInputSteps(String xmlFilePath, String fileName, ArrayList<TableInputStep> inputSteps){
+		Log.logProgress("XMLParser.parseXMLForInputSteps(" + xmlFilePath + fileName + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
@@ -117,14 +118,14 @@ public class XMLParser {
 		TableInputStep tableinputStep=null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath);
+			doc = builder.parse(xmlFilePath + fileName);
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several Table Input steps */
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
 			for(String stepname:listOfAllStepNames){
-				tableinputStep=TableInputStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath);
+				tableinputStep=TableInputStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath, fileName);
 				inputSteps.add(tableinputStep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -352,7 +353,7 @@ public class XMLParser {
 	 * @param xmlFilePath The location of the XML file, as exported from Pentaho
 	 * @return The list of step names
 	 */
-	public void getStepNames(String xmlFilePath, ArrayList<String> listOfAllSteps) {
+	public void getStepNames(String xmlFilePath, String fileName, ArrayList<StepName> listOfAllSteps) {
 		Log.logProgress("XMLParser.getStepNames(" + xmlFilePath + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -360,13 +361,13 @@ public class XMLParser {
 		Document doc = null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath);
+			doc = builder.parse(xmlFilePath + fileName);
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several steps */
 			List<String> tmpListOfAllSteps;
 			tmpListOfAllSteps = (ArrayList<String>) getStepNames(xpath,doc);
-			for (String s: tmpListOfAllSteps) {listOfAllSteps.add(s);}
+			for (String s: tmpListOfAllSteps) {listOfAllSteps.add(new StepName(s, fileName));}
 		} catch (Exception ex) {
 			Log.logProgress("XMLParser.getStepNames(): " + ex.getLocalizedMessage());
 		}
@@ -395,15 +396,15 @@ public class XMLParser {
 			Log.logProgress("XMLParser.getJobNames(): " + ex.getLocalizedMessage());
 		}
 	}
-	public void getConnectionNames(String xmlFilePath, List<String> connectionNames){
-		Log.logProgress("XMLParser.getConnectionNames(" + xmlFilePath + ")");
+	public void getConnectionNames(String xmlFilePath, String fileName, List<String> connectionNames){
+		Log.logProgress("XMLParser.getConnectionNames(" + xmlFilePath + fileName + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
 		Document doc = null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath);
+			doc = builder.parse(xmlFilePath + fileName);
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			XPathExpression expr = xpath.compile("/transformation/connection/name/text()");
@@ -526,10 +527,13 @@ public class XMLParser {
 		}
 	}
 	public String getXMLFilePathPrefix() {
-		return XMLFilePathPrefix;
+		return xmlFilePathPrefix;
 	}
-	public void setXMLFilePathPrefix(String xMLFilePathPrefix) {
-		XMLFilePathPrefix = xMLFilePathPrefix;
+	public void setXMLFilePathPrefix(String xmlFilePathPrefix) {
+		this.xmlFilePathPrefix = xmlFilePathPrefix;
+		if (!this.xmlFilePathPrefix.endsWith("\\") && !this.xmlFilePathPrefix.endsWith("/")) {
+			this.xmlFilePathPrefix += "\\";
+		}
 	}
 	
 }
