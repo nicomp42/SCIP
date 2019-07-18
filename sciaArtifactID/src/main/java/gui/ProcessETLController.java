@@ -30,6 +30,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
+import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnection;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnections;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLJob;
@@ -69,7 +70,7 @@ public class ProcessETLController {
 	@FXML	private TableView<GUIETLConnection> tvETLConnections;
 	@FXML	private TableView<GUIetlTransformationFile> tvETLTransformationFiles;
 	@FXML	private AnchorPane apMainWindow;
-	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults, txaETLJobs;
+	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults, txaETLJobs, txaDBProcStepResults;
 	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph, btnProcessETLTransformationFiles;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
@@ -283,10 +284,12 @@ public class ProcessETLController {
 		lblWorking.setVisible(true);
 		clearResultsControls();
 		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
+		
 		ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
 		ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
 		ArrayList<StepName> stepNames = new ArrayList<StepName>();
 		ArrayList<String> connectionNames = new ArrayList<String>();
+		ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
 //		ETLJobs etlJobs = new ETLJobs();
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
@@ -325,7 +328,8 @@ public class ProcessETLController {
 				myXMLParser.getConnectionNames(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, connectionNames);
 				myXMLParser.parseXMLForOutputSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, outputSteps);
 				myXMLParser.parseXMLForInputSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, tableInputSteps);
-//				myXMLParser.parseXMLForDBJoinSteps(myXMLParser.getXMLFilePathPrefix() + myXMLFileName, dbJoinSteps);
+				myXMLParser.parseXMLForDBJoinSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, dbJoinSteps);
+				myXMLParser.parseXMLForDBProcSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, dbProcSteps);
 //				ETLJobs tmpETLJobs = new ETLJobs();
 //				myXMLParser.getETLJobs(myXMLParser.getXMLFilePathPrefix() + myXMLFileName, tmpETLJobs);
 //				for (ETLJob etlJob : tmpETLJobs) {
@@ -351,12 +355,17 @@ public class ProcessETLController {
 					XPathFactory xpathFactory = XPathFactory.newInstance();
 					xpath = xpathFactory.newXPath();
 					// Get # lines that were already in the TextArea and use are the line number for each new line we add.
-					int counter = 0;
-					try {counter = txaStepNamesResults.getText().split("\n").length - 1 ;} catch (Exception ex) {}
+/*					int counter = 0;
+					try {
+						counter = txaStepNamesResults.getText().split("\n").length - 1 ;
+					} catch (Exception ex) {
+						Log.logError("ProcessETLController.processETLTransformationFiles().task.setOnSucceeded: " + ex.getLocalizedMessage());
+					}
+					counter++; */
 					String tmp, stepType, sql, table, connection;
-					counter++;
-					tmp = String.valueOf(counter) + ": ";
-					tmp += stepName.toString();
+					tmp = "";
+//					tmp = String.valueOf(counter) + ": ";
+//					tmp += stepName.toString();
 					stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
 					sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());
 					table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "table");
@@ -383,6 +392,9 @@ public class ProcessETLController {
 				}
 				for (DBJoinStep joinStep: dbJoinSteps) {
 					txaJoinStepResults.appendText(joinStep.toString() + System.getProperty("line.separator"));
+				}
+				for (DBProcStep dbProcStep: dbProcSteps) {
+					txaDBProcStepResults.appendText(dbProcStep.toString() + System.getProperty("line.separator"));
 				}
 				// Does the file reference other jobs?
 //				for (ETLJob etlJob : etlJobs) {

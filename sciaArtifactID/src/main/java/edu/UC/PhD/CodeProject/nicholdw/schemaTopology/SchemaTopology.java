@@ -47,6 +47,7 @@ public class SchemaTopology {
 	public  static final String etlStepNodeLabel = "ETLStep";
 	public  static final String etlStepToQueryAttributeLbel = "ETLStepToQueryAttribute";
 	public  static final String etlFieldToETLStepLabel = "ETLFieldToETLStep";
+	public  static final String etlDBProcNodeLabel = "DBProc";
 
 	/**
 	 * Test main. Schema name defaults to localhost.schematopologytest

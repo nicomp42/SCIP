@@ -152,8 +152,15 @@
 	   		   			      			</AnchorPane>
 	   		   			      		</content>
 		      					</Tab>
-							</tabs>
-	     		 			<tabs>
+	          					<Tab text="DBProcs">
+						            <content>
+	              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
+	                 						<children>
+	      		   			      				<TextArea fx:id="txaDBProcStepResults" layoutX="5.0" layoutY="5.0" prefWidth="800" />
+	               			 				</children>
+	   		   			      			</AnchorPane>
+	   		   			      		</content>
+		      					</Tab>
 	             				<Tab text="Connections">
 	   					            <content>
 	             						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="600">

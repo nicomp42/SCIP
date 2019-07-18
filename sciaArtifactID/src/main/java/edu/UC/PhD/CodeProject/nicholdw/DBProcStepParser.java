@@ -10,15 +10,17 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.w3c.dom.Document;
 
-public class DBJoinStepParser {
+import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
+
+public class DBProcStepParser {
 	
-	public static DBJoinStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String xmlFilename){
+	public static DBProcStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String xmlFilePath, String xmlFilename){
 		
-		DBJoinStep stepObject=null;
+		DBProcStep stepObject=null;
 		 String transname = getTransformationName(doc, xpath);
          String dbname = getDatabaseName(doc, xpath,stepname);
-         String sql=getSQL(doc,xpath, stepname);	            
-         stepObject=new DBJoinStep(transname,stepname, dbname, sql, xmlFilename);
+         String sql=getSQL(doc,xpath, stepname);	                   
+         stepObject=new DBProcStep(transname, stepname, dbname, sql, xmlFilePath, xmlFilename);
 		return stepObject;
 	}
 
@@ -29,10 +31,10 @@ public class DBJoinStepParser {
             //create XPathExpression object
             XPathExpression expr = xpath.compile("/transformation/step[name=\'"+stepname+"\']" + "/connection/text()");
             connectionname = (String) expr.evaluate(doc, XPathConstants.STRING);
-         
+
             XPathExpression dbexpr = xpath.compile("/transformation/" + "connection[name='"+connectionname+"']/database/text()");
             dbname = (String) dbexpr.evaluate(doc, XPathConstants.STRING);
-                       
+
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }

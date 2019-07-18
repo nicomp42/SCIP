@@ -122,12 +122,21 @@ public class ETLProcess {
 	}
 	public static void createGraph(ETLProcess etlProcess) {
 		for (ETLStep etlStep : etlProcess.getETLSteps()) {
-			if (etlStep.getStepType().equals("TableInput")) {
-				// CREATE (n:Person { name: 'Andy', title: 'Developer' })
+			// CREATE (n:Person { name: 'Andy', title: 'Developer' })
+			if (etlStep.getStepType().equals("DBProc")) {
+				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlDBProcNodeLabel + 
+				                         " { StepName: " + 
+				                         "'" + etlStep.getStepName() 		+ "'" + 
+				                         ", sql:'" + etlStep.getSql()		+ "'" + 
+				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
+				                         ",	key:'" + etlStep.getStepName()	+ "'" +
+				                         "})");
+				
+			} else if (etlStep.getStepType().equals("TableInput")) {
 				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlStepNodeLabel + 
 				                         " { StepName: " + 
 				                         "'" + etlStep.getStepName() 		+ "'" + 
-				                         ", sql:'" + etlStep.getSql() 		+ "'" + 
+				                         ", sql:'" + etlStep.getSql().substring(0, 6) +"..." + "'" + 
 				                         ",	table:'" + etlStep.getTable()	+ "'" +
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         ",	key:'" + etlStep.getStepName()	+ "'" +

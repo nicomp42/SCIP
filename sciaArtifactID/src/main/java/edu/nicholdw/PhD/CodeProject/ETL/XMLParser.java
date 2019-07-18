@@ -28,6 +28,7 @@ import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.DBLookupStep;
 import edu.UC.PhD.CodeProject.nicholdw.DBLookupStepParser;
+import edu.UC.PhD.CodeProject.nicholdw.DBProcStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.DimLookupUpdateStep;
 import edu.UC.PhD.CodeProject.nicholdw.DimensionLookupStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.InsertUpdateStepParser;
@@ -174,14 +175,38 @@ public class XMLParser {
 		}
 		return dblookupsteps;
 	}
-	public List<DBJoinStep> parseXMLForDBJoinSteps(String xmlFilePath){
+	public List<DBJoinStep> parseXMLForDBJoinSteps(String xmlFilePath, String fileName){
 		ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
-		parseXMLForDBJoinSteps(xmlFilePath, dbJoinSteps);
+		parseXMLForDBJoinSteps(xmlFilePath, fileName, dbJoinSteps);
 		return dbJoinSteps;
 	}
+	public void parseXMLForDBProcSteps(String xmlFilePath, String fileName, ArrayList<DBProcStep> dbProcSteps){
+		Log.logProgress("XMLParser.parseXMLForDBProcSteps(): " + xmlFilePath + fileName);
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+		String steptype="DBProc";
+		DBProcStep dbProcstep=null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(xmlFilePath + fileName);
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			/* One transformation is composed of several Table Input steps */
+			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
-	public void parseXMLForDBJoinSteps(String xmlFilePath, ArrayList<DBJoinStep> dbJoinSteps){
-		Log.logProgress("XMLParser.parseXMLForDBJoinSteps(" + xmlFilePath + ")");
+			for(String stepname:listOfAllStepNames){
+				dbProcstep=DBProcStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath, fileName);
+				dbProcSteps.add(dbProcstep);
+			}
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			Log.logError("XMLParser.parseXMLForDBJoinSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+	}
+	
+	public void parseXMLForDBJoinSteps(String xmlFilePath, String fileName, ArrayList<DBJoinStep> dbJoinSteps){
+		Log.logProgress("XMLParser.parseXMLForDBJoinSteps(): " + xmlFilePath + fileName);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
@@ -191,14 +216,14 @@ public class XMLParser {
 		DBJoinStep dbjoinstep=null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath);
+			doc = builder.parse(xmlFilePath + fileName);
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several Table Input steps */
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
 			for(String stepname:listOfAllStepNames){
-				dbjoinstep=DBJoinStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath);
+				dbjoinstep=DBJoinStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath + fileName);
 				dbJoinSteps.add(dbjoinstep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
