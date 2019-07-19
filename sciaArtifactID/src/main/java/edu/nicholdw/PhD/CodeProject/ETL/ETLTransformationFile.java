@@ -13,7 +13,7 @@ public class ETLTransformationFile {
 	public final static String etlStageUnknown = "Unknown";
 	public final static String etlStageOPS_IDS = "OPS-IDS";
 	public final static String etlStageIDS_DW = "IDS-DW";
-	public final static String[] etlStageList = new String[] { etlStageUnknown, etlStageOPS_IDS, etlStageIDS_DW};
+	public final static String[] etlStageList = new String[] {etlStageUnknown, etlStageOPS_IDS, etlStageIDS_DW};
 	
 	public ETLTransformationFile(String fileName, int etlStageNumber) {
 		setFileName(fileName);
@@ -55,10 +55,10 @@ public class ETLTransformationFile {
 	public void setEtlType(enumETLType etlType) {
 		this.etlType = etlType;
 	} */
-	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView, ETLTransformationFiles etlTransformationFiles) {
+	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView, ETLProcess etlProcess) {
         ObservableList<gui.GUIetlTransformationFile> data = tableView.getItems();
         data.clear();
-        for (ETLTransformationFile etlTransformationFile : etlTransformationFiles) {
+        for (ETLTransformationFile etlTransformationFile : etlProcess.getEtlTransformationFiles()) {
    	        data.add(new gui.GUIetlTransformationFile(etlTransformationFile.getFileName(), etlTransformationFile.getEtlStage() ));
    		}
 	}
@@ -78,6 +78,47 @@ public class ETLTransformationFile {
 		etlStageNumber++;
 		if (etlStageNumber >= etlStageList.length) {etlStageNumber = 0;}
 		return getEtlStage();
+	}
+	/**
+	 * Map a number to the corresponding ETL State 
+	 * @param etlStageNumber 
+	 * @return the corresponding ETL Stage or "Error" if the lookup fails
+	 */
+	public static String lookupETLStage(int etlStageNumber) {
+		String etlStage = "Error";
+		try {
+			etlStage = etlStageList[etlStageNumber];
+		} catch (Exception ex) {}
+		return etlStage;
+	}
+	/**
+	 * Map a number to the corresponding ETL State 
+	 * @param etlStageNumber 
+	 * @return the corresponding ETL Stage or "Error" if the lookup fails
+	 */
+	public String lookupETLStage() {
+		String etlStage = "Error";
+		try {
+			etlStage = etlStageList[etlStageNumber];
+		} catch (Exception ex) {}
+		return etlStage;
+	}
+	/**
+	 * Map a string to the corresponding ETL Stage Number 
+	 * @param etlStageNumber 
+	 * @return the corresponding ETL Stage number or -1 if the lookup fails
+	 */
+	public static int lookupETLStageNumber(String etlStage) {
+		int etlStageNumber = -1;
+		try {
+			for (int idx = 0; idx < etlStageList.length; idx++) {
+				if (etlStageList[idx].trim().toUpperCase().equals(etlStage.trim().toUpperCase())) {
+					etlStageNumber = idx;
+					break;
+				}
+			}
+		} catch (Exception ex) {}
+		return etlStageNumber;
 	}
 	/**
 	 * If you have a stage and want to know the next stage in the rotation.

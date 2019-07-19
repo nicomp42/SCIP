@@ -11,15 +11,15 @@ public class DBProcStep {
 	private String dbName;
 	private String xmlFilename;
 	private String xmlFilePath;
-	private String dbProc;
+	private String procedure;
 
-	public DBProcStep(String transName, String stepName, String dbName, String dbProc, String xmlFilePath, String xmlFilename) {
+	public DBProcStep(String transName, String stepName, String dbName, String procedure, String xmlFilePath, String xmlFilename) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
 //		this.stepType = stepType;
 		this.dbName = dbName;
-		this.dbProc = dbProc;
+		this.procedure = procedure;
 		this.xmlFilename = xmlFilename;
 		this.xmlFilePath = xmlFilePath;
 	}
@@ -51,7 +51,7 @@ public class DBProcStep {
 	public String toString() {
 		return "DBProc [transName = " + transName + ", stepName = " + stepName
 				+ ", dbName =" + dbName
-				+ ", DBProc =" + dbProc + ", xmlFilename = " + xmlFilename 
+				+ ", Procedure =" + procedure + ", xmlFilename = " + xmlFilename 
 				+ "]";
 	}
 	public String getXmlFilename() {
@@ -66,11 +66,11 @@ public class DBProcStep {
 	public void setXmlFilePath(String xmlFilePath) {
 		this.xmlFilePath = xmlFilePath;
 	}
-	public String getDbProc() {
-		return dbProc;
+	public String getProcedure() {
+		return procedure;
 	}
-	public void setDbProc(String dbProc) {
-		this.dbProc = dbProc;
+	public void setProcedure(String procedure) {
+		this.procedure = procedure;
 	}
 
 }

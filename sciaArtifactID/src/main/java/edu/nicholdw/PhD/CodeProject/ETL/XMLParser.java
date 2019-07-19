@@ -41,7 +41,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class XMLParser {
 	public static Document dom;
-	private String xmlFilePathPrefix;
+	private String xmlDirectory;
 /*	
 	public static void main(String[] args) {
 		Log.logProgress("XMLParser.main(): ");
@@ -64,13 +64,13 @@ public class XMLParser {
 		int idx = filePath.lastIndexOf("\\");
 		return filePath.substring(0, idx);
 	}
-	public List<OutputStep> parseXMLForOutputSteps(String xmlFilePath, String fileName){
+	public List<OutputStep> parseXMLForOutputSteps(String xmlFilePath, String fileName, String etlStage){
 		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
-		parseXMLForOutputSteps(xmlFilePath, fileName, outputSteps);
+		parseXMLForOutputSteps(xmlFilePath, fileName, outputSteps, etlStage);
 		return outputSteps;
 	}
-	public void parseXMLForOutputSteps(String xmlFilePath, String fileName, List<OutputStep> outputSteps) {
-		Log.logProgress("XMLParser.parseXMLForOutputSteps(): " + xmlFilePath);
+	public void parseXMLForOutputSteps(ETLTransformationFile etlTransformationFile, List<OutputStep> outputSteps) {
+		Log.logProgress("XMLParser.parseXMLForOutputSteps(): " + this.getxmlDirectory() + etlTransformationFile.getFileName());
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
@@ -78,7 +78,7 @@ public class XMLParser {
 		OutputStep outputStep=null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath + fileName);
+			doc = builder.parse(this.getxmlDirectory() + etlTransformationFile.getFileName());
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several steps */
@@ -88,11 +88,11 @@ public class XMLParser {
 				int stepType=getStepType(xpath, doc, step);
 				switch(stepType){
 					case 0:
-						outputStep = InsertUpdateStepParser.parseXMLForInsertUpdateStep(doc, xpath, step, xmlFilePath, fileName);
+						outputStep = InsertUpdateStepParser.parseXMLForInsertUpdateStep(doc, xpath, step, this.getxmlDirectory(), etlTransformationFile.getFileName(), etlTransformationFile.getEtlStage());
 						outputSteps.add(outputStep);
 						break;
 					case 1:
-						outputStep = TableOutputStepParser.parseXMLForTableOutputStep(doc, xpath, step, xmlFilePath, fileName);
+						outputStep = TableOutputStepParser.parseXMLForTableOutputStep(doc, xpath, step, this.getxmlDirectory(), etlTransformationFile.getFileName(), etlTransformationFile.getEtlStage());
 						outputSteps.add(outputStep);
 						break;
 					default: 
@@ -104,13 +104,13 @@ public class XMLParser {
 		}
 		//return outputSteps;
 	}
-	public List<TableInputStep> parseXMLForInputSteps(String xmlFilePath, String fileName){
+	public List<TableInputStep> parseXMLForInputSteps(String xmlFilePath, String fileName, String etlStage){
 		ArrayList<TableInputStep> inputSteps = new ArrayList<TableInputStep>();
-		parseXMLForInputSteps(xmlFilePath, fileName, inputSteps);
+		parseXMLForInputSteps(xmlFilePath, fileName, inputSteps, etlStage);
 		return inputSteps;
 	}
-	public void parseXMLForInputSteps(String xmlFilePath, String fileName, ArrayList<TableInputStep> inputSteps){
-		Log.logProgress("XMLParser.parseXMLForInputSteps(" + xmlFilePath + fileName + ")");
+	public void parseXMLForInputSteps(ETLTransformationFile etlTransformationFile, ArrayList<TableInputStep> inputSteps){
+		Log.logProgress("XMLParser.parseXMLForInputSteps(" + this.xmlDirectory + etlTransformationFile.getFileName() + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
@@ -119,21 +119,21 @@ public class XMLParser {
 		TableInputStep tableinputStep=null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath + fileName);
+			doc = builder.parse(this.xmlDirectory + etlTransformationFile.getFileName());
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several Table Input steps */
-			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
+			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype, etlStage);
 
 			for(String stepname:listOfAllStepNames){
-				tableinputStep=TableInputStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath, fileName);
+				tableinputStep=TableInputStepParser.parseXMLByStepName(doc, xpath, stepname, this.xmlDirectory, etlTransformationFile);
 				inputSteps.add(tableinputStep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			Log.logError("XMLParser.parseXMLForInputSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
 	}
-	private static List<String> getStepNamesByType(XPath xpath, Document doc, String steptype){
+	private static List<String> getStepNamesByType(XPath xpath, Document doc, String steptype, String etlStage){
 		Log.logProgress("XMLParser.getStepNamesByType(" + xpath.toString() + ")");
 		List<String> stepNames=new ArrayList<String>();
 		try {
@@ -148,7 +148,7 @@ public class XMLParser {
 		}
 		return stepNames;
 	}
-	public List<DBLookupStep> parseXMLForDBLookupSteps(String xmlFilePath){
+	public List<DBLookupStep> parseXMLForDBLookupSteps(String xmlFilePath, String etlStage){
 		Log.logProgress("XMLParser.parseXMLForDBLookupSteps(" + xmlFilePath + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -163,10 +163,10 @@ public class XMLParser {
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several Database lookup steps */
-			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
+			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype, etlStage);
 
 			for(String stepname:listOfAllStepNames){
-				dblookupstep=DBLookupStepParser.parseXMLByStepName(doc, xpath, stepname);
+				dblookupstep=DBLookupStepParser.parseXMLByStepName(doc, xpath, stepname, etlStage);
 				dblookupsteps.add(dblookupstep);
 			}
 
@@ -180,8 +180,8 @@ public class XMLParser {
 		parseXMLForDBJoinSteps(xmlFilePath, fileName, dbJoinSteps);
 		return dbJoinSteps;
 	}
-	public void parseXMLForDBProcSteps(String xmlFilePath, String fileName, ArrayList<DBProcStep> dbProcSteps){
-		Log.logProgress("XMLParser.parseXMLForDBProcSteps(): " + xmlFilePath + fileName);
+	public void parseXMLForDBProcSteps(ETLTransformationFile etlTransformationFile, ArrayList<DBProcStep> dbProcSteps){
+		Log.logProgress("XMLParser.parseXMLForDBProcSteps(): " + this.xmlDirectory + etlTransformationFile.getFileName());
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
@@ -190,14 +190,14 @@ public class XMLParser {
 		DBProcStep dbProcstep=null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath + fileName);
+			doc = builder.parse(this.xmlDirectory + etlTransformationFile.getFileName());
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several Table Input steps */
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
 			for(String stepname:listOfAllStepNames){
-				dbProcstep=DBProcStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath, fileName);
+				dbProcstep=DBProcStepParser.parseXMLByStepName(doc, xpath, stepname, this.xmlDirectory, etlTransformationFile.getFileName());
 				dbProcSteps.add(dbProcstep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -205,8 +205,8 @@ public class XMLParser {
 		}
 	}
 	
-	public void parseXMLForDBJoinSteps(String xmlFilePath, String fileName, ArrayList<DBJoinStep> dbJoinSteps){
-		Log.logProgress("XMLParser.parseXMLForDBJoinSteps(): " + xmlFilePath + fileName);
+	public void parseXMLForDBJoinSteps(ETLTransformationFile etlTransformationFile, ArrayList<DBJoinStep> dbJoinSteps){
+		Log.logProgress("XMLParser.parseXMLForDBJoinSteps(): " + this.xmlDirectory + etlTransformationFile.getFileName());
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
@@ -216,14 +216,14 @@ public class XMLParser {
 		DBJoinStep dbjoinstep=null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath + fileName);
+			doc = builder.parse(this.xmlDirectory + etlTransformationFile.getFileName());
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several Table Input steps */
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
 			for(String stepname:listOfAllStepNames){
-				dbjoinstep=DBJoinStepParser.parseXMLByStepName(doc, xpath, stepname, xmlFilePath + fileName);
+				dbjoinstep=DBJoinStepParser.parseXMLByStepName(doc, xpath, stepname, this.xmlDirectory + etlTransformationFile.getFileName());
 				dbJoinSteps.add(dbjoinstep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -378,21 +378,21 @@ public class XMLParser {
 	 * @param xmlFilePath The location of the XML file, as exported from Pentaho
 	 * @return The list of step names
 	 */
-	public void getStepNames(String xmlFilePath, String fileName, ArrayList<StepName> listOfAllSteps) {
-		Log.logProgress("XMLParser.getStepNames(" + xmlFilePath + ")");
+	public void getStepNames(ETLTransformationFile etlTransformationFile, ArrayList<StepName> listOfAllSteps) {
+		Log.logProgress("XMLParser.getStepNames(" + this.xmlDirectory + etlTransformationFile.getFileName() + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
 		Document doc = null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath + fileName);
+			doc = builder.parse(this.xmlDirectory + etlTransformationFile.getFileName());
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several steps */
 			List<String> tmpListOfAllSteps;
 			tmpListOfAllSteps = (ArrayList<String>) getStepNames(xpath,doc);
-			for (String s: tmpListOfAllSteps) {listOfAllSteps.add(new StepName(s, fileName));}
+			for (String s: tmpListOfAllSteps) {listOfAllSteps.add(new StepName(s, etlTransformationFile.getFileName(), etlTransformationFile.getEtlStage()));}
 		} catch (Exception ex) {
 			Log.logProgress("XMLParser.getStepNames(): " + ex.getLocalizedMessage());
 		}
@@ -403,7 +403,7 @@ public class XMLParser {
 	 * @return The list of job names
 	 */
 	public void getETLJobs(String xmlFilePath, ETLJobs etlJobs) {
-		Log.logProgress("XMLParser.getJobNames(" + xmlFilePath + ")");
+		Log.logProgress("XMLParser.getETLJobs(" + xmlFilePath + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
@@ -421,15 +421,15 @@ public class XMLParser {
 			Log.logProgress("XMLParser.getJobNames(): " + ex.getLocalizedMessage());
 		}
 	}
-	public void getConnectionNames(String xmlFilePath, String fileName, List<String> connectionNames){
-		Log.logProgress("XMLParser.getConnectionNames(" + xmlFilePath + fileName + ")");
+	public void getConnectionNames(ETLTransformationFile etlTransformationFile, List<String> connectionNames){
+		Log.logProgress("XMLParser.getConnectionNames(" + this.getxmlDirectory() + etlTransformationFile.getFileName() + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
 		Document doc = null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath + fileName);
+			doc = builder.parse(this.getxmlDirectory() + etlTransformationFile.getFileName());
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			XPathExpression expr = xpath.compile("/transformation/connection/name/text()");
@@ -551,13 +551,13 @@ public class XMLParser {
 		 
 		}
 	}
-	public String getXMLFilePathPrefix() {
-		return xmlFilePathPrefix;
+	public String getxmlDirectory() {
+		return xmlDirectory;
 	}
-	public void setXMLFilePathPrefix(String xmlFilePathPrefix) {
-		this.xmlFilePathPrefix = xmlFilePathPrefix;
-		if (!this.xmlFilePathPrefix.endsWith("\\") && !this.xmlFilePathPrefix.endsWith("/")) {
-			this.xmlFilePathPrefix += "\\";
+	public void setxmlDirectory(String xmlDirectory) {
+		this.xmlDirectory = xmlDirectory;
+		if (!this.xmlDirectory.endsWith("\\") && !this.xmlDirectory.endsWith("/")) {
+			this.xmlDirectory += "\\";
 		}
 	}
 	

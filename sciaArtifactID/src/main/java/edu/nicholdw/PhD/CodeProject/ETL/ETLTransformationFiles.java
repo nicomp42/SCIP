@@ -16,4 +16,12 @@ public class ETLTransformationFiles implements Iterable<ETLTransformationFile> {
 	public void add(ETLTransformationFile etlTransformationFile) {
 		etlTransformationFiles.add(new ETLTransformationFile(etlTransformationFile));
 	}
+	public void updateETLStageInETLTransformationFile(String fileName, String etlStage) {
+		for (ETLTransformationFile etlTransformationFile: etlTransformationFiles) {
+			if (etlTransformationFile.getFileName().trim().toUpperCase().equals(fileName)) {
+				etlTransformationFile.setEtlStageNumber(ETLTransformationFile.lookupETLStageNumber(etlStage));
+				break;
+			}
+		}
+	}
 }

@@ -23,23 +23,42 @@ public class ETLStep {
 	private QueryDefinition queryDefinition;
 	private String connection;
 	private ETLFields etlFields;
+	private String procedure;			// Used in DBProc steps
+	private int etlStageNumber;		// Index into ETLTransformationFile.enumETLStage
 	
+	/**
+	 * Copy Constructor
+	 * @param etlStep
+	 */
 	public ETLStep(ETLStep etlStep) {
 		setStepName(etlStep.getStepName());
 		setStepType(etlStep.getStepType());
 		setSql(etlStep.getSql());
 		setTable(etlStep.getTable());
 		setConnection(etlStep.getConnection());
+		setProcedure(etlStep.getProcedure());
+		setETLStageNumber(etlStep.getETLStageNumber());
 		etlFields = new ETLFields();
 	}
-	public ETLStep(String stepName, String stepType, String sql, String table, String connection) {
+/*	public ETLStep(String stepName, String stepType, String sql, String table, String connection) {
 		setStepName(stepName);
 		setStepType(stepType);
 		setSql(sql);
 		setTable(table);
 		setConnection(connection);
 		etlFields = new ETLFields();
+		setProcedure("");
+	} */
+	public ETLStep(String stepName, String stepType, String sql, String table, String connection, String procedure, int etlStageNumber) {
+		setStepName(stepName);
+		setStepType(stepType);
+		setSql(sql);
+		setTable(table);
+		setConnection(connection);
+		setProcedure(procedure);
+		etlFields = new ETLFields();
 	}
+
 	public void addETLFields(ETLFields etlFields) {
 		for (ETLField etlField: etlFields) {
 			this.etlFields.add(etlField);
@@ -98,5 +117,17 @@ public class ETLStep {
 	}
 	public QueryDefinition getQueryDefinition() {
 		return queryDefinition;
+	}
+	public String getProcedure() {
+		return procedure;
+	}
+	public void setProcedure(String procedure) {
+		this.procedure = procedure;
+	}
+	public int getETLStageNumber() {
+		return etlStageNumber;
+	}
+	public void setETLStageNumber(int etlStageNumber) {
+		this.etlStageNumber = etlStageNumber;
 	}
 }

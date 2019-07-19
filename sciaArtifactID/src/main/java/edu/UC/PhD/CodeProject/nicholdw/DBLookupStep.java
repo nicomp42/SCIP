@@ -9,11 +9,12 @@ public class DBLookupStep {
 	private String dbName;
 	private String tableName;
 	private List<String> attributes = new ArrayList<String>();
+	private String etlStage;
 
 	@Override
 	public String toString() {
 		return "DBLookupStep [transName=" + transName + ", stepName="
-				+ stepName + ", dbName=" + dbName + ", tableName=" + tableName
+				+ stepName + ", dbName=" + dbName + ", tableName=" + tableName + ", ETL Stage=" + etlStage
 				+ ", attributes=" + attributes + "]";
 	}
 
@@ -57,14 +58,21 @@ public class DBLookupStep {
 		this.attributes = attributes;
 	}
 
-	public DBLookupStep(String transName, String stepName, String dbName,
-			String tableName, List<String> attributes) {
+	public DBLookupStep(String transName, String stepName, String dbName, String tableName, List<String> attributes, String etlStage) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
 		this.dbName = dbName;
 		this.tableName = tableName;
 		this.attributes = attributes;
+		this.etlStage = etlStage;
 	}
 
+	public String getEtlStage() {
+		return etlStage;
+	}
+
+	public void setEtlStage(String etlStage) {
+		this.etlStage = etlStage;
+	}
 }

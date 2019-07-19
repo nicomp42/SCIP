@@ -13,6 +13,7 @@ public class ETLConnection {
 	private String database;
 	private String userName;
 	private String type;
+	
 	//  Since the password in the XML is encrypted. We will ask for a password for the userName that was in the XML file.
 	private String passwordDefinedExternally;		// TODO Get this pw from somewhere rather than hard=coding it.
 

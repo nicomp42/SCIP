@@ -76,7 +76,7 @@ public class ProcessETLController {
 	@FXML	private Label lblWorking;
 	@FXML	private CheckBox cbClearDB;
 	@FXML	private Pane pneETLResults, pneETLLoad, pneCreateGraph, pneFiles;
-	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETLTransformationFiles(txaETLFilePath.getText().trim());}
+	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETLTransformationFiles();}
 	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
 	@FXML	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
 	@FXML	private void btnProcessETLTransformationFiles_OnClick(ActionEvent event) {processETLTransformationFiles(Utils.formatPath(txaETLFilePath.getText().trim()));}
@@ -85,6 +85,7 @@ public class ProcessETLController {
 		Log.logProgress("ProcessETLController.Initialize() starting...");
 		try {
 			setTheScene();
+			etlProcess = new ETLProcess();
 		} catch (Exception e) {
 			Log.logError("ProcessETLController.Initialize(): " + e.getLocalizedMessage());
 		}
@@ -240,6 +241,8 @@ public class ProcessETLController {
 	//				System.out.println(g.getFileName());
 					int idx = tvETLTransformationFiles.getSelectionModel().getSelectedIndex();
 					tvETLTransformationFiles.getItems().set(idx, g);
+					// Now we must update the ETLTransformationFile in the etlProcess object.
+					etlProcess.getEtlTransformationFiles().updateETLStageInETLTransformationFile(g.getFileName(), g.getEtlStage());
 				}
 			}
 		} catch (Exception ex) {}
@@ -250,21 +253,20 @@ public class ProcessETLController {
 	 * @param tableView The TableView to be loaded
 	 * @param etlSteps The set of ETL steps
 	 */
-	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView, ETLTransformationFiles etlTransformationFiles) {
-		ETLTransformationFile.loadTableViewWithTransformationFileNames(tableView, etlTransformationFiles);
+	public void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView) {
+		ETLTransformationFile.loadTableViewWithTransformationFileNames(tableView, etlProcess);
     }
 	/**
-	 * Process the XML file that contains some Pentaho steps. It could be a .ktr (transformation) or a .kjb (job) 
-	 * @param xmlFilePath Physical file path to the disk file. We'll take it from there.
+	 * Process the directory that contains some Pentaho transformation files. It should be all .ktr (transformation) files 
+	 * @param xmlFilePath Physical path to the directory. We'll take it from there.
 	 */
-	private void loadETLTransformationFiles(String xmlFilePath) {
-		Log.logProgress("processETLTransformationFiles.loadETLTransformationFiles() " + xmlFilePath);
-		ArrayList<String> files = readDirectory(xmlFilePath);
-		ETLTransformationFiles etlTransformationFiles = new ETLTransformationFiles();
+	private void loadETLTransformationFiles() {
+		Log.logProgress("processETLTransformationFiles.loadETLTransformationFiles() " + etlProcess.getTransformationFileDirectory());
+		ArrayList<String> files = readDirectory(etlProcess.getTransformationFileDirectory());
 		for (String file : files) {
-			etlTransformationFiles.add(new ETLTransformationFile(file));
+			etlProcess.getEtlTransformationFiles().add(new ETLTransformationFile(file));	// ETL Stage will default to unknown
 		}
-		loadTableViewWithTransformationFileNames(tvETLTransformationFiles, etlTransformationFiles);
+		loadTableViewWithTransformationFileNames(tvETLTransformationFiles);
 		displayETLProcessControls(true);
 	}
 	private void displayETLProcessControls(Boolean visible) {
@@ -277,7 +279,6 @@ public class ProcessETLController {
 	 * @param xmlFilePath The directory where all the files are. The files are in the Table View control tvETLTransformationFiles
 	 */
 	private void processETLTransformationFiles(String xmlFilePath) {
-		etlProcess = new ETLProcess();
 		Log.logProgress("ProcessETLController.processETLTransformationFiles() " + xmlFilePath);
 		displayLoadETLResults(false);
 		disableETLLoadSelectionControls(true);
@@ -297,19 +298,17 @@ public class ProcessETLController {
 	        	// Do not write to any controls in here. An exception will be thrown. It's ugly.
 	    		try {
 	    			try {
-	    				XMLParser myXMLParser = new XMLParser();
-	    				myXMLParser.setXMLFilePathPrefix(xmlFilePath);
+//	    				XMLParser myXMLParser = new XMLParser();
+//	    				myXMLParser.setXMLFilePathPrefix(etlProcess.getTransformationFileDirectory());
 	    				// Step through the selected files in the TableView control
-	    				GUIetlTransformationFile g;
-	    				int idx =  0;
 	    				while (true) {
 	    					try {
-			    				g = tvETLTransformationFiles.getItems().get(idx);
-			    				if (ETLTransformationFile.isStageUnknown(g.getEtlStage()) == false) {
-			    					Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Processing " + g.getFileName());
-			    					processETLFile(myXMLParser, g.getFileName(), g.getEtlStage());
-			    				}
-		    					idx++;
+	    						for (ETLTransformationFile etlTransformationFile: etlProcess.getEtlTransformationFiles()) {
+	    							if (ETLTransformationFile.isStageUnknown(etlTransformationFile.getEtlStage()) == false) {
+	    								Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Processing " + etlTransformationFile.getFileName());
+	    								processETLFile(xmlFilePath, etlTransformationFile);
+	    							}
+	    						}
 	    					} catch (Exception ex) {break;}
 	    				}
 	    				Log.logProgress("ProcessETLController.loadETL().Task: parsing complete.");
@@ -322,14 +321,17 @@ public class ProcessETLController {
 	    		}
 	        	return null;
 	        }
-	        public void processETLFile(XMLParser myXMLParser, String myXMLFileName, String etlStage) {
-				Log.logProgress("ProcessETLController.loadETL().Task.processETLJob(): parsing XML file at " + myXMLFileName + ", stage = " + etlStage);
-				myXMLParser.getStepNames(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, stepNames);
-				myXMLParser.getConnectionNames(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, connectionNames);
-				myXMLParser.parseXMLForOutputSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, outputSteps);
-				myXMLParser.parseXMLForInputSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, tableInputSteps);
-				myXMLParser.parseXMLForDBJoinSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, dbJoinSteps);
-				myXMLParser.parseXMLForDBProcSteps(myXMLParser.getXMLFilePathPrefix(), myXMLFileName, dbProcSteps);
+	        public void processETLFile(String xmlDirectory, ETLTransformationFile etlTransformationFile) {
+				Log.logProgress("ProcessETLController.processETLFile() parsing file at " + xmlDirectory + etlTransformationFile.getFileName() 
+				                + ", stage = " + etlTransformationFile.lookupETLStage()); 
+				XMLParser myXMLParser = new XMLParser();
+				myXMLParser.setxmlDirectory(xmlDirectory);
+				myXMLParser.getStepNames(etlTransformationFile, stepNames);
+				myXMLParser.getConnectionNames(etlTransformationFile, connectionNames);
+				myXMLParser.parseXMLForOutputSteps(etlTransformationFile, outputSteps);
+				myXMLParser.parseXMLForInputSteps(etlTransformationFile, tableInputSteps);
+				myXMLParser.parseXMLForDBJoinSteps(etlTransformationFile, dbJoinSteps);
+				myXMLParser.parseXMLForDBProcSteps(etlTransformationFile, dbProcSteps);
 //				ETLJobs tmpETLJobs = new ETLJobs();
 //				myXMLParser.getETLJobs(myXMLParser.getXMLFilePathPrefix() + myXMLFileName, tmpETLJobs);
 //				for (ETLJob etlJob : tmpETLJobs) {
@@ -366,14 +368,17 @@ public class ProcessETLController {
 					tmp = "";
 //					tmp = String.valueOf(counter) + ": ";
 //					tmp += stepName.toString();
+					// Not all the types of steps will have all these artifacts.
 					stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
 					sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());
 					table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "table");
 					connection = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "connection");
+					String procedure;
+					procedure = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "procedure");
 					tmp += " (" + stepType +  ")";
 					txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
 					// Add this new step to the collection of steps
-					etlProcess.getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection));
+					etlProcess.getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection, procedure));
 				}
 				//ETLConnections etlConnections = new ETLConnections();
 				for (String connectionName: connectionNames) {

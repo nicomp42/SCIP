@@ -16,8 +16,21 @@ public class OutputStep {
 	private List<String> attributes=new ArrayList<String>();
 	private String xmlFilename;
 	private String xmlFilePath;
-
-	public OutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilePath, String xmlFilename) {
+	private String etlStage;
+	
+	/**
+	 * Constructor
+	 * @param transName
+	 * @param stepName
+	 * @param stepType
+	 * @param dbName
+	 * @param tableName
+	 * @param attributes
+	 * @param xmlFilePath
+	 * @param xmlFilename
+	 * @param etlStage
+	 */
+	public OutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilePath, String xmlFilename, String etlStage) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
@@ -27,6 +40,7 @@ public class OutputStep {
 		this.attributes = attributes;
 		this.xmlFilename = xmlFilename;
 		this.xmlFilePath = xmlFilePath;
+		this.etlStage = etlStage;
 	}
 	public String getTransName() {
 		return transName;
@@ -68,7 +82,7 @@ public class OutputStep {
 	public String toString() {
 		return "OutputStep [transName=" + transName + ", stepName=" + stepName
 				+ ", stepType=" + stepType + ", dbName=" + dbName
-				+ ", tableName=" + tableName + ", xmlFilename = " + xmlFilename + ", attributes=" + attributes
+				+ ", tableName=" + tableName + ", xmlFilename = " + xmlFilename + ", ETL Stage = " + etlStage +  ", attributes=" + attributes
 				+ "]";
 	}
 	public String getXmlFilename() {
@@ -82,5 +96,11 @@ public class OutputStep {
 	}
 	public void setXmlFilePath(String xmlFilePath) {
 		this.xmlFilePath = xmlFilePath;
+	}
+	public String getEtlStage() {
+		return etlStage;
+	}
+	public void setEtlStage(String etlStage) {
+		this.etlStage = etlStage;
 	}
 }

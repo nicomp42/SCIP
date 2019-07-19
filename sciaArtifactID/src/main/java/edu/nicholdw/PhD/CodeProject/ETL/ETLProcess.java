@@ -26,10 +26,13 @@ public class ETLProcess {
 	private String description;
 	private ETLSteps etlSteps;
 	private ETLConnections etlConnections;
+	private ETLTransformationFiles etlTransformationFiles;
+	private String transformationFileDirectory;	// Where all the transformation files are. See etlTransformationFiles object herein.
 	
 	public ETLProcess() {
 		etlSteps = new ETLSteps();
 		etlConnections = new ETLConnections();
+		etlTransformationFiles = new ETLTransformationFiles();
 	}
 	public void processTableInputStepQueries() {
 		for (ETLStep etlStep : etlSteps) {
@@ -127,7 +130,7 @@ public class ETLProcess {
 				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlDBProcNodeLabel + 
 				                         " { StepName: " + 
 				                         "'" + etlStep.getStepName() 		+ "'" + 
-				                         ", sql:'" + etlStep.getSql()		+ "'" + 
+				                         ", procedure:'" + etlStep.getProcedure()		+ "'" + 
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         ",	key:'" + etlStep.getStepName()	+ "'" +
 				                         "})");
@@ -184,5 +187,21 @@ public class ETLProcess {
 				}		
 			}
 		}
+	}
+	/**
+	 * ToDo: this is risky.
+	 * @return
+	 */
+	public ETLTransformationFiles getEtlTransformationFiles() {
+		return etlTransformationFiles;
+	}
+/*	public void setEtlTransformationFiles(ETLTransformationFiles etlTransformationFiles) {
+		this.etlTransformationFiles = etlTransformationFiles;
+	} */
+	public String getTransformationFileDirectory() {
+		return transformationFileDirectory;
+	}
+	public void setTransformationFileDirectory(String transformationFileDirectory) {
+		this.transformationFileDirectory = transformationFileDirectory;
 	}
 }

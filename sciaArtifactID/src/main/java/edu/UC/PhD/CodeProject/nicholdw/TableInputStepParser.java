@@ -11,15 +11,16 @@ import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Document;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFile;
 
 public class TableInputStepParser {
-	public static TableInputStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String xmlFilename, String fileName) {
+	public static TableInputStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String xmlFilename, ETLTransformationFile etlTransformationFile) {
 
 		TableInputStep stepObject = null;
 		String transname = getTransformationName(doc, xpath);
 		String dbname = getDatabaseName(doc, xpath, stepname);
 		String sql = getSQL(doc, xpath, stepname);
-		stepObject = new TableInputStep(transname, stepname, dbname, sql, xmlFilename, fileName);
+		stepObject = new TableInputStep(transname, stepname, dbname, sql, xmlFilename, etlTransformationFile.getFileName(), etlTransformationFile.getEtlStage());
 		return stepObject;
 	}
 

@@ -12,8 +12,7 @@ import org.w3c.dom.NodeList;
 
 public class DBLookupStepParser {
 
-	public static DBLookupStep parseXMLByStepName(Document doc, XPath xpath,
-			String stepname) {
+	public static DBLookupStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String etlStage) {
 
 		DBLookupStep stepObject = null;
 		String transname = getTransformationName(doc, xpath);
@@ -21,8 +20,7 @@ public class DBLookupStepParser {
 		String tablename = getTableName(doc, xpath, stepname);
 		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, stepname);
 
-		stepObject = new DBLookupStep(transname, stepname, dbname, tablename,
-				fieldnames);
+		stepObject = new DBLookupStep(transname, stepname, dbname, tablename, fieldnames, etlStage);
 
 		return stepObject;
 

@@ -20,7 +20,8 @@ public class DBProcStepParser {
 		 String transname = getTransformationName(doc, xpath);
          String dbname = getDatabaseName(doc, xpath,stepname);
          String sql=getSQL(doc,xpath, stepname);	                   
-         stepObject=new DBProcStep(transname, stepname, dbname, sql, xmlFilePath, xmlFilename);
+         String procedure = getProcedure(doc, xpath,stepname);
+         stepObject=new DBProcStep(transname, stepname, dbname, procedure, xmlFilePath, xmlFilename);
 		return stepObject;
 	}
 
@@ -43,10 +44,20 @@ public class DBProcStepParser {
 	
 	private static String getSQL(Document doc, XPath xpath, String stepname) {
         String sql=null;
-                		
         try {
             //create XPathExpression object
             XPathExpression expr = xpath.compile("/transformation/step[name=\'"+stepname+"\']/sql/text()");
+            sql = (String) expr.evaluate(doc, XPathConstants.STRING);
+        } catch (XPathExpressionException e) {
+            e.printStackTrace();
+        }
+        return sql;
+    }
+	private static String getProcedure(Document doc, XPath xpath, String stepname) {
+        String sql=null;
+        try {
+            //create XPathExpression object
+            XPathExpression expr = xpath.compile("/transformation/step[name=\'"+stepname+"\']/procedure/text()");
             sql = (String) expr.evaluate(doc, XPathConstants.STRING);
         } catch (XPathExpressionException e) {
             e.printStackTrace();
