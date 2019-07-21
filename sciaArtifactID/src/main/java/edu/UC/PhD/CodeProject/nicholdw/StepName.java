@@ -1,5 +1,7 @@
 package edu.UC.PhD.CodeProject.nicholdw;
 
+import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFile;
+
 public class StepName {
 	private String stepName;
 	private String fileName;	// No path
@@ -30,5 +32,8 @@ public class StepName {
 	}
 	public void setEtlStage(String etlStage) {
 		this.etlStage = etlStage;
+	}
+	public int getEtlStageNumber() {
+		return ETLTransformationFile.lookupETLStageNumber(etlStage);
 	}
 }

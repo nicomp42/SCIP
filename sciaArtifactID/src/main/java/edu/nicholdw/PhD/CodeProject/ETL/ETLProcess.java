@@ -44,11 +44,11 @@ public class ETLProcess {
 	/**
 	 * Step through all the Table Output Steps and look up the Fields for each step
 	 */
-	public void processTableOutputStepsFields(String xmlFilePath) {
+	public void processTableOutputStepsFields() {
 		for (ETLStep etlStep : etlSteps) {
 			Log.logProgress("ETLProcess.processTableOutputStepsFields(): ETL Step Name = " + etlStep.getStepName() + ", ETL Step Type = " + etlStep.getStepType());
 			if (etlStep.getStepType().equals("TableOutput")) {
-				processTableOutputStepFields(xmlFilePath, etlStep);
+				processTableOutputStepFields(transformationFileDirectory, etlStep);
 			}
 		}
 	}

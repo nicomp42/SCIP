@@ -164,7 +164,7 @@ public class ETLExcelExporter {
 		}
 	}
 
-	public static void generateDBLookupCsvFile(String sFileName, List<DBLookupStep> steps) {
+	public static void generateDBLookupCsvFile(String sFileName, List<DBLookupStep> steps, String etlStage) {
 		try {
 			boolean fileExists = false;
 			Log.logProgress("ETLExcelExporter.generateDBLookupCsvFile(): Exporting to Excel");			

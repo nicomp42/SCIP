@@ -4,11 +4,18 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
+import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.StepName;
+import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 
 /**
  * A schema change impact project
@@ -28,7 +35,15 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private IdsDwh idsDwh;
 	private OpsIds opsIds;
 	private DwhQueries dwhQueries;
+	private ETLProcess etlProcess;
 	private static final String defaultProjectName = "[No project loaded]";	// Until the user provides a project name
+	ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
+	ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
+	ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
+	ArrayList<StepName> stepNames = new ArrayList<StepName>();
+	ArrayList<String> connectionNames = new ArrayList<String>();
+	ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
+
 
 	// Subdirectories in the project that will contain files to be processed
 	public static String operationalSubDirectory = "ops";		// Operational Data Store
@@ -72,6 +87,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		setIdsDwh(new IdsDwh());
 		setOpsIds(new OpsIds());
 		setDwhQueries(new DwhQueries());
+		setEtlProcess(new ETLProcess());
 	}
 	/***
 	 * Get the path of the Neo4j project subdirectory
@@ -217,4 +233,10 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	public DwhQueries getDwhQueries() {return dwhQueries;}
 
 	public void setDwhQueries(DwhQueries dwhQueries) {this.dwhQueries = dwhQueries;}
+	public ETLProcess getEtlProcess() {
+		return etlProcess;
+	}
+	public void setEtlProcess(ETLProcess etlProcess) {
+		this.etlProcess = etlProcess;
+	}
 }
