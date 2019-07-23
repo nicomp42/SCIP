@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import java.util.ArrayList;
@@ -18,7 +22,7 @@ public class ETLTransformationFiles implements Iterable<ETLTransformationFile> {
 	}
 	public void updateETLStageInETLTransformationFile(String fileName, String etlStage) {
 		for (ETLTransformationFile etlTransformationFile: etlTransformationFiles) {
-			if (etlTransformationFile.getFileName().trim().toUpperCase().equals(fileName)) {
+			if (etlTransformationFile.getFileName().trim().toUpperCase().equals(fileName.toUpperCase())) {
 				etlTransformationFile.setEtlStageNumber(ETLTransformationFile.lookupETLStageNumber(etlStage));
 				break;
 			}

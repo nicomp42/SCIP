@@ -248,7 +248,9 @@ public class ProcessETLController {
 					scip.getEtlProcess().getEtlTransformationFiles().updateETLStageInETLTransformationFile(g.getFileName(), g.getEtlStage());
 				}
 			}
-		} catch (Exception ex) {}
+		} catch (Exception ex) {
+			Log.logError("ProcessETLController.tvETLTransformationFiles_OnClick(): " + ex.getMessage());
+		}
 	}
 
 	/***
@@ -304,16 +306,13 @@ public class ProcessETLController {
 //	    				XMLParser myXMLParser = new XMLParser();
 //	    				myXMLParser.setXMLFilePathPrefix(scip.getEtlProcess().getTransformationFileDirectory());
 	    				// Step through the selected files in the TableView control
-	    				while (true) {
-	    					try {
-	    						for (ETLTransformationFile etlTransformationFile: scip.getEtlProcess().getEtlTransformationFiles()) {
-	    							if (ETLTransformationFile.isStageUnknown(etlTransformationFile.getEtlStage()) == false) {
-	    								Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Processing " + etlTransformationFile.getFileName());
-	    								processETLFile(etlTransformationFile);
-	    							}
-	    						}
-	    					} catch (Exception ex) {break;}
-	    				}
+						for (ETLTransformationFile etlTransformationFile: scip.getEtlProcess().getEtlTransformationFiles()) {
+							Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Checking " + etlTransformationFile.toString());
+							if (ETLTransformationFile.isStageUnknown(etlTransformationFile.getEtlStage()) == false) {
+								Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Processing " + etlTransformationFile.toString());
+								processETLFile(etlTransformationFile);
+							}
+						}
 	    				Log.logProgress("ProcessETLController.loadETL().Task: parsing complete.");
 	    			} catch (Exception ex) {
 	    				Log.logError("ProcessETLController.loadETL().Task: " + ex.getLocalizedMessage());
@@ -325,8 +324,7 @@ public class ProcessETLController {
 	        	return null;
 	        }
 	        public void processETLFile(ETLTransformationFile etlTransformationFile) {
-				Log.logProgress("ProcessETLController.processETLFile() parsing file at " + scip.getEtlProcess().getTransformationFileDirectory() + etlTransformationFile.getFileName() 
-				                + ", stage = " + etlTransformationFile.lookupETLStage()); 
+				Log.logProgress("ProcessETLController.processETLFile() parsing file at " + scip.getEtlProcess().getTransformationFileDirectory() + etlTransformationFile.toString()); 
 				XMLParser myXMLParser = new XMLParser();
 				myXMLParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
 				myXMLParser.getStepNames(etlTransformationFile, stepNames);

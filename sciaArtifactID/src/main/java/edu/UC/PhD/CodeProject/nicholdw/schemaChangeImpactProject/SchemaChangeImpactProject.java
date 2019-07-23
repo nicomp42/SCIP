@@ -37,12 +37,12 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private DwhQueries dwhQueries;
 	private ETLProcess etlProcess;
 	private static final String defaultProjectName = "[No project loaded]";	// Until the user provides a project name
-	ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
-	ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
-	ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
-	ArrayList<StepName> stepNames = new ArrayList<StepName>();
-	ArrayList<String> connectionNames = new ArrayList<String>();
-	ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
+	private ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
+	private ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
+	private ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
+	private ArrayList<StepName> stepNames = new ArrayList<StepName>();
+	private ArrayList<String> connectionNames = new ArrayList<String>();
+	private ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
 
 
 	// Subdirectories in the project that will contain files to be processed

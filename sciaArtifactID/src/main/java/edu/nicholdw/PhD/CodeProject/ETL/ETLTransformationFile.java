@@ -140,4 +140,7 @@ public class ETLTransformationFile {
 		}
 		return etlStageList[idx];
 	}
+	public String toString() {
+		return "file name : " + getFileName() + ", ETL Stage : " + ETLTransformationFile.lookupETLStage(getEtlStageNumber());
+	}
 }
