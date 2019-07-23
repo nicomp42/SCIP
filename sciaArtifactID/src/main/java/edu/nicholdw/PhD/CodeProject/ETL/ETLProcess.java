@@ -68,7 +68,7 @@ public class ETLProcess {
 		Document doc = null;
 		try {
 			builder = factory.newDocumentBuilder();
-			doc = builder.parse(xmlFilePath);
+			doc = builder.parse(xmlFilePath + etlStep.getFileName());
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			ETLFields etlFields;

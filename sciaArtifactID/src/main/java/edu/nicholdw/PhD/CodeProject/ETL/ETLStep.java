@@ -25,6 +25,7 @@ public class ETLStep {
 	private ETLFields etlFields;
 	private String procedure;			// Used in DBProc steps
 	private int etlStageNumber;		// Index into ETLTransformationFile.enumETLStage
+	private String fileName;		// No Path
 	
 	/**
 	 * Copy Constructor
@@ -39,6 +40,7 @@ public class ETLStep {
 		setProcedure(etlStep.getProcedure());
 		setETLStageNumber(etlStep.getETLStageNumber());
 		etlFields = new ETLFields();
+		setFileName(etlStep.getFileName());
 	}
 /*	public ETLStep(String stepName, String stepType, String sql, String table, String connection) {
 		setStepName(stepName);
@@ -49,7 +51,7 @@ public class ETLStep {
 		etlFields = new ETLFields();
 		setProcedure("");
 	} */
-	public ETLStep(String stepName, String stepType, String sql, String table, String connection, String procedure, int etlStageNumber) {
+	public ETLStep(String stepName, String stepType, String sql, String table, String connection, String procedure, int etlStageNumber, String fileName) {
 		setStepName(stepName);
 		setStepType(stepType);
 		setSql(sql);
@@ -58,6 +60,7 @@ public class ETLStep {
 		setProcedure(procedure);
 		etlFields = new ETLFields();
 		setETLStageNumber(etlStageNumber);
+		setFileName(fileName);
 	}
 
 	public void addETLFields(ETLFields etlFields) {
@@ -132,4 +135,10 @@ public class ETLStep {
 		this.etlStageNumber = etlStageNumber;
 	}
 	public String getEtlStage() {return ETLTransformationFile.lookupETLStage(etlStageNumber);}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 }

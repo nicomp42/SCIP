@@ -149,9 +149,7 @@ public class ProcessETLController {
 		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
 		        	GUIETLStep guiETLStep = row.getItem();
 //		            System.out.println(guiETLStep.toString());
-		            if (dataBrowseController == null) {
-		            	dataBrowseController = openDataBrowse();
-		            } 
+		            if (dataBrowseController == null) {dataBrowseController = openDataBrowse();} 
 	            	dataBrowseController.appendToTextArea(guiETLStep.toString());
 	            	ETLStep etlStep = scip.getEtlProcess().getETLSteps().getETLStep(guiETLStep.getStepName());
 	            	scip.getEtlProcess().processTableInputStepQuery(etlStep);
@@ -382,7 +380,7 @@ public class ProcessETLController {
 					tmp += " (" + stepType +  ")";
 					txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
 					// Add this new step to the collection of steps
-					scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection, procedure, stepName.getEtlStageNumber()));
+					scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection, procedure, stepName.getEtlStageNumber(), stepName.getFileName()));
 				}
 				//ETLConnections etlConnections = new ETLConnections();
 				for (String connectionName: connectionNames) {

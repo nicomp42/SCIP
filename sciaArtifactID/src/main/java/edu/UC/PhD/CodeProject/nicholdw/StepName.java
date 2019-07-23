@@ -4,7 +4,7 @@ import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFile;
 
 public class StepName {
 	private String stepName;
-	private String fileName;	// No path
+	private String fileName;	// The Pentaho Transformation file. No path
 	private String etlStage;
 	
 	public StepName(String stepName, String fileName, String etlStage) {
