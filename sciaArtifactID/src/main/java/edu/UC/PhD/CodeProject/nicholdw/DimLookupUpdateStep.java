@@ -11,6 +11,7 @@ public class DimLookupUpdateStep {
 	private List<String> attributes = new ArrayList<String>();
 	private String stepType;
 	private boolean isUpdateStep;
+	private String etlStage;
 
 	@Override
 	public String toString() {
@@ -59,9 +60,7 @@ public class DimLookupUpdateStep {
 		this.tableName = tableName;
 	}
 
-	public DimLookupUpdateStep(String transName, String stepName,
-			String stepType, String dbName, String tableName,
-			List<String> attributes, boolean isUpdateStep) {
+	public DimLookupUpdateStep(String transName, String stepName, String stepType, String dbName, String tableName,	List<String> attributes, boolean isUpdateStep, String etlStage) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
@@ -70,6 +69,7 @@ public class DimLookupUpdateStep {
 		this.tableName = tableName;
 		this.attributes = attributes;
 		this.isUpdateStep = isUpdateStep;
+		this.etlStage = etlStage;
 	}
 
 	public List<String> getAttributes() {
@@ -78,6 +78,14 @@ public class DimLookupUpdateStep {
 
 	public void setAttributes(List<String> attributes) {
 		this.attributes = attributes;
+	}
+
+	public String getEtlStage() {
+		return etlStage;
+	}
+
+	public void setEtlStage(String etlStage) {
+		this.etlStage = etlStage;
 	}
 
 }

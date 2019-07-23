@@ -23,7 +23,7 @@ import org.w3c.dom.Document;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
-import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
@@ -72,7 +72,7 @@ public class ProcessETLController {
 	@FXML	private TableView<GUIetlTransformationFile> tvETLTransformationFiles;
 	@FXML	private AnchorPane apMainWindow;
 	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults, txaETLJobs, txaDBProcStepResults;
-	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph, btnProcessETLTransformationFiles;
+	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph, btnProcessETLTransformationFiles, btnClearTable;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
 	@FXML	private CheckBox cbClearDB;
@@ -81,13 +81,13 @@ public class ProcessETLController {
 	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
 	@FXML	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
 	@FXML	private void btnProcessETLTransformationFiles_OnClick(ActionEvent event) {scip.getEtlProcess().setTransformationFileDirectory(Utils.formatPath(txaETLFilePath.getText().trim())); processETLTransformationFiles();}
+	@FXML	private void btnClearTransformationTable_OnClick(ActionEvent event) {clearTransformationFileTable();}
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("ProcessETLController.Initialize() starting...");
 		try {
 			setTheScene();
 			scip = Config.getConfig().getCurrentSchemaChangeImpactProject();
-//			etlProcess = new ETLProcess();
 		} catch (Exception e) {
 			Log.logError("ProcessETLController.Initialize(): " + e.getLocalizedMessage());
 		}
@@ -95,7 +95,10 @@ public class ProcessETLController {
 	}
 	private DataBrowseController dataBrowseController;
 	SchemaChangeImpactProject scip = null;
-//	private ETLProcess etlProcess;
+	
+	private void clearTransformationFileTable() {
+		tvETLTransformationFiles.getItems().clear();
+	}
 	/***
 	 * Create a GraphDB from the currently loaded ETL steps
 	 */
@@ -290,7 +293,7 @@ public class ProcessETLController {
 		disableETLLoadSelectionControls(true);
 		lblWorking.setVisible(true);
 		clearResultsControls();
-		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
+		ArrayList<TableOutputStep> tableOutputSteps = new ArrayList<TableOutputStep>();
 		ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
 		ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
 		ArrayList<StepName> stepNames = new ArrayList<StepName>();
@@ -329,8 +332,8 @@ public class ProcessETLController {
 				myXMLParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
 				myXMLParser.getStepNames(etlTransformationFile, stepNames);
 				myXMLParser.getConnectionNames(etlTransformationFile, connectionNames);
-				myXMLParser.parseXMLForOutputSteps(etlTransformationFile, outputSteps);
-				myXMLParser.parseXMLForInputSteps(etlTransformationFile, tableInputSteps);
+				myXMLParser.parseXMLForTableOutputSteps(etlTransformationFile, tableOutputSteps);
+				myXMLParser.parseXMLForTableInputSteps(etlTransformationFile, tableInputSteps);
 				myXMLParser.parseXMLForDBJoinSteps(etlTransformationFile, dbJoinSteps);
 				myXMLParser.parseXMLForDBProcSteps(etlTransformationFile, dbProcSteps);
 //				ETLJobs tmpETLJobs = new ETLJobs();
@@ -390,7 +393,7 @@ public class ProcessETLController {
 							                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
 							                                         ));
 				}
-				for (OutputStep outputStep: outputSteps) {
+				for (TableOutputStep outputStep: tableOutputSteps) {
 					txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
 				}
 				for (TableInputStep inputStep: tableInputSteps) {

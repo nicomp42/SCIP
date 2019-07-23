@@ -32,7 +32,7 @@ import edu.UC.PhD.CodeProject.nicholdw.DBProcStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.DimLookupUpdateStep;
 import edu.UC.PhD.CodeProject.nicholdw.DimensionLookupStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.InsertUpdateStepParser;
-import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStepParser;
@@ -64,18 +64,18 @@ public class XMLParser {
 		int idx = filePath.lastIndexOf("\\");
 		return filePath.substring(0, idx);
 	}
-	public List<OutputStep> parseXMLForOutputSteps(String fileName){
-		ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
-		parseXMLForOutputSteps(new ETLTransformationFile(fileName, 0), outputSteps);
+	public List<TableOutputStep> parseXMLForOutputSteps(String fileName){
+		ArrayList<TableOutputStep> outputSteps = new ArrayList<TableOutputStep>();
+		parseXMLForTableOutputSteps(new ETLTransformationFile(fileName, 0), outputSteps);
 		return outputSteps;
 	}
-	public void parseXMLForOutputSteps(ETLTransformationFile etlTransformationFile, List<OutputStep> outputSteps) {
+	public void parseXMLForTableOutputSteps(ETLTransformationFile etlTransformationFile, List<TableOutputStep> outputSteps) {
 		Log.logProgress("XMLParser.parseXMLForOutputSteps(): " + this.getxmlDirectory() + etlTransformationFile.getFileName());
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
 		Document doc = null;
-		OutputStep outputStep=null;
+		TableOutputStep outputStep=null;
 		try {
 			builder = factory.newDocumentBuilder();
 			doc = builder.parse(this.getxmlDirectory() + etlTransformationFile.getFileName());
@@ -106,10 +106,10 @@ public class XMLParser {
 	}
 	public List<TableInputStep> parseXMLForInputSteps(String xmlFilePath, String fileName){
 		List<TableInputStep> inputSteps = new ArrayList<TableInputStep>();
-		parseXMLForInputSteps(new ETLTransformationFile(fileName, 0),inputSteps);
+		parseXMLForTableInputSteps(new ETLTransformationFile(fileName, 0),inputSteps);
 		return inputSteps;
 	}
-	public void parseXMLForInputSteps(ETLTransformationFile etlTransformationFile, List<TableInputStep> inputSteps){
+	public void parseXMLForTableInputSteps(ETLTransformationFile etlTransformationFile, List<TableInputStep> inputSteps){
 		Log.logProgress("XMLParser.parseXMLForInputSteps(" + this.xmlDirectory + etlTransformationFile.getFileName() + ")");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -191,7 +191,7 @@ public class XMLParser {
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
 			for(String stepname:listOfAllStepNames){
-				dbProcstep=DBProcStepParser.parseXMLByStepName(doc, xpath, stepname, this.xmlDirectory, etlTransformationFile.getFileName());
+				dbProcstep=DBProcStepParser.parseXMLByStepName(doc, xpath, stepname, this.xmlDirectory, etlTransformationFile.getFileName(), etlTransformationFile.lookupETLStage());
 				dbProcSteps.add(dbProcstep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -252,8 +252,7 @@ public class XMLParser {
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
 			for(String stepname:listOfAllStepNames){
-				dimlookupstep=DimensionLookupStepParser.parseXMLForDimensionLookupStep(
-						doc, xpath, stepname);
+				dimlookupstep=DimensionLookupStepParser.parseXMLForDimensionLookupStep(doc, xpath, stepname, etlTransformationFile.lookupETLStage());
 				// A Dimension Lookup/Update step can be a read-only step (Lookup) or
 				// write step (Update)
 				dimlookupupdatesteps.add(dimlookupstep);
@@ -282,10 +281,9 @@ public class XMLParser {
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
 
 			for(String stepname:listOfAllStepNames){
-				comblookupstep=CombinationLookupStepParser.parseXMLForCombinationLookupStep(doc, xpath, stepname);
+				comblookupstep=CombinationLookupStepParser.parseXMLForCombinationLookupStep(doc, xpath, stepname, ETLTransformationFile.lookupETLStage(0));
 				comblookupupdatesteps.add(comblookupstep);
 			}
-
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			Log.logError("XMLParser.parseXMLForCombinationLookupUpdateSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}

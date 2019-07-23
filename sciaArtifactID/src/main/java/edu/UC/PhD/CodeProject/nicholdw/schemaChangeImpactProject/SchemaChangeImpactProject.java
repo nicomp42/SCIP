@@ -9,7 +9,7 @@ import java.util.Date;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
-import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
@@ -37,7 +37,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private DwhQueries dwhQueries;
 	private ETLProcess etlProcess;
 	private static final String defaultProjectName = "[No project loaded]";	// Until the user provides a project name
-	private ArrayList<OutputStep> outputSteps = new ArrayList<OutputStep>();
+	private ArrayList<TableOutputStep> outputSteps = new ArrayList<TableOutputStep>();
 	private ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
 	private ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
 	private ArrayList<StepName> stepNames = new ArrayList<StepName>();

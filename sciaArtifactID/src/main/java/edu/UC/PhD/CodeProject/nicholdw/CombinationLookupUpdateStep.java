@@ -10,12 +10,14 @@ public class CombinationLookupUpdateStep {
 	private String tableName;
 	private List<String> attributes = new ArrayList<String>();
 	private String stepType;
+	private String etlStage;
 
 	@Override
 	public String toString() {
 		return "CombinationLookupUpdateStep [transName=" + transName
 				+ ", stepName=" + stepName + ", dbName=" + dbName
 				+ ", tableName=" + tableName + ", attributes=" + attributes
+				+ ", ETLStage = " + getEtlStage()
 				+ "]";
 	}
 
@@ -51,9 +53,7 @@ public class CombinationLookupUpdateStep {
 		this.tableName = tableName;
 	}
 
-	public CombinationLookupUpdateStep(String transName, String stepName,
-			String stepType, String dbName, String tableName,
-			List<String> attributes) {
+	public CombinationLookupUpdateStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String etlStage) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
@@ -61,6 +61,7 @@ public class CombinationLookupUpdateStep {
 		this.dbName = dbName;
 		this.tableName = tableName;
 		this.attributes = attributes;
+		this.etlStage = etlStage;
 	}
 
 	public List<String> getAttributes() {
@@ -79,4 +80,11 @@ public class CombinationLookupUpdateStep {
 		this.stepType = stepType;
 	}
 
+	public String getEtlStage() {
+		return etlStage;
+	}
+
+	public void setEtlStage(String etlStage) {
+		this.etlStage = etlStage;
+	}
 }

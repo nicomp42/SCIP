@@ -13,32 +13,26 @@ import org.w3c.dom.NodeList;
 
 public class CombinationLookupStepParser {
 
-	public static CombinationLookupUpdateStep parseXMLForCombinationLookupStep(
-			Document doc, XPath xpath, String stepName) {
+	public static CombinationLookupUpdateStep parseXMLForCombinationLookupStep(Document doc, XPath xpath, String stepName, String etlStage) {
 		CombinationLookupUpdateStep stepObject = null;
 		String transname = getTransformationName(doc, xpath);
 		String dbname = getDatabaseName(doc, xpath, stepName);
 		String tableName = getTableName(doc, xpath, stepName);
 		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, stepName);
-		stepObject = new CombinationLookupUpdateStep(transname, stepName,
-				"CombinationLookup", dbname, tableName, fieldnames);
+		stepObject = new CombinationLookupUpdateStep(transname, stepName, "CombinationLookup", dbname, tableName, fieldnames, etlStage);
 		return stepObject;
 	}
 
-	private static String getDatabaseName(Document doc, XPath xpath,
-			String stepname) {
+	private static String getDatabaseName(Document doc, XPath xpath, String stepname) {
 		String connectionname = null;
 		String dbname = null;
 
 		try {
 			// create XPathExpression object
-			XPathExpression expr = xpath.compile("/transformation/step[name=\'"
-					+ stepname + "\']/connection/text()");
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/connection/text()");
 			connectionname = (String) expr.evaluate(doc, XPathConstants.STRING);
 
-			XPathExpression dbexpr = xpath
-					.compile("/transformation/connection[name='"
-							+ connectionname + "']/database/text()");
+			XPathExpression dbexpr = xpath.compile("/transformation/connection[name='" + connectionname + "']/database/text()");
 			dbname = (String) dbexpr.evaluate(doc, XPathConstants.STRING);
 
 		} catch (XPathExpressionException e) {
@@ -47,28 +41,19 @@ public class CombinationLookupStepParser {
 		return dbname;
 	}
 
-	private static List<String> getDatabaseFieldNames(Document doc,
-			XPath xpath, String stepname) {
+	private static List<String> getDatabaseFieldNames(Document doc, XPath xpath, String stepname) {
 		List<String> list = new ArrayList<>();
 		try {
 
-			XPathExpression expr_surrogate_key = xpath
-					.compile("/transformation/step[name=\'" + stepname
-							+ "\']/fields/return/name/text()");
-			XPathExpression expr_dbfields = xpath
-					.compile("/transformation/step[name=\'" + stepname
-							+ "\']/fields/key/lookup/text()");
+			XPathExpression expr_surrogate_key = xpath.compile("/transformation/step[name=\'" + stepname + "\']/fields/return/name/text()");
+			XPathExpression expr_dbfields = xpath.compile("/transformation/step[name=\'" + stepname	+ "\']/fields/key/lookup/text()");
 			// evaluate expression result on XML document
-			NodeList nodes = (NodeList) expr_dbfields.evaluate(doc,
-					XPathConstants.NODESET);
-			for (int i = 0; i < nodes.getLength(); i++)
-				list.add(nodes.item(i).getNodeValue());
+			NodeList nodes = (NodeList) expr_dbfields.evaluate(doc,	XPathConstants.NODESET);
+			for (int i = 0; i < nodes.getLength(); i++) {list.add(nodes.item(i).getNodeValue());}
 
-			String surrogatekey_field = (String) expr_surrogate_key.evaluate(
-					doc, XPathConstants.STRING);
+			String surrogatekey_field = (String) expr_surrogate_key.evaluate(doc, XPathConstants.STRING);
 
-			if (surrogatekey_field != null && !surrogatekey_field.isEmpty())
-				list.add(surrogatekey_field);
+			if (surrogatekey_field != null && !surrogatekey_field.isEmpty()) {list.add(surrogatekey_field);}
 
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
@@ -79,8 +64,7 @@ public class CombinationLookupStepParser {
 	private static String getTransformationName(Document doc, XPath xpath) {
 		String name = null;
 		try {
-			XPathExpression expr = xpath
-					.compile("/transformation/info/name/text()");
+			XPathExpression expr = xpath.compile("/transformation/info/name/text()");
 			name = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
@@ -93,8 +77,7 @@ public class CombinationLookupStepParser {
 			String stepname) {
 		String name = null;
 		try {
-			XPathExpression expr = xpath.compile("/transformation/step[name=\'"
-					+ stepname + "\']/table/text()");
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/table/text()");
 			name = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
@@ -106,8 +89,7 @@ public class CombinationLookupStepParser {
 	private static String getStepName(Document doc, XPath xpath) {
 		String name = null;
 		try {
-			XPathExpression expr = xpath
-					.compile("/transformation/step[type='DimensionLookup']/name/text()");
+			XPathExpression expr = xpath.compile("/transformation/step[type='DimensionLookup']/name/text()");
 			name = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();

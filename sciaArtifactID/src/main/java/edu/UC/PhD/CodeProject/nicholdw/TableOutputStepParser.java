@@ -12,8 +12,8 @@ import org.w3c.dom.NodeList;
 
 public class TableOutputStepParser {
 
-	public static OutputStep parseXMLForTableOutputStep(Document doc, XPath xpath, String stepname, String xmlFilePath, String fileName, String etlStage) {
-		OutputStep stepObject = null;
+	public static TableOutputStep parseXMLForTableOutputStep(Document doc, XPath xpath, String stepname, String xmlFilePath, String fileName, String etlStage) {
+		TableOutputStep stepObject = null;
 
 		String transname = getTransformationName(doc, xpath);
 
@@ -22,7 +22,7 @@ public class TableOutputStepParser {
 
 		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, stepname);
 
-		stepObject = new OutputStep(transname, stepname, "TableOutput", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage);
+		stepObject = new TableOutputStep(transname, stepname, "TableOutput", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage);
 
 		return stepObject;
 	}

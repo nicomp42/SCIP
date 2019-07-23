@@ -15,7 +15,7 @@ import edu.UC.PhD.CodeProject.nicholdw.CombinationLookupUpdateStep;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
 import edu.UC.PhD.CodeProject.nicholdw.DBLookupStep;
 import edu.UC.PhD.CodeProject.nicholdw.DimLookupUpdateStep;
-import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
@@ -24,7 +24,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;;
 
 public class ETLExcelExporter {
 
-	public static void generateOutputStepsCsvFile(String sFileName, List<OutputStep> steps) {
+	public static void generateOutputStepsCsvFile(String sFileName, List<TableOutputStep> steps) {
 		try {
 			boolean fileExists = false;
 			Log.logProgress("ETLExcelExporter.generateOutputStepsCsvFile(): Exporting to Excel");
@@ -44,9 +44,11 @@ public class ETLExcelExporter {
 				writer.append("TableName");
 				writer.append(',');
 				writer.append("AttributeName");
+				writer.append(',');
+				writer.append("ETLStage");
 				writer.append('\n');
 			}
- 			for (OutputStep stepObj : steps) {
+ 			for (TableOutputStep stepObj : steps) {
 				Log.logProgress("ETLExcelExporter.generateOutputStepsCsvFile(): " + stepObj.getStepName());
 				for (int index = 0; index < stepObj.getAttributes().size(); index++) {
 					writer.append(stepObj.getTransName());
@@ -60,6 +62,8 @@ public class ETLExcelExporter {
 					writer.append(stepObj.getTableName());
 					writer.append(',');
 					writer.append(stepObj.getAttributes().get(index));
+					writer.append(',');
+					writer.append(stepObj.getEtlStage());
 					writer.append('\n');
 				}
 			}
@@ -90,6 +94,8 @@ public class ETLExcelExporter {
 				writer.append("DatabaseName");
 				writer.append(',');
 				writer.append("SQL");
+				writer.append(',');
+				writer.append("ETLStage");
 				writer.append('\n');
 			}
 
@@ -110,6 +116,8 @@ public class ETLExcelExporter {
 				// TODO this SQL will need to be parsed. As it currently works, it doesn't work.
 				String tmp = "\"" + stepObj.getSql().replaceAll("[\\t\\n\\r\\s]", " ").trim() + "\"";
 				writer.append(tmp);
+				writer.append(',');
+				writer.append(stepObj.getEtlStage());			// Schema name
 				writer.append('\n');
 			}
 			writer.flush();
@@ -138,6 +146,8 @@ public class ETLExcelExporter {
 				writer.append("DatabaseName");
 				writer.append(',');
 				writer.append("SQL");
+				writer.append(',');
+				writer.append("ETLStage");
 
 				writer.append('\n');
 			}
@@ -150,7 +160,6 @@ public class ETLExcelExporter {
 				writer.append(',');
 				writer.append("DBJoin");
 				writer.append(',');
-
 				writer.append(stepObj.getDbName().trim());
 				writer.append(',');
 
@@ -185,6 +194,8 @@ public class ETLExcelExporter {
 				writer.append("TableName");
 				writer.append(',');
 				writer.append("AttributeName");
+				writer.append(',');
+				writer.append("ETLStage");
 				writer.append('\n');
 			}
 			for (DBLookupStep stepObj : steps) {
@@ -201,6 +212,8 @@ public class ETLExcelExporter {
 					writer.append(stepObj.getTableName());
 					writer.append(',');
 					writer.append(stepObj.getAttributes().get(index));
+					writer.append(',');
+					writer.append(stepObj.getEtlStage());
 					writer.append('\n');
 				}
 			}
@@ -234,6 +247,8 @@ public class ETLExcelExporter {
 				writer.append("AttributeName");
 				writer.append(',');
 				writer.append("isUpdateStep");
+				writer.append(',');
+				writer.append("ETLStage");
 				writer.append('\n');
 			}
 			for (DimLookupUpdateStep stepObj : steps) {
@@ -256,6 +271,8 @@ public class ETLExcelExporter {
 					} else {
 						writer.append("Lookup");
 					}
+					writer.append(',');
+					writer.append(stepObj.getEtlStage());
 					writer.append('\n');
 				}
 			}
@@ -286,6 +303,8 @@ public class ETLExcelExporter {
 				writer.append("TableName");
 				writer.append(',');
 				writer.append("AttributeName");
+				writer.append(',');
+				writer.append("ETLStage");
 				writer.append('\n');
 			}
 
@@ -303,6 +322,8 @@ public class ETLExcelExporter {
 					writer.append(stepObj.getTableName());
 					writer.append(',');
 					writer.append(stepObj.getAttributes().get(index));
+					writer.append(',');
+					writer.append(stepObj.getEtlStage());
 					writer.append('\n');
 				}
 			}

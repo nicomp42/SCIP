@@ -13,7 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.CombinationLookupUpdateStep;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
 import edu.UC.PhD.CodeProject.nicholdw.DBLookupStep;
 import edu.UC.PhD.CodeProject.nicholdw.DimLookupUpdateStep;
-import edu.UC.PhD.CodeProject.nicholdw.OutputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -75,8 +75,8 @@ public class ETLToCSV {
 		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateOutputStepsCsvData(): File = " + etlTransformationFile.getFileName());
-			List<OutputStep> outputSteps = new ArrayList<OutputStep>(); 
-			xmlParser.parseXMLForOutputSteps(etlTransformationFile, outputSteps);
+			List<TableOutputStep> outputSteps = new ArrayList<TableOutputStep>(); 
+			xmlParser.parseXMLForTableOutputSteps(etlTransformationFile, outputSteps);
 			ETLExcelExporter.generateOutputStepsCsvFile(csvPath, outputSteps);
 		}
 	}
@@ -105,7 +105,7 @@ public class ETLToCSV {
 		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateOutputStepsCsvData(): File = " + etlTransformationFile.getFileName());
 			List<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>(); 
-			xmlParser.parseXMLForInputSteps(etlTransformationFile, tableInputSteps);
+			xmlParser.parseXMLForTableInputSteps(etlTransformationFile, tableInputSteps);
 			//.parseXMLForInputSteps(etlTransformationFile, tableInputSteps);
 			ETLExcelExporter.generateInputStepsCsvFile(csvPath, tableInputSteps);
 		}

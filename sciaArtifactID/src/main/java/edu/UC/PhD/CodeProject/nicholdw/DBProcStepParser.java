@@ -14,14 +14,14 @@ import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 
 public class DBProcStepParser {
 	
-	public static DBProcStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String xmlFilePath, String xmlFilename){
+	public static DBProcStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String xmlFilePath, String xmlFilename, String etlStage){
 		
 		DBProcStep stepObject=null;
 		 String transname = getTransformationName(doc, xpath);
          String dbname = getDatabaseName(doc, xpath,stepname);
          String sql=getSQL(doc,xpath, stepname);	                   
          String procedure = getProcedure(doc, xpath,stepname);
-         stepObject=new DBProcStep(transname, stepname, dbname, procedure, xmlFilePath, xmlFilename);
+         stepObject=new DBProcStep(transname, stepname, dbname, procedure, xmlFilePath, xmlFilename, etlStage);
 		return stepObject;
 	}
 

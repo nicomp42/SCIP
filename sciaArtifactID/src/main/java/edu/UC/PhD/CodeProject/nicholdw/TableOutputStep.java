@@ -7,7 +7,7 @@ package edu.UC.PhD.CodeProject.nicholdw;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OutputStep {
+public class TableOutputStep {
 	private String transName;
 	private String stepName;
 	private String stepType;
@@ -30,7 +30,7 @@ public class OutputStep {
 	 * @param xmlFilename
 	 * @param etlStage
 	 */
-	public OutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilePath, String xmlFilename, String etlStage) {
+	public TableOutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilePath, String xmlFilename, String etlStage) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;

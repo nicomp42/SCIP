@@ -133,6 +133,7 @@ public class ETLProcess {
 				                         ", procedure:'" + etlStep.getProcedure()		+ "'" + 
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         ",	key:'" + etlStep.getStepName()	+ "'" +
+				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 				                         "})");
 				
 			} else if (etlStep.getStepType().equals("TableInput")) {
@@ -143,6 +144,7 @@ public class ETLProcess {
 				                         ",	table:'" + etlStep.getTable()	+ "'" +
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         ",	key:'" + etlStep.getStepName()	+ "'" +
+				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 				                         "})");
 				QueryDefinition qd = etlStep.getQueryDefinition();
 					// Add the nodes for the attributes in the query that this step uses
@@ -159,6 +161,7 @@ public class ETLProcess {
 					                         + "'" 
 					                         + ", name:'" 
 					                         + qa.getAttributeName() 
+//					                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
 					                         + "'})");
 					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.attributeNodeLabel  + "{key:'" + key + "'}), "
 				               				 +     "(a:" + SchemaTopology.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
@@ -170,6 +173,7 @@ public class ETLProcess {
 				                         ",	table:'" + etlStep.getTable()	+ "'" +
 				                         ",	key:'" + etlStep.getStepName()	+ "'" +
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
+				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 				                         "})");
 				// There is no query here: we just need to step through all the fields that are accessed in the output table
 				for (ETLField etlField: etlStep.getETLFields()) {
@@ -179,6 +183,7 @@ public class ETLProcess {
 	                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
 	                         ",	key:'" + key + "'" +
 	                         ",	stepName:'" + etlStep.getStepName()	+ "'" +
+	                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 	                         "})");
 
 					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.etlFieldNodeLabel  + "{key:'" + key + "'}), "

@@ -16,13 +16,13 @@ import org.w3c.dom.NodeList;
 
 public class InsertUpdateStepParser {
 
-	public static OutputStep parseXMLForInsertUpdateStep(Document doc, XPath xpath, String step, String xmlFilePath, String fileName, String etlStage) {
-		OutputStep stepObject = null;
+	public static TableOutputStep parseXMLForInsertUpdateStep(Document doc, XPath xpath, String step, String xmlFilePath, String fileName, String etlStage) {
+		TableOutputStep stepObject = null;
 		String transname = getTransformationName(doc, xpath);
 		String dbname = getDatabaseName(doc, xpath, step);
 		String tableName = getTableName(doc, xpath, step);
 		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, step);
-		stepObject = new OutputStep(transname, step, "Insert/Update", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage);
+		stepObject = new TableOutputStep(transname, step, "Insert/Update", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage);
 		return stepObject;
 	}
 	private static String getDatabaseName(Document doc, XPath xpath, String stepname) {

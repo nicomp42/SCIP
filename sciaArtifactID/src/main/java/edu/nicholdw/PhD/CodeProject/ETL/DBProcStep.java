@@ -12,8 +12,9 @@ public class DBProcStep {
 	private String xmlFilename;
 	private String xmlFilePath;
 	private String procedure;
+	private String etlStage;
 
-	public DBProcStep(String transName, String stepName, String dbName, String procedure, String xmlFilePath, String xmlFilename) {
+	public DBProcStep(String transName, String stepName, String dbName, String procedure, String xmlFilePath, String xmlFilename, String etlStage) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
@@ -22,6 +23,7 @@ public class DBProcStep {
 		this.procedure = procedure;
 		this.xmlFilename = xmlFilename;
 		this.xmlFilePath = xmlFilePath;
+		this.setEtlStage(etlStage);
 	}
 	public String getTransName() {
 		return transName;
@@ -49,9 +51,12 @@ public class DBProcStep {
 	}
 	@Override
 	public String toString() {
-		return "DBProc [transName = " + transName + ", stepName = " + stepName
+		return "DBProc [transName = " + transName 
+				+ ", stepName = " + stepName
 				+ ", dbName =" + dbName
-				+ ", Procedure =" + procedure + ", xmlFilename = " + xmlFilename 
+				+ ", Procedure = " + procedure 
+				+ ", xmlFilename = " + xmlFilename 
+				+ ", etlStage = " + etlStage
 				+ "]";
 	}
 	public String getXmlFilename() {
@@ -71,6 +76,12 @@ public class DBProcStep {
 	}
 	public void setProcedure(String procedure) {
 		this.procedure = procedure;
+	}
+	public String getEtlStage() {
+		return etlStage;
+	}
+	public void setEtlStage(String etlStage) {
+		this.etlStage = etlStage;
 	}
 
 }

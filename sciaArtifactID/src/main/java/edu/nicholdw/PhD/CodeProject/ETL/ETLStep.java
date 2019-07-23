@@ -57,6 +57,7 @@ public class ETLStep {
 		setConnection(connection);
 		setProcedure(procedure);
 		etlFields = new ETLFields();
+		setETLStageNumber(etlStageNumber);
 	}
 
 	public void addETLFields(ETLFields etlFields) {
@@ -130,4 +131,5 @@ public class ETLStep {
 	public void setETLStageNumber(int etlStageNumber) {
 		this.etlStageNumber = etlStageNumber;
 	}
+	public String getEtlStage() {return ETLTransformationFile.lookupETLStage(etlStageNumber);}
 }
