@@ -34,6 +34,7 @@ import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImp
 import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnection;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnections;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLHops;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLJob;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLJobs;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
@@ -297,6 +298,7 @@ public class ProcessETLController {
 		ArrayList<StepName> stepNames = new ArrayList<StepName>();
 		ArrayList<String> connectionNames = new ArrayList<String>();
 		ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
+		ETLHops etlHops = new ETLHops();
 //		ETLJobs etlJobs = new ETLJobs();
 		// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 	    Task <Void> task = new Task<Void>() {
@@ -334,6 +336,8 @@ public class ProcessETLController {
 				myXMLParser.parseXMLForTableInputSteps(etlTransformationFile, tableInputSteps);
 				myXMLParser.parseXMLForDBJoinSteps(etlTransformationFile, dbJoinSteps);
 				myXMLParser.parseXMLForDBProcSteps(etlTransformationFile, dbProcSteps);
+				myXMLParser.parseXMLForHops(etlTransformationFile, etlHops);
+				
 //				ETLJobs tmpETLJobs = new ETLJobs();
 //				myXMLParser.getETLJobs(myXMLParser.getXMLFilePathPrefix() + myXMLFileName, tmpETLJobs);
 //				for (ETLJob etlJob : tmpETLJobs) {
@@ -416,6 +420,7 @@ public class ProcessETLController {
 				// We should be able to parse the queries in the table input steps
 				scip.getEtlProcess().processTableInputStepQueries();
 				scip.getEtlProcess().processTableOutputStepsFields();
+				scip.getEtlProcess().setEtlHops(etlHops);
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 				disableETLLoadSelectionControls(false);

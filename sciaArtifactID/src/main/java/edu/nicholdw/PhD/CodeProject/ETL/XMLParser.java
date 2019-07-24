@@ -38,7 +38,9 @@ import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-
+import org.w3c.dom.*;
+import javax.xml.parsers.*;
+import java.io.*;
 public class XMLParser {
 	public static Document dom;
 	private String xmlDirectory;
@@ -198,6 +200,38 @@ public class XMLParser {
 			Log.logError("XMLParser.parseXMLForDBJoinSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
 		}
 	}
+	/**
+	 * Read hop elements from the Transformation file
+	 * @param etlTransformationFile
+	 * @param etlHops
+	 */
+	public void parseXMLForHops(ETLTransformationFile etlTransformationFile, ETLHops etlHops){
+		Log.logProgress("XMLParser.parseXMLForHops(): " + this.xmlDirectory + etlTransformationFile.getFileName());
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(this.xmlDirectory + etlTransformationFile.getFileName());
+			doc.getDocumentElement().normalize();			
+			NodeList myHops = doc.getElementsByTagName("hop");
+			for (int temp = 0; temp < myHops.getLength(); temp++) {
+ 				Node nNode = myHops.item(temp);
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element eElement = (Element) nNode;
+					etlHops.addETLHop(new ETLHop(eElement.getElementsByTagName("from").item(0).getTextContent(), 
+							               eElement.getElementsByTagName("to").item(0).getTextContent(),
+							               (eElement.getElementsByTagName("enabled").item(0).getTextContent().equals("Y") ? true : false),
+							               etlTransformationFile.getFileName()));
+				}
+			}
+			Log.logProgress("XMLParser.parseXMLForHops: Hops read");
+		} catch (Exception ex) {
+			Log.logError("XMLParser.parseXMLForHops(): " + ex.getLocalizedMessage());
+		}
+	}
+
 	/**
 	 * If you call this you don't get to define an ETL Stage. It defaults to unknown.
 	 * @param xmlFilePath

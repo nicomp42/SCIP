@@ -27,12 +27,14 @@ public class ETLProcess {
 	private ETLSteps etlSteps;
 	private ETLConnections etlConnections;
 	private ETLTransformationFiles etlTransformationFiles;
+	private ETLHops etlHops;
 	private String transformationFileDirectory;	// Where all the transformation files are. See etlTransformationFiles object herein.
-	
+
 	public ETLProcess() {
 		etlSteps = new ETLSteps();
 		etlConnections = new ETLConnections();
 		etlTransformationFiles = new ETLTransformationFiles();
+		etlHops = new ETLHops();
 	}
 	public void processTableInputStepQueries() {
 		for (ETLStep etlStep : etlSteps) {
@@ -134,6 +136,7 @@ public class ETLProcess {
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         ",	key:'" + etlStep.getStepName()	+ "'" +
 				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 				                         "})");
 				
 			} else if (etlStep.getStepType().equals("TableInput")) {
@@ -145,6 +148,7 @@ public class ETLProcess {
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         ",	key:'" + etlStep.getStepName()	+ "'" +
 				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 				                         "})");
 				QueryDefinition qd = etlStep.getQueryDefinition();
 					// Add the nodes for the attributes in the query that this step uses
@@ -174,6 +178,7 @@ public class ETLProcess {
 				                         ",	key:'" + etlStep.getStepName()	+ "'" +
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 				                         "})");
 				// There is no query here: we just need to step through all the fields that are accessed in the output table
 				for (ETLField etlField: etlStep.getETLFields()) {
@@ -192,6 +197,26 @@ public class ETLProcess {
 				}		
 			}
 		}
+		/* Draw the hops as connections between steps */
+		for (ETLHop etlHop: etlProcess.getEtlHops()) {
+//			MATCH (t:ETLStep), (f:ETLStep) 
+//			WHERE t.StepName='WriteToTemporaryTable' AND t.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr' 
+//			AND  f.StepName='ReadFromSales.TransactionTable' AND f.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr'  
+//			CREATE (t)-[:Hop]->(f)			
+			Neo4jDB.submitNeo4jQuery("MATCH "
+					               + "(t:" +  SchemaTopology.etlStepNodeLabel +")"
+                                   + "," 
+					               + "(f:" +  SchemaTopology.etlStepNodeLabel +")"
+					               + " WHERE "
+					               + "f.StepName='" + etlHop.getToStepName() + "'"
+					               + " AND "
+					               + "f.TransformationFileName='" + etlHop.getFileName() + "'"
+					               + " AND "
+					               + "t.StepName='" + etlHop.getFromStepName() + "'"
+					               + " AND "
+					               + "t.TransformationFileName='" + etlHop.getFileName() + "'"				               
+	  				               + " CREATE (t)-[:" + SchemaTopology.etlHopLabel +"]->(f)");
+		}
 	}
 	/**
 	 * ToDo: this is risky.
@@ -208,5 +233,11 @@ public class ETLProcess {
 	}
 	public void setTransformationFileDirectory(String transformationFileDirectory) {
 		this.transformationFileDirectory = transformationFileDirectory;
+	}
+	public ETLHops getEtlHops() {
+		return etlHops;
+	}
+	public void setEtlHops(ETLHops etlHops) {
+		this.etlHops.clone(etlHops);
 	}
 }
