@@ -127,9 +127,10 @@ public class ETLProcess {
 	}
 	public static void createGraph(ETLProcess etlProcess) {
 		for (ETLStep etlStep : etlProcess.getETLSteps()) {
+			Log.logProgress("ETLParser.createGraph(): ETL Step Type = " + etlStep.getStepType());
 			// CREATE (n:Person { name: 'Andy', title: 'Developer' })
 			if (etlStep.getStepType().equals("DBProc")) {
-				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlDBProcNodeLabel + 
+				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlStepNodeLabel + 
 				                         " { StepName: " + 
 				                         "'" + etlStep.getStepName() 		+ "'" + 
 				                         ", procedure:'" + etlStep.getProcedure()		+ "'" + 
@@ -139,6 +140,16 @@ public class ETLProcess {
 				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 				                         "})");
 				
+			} else if (etlStep.getStepType().equals("MergeJoin")) {
+					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlStepNodeLabel + 
+					                         " { StepName: " + 
+					                         "'" + etlStep.getStepName() 		+ "'" + 
+					                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
+					                         ",	key:'" + etlStep.getStepName()	+ "'" +
+					                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+					                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
+					                         "})");
+
 			} else if (etlStep.getStepType().equals("TableInput")) {
 				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlStepNodeLabel + 
 				                         " { StepName: " + 
@@ -169,7 +180,7 @@ public class ETLProcess {
 					                         + "'})");
 					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.attributeNodeLabel  + "{key:'" + key + "'}), "
 				               				 +     "(a:" + SchemaTopology.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
-				               				 + "CREATE (t)-[:" + SchemaTopology.etlStepToQueryAttributeLbel +"]->(a)");
+				               				 + "CREATE (a)-[:" + SchemaTopology.etlStepToQueryAttributeLbel +"]->(t)");
 				}
 			} else if (etlStep.getStepType().equals("TableOutput")) {
 				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlStepNodeLabel + 
@@ -193,9 +204,11 @@ public class ETLProcess {
 
 					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.etlFieldNodeLabel  + "{key:'" + key + "'}), "
               				 +     "(a:" + SchemaTopology.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
-              				 + "CREATE (t)-[:" + SchemaTopology.etlFieldToETLStepLabel +"]->(a)");
+              				 + "CREATE (a)-[:" + SchemaTopology.etlFieldToETLStepLabel +"]->(t)");
 				}		
-			}
+			} else {
+				Log.logError("ETLParser.createGraph(): No logic to process ETL step type " + etlStep.getStepType());
+			}			
 		}
 		/* Draw the hops as connections between steps */
 		for (ETLHop etlHop: etlProcess.getEtlHops()) {
@@ -208,14 +221,14 @@ public class ETLProcess {
                                    + "," 
 					               + "(f:" +  SchemaTopology.etlStepNodeLabel +")"
 					               + " WHERE "
-					               + "f.StepName='" + etlHop.getToStepName() + "'"
+					               + "t.StepName='" + etlHop.getToStepName() + "'"
 					               + " AND "
 					               + "f.TransformationFileName='" + etlHop.getFileName() + "'"
 					               + " AND "
-					               + "t.StepName='" + etlHop.getFromStepName() + "'"
+					               + "f.StepName='" + etlHop.getFromStepName() + "'"
 					               + " AND "
 					               + "t.TransformationFileName='" + etlHop.getFileName() + "'"				               
-	  				               + " CREATE (t)-[:" + SchemaTopology.etlHopLabel +"]->(f)");
+	  				               + " CREATE (f)-[:" + SchemaTopology.etlHopLabel +"]->(t)");
 		}
 	}
 	/**

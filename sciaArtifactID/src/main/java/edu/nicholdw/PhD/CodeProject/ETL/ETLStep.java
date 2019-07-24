@@ -79,18 +79,18 @@ public class ETLStep {
 	}
 
 	public void setStepType(String stepType) {
-		this.stepType = stepType;
+		this.stepType = stepType.trim();
 	}
 
 	public void setConnection(String connection) {
-		this.connection = connection;
+		this.connection = connection.trim();
 	}
 	public String getStepName() {
 		return stepName;
 	}
 
 	public void setStepName(String stepName) {
-		this.stepName = stepName;
+		this.stepName = stepName.trim();
 	}
 	/***
 	 * Load a TableView control with ETL Steps
@@ -108,13 +108,13 @@ public class ETLStep {
 		return sql;
 	}
 	public void setSql(String sql) {
-		this.sql = sql;
+		this.sql = sql.trim();
 	}
 	public String getTable() {
 		return table;
 	}
 	public void setTable(String table) {
-		this.table = table;
+		this.table = table.trim();
 	}
 	public void setQueryDefinition(QueryDefinition queryDefinition) {
 		this.queryDefinition = queryDefinition;	
@@ -126,7 +126,7 @@ public class ETLStep {
 		return procedure;
 	}
 	public void setProcedure(String procedure) {
-		this.procedure = procedure;
+		this.procedure = procedure.trim();
 	}
 	public int getETLStageNumber() {
 		return etlStageNumber;
@@ -135,10 +135,11 @@ public class ETLStep {
 		this.etlStageNumber = etlStageNumber;
 	}
 	public String getEtlStage() {return ETLTransformationFile.lookupETLStage(etlStageNumber);}
+	
 	public String getFileName() {
 		return fileName;
 	}
 	public void setFileName(String fileName) {
-		this.fileName = fileName;
+		this.fileName = fileName.trim();
 	}
 }

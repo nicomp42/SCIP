@@ -249,8 +249,8 @@ public class XMLParser {
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder;
 		Document doc = null;
-		String steptype="DBJoin";
-//		String steptype="MergeJoin";
+//		String steptype="DBJoin";
+		String steptype="MergeJoin";		// Pentaho uses this
 		DBJoinStep dbjoinstep=null;
 		try {
 			builder = factory.newDocumentBuilder();

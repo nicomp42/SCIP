@@ -47,8 +47,9 @@ public class SchemaTopology {
 	public  static final String etlStepNodeLabel = "ETLStep";
 	public  static final String etlStepToQueryAttributeLbel = "ETLStepToQueryAttribute";
 	public  static final String etlFieldToETLStepLabel = "ETLFieldToETLStep";
-	public  static final String etlDBProcNodeLabel = "DBProc";
+//	public  static final String etlDBProcNodeLabel = "DBProc";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
 	public	static final String etlHopLabel = "Hop";
+//	public	static final String etlMergeJoinLabel = "MergeJoin";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
 
 	/**
 	 * Test main. Schema name defaults to localhost.schematopologytest
