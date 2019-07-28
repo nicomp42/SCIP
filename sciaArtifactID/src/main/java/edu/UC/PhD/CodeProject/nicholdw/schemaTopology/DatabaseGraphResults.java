@@ -33,10 +33,10 @@ public class DatabaseGraphResults {
 		String result = "undefined";
 		try {
 			result = "Results from graph generation:"
-					+ "\n total queries = " + totalQueries 
+					+ "\n total views = " + totalQueries 
 					+ "\n total tables = " + totalTables 
 					+ "\n total attributes = " + totalAttributes 
-					+ "\n total query attributes = " + totalQueryAttributes 
+					+ "\n total view attributes = " + totalQueryAttributes 
 					+ "\n total affected attributes = " + totalAffectedAttributes;
 		} catch (Exception ex) {}
 		return result;

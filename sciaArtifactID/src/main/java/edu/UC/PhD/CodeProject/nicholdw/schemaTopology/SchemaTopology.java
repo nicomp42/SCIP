@@ -43,7 +43,7 @@ public class SchemaTopology {
 	public  static final String tableToAttributeLabel = "contains_attribute";
 	private static final String queryToAttributeLabel = "references_attribute";
 	private static final String schemaToTableLabel = "contains_table";
-	private static final String schemaToQueryLabel = "contains_query";
+	private static final String schemaToQueryLabel = "contains_view";
 	public  static final String etlStepNodeLabel = "ETLStep";
 	public  static final String etlStepToQueryAttributeLbel = "ETLStepToQueryAttribute";
 	public  static final String etlFieldToETLStepLabel = "ETLFieldToETLStep";
@@ -179,21 +179,23 @@ public class SchemaTopology {
 	}
 	private void addSchemaNode() {
 		if (schemaTopologyConfig.getIncludeSchemaInGraph() == true) {
-			Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.cleanForGraph(schema.getSchemaName()) + ":" + schemaNodeLabel 
-					               + " { key: " + "'" + Utils.cleanForGraph(schema.getSchemaName()) + "'" + ", name:'" + Utils.cleanForGraph(schema.getSchemaName()) + "'})");
+			Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()), "`") + ":" + schemaNodeLabel 
+					               + " { key:"  + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()),"\"") + ", "
+					               + "   name:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()), "\"") + "})");
 		}
 	}
 	private void addQueryNodes() {
 		for (QueryDefinition queryDefinition : queryDefinitions) {
 			String queryName;
 			queryName = queryDefinition.getQueryName();
-			Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.cleanForGraph(queryName) + ":" + queryNodeLabel 
-					               + " { key: " + "'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryName) + "'" + ", name:'" + Utils.cleanForGraph(queryName) + "'})");
+			Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"`") + ":" + queryNodeLabel 
+					               + " { key: " + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryName),"\"") 
+					               + ", name:'" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"\"") + "})");
 			if (schemaTopologyConfig.getIncludeSchemaInGraph() == true) {
 				// Add relationships from the schema to the queries
 				Neo4jDB.submitNeo4jQuery("MATCH "
-				           +       "(q:" + queryNodeLabel  + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()) + "'}), "
-			               + "      (s:" + schemaNodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "'}) "
+				           +       "(q:" + queryNodeLabel  + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()), "\"") + "}), "
+			               + "      (s:" + schemaNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()), "\"") + "}) "
 					       + "CREATE (s)-[:" + schemaToQueryLabel +"]->(q)");
 			}
 		}

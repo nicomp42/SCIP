@@ -201,26 +201,33 @@ public class Table {
 	 * @return The collection of attributes
 	 */
 
-	public static Attributes readAttributesFromTableDefinition(String tableName, String schemaName) {
+	public static Attributes readAttributesFromTableDefinition(String rawTableName, String rawSchemaName) {
 		Attributes myAttributeList = new Attributes();
 		java.sql.Connection connection = null;
+		String sql = null;
+		String tableName = rawTableName.trim();
+		if (!(tableName.startsWith("`") && tableName.endsWith("`"))) {
+			tableName = Utils.wrapInDelimiter(tableName,  "`");
+		}
+		String schemaName = rawSchemaName;
+		if (!(schemaName.startsWith("`") && schemaName.endsWith("`"))) {
+			schemaName = Utils.wrapInDelimiter(schemaName,  "`");
+		}
 		try {
-			//MySQL my = new MySQL();
-			//connection = new MySQL().connectToDatabase(Config.getConfig().databaseName);
 			connection = new MySQL().connectToDatabase(schemaName);
 
-			String sql = "DESC " + schemaName + "." + tableName;
+			sql = "DESC " + schemaName + "." + tableName;
 		    java.sql.PreparedStatement preparedStatement = null;
 		    try {
 				preparedStatement = connection.prepareStatement(sql);
 			} catch (SQLException e) {
-				Log.logError("Table.ReadAttributesFromTableDefinition(" + tableName + ", " + schemaName + ") : " + e.getLocalizedMessage());
+				Log.logError("Table.ReadAttributesFromTableDefinition.1(" + tableName + ", " + schemaName + ") : " + e.getLocalizedMessage());
 			}
 		    java.sql.ResultSet resultSet = null;
 		    try {
 				resultSet = preparedStatement.executeQuery();
 			} catch (SQLException e) {
-				Log.logError("Table.ReadAttributesFromTableDefinition(" + tableName + ", " + schemaName + "): " + e.getLocalizedMessage());
+				Log.logError("Table.ReadAttributesFromTableDefinition.2(" + tableName + ", " + schemaName + "): " + e.getLocalizedMessage());
 			}
 		    try {
 				while (resultSet.next()) {
@@ -242,10 +249,10 @@ public class Table {
 					//System.out.println(name + "\t\t" + dataType + "\t\t\t\t" + nullable + "\t\t" + key + "\t\t" + theDefault + "\t\t" + extra);
 				}
 			} catch (SQLException e) {
-				Log.logError("Table.ReadAttributesFromTableDefinition(" + tableName + ", " + schemaName + "): " + e.getLocalizedMessage());
+				Log.logError("Table.ReadAttributesFromTableDefinition.3(" + tableName + ", " + schemaName + "): " + e.getLocalizedMessage());
 			}
 		} catch (Exception ex) {
-			Log.logError("Table.readAttributesFromTableDefinition(): " + ex.getLocalizedMessage());
+			Log.logError("Table.readAttributesFromTableDefinition.4(): " + ex.getLocalizedMessage());
 		} finally {
 			try {connection.close();} catch (Exception ex) {}
 		}
