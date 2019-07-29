@@ -51,7 +51,7 @@ public class ConfigController /* extends Application */ {
 	@FXML TextField txtNeo4jDefaultUser, txtNeo4jDefaultPassword, txtNeo4jTableToAttributeRelationName, txtNeo4jQueryToTableRelationName, txtMySQLDefaultLoginName,
 				    txtMySQLDefaultPassword, txtMySQLDefaultHostname;
 	@FXML TextArea txaCSVFolder, txaGrassURL, txaUserHomeDirectory, txaConfigFilePath;
-	@FXML CheckBox cbUseTestData, cbSupressOutputToConsole, cbEnableLogging;
+	@FXML CheckBox cbUseTestData, cbSupressOutputToConsole, cbEnableLogging, cbConvertNeo4jQueriesToLowerCase;
 	@FXML Tab tabMain, tabDatabase, tabNeo4j, tabFiles;
 	@FXML TabPane tbpConfig;
 	@FXML TextField txtSystemDatabaseLoginName, txtSystemDatabasePassword, txtSystemDatabaseHostName, txtSystemDatabaseSchemaName;
@@ -177,6 +177,7 @@ public class ConfigController /* extends Application */ {
 			cbUseTestData.setSelected(Config.getConfig().getUseTestData());
 			cbSupressOutputToConsole.setSelected(Config.getConfig().getSupressOutputToConsole());
 			cbEnableLogging.setSelected(Config.getConfig().getEnableLogging());
+			cbConvertNeo4jQueriesToLowerCase.setSelected(Config.getConfig().getConvertNeo4jQueriesToLowerCase());
 			txaCSVFolder.setText(Config.getConfig().getNeo4jDefaultImportFilePath());
 			txaGrassURL.setText(Config.getConfig().getGrassStyleSheetURL());
 			txaUserHomeDirectory.setText(Config.getConfig().getUserHomeDirectory());
@@ -208,6 +209,7 @@ public class ConfigController /* extends Application */ {
 			Config.getConfig().setEnableLogging(cbEnableLogging.isSelected());
 			Config.getConfig().setNeo4jDefaultImportFilePath(txaCSVFolder.getText());
 			Config.getConfig().setGrassStyleSheetURL(txaGrassURL.getText());
+			Config.getConfig().setConvertNeo4jQueriesToLowerCase(cbConvertNeo4jQueriesToLowerCase.isSelected());
 			Config.getConfig().getSystemDatabaseConnectionInformation().setHostName(txtSystemDatabaseHostName.getText());
 			Config.getConfig().getSystemDatabaseConnectionInformation().setLoginName(txtSystemDatabaseLoginName.getText());
 			Config.getConfig().getSystemDatabaseConnectionInformation().setPassword(txtSystemDatabasePassword.getText());

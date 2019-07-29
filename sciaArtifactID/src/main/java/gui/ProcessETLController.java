@@ -232,6 +232,7 @@ public class ProcessETLController {
 		pneETLResults.setVisible(visible);
 		btnCreateGraph.setVisible(visible);
 		cbClearDB.setVisible(visible);
+		cbOpenInBrowser.setVisible(visible);
 	}
 	private void disableETLLoadSelectionControls(boolean disable) {
 		pneETLLoad.setDisable(disable);
@@ -399,7 +400,7 @@ public class ProcessETLController {
 							Log.logError("ProcessETLController.processETLTransformationFiles().task.setOnSucceeded: " + ex.getLocalizedMessage());
 						}
 						counter++; */
-						String tmp, stepType, sql, table, connection;
+						String tmp, stepType, sql, table, connection, schemaName;
 						tmp = "";
 	//					tmp = String.valueOf(counter) + ": ";
 	//					tmp += stepName.toString();
@@ -407,13 +408,14 @@ public class ProcessETLController {
 						stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
 						sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());
 						table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "table");
+						schemaName = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "schema");
 						connection = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "connection");
 						String procedure;
 						procedure = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "procedure");
 						tmp += " (" + stepType +  ")";
 						txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
 						// Add this new step to the collection of steps
-						scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection, procedure, stepName.getEtlStageNumber(), stepName.getFileName()));
+						scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), schemaName));
 					}
 					//ETLConnections etlConnections = new ETLConnections();
 					for (String connectionName: connectionNames) {

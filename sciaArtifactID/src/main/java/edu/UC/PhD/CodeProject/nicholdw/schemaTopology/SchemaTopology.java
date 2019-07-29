@@ -201,7 +201,7 @@ public class SchemaTopology {
 		}
 	}
 	private void addTableConstraint() {
-		Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (t:" + tableNodeLabel + ") ASSERT t.Key IS UNIQUE");
+		Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (t:" + tableNodeLabel + ") ASSERT t.key IS UNIQUE");
 	}
 	/**
 	 *  Grab all the table names from the schema and drop in a node for each one

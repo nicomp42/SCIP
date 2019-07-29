@@ -80,7 +80,8 @@ public class Config implements Serializable {
 	private final Boolean useCaseSensitiveTableNameComparison = false;
 	private final Boolean useCaseSensitiveSchemaNameComparison = false;
 	private final Boolean useCaseSensitiveQueryNameComparison = false;
-	private final String applicationTitle = "SEQ-AM: Schema, ETL, Queries, and Artifact Management";
+//	private final String applicationTitle = "SEQ-AM: Schema, ETL, Queries, and Artifact Management";
+	private final String applicationTitle = "SEQ-AM";
 	private final String[] ETLLayers = {"ids-dwh", "op-ids"};		// ids =  Intermediate Data Store
 	private final String neo4jFilesPath_Relative = "neo4j";
 	private final String attributeNamePrefix = "Attribute";
@@ -113,6 +114,7 @@ public class Config implements Serializable {
 	private SystemDatabaseConnectionInformation systemDatabaseConnectionInformation;
 	private String defaultTransactionLogFilePath = "C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data";
 	private String artifactTableName = "tArtifact";
+	private Boolean convertNeo4jQueriesToLowerCase = true;
 	public String getDefaultTransactionLogFilePath() {return defaultTransactionLogFilePath;}
 	public void setDefaultTransactionLogFilePath(String defaultTransactionLogFilePath) {this.defaultTransactionLogFilePath = defaultTransactionLogFilePath;}	
 	public String getMySQLDefaultHostname() {return mySQLDefaultHostname;}
@@ -519,6 +521,12 @@ public class Config implements Serializable {
 	 */
 	private void setDatabaseEngine(DatabaseEngine databaseEngine) {
 		this.databaseEngine = databaseEngine;
+	}
+	public Boolean getConvertNeo4jQueriesToLowerCase() {
+		return convertNeo4jQueriesToLowerCase;
+	}
+	public void setConvertNeo4jQueriesToLowerCase(Boolean convertNeo4jQueriesToLowerCase) {
+		this.convertNeo4jQueriesToLowerCase = convertNeo4jQueriesToLowerCase;
 	}
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.

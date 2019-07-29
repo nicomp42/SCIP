@@ -1,3 +1,7 @@
+/**
+ * Bill Nicholson nicholdw@ucmail.uc.edu
+ * Dippy Agarwal dippyaggarwal@gmail.com
+ */
 package edu.UC.PhD.CodeProject.nicholdw;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +23,11 @@ public class TableOutputStepParser {
 
 		String dbname = getDatabaseName(doc, xpath, stepname);
 		String tableName = getTableName(doc, xpath, stepname);
+		String schemaName = getSchemaName(doc, xpath, stepname);
 
 		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, stepname);
 
-		stepObject = new TableOutputStep(transname, stepname, "TableOutput", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage);
+		stepObject = new TableOutputStep(transname, stepname, "TableOutput", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage, schemaName);
 
 		return stepObject;
 	}
@@ -80,12 +85,23 @@ public class TableOutputStepParser {
 		return name;
 	}
 
-	private static String getTableName(Document doc, XPath xpath,
-			String stepname) {
+	private static String getTableName(Document doc, XPath xpath, String stepname) {
 		String name = null;
 		try {
 			XPathExpression expr = xpath.compile("/transformation/step[name=\'"
 					+ stepname + "\']/table/text()");
+			name = (String) expr.evaluate(doc, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+
+		return name;
+	}
+	private static String getSchemaName(Document doc, XPath xpath, String stepname) {
+		String name = null;
+		try {
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"
+					+ stepname + "\']/schema/text()");
 			name = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();

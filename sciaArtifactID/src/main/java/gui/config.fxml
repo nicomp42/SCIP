@@ -138,6 +138,7 @@
                               <Label fx:id="lblCSVFolder" layoutX="19.0" layoutY="148.0" prefHeight="42.0" prefWidth="167.0" text="Default Destination Folder for CSV Files" wrapText="true" GridPane.rowIndex="4" />
                               <Button fx:id="btnBrowseForCSVFolder" layoutX="512.0" layoutY="160.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Label fx:id="lblGrassURL" layoutX="19.0" layoutY="301.0" prefHeight="42.0" prefWidth="167.0" text="URL for GRASS file (Style sheet)" wrapText="true" GridPane.rowIndex="8" />
+                              <CheckBox fx:id="cbConvertNeo4jQueriesToLowerCase" mnemonicParsing="false" text="Convert Neo4j queries to lower case" GridPane.rowIndex="9" />
                            </children>
                         </GridPane>
                      </content>

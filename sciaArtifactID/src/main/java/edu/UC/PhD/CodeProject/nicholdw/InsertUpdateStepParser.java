@@ -21,8 +21,9 @@ public class InsertUpdateStepParser {
 		String transname = getTransformationName(doc, xpath);
 		String dbname = getDatabaseName(doc, xpath, step);
 		String tableName = getTableName(doc, xpath, step);
+		String schemaName = getSchemaName(doc, xpath, step);
 		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, step);
-		stepObject = new TableOutputStep(transname, step, "Insert/Update", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage);
+		stepObject = new TableOutputStep(transname, step, "Insert/Update", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage, schemaName);
 		return stepObject;
 	}
 	private static String getDatabaseName(Document doc, XPath xpath, String stepname) {
@@ -75,5 +76,15 @@ public class InsertUpdateStepParser {
 			e.printStackTrace();
 		}
 		return tablename;
+	}
+	private static String getSchemaName(Document doc, XPath xpath, String stepname) {
+		String schemaName = null;
+		try {
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/lookup/table/text()");
+			schemaName = (String) expr.evaluate(doc, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return schemaName;
 	}
 }

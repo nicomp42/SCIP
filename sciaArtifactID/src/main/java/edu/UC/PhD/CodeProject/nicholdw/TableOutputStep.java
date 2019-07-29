@@ -17,6 +17,7 @@ public class TableOutputStep {
 	private String xmlFilename;
 	private String xmlFilePath;
 	private String etlStage;
+	private String schemaName;
 	
 	/**
 	 * Constructor
@@ -29,8 +30,9 @@ public class TableOutputStep {
 	 * @param xmlFilePath
 	 * @param xmlFilename
 	 * @param etlStage
+	 * @param schemaName
 	 */
-	public TableOutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilePath, String xmlFilename, String etlStage) {
+	public TableOutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilePath, String xmlFilename, String etlStage, String schemaName) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
@@ -41,6 +43,7 @@ public class TableOutputStep {
 		this.xmlFilename = xmlFilename;
 		this.xmlFilePath = xmlFilePath;
 		this.etlStage = etlStage;
+		this.schemaName = schemaName;
 	}
 	public String getTransName() {
 		return transName;
@@ -82,7 +85,7 @@ public class TableOutputStep {
 	public String toString() {
 		return "OutputStep [transName=" + transName + ", stepName=" + stepName
 				+ ", stepType=" + stepType + ", dbName=" + dbName
-				+ ", tableName=" + tableName + ", xmlFilename = " + xmlFilename + ", ETL Stage = " + etlStage +  ", attributes=" + attributes
+				+ ", tableName=" + tableName + ", schemaName = " + schemaName + ", xmlFilename = " + xmlFilename + ", ETL Stage = " + etlStage +  ", attributes=" + attributes
 				+ "]";
 	}
 	public String getXmlFilename() {
@@ -102,5 +105,11 @@ public class TableOutputStep {
 	}
 	public void setEtlStage(String etlStage) {
 		this.etlStage = etlStage;
+	}
+	public String getSchemaName() {
+		return schemaName;
+	}
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
 	}
 }

@@ -19,13 +19,14 @@ public class ETLStep {
 	private String stepType;
 	private String stepName;
 	private String sql;
-	private String table;
+	private String tableName;
 	private QueryDefinition queryDefinition;
 	private String connection;
 	private ETLFields etlFields;
 	private String procedure;			// Used in DBProc steps
 	private int etlStageNumber;		// Index into ETLTransformationFile.enumETLStage
 	private String fileName;		// No Path
+	private String schemaName;		// Output steps have a schema name in the XML, other steps probably do too
 	
 	/**
 	 * Copy Constructor
@@ -35,12 +36,13 @@ public class ETLStep {
 		setStepName(etlStep.getStepName());
 		setStepType(etlStep.getStepType());
 		setSql(etlStep.getSql());
-		setTable(etlStep.getTable());
+		setTableName(etlStep.getTableName());
 		setConnection(etlStep.getConnection());
 		setProcedure(etlStep.getProcedure());
 		setETLStageNumber(etlStep.getETLStageNumber());
 		etlFields = new ETLFields();
 		setFileName(etlStep.getFileName());
+		setSchemaName(etlStep.getSchemaName());
 	}
 /*	public ETLStep(String stepName, String stepType, String sql, String table, String connection) {
 		setStepName(stepName);
@@ -51,16 +53,17 @@ public class ETLStep {
 		etlFields = new ETLFields();
 		setProcedure("");
 	} */
-	public ETLStep(String stepName, String stepType, String sql, String table, String connection, String procedure, int etlStageNumber, String fileName) {
+	public ETLStep(String stepName, String stepType, String sql, String table, String connection, String procedure, int etlStageNumber, String fileName, String schemaName) {
 		setStepName(stepName);
 		setStepType(stepType);
 		setSql(sql);
-		setTable(table);
+		setTableName(table);
 		setConnection(connection);
 		setProcedure(procedure);
 		etlFields = new ETLFields();
 		setETLStageNumber(etlStageNumber);
 		setFileName(fileName);
+		setSchemaName(schemaName);
 	}
 
 	public void addETLFields(ETLFields etlFields) {
@@ -101,7 +104,7 @@ public class ETLStep {
         ObservableList<gui.GUIETLStep> data = tableView.getItems();
         data.clear();
         for (ETLStep etlStep : etlSteps) {
-   	        data.add(new gui.GUIETLStep(etlStep.getStepName(), etlStep.getStepType(), etlStep.getSql(), etlStep.getTable(), etlStep.getConnection()));
+   	        data.add(new gui.GUIETLStep(etlStep.getStepName(), etlStep.getStepType(), etlStep.getSql(), etlStep.getTableName(), etlStep.getConnection()));
    		}
     }
 	public String getSql() {
@@ -110,11 +113,11 @@ public class ETLStep {
 	public void setSql(String sql) {
 		this.sql = sql.trim();
 	}
-	public String getTable() {
-		return table;
+	public String getTableName() {
+		return tableName;
 	}
-	public void setTable(String table) {
-		this.table = table.trim();
+	public void setTableName(String tableName) {
+		this.tableName = tableName.trim();
 	}
 	public void setQueryDefinition(QueryDefinition queryDefinition) {
 		this.queryDefinition = queryDefinition;	
@@ -142,4 +145,11 @@ public class ETLStep {
 	public void setFileName(String fileName) {
 		this.fileName = fileName.trim();
 	}
+	public String getSchemaName() {
+		return schemaName;
+	}
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
+	public String getKey() {return getStepName();}
 }

@@ -4,6 +4,8 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
+
 /**
  * A field in an ETL TableOutput Step
  * @author nicomp
@@ -53,4 +55,5 @@ public class ETLField {
 	 * @return A string representation of the object
 	 */
 	public String toString() {return getColumnName() + ":" + getStreamName();}
+	
 }

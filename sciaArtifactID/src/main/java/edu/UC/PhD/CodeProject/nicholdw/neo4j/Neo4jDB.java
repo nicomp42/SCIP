@@ -485,7 +485,11 @@ public class Neo4jDB {
 		boolean status = true;		// Hope for the best
 		try {
 			Neo4jDB.getDriver();
-			Neo4jDB.ExecActionQuery(query);
+			if (Config.getConfig().getConvertNeo4jQueriesToLowerCase()) {
+				Neo4jDB.ExecActionQuery(query.toLowerCase());
+			} else {
+				Neo4jDB.ExecActionQuery(query);
+			}
 		} catch (Exception ex) {
 			status = false;
 		}

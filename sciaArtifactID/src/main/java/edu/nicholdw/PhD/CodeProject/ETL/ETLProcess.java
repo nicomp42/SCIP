@@ -11,6 +11,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
@@ -125,7 +126,11 @@ public class ETLProcess {
 	public void setEtlConnections(ETLConnections etlConnections) {
 		this.etlConnections = etlConnections;
 	}
+	private static void addAttributeConstraint() {
+		Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaTopology.attributeNodeLabel + ") ASSERT a.key IS UNIQUE");
+	}
 	public static void createGraph(ETLProcess etlProcess) {
+		addAttributeConstraint();
 		for (ETLStep etlStep : etlProcess.getETLSteps()) {
 			Log.logProgress("ETLParser.createGraph(): ETL Step Type = " + etlStep.getStepType());
 			// CREATE (n:Person { name: 'Andy', title: 'Developer' })
@@ -155,9 +160,9 @@ public class ETLProcess {
 				                         " { StepName: " + 
 				                         "'" + etlStep.getStepName() 		+ "'" + 
 				                         ", sql:'" + etlStep.getSql().substring(0, 6) +"..." + "'" + 
-				                         ",	table:'" + etlStep.getTable()	+ "'" +
+				                         ",	table:'" + etlStep.getTableName()	+ "'" +
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
-				                         ",	key:'" + etlStep.getStepName()	+ "'" +
+				                         ",	key:'" + etlStep.getKey()	+ "'" +
 				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 				                         "})");
@@ -165,19 +170,17 @@ public class ETLProcess {
 					// Add the nodes for the attributes in the query that this step uses
 				for (QueryAttribute qa : qd.getQueryAttributes()) {
 					String key = "";
-					key = etlStep.getStepName() + "." + qa.getSchemaName() + "." + qa.getTableName() + "." + qa.getAttributeName();
-					Neo4jDB.submitNeo4jQuery("CREATE (A:" +
-					                         SchemaTopology.attributeNodeLabel +
-					                         ":" + 
-											 qa.getAttributeName() +
-					                         " { key: "
-					                         + "'" 
-											 + key
-					                         + "'" 
-					                         + ", name:'" 
-					                         + qa.getAttributeName() 
+					key = Utils.cleanForGraph(qa.getSchemaName()) 
+						  + "." + Utils.cleanForGraph(qa.getTableName()) 
+						  + "." + Utils.cleanForGraph(qa.getAttributeName());
+					Neo4jDB.submitNeo4jQuery("CREATE (A:"
+					                         + SchemaTopology.attributeNodeLabel
+					                         + " { key: "
+					                         + "'" + key + "'" 
+					                         + ", name:" 
+					                         + "'" + Utils.cleanForGraph(qa.getAttributeName()) + "'"
 //					                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
-					                         + "'})");
+					                         + "})");
 					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.attributeNodeLabel  + "{key:'" + key + "'}), "
 				               				 +     "(a:" + SchemaTopology.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
 				               				 + "CREATE (a)-[:" + SchemaTopology.etlStepToQueryAttributeLbel +"]->(t)");
@@ -185,8 +188,8 @@ public class ETLProcess {
 			} else if (etlStep.getStepType().equals("TableOutput")) {
 				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlStepNodeLabel + 
 				                         " { StepName: " + "'" + etlStep.getStepName() + "'" + 
-				                         ",	table:'" + etlStep.getTable()	+ "'" +
-				                         ",	key:'" + etlStep.getStepName()	+ "'" +
+				                         ",	table:'" + etlStep.getTableName()	+ "'" +
+				                         ",	key:'" + etlStep.getKey()	+ "'" +
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
@@ -194,17 +197,19 @@ public class ETLProcess {
 				// There is no query here: we just need to step through all the fields that are accessed in the output table
 				for (ETLField etlField: etlStep.getETLFields()) {
 					String key;
-					key = etlStep.getStepName() + ":" + etlField.getStreamName()	+ ":" + etlField.getColumnName();
-					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.etlFieldNodeLabel + 
-	                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
-	                         ",	key:'" + key + "'" +
-	                         ",	stepName:'" + etlStep.getStepName()	+ "'" +
-	                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
-	                         "})");
+					key = Utils.cleanForGraph(etlStep.getSchemaName()) 
+						  + "." + Utils.cleanForGraph(etlStep.getTableName()) 
+						  + "." + Utils.cleanForGraph(etlField.getColumnName());
+//					key = Utils.cleanForGraph(etlStep.getStepName()) + "." + Utils.cleanForGraph(etlField.getStreamName())	+ "." + Utils.cleanForGraph(etlField.getColumnName());
+					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaTopology.attributeNodeLabel + 
+	                                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
+	                                         ",	key:'" + key + "'" +
+	                                         ",	name:'" + etlField.getColumnName()	+ "'" +
+	                                         "})");
 
-					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.etlFieldNodeLabel  + "{key:'" + key + "'}), "
-              				 +     "(a:" + SchemaTopology.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
-              				 + "CREATE (a)-[:" + SchemaTopology.etlFieldToETLStepLabel +"]->(t)");
+					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaTopology.attributeNodeLabel  + "{key:'" + key + "'}), "
+              				                +     "(a:" + SchemaTopology.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
+              				                + "CREATE (a)-[:" + SchemaTopology.etlFieldToETLStepLabel +"]->(t)");
 				}		
 			} else {
 				Log.logError("ETLParser.createGraph(): No logic to process ETL step type " + etlStep.getStepType());
