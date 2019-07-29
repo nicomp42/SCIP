@@ -280,9 +280,10 @@ public class Main extends Application {
 			Stage stage = new Stage();
 			stage.initModality(Modality.NONE);
 			stage.setOpacity(1);
-			stage.setTitle(Config.getConfig().getApplicationTitle() + " - Process an ETL Job");
+			stage.setTitle(Config.getConfig().getApplicationTitle() + " - Process an ETL Job - " + Config.getConfig().buildWindowBarTitleWithAProjectName());			
 			stage.setResizable(false);
 			stage.setScene(new Scene(root, 988, 833));
+			stage.getScene();
 			stage.show();
 		} catch (Exception ex) {
 			Log.logError("Main.openProcessETLWindow(): " + ex.getLocalizedMessage());
@@ -307,6 +308,9 @@ public class Main extends Application {
 			Log.logError("Main.openProcessQueryWindow():" + ex.getLocalizedMessage());
 		}
 	}
+	/**
+	 * This is called during the init of the application, not the form. Don't use start(...) in other forms. 
+	 */
 	public void start(Stage primaryStage) {
 		Log.logProgress("Main.start() starting...");
 		try {
@@ -468,7 +472,7 @@ public class Main extends Application {
 			loadQueryNames(lvOperationalQuerys,  selectedSchemaName, txtOperationalHostName.getText(), txtOperationalLoginName.getText(), txtOperationalPassword.getText());
 			btnSaveOperationalSchemaArtifactsToCSVFiles.setVisible(true);
 		} else {
-			(new Alert(Alert.AlertType.INFORMATION, "Please enter a schema name", ButtonType.OK)).showAndWait();
+			(new Alert(Alert.AlertType.ERROR, "Please enter a schema name", ButtonType.OK)).showAndWait();
 		}
 	}
 	/**

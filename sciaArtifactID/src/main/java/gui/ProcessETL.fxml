@@ -55,6 +55,7 @@
 									<Button fx:id="btnCreateGraph" layoutX="8.0" layoutY="68.0" mnemonicParsing="false" onAction="#btnCreateGraph_OnClick" text="Create Graph" />
 									<CheckBox fx:id="cbClearDB" layoutX="8.0" layoutY="104.0" mnemonicParsing="false" text="Clear Graph Before Creation" />
                               <Button fx:id="btnProcessETLTransformationFiles" layoutX="8.0" layoutY="14.0" mnemonicParsing="false" onAction="#btnProcessETLTransformationFiles_OnClick" text="Process ETL Transformation Files" />
+                              <CheckBox fx:id="cbOpenInBrowser" layoutX="8.0" layoutY="132.0" mnemonicParsing="false" text="Open Graph after Creation" />
                                  </children>
                               </Pane>
                         <Button fx:id="btnClearTransformationTable" layoutX="715.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnClearTransformationTable_OnClick" text="Clear Table" />

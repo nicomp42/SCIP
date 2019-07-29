@@ -6,7 +6,11 @@ package edu.nicholdw.PhD.CodeProject.ETL;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
+/**
+ * ETL Transformation Files
+ * @author nicomp
+ *
+ */
 public class ETLTransformationFiles implements Iterable<ETLTransformationFile> {
 	private ArrayList<ETLTransformationFile> etlTransformationFiles;
 	public ETLTransformationFiles() {
@@ -27,5 +31,11 @@ public class ETLTransformationFiles implements Iterable<ETLTransformationFile> {
 				break;
 			}
 		}
+	}
+	/**
+	 * Remove all the ETL Transformation files in the object
+	 */
+	public void deleteAll() {
+		etlTransformationFiles.clear();
 	}
 }
