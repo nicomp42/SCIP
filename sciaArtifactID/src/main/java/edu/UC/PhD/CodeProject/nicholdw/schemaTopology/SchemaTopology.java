@@ -45,8 +45,8 @@ public class SchemaTopology {
 	private static final String schemaToTableLabel = "contains_table";
 	private static final String schemaToQueryLabel = "contains_view";
 	public  static final String etlStepNodeLabel = "ETLStep";
-	public  static final String etlStepToQueryAttributeLbel = "ETLStepToQueryAttribute";
-	public  static final String etlFieldToETLStepLabel = "ETLFieldToETLStep";
+	public  static final String etlStepToQueryAttributeLbel = "ETL_Step_To_Query_Attribute";
+	public  static final String etlFieldToETLStepLabel = "ETL_Field_To_ETL_Step";
 //	public  static final String etlDBProcNodeLabel = "DBProc";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
 	public	static final String etlHopLabel = "Hop";
 //	public	static final String etlMergeJoinLabel = "MergeJoin";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
