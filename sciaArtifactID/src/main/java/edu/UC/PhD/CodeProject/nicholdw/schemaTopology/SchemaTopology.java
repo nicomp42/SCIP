@@ -190,7 +190,7 @@ public class SchemaTopology {
 			queryName = queryDefinition.getQueryName();
 			Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"`") + ":" + queryNodeLabel 
 					               + " { key: " + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryName),"\"") 
-					               + ", name:'" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"\"") + "})");
+					               + ", name:" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"\"") + "})");
 			if (schemaTopologyConfig.getIncludeSchemaInGraph() == true) {
 				// Add relationships from the schema to the queries
 				Neo4jDB.submitNeo4jQuery("MATCH "

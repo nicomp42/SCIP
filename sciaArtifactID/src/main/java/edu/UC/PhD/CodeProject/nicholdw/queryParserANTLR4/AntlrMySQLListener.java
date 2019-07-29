@@ -565,7 +565,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				fullTableNames.add(new FullTableName(fullIdContext.getChild(0).getText(), fullIdContext.getChild(2).getText(), "")); 
 				break;
 			default:
-				Log.logQueryParseProgress("processFullIdContext.enterTableName(): too many children found");
+				Log.logQueryParseProgress("AntlrMySQLListener.processFullIdContext(): too many children found");
 			}
 		} catch (Exception ex) {
 			Log.logError("AntlrMySQLListener.processFullIdContext(): " + ex.getLocalizedMessage());
@@ -941,7 +941,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	public void processTerminalNodeRename(ParseTree ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeRename(): RENAME statement qualifier: " + ctx.toString());
 		try {
-			if (ctx.getParent().getChild(1).toString().equals("TABLE")) {
+			Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeRename(): ctx.getParent().getChild(1).toString().toUpperCase(): " + ctx.getParent().getChild(1).toString().toUpperCase());
+			if (ctx.getParent().getChild(1).toString().toUpperCase().equals("TABLE")) {
 				queryDefinition.setQueryType(new QueryTypeRenameTable());
 				// Grab up the table name being renamed and add it to the table list
 				processRenameTableClauseContext(ctx.getParent().getChild(2));
@@ -1222,11 +1223,17 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			switch (alterType) {
 			case "TABLE": 
 				queryDefinition.setQueryType(new QueryTypeAlterTable());
-				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+				Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): it's a " + queryDefinition.getQueryType().toString());
 				for (int i = 2; i < node.getParent().getChildCount(); i++) {
 					className = getClassName(node.getParent().getChild(i).getClass().getName());
 //					System.out.println(className);
 					switch (className) {
+					case "AlterByRenameContext":
+						queryDefinition.setQueryType(new QueryTypeRenameTable()); 
+						// We are renaming a table. We  have the table name being renamed because we processed the TableNameContext case already.
+						// For our purposes we don't care what the new name is anyway
+						Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): renaming a table");
+						break;
 					case "TableNameContext":
 						StringBuilder s = new StringBuilder().append(mySchemaName);
 						StringBuilder t = new StringBuilder();
@@ -1236,7 +1243,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 						queryDefinition.getQueryTables().addQueryTable(new QueryTable(mySchemaName, myTableName, null, null));
 						break;
 					case "AlterByDropColumnContext":
-						Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): dropping a column");
+						Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): dropping a column");
 						innerClassName = "";
 						// Look for UIdContext class
 						for (int j = 0; j < node.getParent().getChild(i).getChildCount(); j++) {
@@ -1245,14 +1252,14 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 							case "UidContext":
 								String attribute = "";
 								attribute = node.getParent().getChild(i).getChild(j).getText();
-								Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): column to drop = " + attribute);
+								Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): column to drop = " + attribute);
 								queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(mySchemaName, myTableName, attribute, (AliasNameClassOLD)null, (QueryClause)null, "", QueryAttribute.ATTRIBUTE_DISPOSITION.Drop));
 								break;
 							}							
 						}
 						break;
 					case "AlterByChangeColumnContext":
-						Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): altering a column");
+						Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): altering a column");
 						innerClassName = "";
 						boolean keepGoing;
 						keepGoing = true;
@@ -1263,7 +1270,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 							case "UidContext":
 								String attribute = "";
 								attribute = node.getParent().getChild(i).getChild(j).getText();
-								Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): column to alter = " + attribute);
+								Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): column to alter = " + attribute);
 								queryDefinition.getQueryAttributes().addAttribute(new QueryAttribute(mySchemaName, myTableName, attribute, (AliasNameClassOLD)null, (QueryClause)null, "", QueryAttribute.ATTRIBUTE_DISPOSITION.Alter));
 								keepGoing = false;	// We only want the first attribute. The second one is the new name. 
 								break;
@@ -1271,18 +1278,18 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 						}
 						break;
 					case "AlterByAddColumnContext":
-						Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): adding a column");
+						Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): adding a column");
 						break;
 					default:
 					}
 				}
-				
+				break;
 			case "VIEW": 
 				queryDefinition.setQueryType(new QueryTypeAlterView());
-				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
+				Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): it's a " + queryDefinition.getQueryType().toString());
 				break;
 			default:		// It's an error. We don't know what we're creating
-				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): ALTER somthing is unidentified: " + alterType, true);
+				Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): ALTER somthing is unidentified: " + alterType, true);
 			}
 			// Now process the table attributes that are being changed
 			
