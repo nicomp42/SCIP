@@ -38,8 +38,41 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 
-public class QueryDefinitionFileProcessing {
+public class QueryGraph {
+	
+	public static void createGraph(QueryDefinition qd) {
+		Log.logProgress("QueryDefinitionFileProcessing.createGraph()");
+		HashMap<String, Schema> schemas = qd.getUniqueSchemaNames();
+		// Iterating over keys only
+		for (String schemaName : schemas.keySet()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
+			SchemaGraph.addSchemaNode(schemaName);
+		}
+		SchemaGraph.addQueryNode(qd.getSchemaName(), qd.getQueryName());
+		SchemaGraph.connectSchemaNodeToQueryNode(qd.getSchemaName(), qd.getQueryName());
+
+		HashMap<String, QueryAttribute> queryAttributes = qd.getUniqueQueryAttributes(false);
+		Log.logProgress("QueryDefinitionFileProcessing.createGraph(): writing query attributes");
+		for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
+			SchemaGraph.addQueryAttribute(queryAttribute.getSchemaName(), queryAttribute.getTableName(), queryAttribute.getAttributeName(), qd.getQueryAttributeDataType(queryAttribute));
+//			SchemaTopology.connectQueryNodeToAttributeNode()
+		}
+		HashMap<String, QueryTable> queryTables = qd.getUniqueTableNames();
+		Log.logProgress("QueryDefinitionToCSV.createGraph(): writing tables");
+		for (QueryTable queryTable : queryTables.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
+			SchemaGraph.addTableNode(queryTable.getSchemaName(), queryTable.getTableName());
+		}
+		// Match all the attributes with their tables
+		Neo4jDB.submitNeo4jQuery("MATCH (t:Table), (a:Attribute) "
+				               + " WHERE (t.SchemaName = a.SchemaName AND t.TableName = a.TableName)"
+				               + " CREATE (t)-[r:" + Config.getConfig().getNeo4jTableToAttributeRelationName() + "]->(a);");
+		// Match all the attributes with their queries
+		Neo4jDB.submitNeo4jQuery("MATCH (q:Query), (a:Attribute) "
+				               + " WHERE (q.SchemaName = a.SchemaName AND q.TableName = a.TableName)"
+				               + " CREATE (q)-[r:" + Config.getConfig().getNeo4jTableToAttributeRelationName() + "]->(a);");
+	}	
+
 	private static final String rootQuerySuffix = "RootQuery" + Config.getConfig().getCSVFileExtension();
 	private static final String schemaSuffix = "Schemas" + Config.getConfig().getCSVFileExtension();
 	private static final String tableSuffix = "Tables" + Config.getConfig().getCSVFileExtension();

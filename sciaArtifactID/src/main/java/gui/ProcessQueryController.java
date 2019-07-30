@@ -24,7 +24,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.Name;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitionFileProcessing;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryGraph;
 import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchema;
 import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchemas;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
@@ -73,7 +73,8 @@ public class ProcessQueryController /* extends Application */ {
 	@FXML	private CheckBox cbClearDB, cbOpenInBrowser;
 	@FXML	private TextArea txaSQL, txaCSVFolder;
 	@FXML	private TextField txtPqHostName, txtPqLoginName, txtPqPassword, txtPqQueryName;
-	@FXML	private Button btnLoadPqSchemaNames, btnLoadPqSQueries, btnSavePqSchemaArtifactsToCSVFiles, btnProcessQuery, btnExportCSVFilesToNeo4j, btnBrowseForCSVFolder;
+	@FXML	private Button btnLoadPqSchemaNames, btnLoadPqSQueries, btnProcessQuery;
+	@FXML	private Button btnBrowseForCSVFolder, btnCreateGraph;
 	@FXML	private ListView<String> lvPqTables, lvPqSchemas;
 	@FXML	private ListView<RowPqAttribute>  lvPqAttributes;
 	@FXML	private TreeView<String> tvSchemasAndQueries;
@@ -106,6 +107,11 @@ public class ProcessQueryController /* extends Application */ {
 	}
 	@FXML
 	private void btnLoadPqSchemaNames_OnClick(ActionEvent event) {loadPqSchemaNames();}
+	@FXML
+	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
+	private void createGraph() {
+		QueryGraph.createGraph(rootQueryDefinition);
+	}
 	private void loadPqSchemaNames() {
 		loadTreeViewWithSchemaNamesAndQueries(txtPqHostName.getText(), txtPqLoginName.getText(), txtPqPassword.getText(), tvSchemasAndQueries);
 		showContentsOfDatabaseHostControls(true);
@@ -120,29 +126,7 @@ public class ProcessQueryController /* extends Application */ {
 	void btnLoadPqSchemaArtifacts_OnClick(ActionEvent event) {
 
 	}
-	/**
-	 * Export the artifacts to a CSV file so NEO4j can import the data
-	 * @param event
-	 */
-	@FXML void btnSavePqSchemaArtifactsToCSVFiles_OnClick(ActionEvent event) {exportArtifactsToCSV();}
-
 	@FXML void btnLoadPqQueries_OnClick(ActionEvent event) {}
-	@FXML void btnExportCSVFilesToNeo4j_OnClick(ActionEvent event) {importIntoNeo4j();}
-	private void exportArtifactsToCSV() {
-		String CSVFolder = txaCSVFolder.getText().trim();
-		if (CSVFolder.length() != 0) {
-			CSVFolder = Utils.formatPath(CSVFolder);
-			CSVFolder = Utils.cleanPath(CSVFolder);
-			QueryDefinitionFileProcessing.generateQueryDefinitionCSVFiles(CSVFolder + Config.getConfig().getNeo4jFilePrefix(), rootQueryDefinition);
-		} else {
-    		Alert alert = new Alert(AlertType.ERROR);		// http://code.makery.ch/blog/javafx-dialogs-official/
-    		alert.setTitle("File path needed");
-    		alert.setHeaderText("Enter a destination folder for the CSV files. \n It is probably the 'import' folder in the current Neo4j DB. \n Double-click the destination folder for the default value.");
-    		alert.setContentText("");
-    		alert.showAndWait();
-    		txaCSVFolder.requestFocus();
-		}
-	}
 	private void importIntoNeo4j() {
 		try {
 			String CSVFolder = txaCSVFolder.getText().trim();
@@ -151,8 +135,8 @@ public class ProcessQueryController /* extends Application */ {
 					Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),  Config.getConfig().getNeo4jDBDefaultPassword());
 					Neo4jDB.clearDB();
 				}
-				Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());			// TODO generalize this
-				QueryDefinitionFileProcessing.executeCypherQueries(Config.getConfig().getNeo4jFilePrefix(), QueryDefinitionFileProcessing.cypherQueries, "");	// Folder defaults to the import folder in the Neo4j project structure
+				Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
+				QueryGraph.executeCypherQueries(Config.getConfig().getNeo4jFilePrefix(), QueryGraph.cypherQueries, "");	// Folder defaults to the import folder in the Neo4j project structure
 				if (cbOpenInBrowser.isSelected() ) {
 					Browser browser = Browser.prepareNewBrowser();
 					browser.initAndLoad(null);
@@ -246,13 +230,12 @@ public class ProcessQueryController /* extends Application */ {
 		lvPqAttributes.setVisible(visible);
 		lvPqTables.setVisible(visible);
 		lvPqSchemas.setVisible(visible);
-		btnSavePqSchemaArtifactsToCSVFiles.setVisible(visible);
-		btnExportCSVFilesToNeo4j.setVisible(visible);
 		lblCSVFolder.setVisible(visible);
 		txaCSVFolder.setVisible(visible);
 		btnBrowseForCSVFolder.setVisible(visible);
 		cbClearDB.setVisible(visible);
 		cbOpenInBrowser.setVisible(visible);
+		btnCreateGraph.setVisible(visible);
 	}
 
 	@FXML
@@ -408,9 +391,7 @@ public class ProcessQueryController /* extends Application */ {
 			showArtifacts(true);
 
 			// We need a path to the Neo4j import folder otherwise these files will end up in a useless location ...
-			setDefaultCVSFilePath();
-			exportArtifactsToCSV();
-			importIntoNeo4j();
+			createGraph();
 		} catch (Exception ex) {
 			Log.logError("ProcessQueryController.ExecuteTestCase():" + ex.getLocalizedMessage());
 		}

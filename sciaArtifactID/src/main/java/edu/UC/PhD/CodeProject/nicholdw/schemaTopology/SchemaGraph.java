@@ -24,10 +24,10 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 
 /**
- * Generate the Schema Topology graph
+ * Generate a schema graph
  * @author nicomp
  */
-public class SchemaTopology {
+public class SchemaGraph {
 	private DatabaseGraphResults schemaTopologyResults;
 	private String hostName, userName, password;
 //	private String schemaName;
@@ -35,7 +35,7 @@ public class SchemaTopology {
 	private Schema schema;
 	private DatabaseGraphConfig schemaTopologyConfig;
 	private static final String schemaNodeLabel = "Schema";
-	private static final String queryNodeLabel = "Query";
+	private static final String queryNodeLabel = "View";
 	public  static final String tableNodeLabel = "Table";
 	public  static final String attributeNodeLabel = "Attribute";
 	public  static final String affectedAttributeNodeLabel = "Affected_Attribute";
@@ -56,7 +56,7 @@ public class SchemaTopology {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Log.logProgress("SchemaTopology.main(): working...");
+		Log.logProgress("SchemaGraph.main(): working...");
 
 		Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 		Neo4jDB.getDriver();
@@ -65,12 +65,12 @@ public class SchemaTopology {
 		schemaTopologyConfig.setIncludeSchemaInGraph(false);
 		schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
 
-		SchemaTopology schemaTopology = new SchemaTopology(schemaTopologyConfig, "localhost", "root", "Danger42", "schematopologytest", null);
+		SchemaGraph schemaTopology = new SchemaGraph(schemaTopologyConfig, "localhost", "root", "Danger42", "SchemaGraphtest", null);
 		try {
 			//SchemaTopologyResults schemaTopologyResults = new SchemaTopologyResults();
 			schemaTopology.generateGraph(null, null);
 		} catch (Exception e) {
-			Log.logError("SchemaTopology.main(): " + e.getLocalizedMessage());
+			Log.logError("SchemaGraph.main(): " + e.getLocalizedMessage());
 		}
 	}
 	/**
@@ -82,7 +82,7 @@ public class SchemaTopology {
 	 * @param schemaName
 	 * @param queryDefinitions The list of query definitions to be processed, or {null or zero-length} for all queries in the schema.
 	 */
-	public SchemaTopology(DatabaseGraphConfig schemaTopologyConfig, String hostName, String userName, String password, String schemaName, QueryDefinitions queryDefinitions) {
+	public SchemaGraph(DatabaseGraphConfig schemaTopologyConfig, String hostName, String userName, String password, String schemaName, QueryDefinitions queryDefinitions) {
 		this.hostName = hostName;
 		this.userName = userName;
 		this.password = password;
@@ -91,6 +91,17 @@ public class SchemaTopology {
 		this.schemaTopologyConfig = schemaTopologyConfig;
 		this.schemaTopologyResults = new DatabaseGraphResults();
 		schema = new Schema(schemaName);
+	}
+	public static void changeNodeLabel(String key, String oldLabel, String newLabel) {
+//		match (n:attribute {key:'temporary.store.cityid'}) remove n:attribute set n:attribute_affected
+		Neo4jDB.submitNeo4jQuery("match (n:"
+				                + oldLabel 
+				                + "{key:"
+				                + "'" + key + "'"
+				                + "}) remove n:"
+				                + oldLabel
+				                + " set n:" 
+				                + newLabel);
 	}
 	public DatabaseGraphResults generateGraph(String actionQuerySQL, String actionQueryFile) throws Exception {
 		boolean status = true;		// Hope for the best
@@ -120,11 +131,11 @@ public class SchemaTopology {
 				}				
 				addNodesToGraph();
 			} else {
-				Log.logError("SchemaTopology.generateGraph(): subset of queries is not yet supported. Only 'all' queries can be processed");
-				throw new Exception ("SchemaTopology.generateGraph(): subset of queries is not yet supported. Only 'all' queries can be processed");		// TODO implement this.
+				Log.logError("SchemaGraph.generateGraph(): subset of queries is not yet supported. Only 'all' queries can be processed");
+				throw new Exception ("SchemaGraph.generateGraph(): subset of queries is not yet supported. Only 'all' queries can be processed");		// TODO implement this.
 			}
 		} catch (Exception ex) {
-			Log.logError("SchemaTopology.generateGraph(): " + ex.getLocalizedMessage());
+			Log.logError("SchemaGraph.generateGraph(): " + ex.getLocalizedMessage());
 			status = false;
 		}
 		return schemaTopologyResults;
@@ -134,7 +145,7 @@ public class SchemaTopology {
 	 * @param actionQueryDefinition The action query
 	 */
 	private void applyActionQuery(QueryDefinition actionQueryDefinition) {
-		Log.logProgress("SchemaTopology.ApplyActionQueryDefinition()");
+		Log.logProgress("SchemaGraph.ApplyActionQueryDefinition()");
 //		SchemaDiff schemaDiff = new SchemaDiff();
 		try {
 			for (QueryDefinition qd: queryDefinitions) {
@@ -149,7 +160,7 @@ public class SchemaTopology {
 				}
 			}
 		} catch (Exception ex) {
-			Log.logError("SchemaTopology.ApplyActionQueryDefinition(): " + ex.getLocalizedMessage());
+			Log.logError("SchemaGraph.ApplyActionQueryDefinition(): " + ex.getLocalizedMessage());
 		}
 //		return schemaDiff;
 	}
@@ -179,29 +190,68 @@ public class SchemaTopology {
 	}
 	private void addSchemaNode() {
 		if (schemaTopologyConfig.getIncludeSchemaInGraph() == true) {
-			Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()), "`") + ":" + schemaNodeLabel 
-					               + " { key:"  + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()),"\"") + ", "
-					               + "   name:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()), "\"") + "})");
+			addSchemaNode(schema.getSchemaName());
 		}
+	}
+	public static void addSchemaNode(String schemaName) {
+		Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName), "`") + ":" + schemaNodeLabel 
+	               + " { key:"  + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName),"\"") + ", "
+	               + "   name:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName), "\"") + "})");
 	}
 	private void addQueryNodes() {
 		for (QueryDefinition queryDefinition : queryDefinitions) {
 			String queryName;
 			queryName = queryDefinition.getQueryName();
-			Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"`") + ":" + queryNodeLabel 
-					               + " { key: " + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryName),"\"") 
-					               + ", name:" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"\"") + "})");
+			addQueryNode(schema.getSchemaName(), queryName);
 			if (schemaTopologyConfig.getIncludeSchemaInGraph() == true) {
 				// Add relationships from the schema to the queries
-				Neo4jDB.submitNeo4jQuery("MATCH "
-				           +       "(q:" + queryNodeLabel  + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()), "\"") + "}), "
-			               + "      (s:" + schemaNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schema.getSchemaName()), "\"") + "}) "
-					       + "CREATE (s)-[:" + schemaToQueryLabel +"]->(q)");
+				connectSchemaNodeToQueryNode(schema.getSchemaName(), queryName);
 			}
 		}
 	}
+	public static void addQueryNode(String schemaName, String queryName) {
+		Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"`") + ":" + queryNodeLabel 
+	               + " { key: " + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName) + "." + Utils.cleanForGraph(queryName),"\"") 
+	               + ", name:" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"\"") + "})");
+	}
+	public static void connectSchemaNodeToQueryNode(String schemaName, String queryName) {
+		Neo4jDB.submitNeo4jQuery("MATCH "
+		           +       "(q:" + queryNodeLabel  + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName) + "." + Utils.cleanForGraph(queryName), "\"") + "}), "
+	               + "      (s:" + schemaNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName), "\"") + "}) "
+			       + "CREATE (s)-[:" + schemaToQueryLabel +"]->(q)");
+		
+	}
+	public static void addQueryAttribute(String schemaName, String tableName, String attributeName, String queryAttributeDataType) {
+		Neo4jDB.submitNeo4jQuery("CREATE (" + 
+//                Utils.cleanForGraph(attribute.getAttributeName()) + 
+//                ":" + 
+                attributeNodeLabel + 
+                " { key: " 
+                + "'" 
+                + Utils.cleanForGraph(schemaName) 
+                + "." 
+                + Utils.cleanForGraph(tableName) 
+                + "." 
+                + Utils.cleanForGraph(attributeName) 
+                + "'" 
+                + ", name:'" 
+                + Utils.cleanForGraph(attributeName) 
+                + "'"
+                + ", table:'"
+                + Utils.cleanForGraph(tableName) 
+                + "'"
+                + "}"
+                + ")");
+
+	}
+
 	private void addTableConstraint() {
 		Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (t:" + tableNodeLabel + ") ASSERT t.key IS UNIQUE");
+	}
+	public static void addTableNode(String schemaName, String tableName) {
+		Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.cleanForGraph(tableName) + ":" + tableNodeLabel 
+	               + " { key: " + "'" + Utils.cleanForGraph(schemaName) + "." + Utils.cleanForGraph(tableName) + "'" 
+	               + ", name:'" + Utils.cleanForGraph(tableName) + "'})");
 	}
 	/**
 	 *  Grab all the table names from the schema and drop in a node for each one
@@ -209,9 +259,7 @@ public class SchemaTopology {
 	private void addTableNodes() {
 		Tables tables = schema.getTables();	// Get the list of loaded tables.
 		for (Table table : tables) {
-			Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.cleanForGraph(table.getTableName()) + ":" + tableNodeLabel 
-					               + " { key: " + "'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "'" 
-					               + ", name:'" + Utils.cleanForGraph(table.getTableName()) + "'})");
+			addTableNode(schema.getSchemaName(), table.getTableName());
 			schemaTopologyResults.incrementTotalTables();
 			if (schemaTopologyConfig.getIncludeSchemaInGraph() == true) {
 				// Add relationships from the schema to the tables
@@ -232,9 +280,7 @@ public class SchemaTopology {
 				schemaTopologyResults.incrementTotalAttributes();
 				String nodeLabel;
 				nodeLabel = attributeNodeLabel;
-				if (attribute.getAffectedByActionQuery() == true) {
-					nodeLabel = affectedAttributeNodeLabel;
-				}
+				if (attribute.getAffectedByActionQuery() == true) {nodeLabel = affectedAttributeNodeLabel;}
 				Neo4jDB.submitNeo4jQuery("CREATE (" + 
 						                 Utils.cleanForGraph(attribute.getAttributeName()) + 
 				                         ":" + 

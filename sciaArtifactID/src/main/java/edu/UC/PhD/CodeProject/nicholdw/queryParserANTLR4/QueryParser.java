@@ -46,7 +46,7 @@ public class QueryParser {
 
 //		This works for ANTLR 4.3.5...
 //		CharStream stream = new ANTLRInputStream(sql);
-		// See gist.github.com/sharwell/9424666 for the case-insensitive input stream.
+		// See gist.github.com/sharwell/9424666 for the case-insensitive input stream.78
 		CharStream stream = new CaseInsensitiveInputStream(sql);
 		MySqlLexer lexxer = new MySqlLexer(stream);
 

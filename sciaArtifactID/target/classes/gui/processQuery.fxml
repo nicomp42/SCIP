@@ -59,10 +59,10 @@
                         <Label fx:id="lblQueryToProcess" layoutX="14.0" layoutY="147.0" text="View to Process" />
                         <TextField id="txtPqSchemaName" fx:id="txtPqQueryName" layoutX="189.0" layoutY="143.0" prefHeight="25.0" prefWidth="257.0" AnchorPane.leftAnchor="189.0" />
     	                <Label fx:id="lblContentsOfDatabaseHost" layoutX="738.0" layoutY="11.0" prefHeight="17.0" prefWidth="173.0" text="Contents of Database Host" />
-	                    <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnSavePqSchemaArtifactsToCSVFiles" layoutX="452.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnSavePqSchemaArtifactsToCSVFiles_OnClick" text="Save Artifacts to CSV Files" />
+	                    <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnCreateGraph" layoutX="452.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnCreateGraph_OnClick" text="Create Graph" />
                         <Button id="btnLoadPqSQueries" fx:id="btnProcessQuery" layoutX="452.0" layoutY="143.0" mnemonicParsing="false" onAction="#btnProcessQuery_OnClick" text="Process View" textFill="TEAL" />
-                        <CheckBox fx:id="cbClearDB" contentDisplay="RIGHT" layoutX="452.0" layoutY="241.0" mnemonicParsing="false" text="Clear graph before exporting" />
-                        <CheckBox fx:id="cbOpenInBrowser" contentDisplay="RIGHT" layoutX="452.0" layoutY="262.0" mnemonicParsing="false" text="Open graph in browser after exporting" />
+                        <CheckBox fx:id="cbClearDB" contentDisplay="RIGHT" layoutX="452.0" layoutY="207.0" mnemonicParsing="false" text="Clear graph before creating" />
+                        <CheckBox fx:id="cbOpenInBrowser" contentDisplay="RIGHT" layoutX="452.0" layoutY="228.0" mnemonicParsing="false" text="Open graph in browser after creating" />
     	                <TreeView id="tvSchemasAndQueries" fx:id="tvSchemasAndQueries" layoutX="738.0" layoutY="29.0" onMouseClicked="#tvSchemasAndQueries_OnClicked" prefHeight="659.0" prefWidth="228.0" />
 
                         <Label fx:id="lblAttributesReferencedInTheQuery" layoutX="15.0" layoutY="262.0" text="Attributes referenced in the view (double-click for provenance)">
@@ -89,10 +89,6 @@
 	                    <ListView id="lvPqSchemas" fx:id="lvPqSchemas" layoutX="370.0" layoutY="486.0" prefHeight="200.0" prefWidth="338.0">  <effect> <DropShadow /> </effect></ListView>
 
                         <TextArea fx:id="txaSQL" layoutX="15.0" layoutY="697.0" onMouseClicked="#txaSQL_OnClick" prefHeight="59.0" prefWidth="950.0" />
-                        <Button id="btnSavePqSchemaArtifactsToCSVFiles" fx:id="btnExportCSVFilesToNeo4j" layoutX="452.0" layoutY="210.0" mnemonicParsing="false" onAction="#btnExportCSVFilesToNeo4j_OnClick" text="Export CSV Files to Neo4j" />
-                        <Label fx:id="lblCSVFolder" layoutX="14.0" layoutY="177.0" prefHeight="25.0" prefWidth="167.0" text="Destination Folder for CSV Files" />
-                        <TextArea fx:id="txaCSVFolder" layoutX="188.0" layoutY="177.0" onMouseClicked="#txaCSVFolder_OnClick" prefHeight="55.0" prefWidth="257.0" promptText="Enter the the import folder of the current Neo4j DB." />
-                        <Button fx:id="btnBrowseForCSVFolder" layoutX="615.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnBrowseForCSVFolder_OnClick" text="..." />
                      </children>
                   </AnchorPane>
               </content>

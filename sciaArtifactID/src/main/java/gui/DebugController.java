@@ -20,7 +20,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.log.LogMessage;
 import edu.UC.PhD.CodeProject.nicholdw.log.WriteLogMessage;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
-import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopology;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;

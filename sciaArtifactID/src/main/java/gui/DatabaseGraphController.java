@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 // ":style reset" to reset the colors in an existing graph
 
 /*
@@ -23,7 +27,7 @@ import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
-import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaTopology;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphConfig;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphResults;
 import javafx.event.ActionEvent;
@@ -51,7 +55,7 @@ import javafx.stage.Stage;
 public class DatabaseGraphController {
 	private Scene myScene;
 	private Stage myStage;
-	SchemaTopology schemaTopology;
+	SchemaGraph schemaTopology;
 	DatabaseGraphResults schemaTopologyResults;
 	@FXML	private Pane pneFilter, pneQuickGraphs, pneActionQuery;
 	@FXML	private AnchorPane apMain;
@@ -216,7 +220,7 @@ public class DatabaseGraphController {
 					if (cbClearDB.isSelected()) {Neo4jDB.clearDB();}
 					schemaTopologyConfig.setIncludeSchemaInGraph(cbIncludeSchemaNodes.isSelected());
 					schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
-				    schemaTopology = new SchemaTopology(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), txtSchemaName.getText(), null);
+				    schemaTopology = new SchemaGraph(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), txtSchemaName.getText(), null);
 					try {
 						schemaTopologyResults = schemaTopology.generateGraph(taActionQuery.getText().trim(), taActionQueryFile.getText());
 						if (cbOpenInBrowser.isSelected() ) {
