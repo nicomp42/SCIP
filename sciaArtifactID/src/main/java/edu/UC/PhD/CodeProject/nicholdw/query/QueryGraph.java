@@ -43,8 +43,8 @@ import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 
 public class QueryGraph {
 	
-	public static void createGraph(QueryDefinition qd) {
-		Log.logProgress("QueryDefinitionFileProcessing.createGraph()");
+	public static void createGraph(QueryDefinition qd, Boolean traverseChildQueries) {
+		Log.logProgress("QueryDefinitionFileProcessing.createGraph(): " + qd.getQueryName());
 		SchemaGraph.addAllConstraints();
 		
 		HashMap<String, Schema> schemas = qd.getUniqueSchemaNames();
@@ -55,17 +55,56 @@ public class QueryGraph {
 		SchemaGraph.addQueryNode(qd.getSchemaName(), qd.getQueryName());
 		SchemaGraph.connectSchemaNodeToQueryNode(qd.getSchemaName(), qd.getQueryName());
 
-		HashMap<String, QueryAttribute> queryAttributes = qd.getUniqueQueryAttributes(false);
+//		HashMap<String, QueryAttribute> queryAttributes = qd.getUniqueQueryAttributes(false);
 		Log.logProgress("QueryDefinitionFileProcessing.createGraph(): writing query attributes");
-		for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
+//		for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
+		QueryAttributes queryAttributes = qd.getQueryAttributes();
+		for (QueryAttribute queryAttribute : queryAttributes) {
 			SchemaGraph.addQueryAttribute(queryAttribute.getSchemaName(), 
-					                      queryAttribute.getTableName(), 
+					                      qd.getQueryName(),			/* queryAttribute.getTableName(), */ 
 					                      queryAttribute.getAttributeName(), 
 					                      qd.getQueryAttributeDataType(queryAttribute));
-			SchemaGraph.connectQueryNodeToAttributeNode(qd.getSchemaName(), qd.getQueryName(),
+			SchemaGraph.connectQueryNodeToAttributeNode(qd.getSchemaName(), 
+														qd.getQueryName(),
 					                                    queryAttribute.getSchemaName(), 
-                                                        queryAttribute.getTableName(), 
+                                                        qd.getQueryName(), 
                                                         queryAttribute.getAttributeName());
+			
+			// Build provenance for the attribute node we just added to the graph
+			QueryTables qt = new QueryTables();
+			QueryDefinition.buildProvenance(qd, new FullColumnName(queryAttribute.getSchemaName(),
+					                                               qd.getQueryName(),
+					                                               queryAttribute.getAttributeName()), 
+					                        qt);
+			int count = 0;
+			String schemaNamePrev = qd.getSchemaName();
+			String tableNamePrev = qd.getQueryName();
+			String attributeNamePrev = queryAttribute.getAttributeName();
+			for (QueryTable queryTable: qt) {
+				count++; 
+				if (count > 1) {		// Skip the first node because we added it above
+					String attributeName;
+					attributeName = queryTable.getQueryAttributeProvenance().getAttributeName();
+					SchemaGraph.addQueryAttribute(queryTable.getSchemaName(), 
+							                      queryTable.getTableName(), 
+							                      queryTable.getQueryAttributeProvenance().getAttributeOrAliasName(),
+							                      queryTable.getAttributeDataType(attributeName));
+	
+					SchemaGraph.connectAttributeNodeToAttributeNode(schemaNamePrev, 
+																	tableNamePrev,
+																	attributeNamePrev,
+																	queryAttribute.getSchemaName(), 
+																	queryTable.getTableName(), 
+																	queryTable.getQueryAttributeProvenance().getAttributeOrAliasName());
+					schemaNamePrev = queryAttribute.getSchemaName();
+					tableNamePrev = queryTable.getTableName();
+					attributeNamePrev = queryTable.getQueryAttributeProvenance().getAttributeOrAliasName();
+				}
+			}
+		}
+		if (traverseChildQueries) {
+			for (QueryDefinition qdChild : qd.getChildren())
+			QueryGraph.createGraph(qdChild, traverseChildQueries);
 		}
 /*		HashMap<String, QueryTable> queryTables = qd.getUniqueTableNames();
 		Log.logProgress("QueryDefinitionToCSV.createGraph(): writing tables");

@@ -43,6 +43,7 @@ public class SchemaGraph {
 	public  static final String etlFieldNodeLabel = "etl_field";
 	public  static final String tableToAttributeLabel = "contains_attribute";
 	private static final String queryToAttributeLabel = "references_attribute";
+	private static final String attributeToAttributeLabel = "provenance";
 	private static final String schemaToTableLabel = "contains_table";
 	private static final String schemaToQueryLabel = "contains_view";
 	public  static final String etlStepNodeLabel = "etl_step";
@@ -220,14 +221,27 @@ public class SchemaGraph {
 			}
 		}
 	}
+	public static void connectAttributeNodeToAttributeNode(String schemaNameFrom, String queryNameFrom, String attributeNameFrom,
+            											   String schemaNameTo, String tableNameTo, String attributeNameTo) {
+		Neo4jDB.submitNeo4jQuery("MATCH "
+		        +       "(f:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaNameFrom) + "." + Utils.cleanForGraph(queryNameFrom) + "." + Utils.cleanForGraph(attributeNameFrom), "\"") + "}),"
+		        + "      (t:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaNameTo)   + "." + Utils.cleanForGraph(tableNameTo)   + "." + Utils.cleanForGraph(attributeNameTo),   "\"") + "}) "
+			    + "MERGE (f)-[:" + attributeToAttributeLabel +"]->(t)"); 
+	}
 	public static void connectQueryNodeToAttributeNode(String querySchemaName, String queryName,
                                                        String attributeSchemaName, String attributeTableName, String attributeName) {
 		Neo4jDB.submitNeo4jQuery("MATCH "
+        +       "(q:" + queryNodeLabel     + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(querySchemaName) + "." + Utils.cleanForGraph(queryName), "\"") + "}), "
+        + "      (a:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(attributeSchemaName) 
+     		                                                                + "." + Utils.cleanForGraph(attributeTableName) 
+                                                                             + "." + Utils.cleanForGraph(attributeName), "\"") + "}) "
+	       + "MERGE (q)-[:" + queryToAttributeLabel +"]->(a)"); 
+/*		Neo4jDB.submitNeo4jQuery("MATCH "
 		           +       "(q:" + queryNodeLabel     + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(querySchemaName) + "." + Utils.cleanForGraph(queryName), "\"") + "}), "
 	               + "      (a:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(attributeSchemaName) 
 	            		                                                                + "." + Utils.cleanForGraph(attributeTableName) 
 	                                                                                    + "." + Utils.cleanForGraph(attributeName), "\"") + "}) "
-			       + "CREATE (q)-[:" + queryToAttributeLabel +"]->(a)");
+			       + "CREATE (q)-[:" + queryToAttributeLabel +"]->(a)"); */
 		
 	}
 	public static void addQueryNode(String schemaName, String queryName) {
@@ -239,7 +253,7 @@ public class SchemaGraph {
 		Neo4jDB.submitNeo4jQuery("MATCH "
 		           +       "(q:" + queryNodeLabel  + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName) + "." + Utils.cleanForGraph(queryName), "\"") + "}), "
 	               + "      (s:" + schemaNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName), "\"") + "}) "
-			       + "CREATE (s)-[:" + schemaToQueryLabel +"]->(q)");		
+			       + "MERGE (s)-[:" + schemaToQueryLabel +"]->(q)");		
 	}
 	public static void addQueryAttribute(String schemaName, String tableName, String attributeName, String queryAttributeDataType) {
 		Neo4jDB.submitNeo4jQuery("CREATE (" + 
@@ -322,7 +336,7 @@ public class SchemaGraph {
 						               + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "'}), "
 				                       + " (a:" + nodeLabel 
 				                       + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "." + Utils.cleanForGraph(attribute.getAttributeName()) + "'}) "
-						               + "CREATE (t)-[:" + tableToAttributeLabel +"]->(a)");
+						               + "MERGE (t)-[:" + tableToAttributeLabel +"]->(a)");
 			}
 		}
 	}
@@ -340,7 +354,7 @@ public class SchemaGraph {
 				neo4jQuery = "MATCH "
 				           + " (q:" + queryNodeLabel  + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()) + "'}), "
 			               + " (a:" + nodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName()) + "'}) "
-					       + " CREATE (q)-[:" + queryToAttributeLabel +"]->(a)";
+					       + " MERGE (q)-[:" + queryToAttributeLabel +"]->(a)";
 				Neo4jDB.submitNeo4jQuery(neo4jQuery);
 				schemaTopologyResults.incrementTotalQueryAttributes();
 			}

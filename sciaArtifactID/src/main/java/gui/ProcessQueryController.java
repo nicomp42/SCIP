@@ -25,6 +25,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryGraph;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryGraphVersion01;
 import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchema;
 import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchemas;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
@@ -110,11 +111,11 @@ public class ProcessQueryController /* extends Application */ {
 	@FXML
 	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
 	private void createGraph() {
+		Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),  Config.getConfig().getNeo4jDBDefaultPassword());
 		if (cbClearDB.isSelected()) {
-			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),  Config.getConfig().getNeo4jDBDefaultPassword());
 			Neo4jDB.clearDB();
 		}
-		QueryGraph.createGraph(rootQueryDefinition);
+		QueryGraph.createGraph(rootQueryDefinition, false);
 		if (cbOpenInBrowser.isSelected() ) {
 			Browser browser = Browser.prepareNewBrowser();
 			browser.initAndLoad(null);
@@ -144,7 +145,7 @@ public class ProcessQueryController /* extends Application */ {
 					Neo4jDB.clearDB();
 				}
 				Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-				QueryGraph.executeCypherQueries(Config.getConfig().getNeo4jFilePrefix(), QueryGraph.cypherQueries, "");	// Folder defaults to the import folder in the Neo4j project structure
+				QueryGraphVersion01.executeCypherQueries(Config.getConfig().getNeo4jFilePrefix(), QueryGraphVersion01.cypherQueries, "");	// Folder defaults to the import folder in the Neo4j project structure
 				if (cbOpenInBrowser.isSelected() ) {
 					Browser browser = Browser.prepareNewBrowser();
 					browser.initAndLoad(null);

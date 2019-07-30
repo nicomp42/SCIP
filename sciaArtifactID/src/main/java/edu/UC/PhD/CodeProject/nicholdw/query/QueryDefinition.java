@@ -74,6 +74,7 @@ public class QueryDefinition {
 		setQueryTerminalSymbols(new QueryTerminalSymbols());		
 		setSelectIsWildcard(false);
 	}
+	public QueryDefinitions getChildren() {return children;}
 //	public void initWildcards() {selectIsWildcard = false;}
 //	public void pushWildcardFlag(Boolean isAsterisk) {wildcards.push(isAsterisk);}
 //	public Boolean popWildcardFlag() {return wildcards.pop();}
