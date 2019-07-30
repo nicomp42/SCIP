@@ -180,9 +180,8 @@ public class QueryDefinition {
 		// Add the schema that this query belongs to. It's always there!
 		querySchemas.addSchema(new QuerySchema(getSchemaName()));
 		for (QueryTable queryTable : queryTables) {
-			if (querySchemas.contains(queryTable.getSchemaName()) != null) {
-				querySchemas.addSchema(new QuerySchema(queryTable.getSchemaName()));
-				break;
+			if (querySchemas.contains(queryTable.getSchemaName()) == null) {
+				querySchemas.addSchema(new QuerySchema(Utils.removeBackQuotes(queryTable.getSchemaName())));
 			}
 		}
 		return querySchemas;
@@ -242,6 +241,11 @@ public class QueryDefinition {
 			    try {
 			    	resultSet.next();					// Move to the first record
 					sql = resultSet.getString(1);		// The argument to getString() is one-based, not zero-based
+					if (Config.getConfig().getCompensateForWeakParser()) {
+						sql = sql.replace("CHARSET UTF8", "");
+						sql = sql.replace("charset utf8", "");
+					}
+
 				} catch (Exception e) {
 					Log.logError("QueryDefinition.readSQLFromDatabaseServerQueryDefinition() : " + e.getLocalizedMessage());}
 			} catch (Exception ex) {

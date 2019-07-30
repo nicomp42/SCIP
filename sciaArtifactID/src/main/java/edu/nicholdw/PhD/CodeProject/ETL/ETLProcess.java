@@ -126,11 +126,9 @@ public class ETLProcess {
 	public void setEtlConnections(ETLConnections etlConnections) {
 		this.etlConnections = etlConnections;
 	}
-	private static void addAttributeConstraint() {
-		Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.attributeNodeLabel + ") ASSERT a.key IS UNIQUE");
-	}
+
 	public static void createGraph(ETLProcess etlProcess) {
-		addAttributeConstraint();
+		SchemaGraph.addAllConstraints();
 		for (ETLStep etlStep : etlProcess.getETLSteps()) {
 			Log.logProgress("ETLParser.createGraph(): ETL Step Type = " + etlStep.getStepType());
 			// CREATE (n:Person { name: 'Andy', title: 'Developer' })

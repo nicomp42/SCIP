@@ -3,6 +3,8 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
+
 /**
  * collection of schemas in a QueryDefinition object
  * @author nicomp
@@ -31,7 +33,7 @@ public class QuerySchemas implements Iterable<QuerySchema> {
 	QuerySchema contains(String schemaName) {
 		QuerySchema result = null;
 		for (QuerySchema querySchema : querySchemas) {
-			if (querySchema.getSchemaName().toLowerCase().equals(schemaName.toLowerCase())) {
+			if (Config.getConfig().compareSchemaNames(querySchema.getSchemaName(), schemaName)) {
 				result = querySchema;
 				break;
 			}

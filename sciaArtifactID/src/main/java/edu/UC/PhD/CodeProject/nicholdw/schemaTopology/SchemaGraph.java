@@ -34,21 +34,22 @@ public class SchemaGraph {
 	private QueryDefinitions queryDefinitions;
 	private Schema schema;
 	private DatabaseGraphConfig schemaTopologyConfig;
-	private static final String schemaNodeLabel = "Schema";
-	private static final String queryNodeLabel = "View";
-	public  static final String tableNodeLabel = "Table";
-	public  static final String attributeNodeLabel = "Attribute";
-	public  static final String affectedAttributeNodeLabel = "Affected_Attribute";
-	public  static final String etlFieldNodeLabel = "ETLField";
+	// Keep in lower case - Neo4j is case sensitive but MySQL is not. This will save a lot of debugging
+	public static final String schemaNodeLabel = "schema";
+	public static final String queryNodeLabel = "view";
+	public  static final String tableNodeLabel = "table";
+	public  static final String attributeNodeLabel = "attribute";
+	public  static final String affectedAttributeNodeLabel = "affected_attribute";
+	public  static final String etlFieldNodeLabel = "etl_field";
 	public  static final String tableToAttributeLabel = "contains_attribute";
 	private static final String queryToAttributeLabel = "references_attribute";
 	private static final String schemaToTableLabel = "contains_table";
 	private static final String schemaToQueryLabel = "contains_view";
-	public  static final String etlStepNodeLabel = "ETLStep";
-	public  static final String etlStepToQueryAttributeLbel = "ETL_Step_To_Query_Attribute";
-	public  static final String etlFieldToETLStepLabel = "ETL_Field_To_ETL_Step";
+	public  static final String etlStepNodeLabel = "etl_step";
+	public  static final String etlStepToQueryAttributeLbel = "etl_step_to_query_attribute";
+	public  static final String etlFieldToETLStepLabel = "etl_field_to_etl_step";
 //	public  static final String etlDBProcNodeLabel = "DBProc";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
-	public	static final String etlHopLabel = "Hop";
+	public	static final String etlHopLabel = "hop";
 //	public	static final String etlMergeJoinLabel = "MergeJoin";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
 
 	/**
@@ -91,6 +92,17 @@ public class SchemaGraph {
 		this.schemaTopologyConfig = schemaTopologyConfig;
 		this.schemaTopologyResults = new DatabaseGraphResults();
 		schema = new Schema(schemaName);
+	}
+	// Don't call these constraint methods individually. Rather, call addAllConstriants() instead.
+	private static void addAttributeConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.attributeNodeLabel + ") ASSERT a.key IS UNIQUE");}
+	private static void addQueryConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.queryNodeLabel + ") ASSERT a.key IS UNIQUE");}
+	private static void addTableConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.tableNodeLabel + ") ASSERT a.key IS UNIQUE");}
+	private static void addSchemaConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.schemaNodeLabel + ") ASSERT a.key IS UNIQUE");}
+	public static void addAllConstraints() {
+		addAttributeConstraint();
+		addQueryConstraint();
+		addTableConstraint();
+		addSchemaConstraint();
 	}
 	public static void changeNodeLabel(String key, String oldLabel, String newLabel) {
 //		match (n:attribute {key:'temporary.store.cityid'}) remove n:attribute set n:attribute_affected
@@ -180,11 +192,10 @@ public class SchemaGraph {
 		}
 	}
 	private void addNodesToGraph() {
+		addAllConstraints();
 		addSchemaNode();
 		addQueryNodes();
-		addTableConstraint();		// We want each table to appear only one time
 		addTableNodes();
-		addAttributeConstraint();		// We want each attribute to appear only one time
 		addAttributeNodes();
 		addQueryToAttributeRelationships();	// At this point we have the queries and the table attributes
 	}
@@ -209,6 +220,16 @@ public class SchemaGraph {
 			}
 		}
 	}
+	public static void connectQueryNodeToAttributeNode(String querySchemaName, String queryName,
+                                                       String attributeSchemaName, String attributeTableName, String attributeName) {
+		Neo4jDB.submitNeo4jQuery("MATCH "
+		           +       "(q:" + queryNodeLabel     + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(querySchemaName) + "." + Utils.cleanForGraph(queryName), "\"") + "}), "
+	               + "      (a:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(attributeSchemaName) 
+	            		                                                                + "." + Utils.cleanForGraph(attributeTableName) 
+	                                                                                    + "." + Utils.cleanForGraph(attributeName), "\"") + "}) "
+			       + "CREATE (q)-[:" + queryToAttributeLabel +"]->(a)");
+		
+	}
 	public static void addQueryNode(String schemaName, String queryName) {
 		Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.wrapInDelimiter(Utils.cleanForGraph(queryName),"`") + ":" + queryNodeLabel 
 	               + " { key: " + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName) + "." + Utils.cleanForGraph(queryName),"\"") 
@@ -218,36 +239,34 @@ public class SchemaGraph {
 		Neo4jDB.submitNeo4jQuery("MATCH "
 		           +       "(q:" + queryNodeLabel  + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName) + "." + Utils.cleanForGraph(queryName), "\"") + "}), "
 	               + "      (s:" + schemaNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName), "\"") + "}) "
-			       + "CREATE (s)-[:" + schemaToQueryLabel +"]->(q)");
-		
+			       + "CREATE (s)-[:" + schemaToQueryLabel +"]->(q)");		
 	}
 	public static void addQueryAttribute(String schemaName, String tableName, String attributeName, String queryAttributeDataType) {
 		Neo4jDB.submitNeo4jQuery("CREATE (" + 
-//                Utils.cleanForGraph(attribute.getAttributeName()) + 
-//                ":" + 
-                attributeNodeLabel + 
-                " { key: " 
-                + "'" 
-                + Utils.cleanForGraph(schemaName) 
-                + "." 
-                + Utils.cleanForGraph(tableName) 
-                + "." 
-                + Utils.cleanForGraph(attributeName) 
-                + "'" 
-                + ", name:'" 
-                + Utils.cleanForGraph(attributeName) 
-                + "'"
-                + ", table:'"
-                + Utils.cleanForGraph(tableName) 
-                + "'"
-                + "}"
-                + ")");
-
+								Utils.wrapInDelimiter(Utils.cleanForGraph(attributeName), "`") + 
+				                ":" + 
+				                attributeNodeLabel + 
+				                " { key: " 
+				                + "'" 
+				                + Utils.cleanForGraph(schemaName) 
+				                + "." 
+				                + Utils.cleanForGraph(tableName) 
+				                + "." 
+				                + Utils.cleanForGraph(attributeName) 
+				                + "'" 
+				                + ", name:'" 
+				                + Utils.cleanForGraph(attributeName) 
+				                + "'"
+				                + ", table:'"
+				                + Utils.cleanForGraph(tableName) 
+				                + "'"
+				                + ", datatype:'"
+				                + Utils.cleanForGraph(queryAttributeDataType) 
+				                + "'"
+				                + "}"
+				                + ")");
 	}
 
-	private void addTableConstraint() {
-		Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (t:" + tableNodeLabel + ") ASSERT t.key IS UNIQUE");
-	}
 	public static void addTableNode(String schemaName, String tableName) {
 		Neo4jDB.submitNeo4jQuery("CREATE (" + Utils.cleanForGraph(tableName) + ":" + tableNodeLabel 
 	               + " { key: " + "'" + Utils.cleanForGraph(schemaName) + "." + Utils.cleanForGraph(tableName) + "'" 
@@ -269,9 +288,6 @@ public class SchemaGraph {
 					                   + "CREATE (s)-[:" + schemaToTableLabel +"]->(t)");
 			}
 		}
-	}
-	private void addAttributeConstraint() {
-		Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + attributeNodeLabel + ") ASSERT a.Key IS UNIQUE");
 	}
 	private void addAttributeNodes() {
 		Tables tables = schema.getTables();	// Get the list of loaded tables. By now we have also populated the attribute collection in each table.

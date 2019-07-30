@@ -115,6 +115,7 @@ public class Config implements Serializable {
 	private String defaultTransactionLogFilePath = "C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data";
 	private String artifactTableName = "tArtifact";
 	private Boolean convertNeo4jQueriesToLowerCase = true;
+	private Boolean compensateForWeakParser = true;		// See QueryDefinition.readSQLFromDatabaseServerQueryDefinition()
 	public String getDefaultTransactionLogFilePath() {return defaultTransactionLogFilePath;}
 	public void setDefaultTransactionLogFilePath(String defaultTransactionLogFilePath) {this.defaultTransactionLogFilePath = defaultTransactionLogFilePath;}	
 	public String getMySQLDefaultHostname() {return mySQLDefaultHostname;}
@@ -527,6 +528,12 @@ public class Config implements Serializable {
 	}
 	public void setConvertNeo4jQueriesToLowerCase(Boolean convertNeo4jQueriesToLowerCase) {
 		this.convertNeo4jQueriesToLowerCase = convertNeo4jQueriesToLowerCase;
+	}
+	public Boolean getCompensateForWeakParser() {
+		return compensateForWeakParser;
+	}
+	public void setCompensateForWeakParser(Boolean compensateForWeakParser) {
+		this.compensateForWeakParser = compensateForWeakParser;
 	}
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.

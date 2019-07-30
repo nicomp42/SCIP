@@ -39,11 +39,14 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 
 public class QueryGraph {
 	
 	public static void createGraph(QueryDefinition qd) {
 		Log.logProgress("QueryDefinitionFileProcessing.createGraph()");
+		SchemaGraph.addAllConstraints();
+		
 		HashMap<String, Schema> schemas = qd.getUniqueSchemaNames();
 		// Iterating over keys only
 		for (String schemaName : schemas.keySet()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
@@ -55,24 +58,25 @@ public class QueryGraph {
 		HashMap<String, QueryAttribute> queryAttributes = qd.getUniqueQueryAttributes(false);
 		Log.logProgress("QueryDefinitionFileProcessing.createGraph(): writing query attributes");
 		for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
-			SchemaGraph.addQueryAttribute(queryAttribute.getSchemaName(), queryAttribute.getTableName(), queryAttribute.getAttributeName(), qd.getQueryAttributeDataType(queryAttribute));
-//			SchemaTopology.connectQueryNodeToAttributeNode()
+			SchemaGraph.addQueryAttribute(queryAttribute.getSchemaName(), 
+					                      queryAttribute.getTableName(), 
+					                      queryAttribute.getAttributeName(), 
+					                      qd.getQueryAttributeDataType(queryAttribute));
+			SchemaGraph.connectQueryNodeToAttributeNode(qd.getSchemaName(), qd.getQueryName(),
+					                                    queryAttribute.getSchemaName(), 
+                                                        queryAttribute.getTableName(), 
+                                                        queryAttribute.getAttributeName());
 		}
-		HashMap<String, QueryTable> queryTables = qd.getUniqueTableNames();
+/*		HashMap<String, QueryTable> queryTables = qd.getUniqueTableNames();
 		Log.logProgress("QueryDefinitionToCSV.createGraph(): writing tables");
 		for (QueryTable queryTable : queryTables.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
 			SchemaGraph.addTableNode(queryTable.getSchemaName(), queryTable.getTableName());
-		}
+		} */
 		// Match all the attributes with their tables
-		Neo4jDB.submitNeo4jQuery("MATCH (t:Table), (a:Attribute) "
+/*		Neo4jDB.submitNeo4jQuery("MATCH (t:Table), (a:Attribute) "
 				               + " WHERE (t.SchemaName = a.SchemaName AND t.TableName = a.TableName)"
-				               + " CREATE (t)-[r:" + Config.getConfig().getNeo4jTableToAttributeRelationName() + "]->(a);");
-		// Match all the attributes with their queries
-		Neo4jDB.submitNeo4jQuery("MATCH (q:Query), (a:Attribute) "
-				               + " WHERE (q.SchemaName = a.SchemaName AND q.TableName = a.TableName)"
-				               + " CREATE (q)-[r:" + Config.getConfig().getNeo4jTableToAttributeRelationName() + "]->(a);");
+				               + " CREATE (t)-[r:" + Config.getConfig().getNeo4jTableToAttributeRelationName() + "]->(a);"); */
 	}	
-
 	private static final String rootQuerySuffix = "RootQuery" + Config.getConfig().getCSVFileExtension();
 	private static final String schemaSuffix = "Schemas" + Config.getConfig().getCSVFileExtension();
 	private static final String tableSuffix = "Tables" + Config.getConfig().getCSVFileExtension();

@@ -110,7 +110,15 @@ public class ProcessQueryController /* extends Application */ {
 	@FXML
 	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
 	private void createGraph() {
+		if (cbClearDB.isSelected()) {
+			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),  Config.getConfig().getNeo4jDBDefaultPassword());
+			Neo4jDB.clearDB();
+		}
 		QueryGraph.createGraph(rootQueryDefinition);
+		if (cbOpenInBrowser.isSelected() ) {
+			Browser browser = Browser.prepareNewBrowser();
+			browser.initAndLoad(null);
+		}
 	}
 	private void loadPqSchemaNames() {
 		loadTreeViewWithSchemaNamesAndQueries(txtPqHostName.getText(), txtPqLoginName.getText(), txtPqPassword.getText(), tvSchemasAndQueries);
@@ -230,9 +238,6 @@ public class ProcessQueryController /* extends Application */ {
 		lvPqAttributes.setVisible(visible);
 		lvPqTables.setVisible(visible);
 		lvPqSchemas.setVisible(visible);
-		lblCSVFolder.setVisible(visible);
-		txaCSVFolder.setVisible(visible);
-		btnBrowseForCSVFolder.setVisible(visible);
 		cbClearDB.setVisible(visible);
 		cbOpenInBrowser.setVisible(visible);
 		btnCreateGraph.setVisible(visible);
