@@ -18,7 +18,7 @@ public class AliasNamesOLD implements Iterable<AliasNameClassOLD> {
 	public AliasNamesOLD() {
 		aliasNames = new ArrayList<AliasNameClassOLD>();
 	}
-
+	public String getFirstAlias() {return aliasNames.get(0).toString().replace("`", "");}
 	@Override
 	public Iterator<AliasNameClassOLD> iterator() {
 		Iterator<AliasNameClassOLD> iprof = aliasNames.iterator();

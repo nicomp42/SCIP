@@ -96,6 +96,9 @@ public class QueryAttribute extends QueryComponent implements Name  {
 		this.setAttributeDisposition(ATTRIBUTE_DISPOSITION.Select);
 		affectedByActionQuery = false;
 	}
+	public String getFirstAlias() {
+		return aliasNames.getFirstAlias();
+	}
 	public Boolean isConstant() {
 		// TODO: write this
 		return false;

@@ -62,24 +62,24 @@ public class QueryGraph {
 		for (QueryAttribute queryAttribute : queryAttributes) {
 			SchemaGraph.addQueryAttribute(queryAttribute.getSchemaName(), 
 					                      qd.getQueryName(),			/* queryAttribute.getTableName(), */ 
-					                      queryAttribute.getAttributeName(), 
+					                      queryAttribute.getFirstAlias(),	/* queryAttribute.getAttributeName(),*/ 
 					                      qd.getQueryAttributeDataType(queryAttribute));
 			SchemaGraph.connectQueryNodeToAttributeNode(qd.getSchemaName(), 
 														qd.getQueryName(),
 					                                    queryAttribute.getSchemaName(), 
                                                         qd.getQueryName(), 
-                                                        queryAttribute.getAttributeName());
+                                                        queryAttribute.getFirstAlias());
 			
 			// Build provenance for the attribute node we just added to the graph
 			QueryTables qt = new QueryTables();
 			QueryDefinition.buildProvenance(qd, new FullColumnName(queryAttribute.getSchemaName(),
-					                                               qd.getQueryName(),
+																   queryAttribute.getTableName(),
 					                                               queryAttribute.getAttributeName()), 
 					                        qt);
 			int count = 0;
-			String schemaNamePrev = qd.getSchemaName();
+			String schemaNamePrev = queryAttribute.getSchemaName();
 			String tableNamePrev = qd.getQueryName();
-			String attributeNamePrev = queryAttribute.getAttributeName();
+			String attributeNamePrev = queryAttribute.getFirstAlias();
 			for (QueryTable queryTable: qt) {
 				count++; 
 				if (count > 1) {		// Skip the first node because we added it above
@@ -93,10 +93,10 @@ public class QueryGraph {
 					SchemaGraph.connectAttributeNodeToAttributeNode(schemaNamePrev, 
 																	tableNamePrev,
 																	attributeNamePrev,
-																	queryAttribute.getSchemaName(), 
+																	queryTable.getSchemaName(), 
 																	queryTable.getTableName(), 
 																	queryTable.getQueryAttributeProvenance().getAttributeOrAliasName());
-					schemaNamePrev = queryAttribute.getSchemaName();
+					schemaNamePrev = queryTable.getSchemaName();
 					tableNamePrev = queryTable.getTableName();
 					attributeNamePrev = queryTable.getQueryAttributeProvenance().getAttributeOrAliasName();
 				}

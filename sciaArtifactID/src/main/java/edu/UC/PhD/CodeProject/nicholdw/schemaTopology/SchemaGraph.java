@@ -42,7 +42,7 @@ public class SchemaGraph {
 	public  static final String affectedAttributeNodeLabel = "affected_attribute";
 	public  static final String etlFieldNodeLabel = "etl_field";
 	public  static final String tableToAttributeLabel = "contains_attribute";
-	private static final String queryToAttributeLabel = "references_attribute";
+	private static final String queryToAttributeLabel = "contains_attribute";
 	private static final String attributeToAttributeLabel = "provenance";
 	private static final String schemaToTableLabel = "contains_table";
 	private static final String schemaToQueryLabel = "contains_view";
@@ -259,24 +259,27 @@ public class SchemaGraph {
 		Neo4jDB.submitNeo4jQuery("CREATE (" + 
 								Utils.wrapInDelimiter(Utils.cleanForGraph(attributeName), "`") + 
 				                ":" + 
-				                attributeNodeLabel + 
+								attributeNodeLabel + 
 				                " { key: " 
-				                + "'" 
-				                + Utils.cleanForGraph(schemaName) 
+				                + "\"" 
+				                + Utils.cleanForGraph(schemaName)
 				                + "." 
-				                + Utils.cleanForGraph(tableName) 
+				                + Utils.cleanForGraph(tableName)
 				                + "." 
-				                + Utils.cleanForGraph(attributeName) 
-				                + "'" 
-				                + ", name:'" 
-				                + Utils.cleanForGraph(attributeName) 
-				                + "'"
-				                + ", table:'"
-				                + Utils.cleanForGraph(tableName) 
-				                + "'"
-				                + ", datatype:'"
-				                + Utils.cleanForGraph(queryAttributeDataType) 
-				                + "'"
+				                + Utils.cleanForGraph(attributeName)
+				                + "\"" 
+				                + ", name:" 
+				                + "\"" 
+				                + Utils.cleanForGraph(attributeName)
+				                + "\"" 
+				                + ", table:"
+				                + "\"" 
+				                + Utils.cleanForGraph(tableName)
+				                + "\""
+				                + ", datatype:"
+				                + "\"" 
+				                + Utils.cleanForGraph(queryAttributeDataType)
+				                + "\"" 
 				                + "}"
 				                + ")");
 	}
@@ -315,27 +318,37 @@ public class SchemaGraph {
 						                 Utils.cleanForGraph(attribute.getAttributeName()) + 
 				                         ":" + 
 				                         nodeLabel + 
-				                         " { key: " 
-				                         + "'" 
-				                         + Utils.cleanForGraph(schema.getSchemaName()) 
+				                         " { key:" 
+						                 + "\"" 
+				                         + Utils.cleanForGraph(schema.getSchemaName())
 				                         + "." 
-				                         + Utils.cleanForGraph(table.getTableName()) 
+				                         + Utils.cleanForGraph(table.getTableName())
 				                         + "." 
-				                         + Utils.cleanForGraph(attribute.getAttributeName()) 
-				                         + "'" 
-				                         + ", name:'" 
-				                         + Utils.cleanForGraph(attribute.getAttributeName()) 
-				                         + "'"
-				                         + ", table:'"
-				                         + Utils.cleanForGraph(attribute.getTableName()) 
-				                         + "'"
+				                         + Utils.cleanForGraph(attribute.getAttributeName())
+						                 + "\"" 
+				                         + ", name:" 
+						                 + "\"" 
+				                         + Utils.cleanForGraph(attribute.getAttributeName())
+						                 + "\"" 
+				                         + ", table:"
+						                 + "\"" 
+				                         + Utils.cleanForGraph(attribute.getTableName())
+						                 + "\"" 
 				                         + "}"
 				                         + ")");
 				// Add the relationship between the table and the attribute now because we have everything we need.
 				Neo4jDB.submitNeo4jQuery("MATCH (t:" + tableNodeLabel     
-						               + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "'}), "
+						               + "{key:"
+					                   + "\"" 
+						               + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) 
+						               + "\"" 
+						               + "}), "
 				                       + " (a:" + nodeLabel 
-				                       + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "." + Utils.cleanForGraph(attribute.getAttributeName()) + "'}) "
+				                       + "{key:" 
+						               + "\"" 
+				                       + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "." + Utils.cleanForGraph(attribute.getAttributeName()) 
+						               + "\"" 
+				                       + "}) "
 						               + "MERGE (t)-[:" + tableToAttributeLabel +"]->(a)");
 			}
 		}

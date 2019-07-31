@@ -106,10 +106,10 @@ public class QueryAttributes implements Iterable<QueryAttribute> {
 	 */
 	public QueryAttribute findAttribute(FullColumnName fcn) {
 		QueryAttribute result = null;
-		Boolean matchFound = false, needTableMatch = false, needSchemaMatch = false;;
+		Boolean matchFound = false, needTableMatch = true, needSchemaMatch = true;
 		try {
-			if (Utils.removeBackQuotes(fcn.getSchemaName()).trim().length() == 0) { needSchemaMatch = true;}
-			if (Utils.removeBackQuotes(fcn.getTableName()).trim().length() == 0) { needTableMatch = true;}
+			if (Utils.removeBackQuotes(fcn.getSchemaName()).trim().length() == 0) { needSchemaMatch = false;}
+			if (Utils.removeBackQuotes(fcn.getTableName()).trim().length() == 0) { needTableMatch = false;}
 			
 				// If there's no table name then the attribute name must be sufficient to uniquely identify the attribute
 				for (QueryAttribute queryAttribute : queryAttributes) {
