@@ -11,7 +11,7 @@
 	        <url>http://nexus.pentaho.org/content/groups/omni</url>
 	    </repository>	
 	</repositories>
-	
+	 
      <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <java.version>1.8</java.version>
@@ -190,5 +190,24 @@
     	<artifactId>stax</artifactId>
     	<version>1.2.0</version>
     </dependency>
-    </dependencies>
+	<!-- https://mvnrepository.com/artifact/org.sonatype.plexus/plexus-build-api -->
+	<dependency>
+	    <groupId>org.sonatype.plexus</groupId>
+	    <artifactId>plexus-build-api</artifactId>
+	    <version>0.0.7</version>
+	</dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>1.5.8</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.0-alpha-9</version>
+      <scope>provided</scope>
+    </dependency>
+    
+  </dependencies>
+    
 </project>

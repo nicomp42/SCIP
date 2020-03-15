@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
@@ -28,5 +27,6 @@
 	<classpathentry kind="lib" path="jars/mysql-binlog-connector-java-0.16.1.jar"/>
 	<classpathentry kind="lib" path="jars/commons-io-2.6/commons-io-2.6-javadoc.jar"/>
 	<classpathentry kind="lib" path="jars/commons-io-2.6/commons-io-2.6.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_241"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
