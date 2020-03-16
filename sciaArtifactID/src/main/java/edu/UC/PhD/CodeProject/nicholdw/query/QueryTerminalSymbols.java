@@ -1,9 +1,17 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class QueryTerminalSymbols  implements Iterable<QueryTerminalSymbol> {
+public class QueryTerminalSymbols  implements Iterable<QueryTerminalSymbol>,  java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4389577861474836324L;
 	private ArrayList<QueryTerminalSymbol> queryTerminalSymbols;
 
 	/**

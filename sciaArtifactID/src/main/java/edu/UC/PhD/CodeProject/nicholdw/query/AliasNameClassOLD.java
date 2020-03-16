@@ -2,7 +2,7 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 
-public class AliasNameClassOLD {
+public class AliasNameClassOLD implements java.io.Serializable {
 	private String aliasName;
 
 	/**

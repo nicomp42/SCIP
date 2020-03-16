@@ -9,7 +9,11 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
  * @author nicomp
  *
  */
-public class AliasNamesOLD implements Iterable<AliasNameClassOLD> {
+public class AliasNamesOLD implements Iterable<AliasNameClassOLD>, java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8148190440356442412L;
 	private ArrayList<AliasNameClassOLD> aliasNames;
 
 	/**

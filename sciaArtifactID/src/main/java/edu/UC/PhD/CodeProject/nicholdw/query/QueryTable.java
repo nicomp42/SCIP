@@ -6,8 +6,12 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import edu.UC.PhD.CodeProject.nicholdw.Table;
 
-public class QueryTable extends Table {
+public class QueryTable extends Table implements java.io.Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7332079760987807509L;
 	/**
 	 * If true, the query has a ".*" qualifier on this table in the SELECT clause. All attributes should be included.
 	 */

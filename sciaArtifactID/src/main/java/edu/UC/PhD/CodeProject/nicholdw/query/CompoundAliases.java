@@ -15,7 +15,11 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
  * A collection of CompoundAlias objects
  * @author nicomp
  */
-public class CompoundAliases implements Iterable<CompoundAlias> {
+public class CompoundAliases implements Iterable<CompoundAlias>,  java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8064146952825757524L;
 	private ArrayList<CompoundAlias> compoundAliases;
 
 	/**

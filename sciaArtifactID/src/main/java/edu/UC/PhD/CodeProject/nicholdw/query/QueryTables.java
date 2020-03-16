@@ -16,8 +16,12 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 	 * @author nicomp
 	 *
 	 */
-	public class QueryTables implements Iterable<QueryTable> {
+	public class QueryTables implements Iterable<QueryTable>, java.io.Serializable {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6018476677517462793L;
 		private ArrayList<QueryTable> queryTables;
 
 		/**

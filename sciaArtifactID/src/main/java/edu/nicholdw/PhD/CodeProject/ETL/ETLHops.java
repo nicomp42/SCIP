@@ -12,7 +12,11 @@ import java.util.Iterator;
  * @author nicomp
  *
  */
-public class ETLHops implements Iterable<ETLHop> {
+public class ETLHops implements Iterable<ETLHop>, java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2640962482789091882L;
 	private ArrayList<ETLHop> etlHops;
 	
 	public ETLHops() {

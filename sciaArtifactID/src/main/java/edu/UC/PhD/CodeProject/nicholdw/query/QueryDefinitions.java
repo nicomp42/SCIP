@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import java.util.ArrayList;
@@ -15,8 +19,12 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
  * @author nicomp
  *
  */
-public class QueryDefinitions implements Iterable<QueryDefinition> {
+public class QueryDefinitions implements Iterable<QueryDefinition>,  java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3623030586811588938L;
 	private ArrayList<QueryDefinition> QueryDefinitions;
 
 	/**

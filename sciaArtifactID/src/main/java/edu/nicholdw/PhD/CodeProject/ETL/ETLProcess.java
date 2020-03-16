@@ -22,7 +22,7 @@ import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
  * Model an entire ETL Process consisting of steps and connections
  * @author nicomp
  */
-public class ETLProcess {
+public class ETLProcess implements java.io.Serializable {
 	private String name;
 	private String description;
 	private ETLSteps etlSteps;

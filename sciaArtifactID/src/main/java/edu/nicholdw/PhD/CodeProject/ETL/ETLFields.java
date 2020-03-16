@@ -12,7 +12,11 @@ import java.util.Iterator;
  * @author nicomp
  *
  */
-public class ETLFields implements Iterable<ETLField> {
+public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7560565847627375788L;
 	private ArrayList<ETLField> etlFields;
 
 	public ETLFields() {

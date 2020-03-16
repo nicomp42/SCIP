@@ -148,7 +148,7 @@ public class NewSchemaChangeImpactProject extends Application {
 			scip.setPentahoProjectDirectory(txaPentahoProjectDirectory.getText());
 			scip.buildFileStructure();
 			scip.save();
-			Config.getConfig().getConfig().setCurrentSchemaChangeImpactProject(scip);
+			Config.getConfig().setCurrentSchemaChangeImpactProject(scip);
 		} catch (Exception ex) {
 			Log.logError("NewSchemaChangeImpactProject.btnSave_OnClick(): " + ex.getLocalizedMessage() + ": \n: " + ex.getStackTrace());
 		}

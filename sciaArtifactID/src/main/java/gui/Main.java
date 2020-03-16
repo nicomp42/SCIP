@@ -227,7 +227,6 @@ public class Main extends Application {
 		if (Config.getConfig().getDebugController() == null) {
 			try {
 				FXMLLoader fxmlLoader = null;
-				// Open the New Project Window
 				fxmlLoader = new FXMLLoader(getClass().getResource("debug.fxml"));
 				Parent root = fxmlLoader.load();
 				Stage stage = new Stage();
@@ -598,7 +597,6 @@ public class Main extends Application {
 	public void openAboutWindow() {
 		try {
 			FXMLLoader fxmlLoader = null;
-//			Open the New Project Window
 			fxmlLoader = new FXMLLoader(getClass().getResource("about.fxml"));
 			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();

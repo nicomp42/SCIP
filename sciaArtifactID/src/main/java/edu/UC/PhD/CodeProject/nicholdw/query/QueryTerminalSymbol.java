@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 /**
@@ -5,8 +9,12 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
  * @author nicomp
  *
  */
-public class QueryTerminalSymbol extends QueryComponent {
+public class QueryTerminalSymbol extends QueryComponent implements  java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6287268771170679544L;
 	private String terminalSymbolName;
 	
 	@Override

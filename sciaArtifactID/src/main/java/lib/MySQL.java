@@ -24,7 +24,8 @@ public class MySQL {
   public java.sql.Connection connectToDatabase(String hostName, String databaseName, String userName, String password) {
 	    try {
 	        // This will load the MySQL driver, each DB has its own driver
-	        Class.forName("com.mysql.jdbc.Driver");
+//	        Class.forName("com.mysql.jdbc.Driver"); MySQL version 5
+	        Class.forName("com.mysql.cj.jdbc.Driver");
 	        // Setup the connection with the DB
 //	        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/phd", "root", "Danger42");
 	        connection = DriverManager.getConnection("jdbc:mysql://" +
@@ -42,7 +43,8 @@ public class MySQL {
   public java.sql.Connection connectToDatabase(String databaseName) {
 	    try {
 	        // This will load the MySQL driver, each DB has its own driver
-	        Class.forName("com.mysql.jdbc.Driver");
+//	        Class.forName("com.mysql.jdbc.Driver"); MySQL version 5
+	        Class.forName("com.mysql.cj.jdbc.Driver");
 	        // Setup the connection with the DB
 //	        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/phd", "root", "Danger42");
 	        connection = DriverManager.getConnection("jdbc:mysql://" + edu.UC.PhD.CodeProject.nicholdw.Config.getConfig().getMySQLDefaultHostname() 

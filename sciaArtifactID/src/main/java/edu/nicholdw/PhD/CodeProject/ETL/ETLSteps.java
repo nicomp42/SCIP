@@ -12,7 +12,7 @@ import java.util.Iterator;
  * @author nicomp
  *
  */
-public class ETLSteps implements Iterable<ETLStep> {
+public class ETLSteps implements Iterable<ETLStep>, java.io.Serializable {
 	private ArrayList<ETLStep> etlSteps;
 	
 	public ETLSteps() {

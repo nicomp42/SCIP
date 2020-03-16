@@ -16,7 +16,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
-public class QueryAttributes implements Iterable<QueryAttribute> {
+public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serializable {
 
 	private ArrayList<QueryAttribute> queryAttributes;
 

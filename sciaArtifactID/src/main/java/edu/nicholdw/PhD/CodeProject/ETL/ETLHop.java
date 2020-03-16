@@ -8,7 +8,11 @@ package edu.nicholdw.PhD.CodeProject.ETL;
  * @author nicomp
  *
  */
-public class ETLHop {
+public class ETLHop implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4527507913471550773L;
 	private String fromStepName;
 	private String toStepName;
 	private Boolean enabled;

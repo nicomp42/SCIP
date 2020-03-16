@@ -13,7 +13,7 @@ import javafx.scene.control.TableView;
  * @author nicomp
  *
  */
-public class ETLStep {
+public class ETLStep implements java.io.Serializable {
 	public static final String type_TableInput = "TableInput";
 	
 	private String stepType;

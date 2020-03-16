@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -37,12 +38,12 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private DwhQueries dwhQueries;
 	private ETLProcess etlProcess;
 	private static final String defaultProjectName = "[No project loaded]";	// Until the user provides a project name
-	private ArrayList<TableOutputStep> outputSteps = new ArrayList<TableOutputStep>();
-	private ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
-	private ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
-	private ArrayList<StepName> stepNames = new ArrayList<StepName>();
-	private ArrayList<String> connectionNames = new ArrayList<String>();
-	private ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
+	//private ArrayList<TableOutputStep> outputSteps = new ArrayList<TableOutputStep>();
+	//private ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
+	//private ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
+	//private ArrayList<StepName> stepNames = new ArrayList<StepName>();
+	//private ArrayList<String> connectionNames = new ArrayList<String>();
+	//private ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
 
 
 	// Subdirectories in the project that will contain files to be processed

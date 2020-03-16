@@ -4,7 +4,11 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 
-public class ETLTransformationFile {
+public class ETLTransformationFile implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3292730572408020175L;
 	private String fileName;	// No Path. This is just a file name.
 	private int etlStageNumber;
 //	public enum enumETLType {ODS_IDS, IDS_DW, Undefined};

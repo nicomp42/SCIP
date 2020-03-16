@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 
@@ -6,7 +10,11 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
  * @author nicomp
  *
  */
-public class QueryVariable extends QueryComponent {
+public class QueryVariable extends QueryComponent implements  java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 115898228578138015L;
 	private String variableName;
 
 	public String getVariableName() {return variableName;}

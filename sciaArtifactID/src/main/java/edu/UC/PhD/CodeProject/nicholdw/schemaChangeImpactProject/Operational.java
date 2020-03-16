@@ -1,5 +1,7 @@
 package edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject;
 
+import java.io.Serializable;
+
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 /**
  * Queries and connection information related to the Operational data set

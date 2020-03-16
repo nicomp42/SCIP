@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import java.io.OutputStream;
@@ -34,7 +38,11 @@ import lib.MySQL;
  * @author nicomp
  *  
  */
-public class QueryDefinition {
+public class QueryDefinition implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5818619155041768791L;
 	private String sql;
 	private String queryName;
 	private QueryTables queryTables;	// The tables that this query draws from, if any.

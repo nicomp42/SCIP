@@ -1,10 +1,18 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class QueryFunctions implements Iterable<QueryFunction> {
+public class QueryFunctions implements Iterable<QueryFunction>,  java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3331014231371735200L;
 	private ArrayList<QueryFunction> QueryFunctions;
 
 	/**

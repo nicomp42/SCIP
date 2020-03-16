@@ -11,7 +11,11 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
  * @author nicomp
  *
  */
-public class ETLField {
+public class ETLField implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8544741338416810657L;
 	private String streamName;		// The name of the field in the ETL that will be written the DBMS table. 
 	private String columnName;		// The destination of the stream field. Called "Table Field" in the Pentaho/Spoon UI. Called "column_name" in the XML file 
 	

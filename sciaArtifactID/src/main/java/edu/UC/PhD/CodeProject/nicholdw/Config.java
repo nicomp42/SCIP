@@ -112,7 +112,7 @@ public class Config implements Serializable {
 	private String grassStyleSheetURL = "https://raw.githubusercontent.com/nicomp42/scipGrass/master/grass.css";
 	private ArrayList<Browser> browsers;
 	private SystemDatabaseConnectionInformation systemDatabaseConnectionInformation;
-	private String defaultTransactionLogFilePath = "C:\\ProgramData\\MySQL\\MySQL Server 5.7\\Data";
+	private String defaultTransactionLogFilePath = "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Data";
 	private String artifactTableName = "tArtifact";
 	private Boolean convertNeo4jQueriesToLowerCase = true;
 	private Boolean compensateForWeakParser = true;		// See QueryDefinition.readSQLFromDatabaseServerQueryDefinition()

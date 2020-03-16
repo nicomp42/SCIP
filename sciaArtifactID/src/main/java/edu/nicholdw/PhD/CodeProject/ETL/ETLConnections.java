@@ -12,7 +12,11 @@ import java.util.Iterator;
  * @author nicomp
  *
  */
-public class ETLConnections implements Iterable<ETLConnection> {
+public class ETLConnections implements Iterable<ETLConnection>, java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4184738235733719989L;
 	private ArrayList<ETLConnection> ETLConnections;
 	
 	public ETLConnections() {

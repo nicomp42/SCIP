@@ -11,7 +11,11 @@ import java.util.Iterator;
  * @author nicomp
  *
  */
-public class ETLTransformationFiles implements Iterable<ETLTransformationFile> {
+public class ETLTransformationFiles implements Iterable<ETLTransformationFile>, java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 235333715126352906L;
 	private ArrayList<ETLTransformationFile> etlTransformationFiles;
 	public ETLTransformationFiles() {
 		etlTransformationFiles = new ArrayList<ETLTransformationFile>();

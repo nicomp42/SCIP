@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 /**
@@ -5,7 +9,11 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
  * @author nicomp
  *
  */
-public class QueryFunction extends QueryComponent {
+public class QueryFunction extends QueryComponent implements  java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3604568011765309904L;
 	private String functionName;
 	private String schemaName;
 	
