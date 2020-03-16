@@ -1,8 +1,6 @@
 package edu.UC.PhD.CodeProject.nicholdw.mapping;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 class Mapping_test {
 

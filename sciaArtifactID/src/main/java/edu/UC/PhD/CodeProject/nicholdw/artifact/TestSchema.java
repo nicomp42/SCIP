@@ -3,9 +3,9 @@
  * nicholdw@ucmail.uc.edu
  */
 package edu.UC.PhD.CodeProject.nicholdw.artifact;
-import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 class TestSchema {
 

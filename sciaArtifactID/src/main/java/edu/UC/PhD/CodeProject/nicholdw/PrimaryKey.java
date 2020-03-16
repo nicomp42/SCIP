@@ -334,6 +334,7 @@ public class PrimaryKey {
 			}
 		} catch (Exception ex) {
 			System.out.println("PrimaryKey.loadIntoDatabase(): " + ex.getLocalizedMessage());
+			try {br.close();} catch (Exception ex1) {}
 		} finally {
 			try {br.close();} catch (Exception ex) {}
 			try {connection.close();} catch (Exception ex) {}

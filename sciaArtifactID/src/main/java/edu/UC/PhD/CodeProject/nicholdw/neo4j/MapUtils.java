@@ -17,7 +17,7 @@ class MapUtils
     }
 
     public static void main(String[] args) {
-        Map<String, Integer> hashMap = new HashMap();
+        Map<String, Integer> hashMap = new HashMap<String, Integer>();
         hashMap.put("A", 1);
         hashMap.put("B", 2);
         hashMap.put("C", 3);

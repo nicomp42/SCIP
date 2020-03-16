@@ -15,10 +15,10 @@
      <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <java.version>1.8</java.version>
-      <junit.version>4.12</junit.version>
-      <junit.jupiter.version>5.0.0</junit.jupiter.version>
+      <junit.version>5.2.0</junit.version>
+      <junit.jupiter.version>5.2.0</junit.jupiter.version>
       <junit.vintage.version>${junit.version}.0</junit.vintage.version>
-      <junit.jupiter.version>5.0.0</junit.jupiter.version>
+      <junit.jupiter.version>5.2.0</junit.jupiter.version>
       <junit.platform.version>1.0.0</junit.platform.version>
 	  <pentaho-kettle.version>5.4.1.8-209</pentaho-kettle.version>      
    </properties>
@@ -128,12 +128,6 @@
     	<artifactId>mysql-connector-java</artifactId>
     	<version>5.1.23</version>
 		</dependency>
-		<dependency>
-		    <groupId>junit</groupId>
-		    <artifactId>junit</artifactId>	
-		    <version>4.12</version>
-		    <scope>test</scope>
-		</dependency>
 	    <dependency>
 	        <groupId>org.seleniumhq.selenium</groupId>
    	    	<artifactId>selenium-java</artifactId>
@@ -162,26 +156,14 @@
 		<dependency>
     		<groupId>org.junit.jupiter</groupId>
     		<artifactId>junit-jupiter-engine</artifactId>
-    		<version>5.0.0</version>
+    		<version>5.2.0</version>
     		<scope>test</scope>
 		</dependency>
 	    <!-- To run tests on IDE such as Eclipse, Intellij -->
-      	<dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <version>${junit.version}</version>
-         <scope>test</scope>
-      </dependency>
       <dependency>
          <groupId>org.junit.platform</groupId>
          <artifactId>junit-platform-runner</artifactId>
          <version>${junit.platform.version}</version>
-         <scope>test</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.junit.vintage</groupId>
-         <artifactId>junit-vintage-engine</artifactId>
-         <version>${junit.vintage.version}</version>
          <scope>test</scope>
       </dependency>
 <!-- https://mvnrepository.com/artifact/stax/stax -->
@@ -207,7 +189,17 @@
       <version>1.0-alpha-9</version>
       <scope>provided</scope>
     </dependency>
-    
-  </dependencies>
+	<dependency>
+	    <groupId>com.github.shyiko</groupId>
+	    <artifactId>mysql-binlog-connector-java</artifactId>
+	    <version>0.18.1</version>
+	</dependency>  
+	<dependency>
+		<groupId>org.junit.jupiter</groupId>
+		<artifactId>junit-jupiter-engine</artifactId>
+		<version>5.2.0</version>
+		<scope>test</scope>
+	</dependency>
+</dependencies>
     
 </project>
