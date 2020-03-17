@@ -57,7 +57,8 @@ public class NewSchemaChangeImpactProject extends Application {
 	}
     public NewSchemaChangeImpactProject() {
     	super();
-    	myListener = new ChangeListener<Boolean>() {@Override public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue) { if (newPropertyValue) { } else {areAllRequiredFieldsFilledIn();}}};
+    	// This listener fires when an editable control changes focus. 
+    	myListener = new ChangeListener<Boolean>() {@Override public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue) { areAllRequiredFieldsFilledIn();}};
 		setBtnSaveClicked(false);
     }
     /**
@@ -112,7 +113,7 @@ public class NewSchemaChangeImpactProject extends Application {
 //    	txaPentahoProjectDirectory.focusedProperty().removeListener(myListener);
     }
     private void addListeners() {
-		// Add a bunch of listeners for the fields that must be filled in before the Save button can be enabled
+		// Add a bunch of listeners for the fields that must be filled in before the Save button can be enabled  	
 		txtProjectName.focusedProperty().addListener(myListener);
 		txtProjectFilePath.focusedProperty().addListener(myListener);
 //		txtNeo4jDBName.focusedProperty().addListener(myListener);
@@ -181,6 +182,7 @@ public class NewSchemaChangeImpactProject extends Application {
         File file = directoryChooser.showDialog(stage);
         try {
         	txtProjectFilePath.setText(file.getAbsolutePath());
+        	areAllRequiredFieldsFilledIn();
         } catch (Exception ex) {}
     }
     @FXML

@@ -180,7 +180,7 @@ public class Main extends Application {
 	 */
 	private void scatter(SchemaChangeImpactProject scip) {
 		try {
-			txtProjectHomeDirectory.setText(scip.getFilePath() + "\\" + scip.getProjectName());
+			txtProjectHomeDirectory.setText(scip.getFilePath());		// + "\\" + scip.getProjectName());
 			txtProjectComment.setText(scip.getComment());
 			txtProjectName.setText(scip.getProjectName());
 			txaPentahoProjectDirectory.setText(scip.getPentahoProjectDirectory());

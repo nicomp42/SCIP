@@ -21,14 +21,18 @@ public class ETLTransformationFiles implements Iterable<ETLTransformationFile>, 
 	private static final long serialVersionUID = 235333715126352906L;
 	public void loadETLTransformationFileNames(String filePath) {
 		Log.logProgress("ETLTransformationFiles.LoadETLTransformationFileNames() Loading from " + filePath);
-		final File folder = new File(filePath);
-	    for (final File fileEntry : folder.listFiles()) {
-	        if (fileEntry.isDirectory()) {
-	        	this.add(new ETLTransformationFile(fileEntry.getAbsolutePath()));
-	        } else {
-	            System.out.println(fileEntry.getName());
-	        }
-	    }
+		try {
+			final File folder = new File(filePath);
+		    for (final File fileEntry : folder.listFiles()) {
+		        if (fileEntry.isDirectory()) {
+		        	this.add(new ETLTransformationFile(fileEntry.getAbsolutePath()));
+		        } else {
+		            System.out.println(fileEntry.getName());
+		        }
+		    }
+		} catch (Exception ex) {
+			Log.logError("ETLTransformationFiles.LoadETLTransformationFileNames(): " + ex.getLocalizedMessage());
+		}
 	}
 	private ArrayList<ETLTransformationFile> etlTransformationFiles;
 	public ETLTransformationFiles() {

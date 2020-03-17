@@ -142,7 +142,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	 * @return The path
 	 */
 	public String getFullProjectPath() {
-		return getFilePath() + "/" + getProjectName();
+		return getFilePath();					// + "/" + getProjectName();
 	}
 	public static SchemaChangeImpactProject load(String filePathWithFileName) {
 		SchemaChangeImpactProject scip = null;
