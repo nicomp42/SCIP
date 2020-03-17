@@ -6,20 +6,8 @@ package edu.UC.PhD.CodeProject.nicholdw.testCase;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
-
-import com.mysql.jdbc.CallableStatement;
-
-import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
-import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
-import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLExcelExporter;
-import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
 import lib.SQLUtils;
 
 /**

@@ -119,6 +119,8 @@ public class NewSchemaChangeImpactProject extends Application {
     }
 	private void setTheScene() {
 		addListeners();
+		txtNeo4jDBName.setText(Config.getDefaultNeo4jDBDirectory());
+		txaPentahoProjectDirectory.setText(Config.getDefaultPentahoProjectDirectory());
 		btnSave.setDisable(true);	// Disable the Save button until the user fills in the fields
 		areAllRequiredFieldsFilledIn();
 	}
@@ -143,18 +145,24 @@ public class NewSchemaChangeImpactProject extends Application {
 	@FXML
 	private void btnSave_OnClick(ActionEvent event) {
 		try {
+			Log.logProgress("NewSchemaChangeImpactProject.btnSave_OnClick(): Creating Project. Project Name = " + txtProjectName.getText().trim() + ", Project File Path = " +  txtProjectFilePath.getText().trim() + ", Neo4j DB Directory = " + txtNeo4jDBName.getText().trim());
 			SchemaChangeImpactProject scip = new SchemaChangeImpactProject(txtProjectName.getText().trim(), txtProjectFilePath.getText().trim(), txtNeo4jDBName.getText().trim());
 			scip.setComment(txaComment.getText());
 			scip.setPentahoProjectDirectory(txaPentahoProjectDirectory.getText());
 			scip.buildFileStructure();
 			scip.save();
 			Config.getConfig().setCurrentSchemaChangeImpactProject(scip);
+			setBtnSaveClicked(true);				// User closed form by clicking Save.
+	        Stage stage = (Stage) btnSave.getScene().getWindow();
+	        stage.close();
 		} catch (Exception ex) {
 			Log.logError("NewSchemaChangeImpactProject.btnSave_OnClick(): " + ex.getLocalizedMessage() + ": \n: " + ex.getStackTrace());
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Save failed");
+			alert.setHeaderText("Cannot create project");
+			alert.setContentText(ex.getLocalizedMessage());
+			alert.showAndWait();
 		}
-		setBtnSaveClicked(true);				// User closed form by clicking Save.
-        Stage stage = (Stage) btnSave.getScene().getWindow();
-        stage.close();
 	}
     @FXML
     void mnuFileExit_OnAction(ActionEvent event) {

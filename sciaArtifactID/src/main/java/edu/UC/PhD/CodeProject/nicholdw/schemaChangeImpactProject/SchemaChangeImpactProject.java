@@ -31,7 +31,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private String pentahoProjectDirectory;
 	private String comment;
 	private DatabaseConnection databaseConnection_ops;		// Connection to Operational Data Store
-	private String neo4jDBName;
+	private String neo4jDBDirectory;
 	private Operational operational = new Operational();
 	private IdsDwh idsDwh;
 	private OpsIds opsIds;
@@ -95,7 +95,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	 * @return The full path, ending in a subdirectory, of the Neo4j database for this project
 	 */
 	public String getNeo4jGraphDBFilePath() {
-		return Utils.formatPath(Utils.formatPath(getFilePath()) + getProjectName()) + getNeo4jDBName();		// This is an absolute path. Do not let Neo4j see it.
+		return Utils.formatPath(Utils.formatPath(getFilePath()) + getProjectName()) + getNeo4jDBDirectory();		// This is an absolute path. Do not let Neo4j see it.
 	}
 	/***
 	 * Copy the CSV files for this project into the super-secure location in the Neo4j file structure.
@@ -103,7 +103,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	public boolean copyDirectoryStructures() {
 		boolean status = true;		// hope for the best
 		try {
-			String neo4jGraphDBFilePath = Utils.formatPath(Utils.formatPath(getFilePath()) + getProjectName()) +  getNeo4jDBName();		// This is an absolute path. Do not let Neo4j see it.
+			String neo4jGraphDBFilePath = Utils.formatPath(Utils.formatPath(getFilePath()) + getProjectName()) +  getNeo4jDBDirectory();		// This is an absolute path. Do not let Neo4j see it.
 			// Duplicate all the CSV files into the Neo4j super-secure file store.
 			Utils.copyDirectoryStructure(new File(Utils.formatPath(Utils.formatPath(getFullProjectPath()) + SchemaChangeImpactProject.operationalSubDirectory)),
 										 new File(Utils.formatPath(neo4jGraphDBFilePath) + "import/" + SchemaChangeImpactProject.operationalSubDirectory));
@@ -129,6 +129,9 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
     		new File(getFullProjectPath() + "/" + idsDwhSubdirectory).mkdirs();
     		new File(getFullProjectPath() + "/" + opsIdsSubdirectory).mkdirs();
     		new File(getFullProjectPath() + "/" + dwhQueriesSubdirectory).mkdirs();
+    		new File(getFullProjectPath() + "/" + neo4jDBDirectory).mkdirs();
+    		new File(getFullProjectPath() + "/" + pentahoProjectDirectory).mkdirs();
+    		
 		} catch (Exception ex) {
 			throw new Exception ("SchemaChangeImpactProject.buildFileStructure()" + ex.getLocalizedMessage());
 		}
@@ -158,7 +161,8 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	/**
 	 * Save the serialized object
 	 */
-	public void save() {
+	public Boolean save() {
+		Boolean status = true;	// Hope for the best
 		Log.logProgress("SchemaChangeImpactProject.save(): attempting to save " + getFullProjectPath() + "/" + getProjectName() + Config.getConfig().getSCIPFileExtension());
 		try {
 			 FileOutputStream fileOut = new FileOutputStream(getFullProjectPath() + "/" + getProjectName() + Config.getConfig().getSCIPFileExtension());
@@ -169,7 +173,9 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	 		Log.logProgress("SchemaChangeImpactProject.save(): " + getFullProjectPath() + "/" + getProjectName() + Config.getConfig().getSCIPFileExtension() + " is saved.");
 		} catch (Exception ex) {
 			Log.logError("SchemaChangeImpactProject.save()" + ex.getLocalizedMessage() + " project name = " + this.getProjectName() + ", project file path = " + this.getFilePath() );
+			status = false;
 		}
+		return status;
 	}
 	/**
 	 * Get the name of the project
@@ -215,9 +221,9 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 
 	public void setPentahoProjectDirectory(String pentahoProjectDirectory) {this.pentahoProjectDirectory = pentahoProjectDirectory;}
 
-	public String getNeo4jDBName() {return neo4jDBName;}
+	public String getNeo4jDBDirectory() {return neo4jDBDirectory;}
 
-	public void setNeo4jDBName(String neo4jDBName) {this.neo4jDBName = neo4jDBName;}
+	public void setNeo4jDBName(String neo4jDBName) {this.neo4jDBDirectory = neo4jDBName;}
 
 	public Operational getOperational() {return operational;}
 

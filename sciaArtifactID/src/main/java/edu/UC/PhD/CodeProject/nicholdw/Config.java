@@ -91,6 +91,8 @@ public class Config implements Serializable {
 	private final String neo4jFilePrefix = "Neo4j_";	// Used when creating file names for CSV in the import folder of a Neo4j DB instance and used when creating queries that reference those files
 	private final String SCIPFileExtension  = ".ser";	//  A SCIP file is a "Schema Change Impact Project" file. Refer to the SchemaChangeImpactProject class
 	private final String attributePartsDelimiter = ".";	// schema.table.attribute for example
+	private static final String defaultNeo4jDBDirectory = "Neo4jDB";	// When a new project is created this is the subdirectory in the project where the graph DB will be stored
+	private static final String defaultPentahoProjectDirectory = "Pentaho";
 	private String Neo4jTableToAttributeRelationName = "contains";
 	private String Neo4jQueryToTableRelationName = "contains";
 	private Boolean useTestData = false;
@@ -135,8 +137,9 @@ public class Config implements Serializable {
 	public String getNeo4jFilePath() {return neo4jFilesPath_Relative;}
 	public String[] getETLLayers() {return ETLLayers;}
 	public String buildWindowBarTitleWithAProjectName() {return getApplicationTitle() + " : " + getCurrentSchemaChangeImpactProject().getProjectName();}
-	
-	private ConnectionInformations connectionInformations;
+	public static String getDefaultNeo4jDBDirectory() {return defaultNeo4jDBDirectory;}
+	public static String getDefaultPentahoProjectDirectory() {return defaultPentahoProjectDirectory;} 
+	private static ConnectionInformations connectionInformations;
 
 	/**
 	 * The file extension for SCIP project files

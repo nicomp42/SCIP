@@ -47,6 +47,7 @@ public class PrimaryKey {
 						globalAttributeList.addAttribute(new Attribute(Config.getConfig().getAttributenameprefix() + (i+1)));
 					}
 				}
+				try {br.close();} catch(Exception ex) {}
 				loadIntoDatabase(fileName, firstColumnHasAttributeName, results, targetTable);
 				System.out.println(results.count - results.rejected  + " records appended to database.");
 				System.out.println(results.rejected + " records rejected.");

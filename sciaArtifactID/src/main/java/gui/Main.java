@@ -184,7 +184,7 @@ public class Main extends Application {
 			txtProjectComment.setText(scip.getComment());
 			txtProjectName.setText(scip.getProjectName());
 			txaPentahoProjectDirectory.setText(scip.getPentahoProjectDirectory());
-			txtNeo4jDBName.setText(scip.getNeo4jDBName());
+			txtNeo4jDBName.setText(scip.getNeo4jDBDirectory());
 
 			txtOperationalSchemaName.setText(scip.getOperational().getOperationalSchemaName());
 			txtOperationalHostName.setText(scip.getOperational().getHostName());
