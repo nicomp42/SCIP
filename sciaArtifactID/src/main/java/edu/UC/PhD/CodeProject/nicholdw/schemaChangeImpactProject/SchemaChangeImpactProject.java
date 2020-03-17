@@ -72,13 +72,14 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	 * @param filePath The file path to the project folder. Do not include the name of the project
 	 * @throws Exception if name is blank
 	 */
-	public SchemaChangeImpactProject(String name, String filePath, String neo4jDBName) throws Exception {
-		init();
+	public SchemaChangeImpactProject(String name, String filePath, String neo4jDBName, String pentahoProjectDirectory) throws Exception {
 		setProjectName(name);
 		setFilePath(filePath);
 		setDateCreated(new Date());
 		setDatabaseConnection_ops(new DatabaseConnection());
 		setNeo4jDBName(neo4jDBName);
+		setPentahoProjectDirectory(pentahoProjectDirectory);
+		init();
 	}
 	/**
 	 * Set up a new project. Constructors call this.
@@ -88,7 +89,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		setIdsDwh(new IdsDwh());
 		setOpsIds(new OpsIds());
 		setDwhQueries(new DwhQueries());
-		setEtlProcess(new ETLProcess());
+		setEtlProcess(new ETLProcess(Utils.formatPath(filePath) + pentahoProjectDirectory));
 	}
 	/***
 	 * Get the path of the Neo4j project subdirectory

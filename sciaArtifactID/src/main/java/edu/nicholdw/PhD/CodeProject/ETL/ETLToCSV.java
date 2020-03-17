@@ -35,6 +35,7 @@ public class ETLToCSV {
 		Log.logProgress("ETLToCSV.convertETLToCSV(): scip project = " + scip.getProjectName());
 		String csv_path;
 		pentahoProjectDirectory= scip.getPentahoProjectDirectory();
+		
 		//This is the location where csv files will be generated
 		csv_path = Utils.formatPath(Utils.formatPath(scip.getFullProjectPath()) + SchemaChangeImpactProject.opsIdsSubdirectory); 				//"C:\\Users\\usplib\\workspace\\ImpactAssessmentProject\\csvfiles\\op-ids\\";
 		deleteCSVFiles(csv_path);
@@ -71,7 +72,7 @@ public class ETLToCSV {
 	 * @param csvPath Where to put the CSV files
 	 */
 	public void generateOutputStepsCsvData(String csvPath, SchemaChangeImpactProject scip){
-		XMLParser xmlParser=new XMLParser();
+		XMLParser xmlParser = new XMLParser();
 		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateOutputStepsCsvData(): File = " + etlTransformationFile.getFileName());

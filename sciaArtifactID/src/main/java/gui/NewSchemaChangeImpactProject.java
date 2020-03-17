@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import java.io.File;
 import java.util.Optional;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import javafx.application.Application;
@@ -107,15 +108,15 @@ public class NewSchemaChangeImpactProject extends Application {
     private void removeListeners() {
     	txtProjectName.focusedProperty().removeListener(myListener);
     	txtProjectFilePath.focusedProperty().removeListener(myListener);
-    	txtNeo4jDBName.focusedProperty().removeListener(myListener);
-    	txaPentahoProjectDirectory.focusedProperty().removeListener(myListener);
+//    	txtNeo4jDBName.focusedProperty().removeListener(myListener);
+//    	txaPentahoProjectDirectory.focusedProperty().removeListener(myListener);
     }
     private void addListeners() {
 		// Add a bunch of listeners for the fields that must be filled in before the Save button can be enabled
 		txtProjectName.focusedProperty().addListener(myListener);
 		txtProjectFilePath.focusedProperty().addListener(myListener);
-		txtNeo4jDBName.focusedProperty().addListener(myListener);
-		txaPentahoProjectDirectory.focusedProperty().addListener(myListener);
+//		txtNeo4jDBName.focusedProperty().addListener(myListener);
+//		txaPentahoProjectDirectory.focusedProperty().addListener(myListener);
     }
 	private void setTheScene() {
 		addListeners();
@@ -146,9 +147,8 @@ public class NewSchemaChangeImpactProject extends Application {
 	private void btnSave_OnClick(ActionEvent event) {
 		try {
 			Log.logProgress("NewSchemaChangeImpactProject.btnSave_OnClick(): Creating Project. Project Name = " + txtProjectName.getText().trim() + ", Project File Path = " +  txtProjectFilePath.getText().trim() + ", Neo4j DB Directory = " + txtNeo4jDBName.getText().trim());
-			SchemaChangeImpactProject scip = new SchemaChangeImpactProject(txtProjectName.getText().trim(), txtProjectFilePath.getText().trim(), txtNeo4jDBName.getText().trim());
+			SchemaChangeImpactProject scip = new SchemaChangeImpactProject(txtProjectName.getText().trim(), Utils.formatPath(txtProjectFilePath.getText().trim()) + txtProjectName.getText().trim(), txtNeo4jDBName.getText().trim(), txaPentahoProjectDirectory.getText().trim());
 			scip.setComment(txaComment.getText());
-			scip.setPentahoProjectDirectory(txaPentahoProjectDirectory.getText());
 			scip.buildFileStructure();
 			scip.save();
 			Config.getConfig().setCurrentSchemaChangeImpactProject(scip);

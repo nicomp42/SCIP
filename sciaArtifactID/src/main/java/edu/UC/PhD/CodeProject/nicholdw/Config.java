@@ -200,7 +200,8 @@ public class Config implements Serializable {
 	public void setCurrentSchemaChangeImpactProject(SchemaChangeImpactProject currentSchemaChangeImpactProject) {this.currentSchemaChangeImpactProject = currentSchemaChangeImpactProject;}
 	public String getInitialDirectory() {
 		if (initialDirectory == null) {
-			setInitialDirectory(getUserHomeDirectory());
+			//setInitialDirectory(getUserHomeDirectory());
+			setInitialDirectory("C:\\Users\\nicomp\\SCIP Projects");
 		}
 		return initialDirectory;
 		}

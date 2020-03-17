@@ -4,8 +4,11 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 /**
  * ETL Transformation Files
  * @author nicomp
@@ -16,6 +19,17 @@ public class ETLTransformationFiles implements Iterable<ETLTransformationFile>, 
 	 * 
 	 */
 	private static final long serialVersionUID = 235333715126352906L;
+	public void loadETLTransformationFileNames(String filePath) {
+		Log.logProgress("ETLTransformationFiles.LoadETLTransformationFileNames() Loading from " + filePath);
+		final File folder = new File(filePath);
+	    for (final File fileEntry : folder.listFiles()) {
+	        if (fileEntry.isDirectory()) {
+	        	this.add(new ETLTransformationFile(fileEntry.getAbsolutePath()));
+	        } else {
+	            System.out.println(fileEntry.getName());
+	        }
+	    }
+	}
 	private ArrayList<ETLTransformationFile> etlTransformationFiles;
 	public ETLTransformationFiles() {
 		etlTransformationFiles = new ArrayList<ETLTransformationFile>();

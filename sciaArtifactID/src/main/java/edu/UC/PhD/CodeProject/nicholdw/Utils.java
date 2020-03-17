@@ -102,7 +102,11 @@ public class Utils {
 			}
 		}
 	}
-	// Add the terminating slash to a path name if it's not already there
+	/**
+	 * Add the terminating slash to a path name if it's not already there
+	 * @param path Path to be formatted
+	 * @return Formatted Path
+	 */
 	public static String formatPath(String path) {
 		try {
 			String lastChar = path.trim().substring(path.length()-1);

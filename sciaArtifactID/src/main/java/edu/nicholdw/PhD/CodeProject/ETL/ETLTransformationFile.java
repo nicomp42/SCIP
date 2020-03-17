@@ -1,3 +1,9 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ * Changed some default file paths to SCIP from temp.
+ *
+ */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import edu.UC.PhD.CodeProject.nicholdw.Utils;

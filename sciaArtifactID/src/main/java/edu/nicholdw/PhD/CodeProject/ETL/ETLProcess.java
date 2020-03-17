@@ -29,13 +29,17 @@ public class ETLProcess implements java.io.Serializable {
 	private ETLConnections etlConnections;
 	private ETLTransformationFiles etlTransformationFiles;
 	private ETLHops etlHops;
-	private String transformationFileDirectory;	// Where all the transformation files are. See etlTransformationFiles object herein.
+	private String transformationFileDirectory;	// Where all the Pentaho transformation XML files are. See etlTransformationFiles object herein.
 
-	public ETLProcess() {
+	public ETLProcess(String transformationFileDirectory) {
 		etlSteps = new ETLSteps();
 		etlConnections = new ETLConnections();
 		etlTransformationFiles = new ETLTransformationFiles();
 		etlHops = new ETLHops();
+		this.transformationFileDirectory = transformationFileDirectory;
+		if (this.transformationFileDirectory != null) {
+			etlTransformationFiles.loadETLTransformationFileNames(this.transformationFileDirectory);
+		}
 	}
 	public void processTableInputStepQueries() {
 		for (ETLStep etlStep : etlSteps) {

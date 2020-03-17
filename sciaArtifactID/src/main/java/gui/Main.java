@@ -180,7 +180,7 @@ public class Main extends Application {
 	 */
 	private void scatter(SchemaChangeImpactProject scip) {
 		try {
-			txtProjectHomeDirectory.setText(scip.getFilePath());
+			txtProjectHomeDirectory.setText(scip.getFilePath() + "\\" + scip.getProjectName());
 			txtProjectComment.setText(scip.getComment());
 			txtProjectName.setText(scip.getProjectName());
 			txaPentahoProjectDirectory.setText(scip.getPentahoProjectDirectory());
@@ -429,7 +429,7 @@ public class Main extends Application {
 	}
 	@FXML
 	protected void btnCreateGraphDB_OnClick(ActionEvent event) {
-		String neo4jDBName = txtNeo4jDBName.getText().trim();   // lvSchemaNames.getSelectionModel().getSelectedItem();
+		String neo4jDBName = txtNeo4jDBName.getText().trim();
 		try {
 			createNewGraphDB(neo4jDBName);
 		} catch (Exception ex) {
@@ -441,7 +441,7 @@ public class Main extends Application {
 		Boolean status = true;
 		GraphDatabaseService graphDB = null;
 		try {
-			String graphDBFilePath = Utils.formatPath(Utils.formatPath(txtProjectHomeDirectory.getText()) + txtProjectName.getText()) +  neo4jDBName;		// This is an absolute path. Do not let Neo4j see it.
+			String graphDBFilePath = Utils.formatPath(Utils.formatPath(txtProjectHomeDirectory.getText()) + neo4jDBName);		// This is an absolute path. Do not let Neo4j see it.
 			try { new File(graphDBFilePath).mkdir();} catch (Exception ex) {}
 			graphDB = Neo4jDB.createDB(graphDBFilePath, false);
 			registerShutdownHook(graphDB);
@@ -453,6 +453,7 @@ public class Main extends Application {
 			//Neo4jUtils.ExecActionQuery("Change Password");		// TODO fix
 		} catch (Exception ex) {
 			status = false;
+			(new Alert(Alert.AlertType.ERROR, "Error creating Neo4j DB. " + ex.getLocalizedMessage(), ButtonType.OK)).showAndWait();
 			Log.logError("Main.createNewGraphDB(): " + ex.getLocalizedMessage());
 		}
 		try {graphDB.shutdown();} catch (Exception ex){}
@@ -639,7 +640,7 @@ public class Main extends Application {
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.setOpacity(1);
 			stage.setTitle("Configuration");
-			Scene scene = new Scene(root);//, 700, 450);
+			Scene scene = new Scene(root);
 			stage.setResizable(false);
 			stage.setScene(scene);
 			ConfigController configController = fxmlLoader.getController();
