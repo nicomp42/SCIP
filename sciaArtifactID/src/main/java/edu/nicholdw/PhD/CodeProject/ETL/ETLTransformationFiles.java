@@ -24,10 +24,12 @@ public class ETLTransformationFiles implements Iterable<ETLTransformationFile>, 
 		try {
 			final File folder = new File(filePath);
 		    for (final File fileEntry : folder.listFiles()) {
-		        if (fileEntry.isDirectory()) {
-		        	this.add(new ETLTransformationFile(fileEntry.getAbsolutePath()));
+		        if (!fileEntry.isDirectory()) {
+		        	if (fileEntry.getAbsolutePath().toLowerCase().endsWith(".xml")) {
+		        		this.add(new ETLTransformationFile(fileEntry.getAbsolutePath()));
+		        	}
 		        } else {
-		            System.out.println(fileEntry.getName());
+		            //System.out.println(fileEntry.getName());
 		        }
 		    }
 		} catch (Exception ex) {

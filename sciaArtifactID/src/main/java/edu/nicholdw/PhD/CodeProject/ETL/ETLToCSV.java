@@ -25,7 +25,7 @@ import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImp
  * @author nicomp
  */
 public class ETLToCSV {
-	private String pentahoProjectDirectory;
+	private String pentahoProjectDirectoryFullPath;
 	/**
 	 * Do both op-ids and ids-dwh layers of the ETL process
 	 * @param scip The SchemaChangeImpactProject to be processed.
@@ -34,15 +34,15 @@ public class ETLToCSV {
 	public void convertETLToCSV(SchemaChangeImpactProject scip) throws Exception {
 		Log.logProgress("ETLToCSV.convertETLToCSV(): scip project = " + scip.getProjectName());
 		String csv_path;
-		pentahoProjectDirectory= scip.getPentahoProjectDirectory();
-		
+		pentahoProjectDirectoryFullPath= Utils.formatPath(scip.getFilePath()) + scip.getPentahoProjectDirectory();
+		scip.loadETLTransformationFiles();
 		//This is the location where csv files will be generated
 		csv_path = Utils.formatPath(Utils.formatPath(scip.getFullProjectPath()) + SchemaChangeImpactProject.opsIdsSubdirectory); 				//"C:\\Users\\usplib\\workspace\\ImpactAssessmentProject\\csvfiles\\op-ids\\";
 		deleteCSVFiles(csv_path);
 		generateCsvData(csv_path, scip);
 		generateDimensionLookupUpdateStepCsvData(csv_path + "dimlookupupdate_steps.csv", scip);
 
-		csv_path = Utils.formatPath(Utils.formatPath(scip.getFullProjectPath()) + "/" + SchemaChangeImpactProject.idsDwhSubdirectory); 				// "C:\\Users\\usplib\\workspace\\ImpactAssessmentProject\\csvfiles\\ids-dwh\\";
+		csv_path = Utils.formatPath(Utils.formatPath(scip.getFullProjectPath()) + SchemaChangeImpactProject.idsDwhSubdirectory); 				// "C:\\Users\\usplib\\workspace\\ImpactAssessmentProject\\csvfiles\\ids-dwh\\";
 		deleteCSVFiles(csv_path);
 		generateCsvData(csv_path, scip);
 		generateDimensionLookupUpdateStepCsvData(csv_path + "dimlookupupdate_steps.csv", scip);
@@ -113,13 +113,13 @@ public class ETLToCSV {
 	}
 	public void generateInputStepsCsvData(String csvPath){
 		XMLParser xmlparser=new XMLParser();
-		File folder = new File(pentahoProjectDirectory);
+		File folder = new File(pentahoProjectDirectoryFullPath);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
 				Log.logProgress("ETLToCSV.generateInputStepsCsvData(): File = " + listOfFiles[i].getName());
 				//One transformation can be read from multiple data sources
-				List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps(pentahoProjectDirectory+"/" , listOfFiles[i].getName());
+				List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps(pentahoProjectDirectoryFullPath+"/" , listOfFiles[i].getName());
 				ETLExcelExporter.generateInputStepsCsvFile(csvPath, inputSteps);
 			}
 		}
@@ -140,7 +140,7 @@ public class ETLToCSV {
 		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateDimensionLookupUpdateStepCsvData(): File = " + etlTransformationFile.getFileName());
-			List<DimLookupUpdateStep> dimLookupUpdateSteps = null;
+			List<DimLookupUpdateStep> dimLookupUpdateSteps = new ArrayList<DimLookupUpdateStep>();
 			xmlParser.parseXMLForDimLookupUpdateSteps(etlTransformationFile, dimLookupUpdateSteps);
 			ETLExcelExporter.generateDimLookupUpdateCsvFile(csvPath, dimLookupUpdateSteps);
 		}
@@ -151,7 +151,7 @@ public class ETLToCSV {
 		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateCombinationLookupUpdateStepCsvData(): File = " + etlTransformationFile.getFileName());
 			List<CombinationLookupUpdateStep> combinationlookupupdatesteps =
-					xmlParser.parseXMLForCombinationLookupUpdateSteps(pentahoProjectDirectory + "/" + etlTransformationFile.getFileName());
+					xmlParser.parseXMLForCombinationLookupUpdateSteps(pentahoProjectDirectoryFullPath + "/" + etlTransformationFile.getFileName());
 			ETLExcelExporter.generateCombLookupUpdateCsvFile(csvPath, combinationlookupupdatesteps);
 
 		}

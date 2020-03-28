@@ -41,6 +41,11 @@ public class ETLProcess implements java.io.Serializable {
 			etlTransformationFiles.loadETLTransformationFileNames(this.transformationFileDirectory);
 		}
 	}
+	public void loadETLTransformationFiles() {
+		if (this.transformationFileDirectory != null) {
+			etlTransformationFiles.loadETLTransformationFileNames(this.transformationFileDirectory);
+		}
+	}
 	public void processTableInputStepQueries() {
 		for (ETLStep etlStep : etlSteps) {
 			if (etlStep.getStepType().equals("TableInput")) {

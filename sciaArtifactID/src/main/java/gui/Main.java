@@ -551,8 +551,10 @@ public class Main extends Application {
 			if (cbETLCSVFiles.isSelected()) {schemaChangeImpactProjectComponent.add(new IdsDwh());}
 			if (cbDWCSVFiles.isSelected()) {schemaChangeImpactProjectComponent.add(new DwhQueries());}
 			myImport.ImportIntoGraphDB(Config.getConfig().getCurrentSchemaChangeImpactProject(), schemaChangeImpactProjectComponent);		//, "convertToGraph", "operational schema");
+			(new Alert(Alert.AlertType.INFORMATION, "CSV files imported into the current graph.", ButtonType.OK)).showAndWait();
 		} catch(Exception ex) {
 			Log.logError("btnImportFromCSVFiles_OnClick(): " + ex.getLocalizedMessage());
+			(new Alert(Alert.AlertType.ERROR, "Something went wrong while importing the CSV files into the current graph: " + ex.getLocalizedMessage(), ButtonType.OK)).showAndWait();
 		}
 	}
 	@FXML

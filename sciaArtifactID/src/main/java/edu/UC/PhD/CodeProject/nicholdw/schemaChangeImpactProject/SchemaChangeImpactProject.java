@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -91,20 +93,31 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		setDwhQueries(new DwhQueries());
 		setEtlProcess(new ETLProcess(Utils.formatPath(filePath) + pentahoProjectDirectory));
 	}
+	public void loadETLTransformationFiles() {
+		etlProcess.loadETLTransformationFiles();
+	}
 	/***
 	 * Get the path of the Neo4j project subdirectory
 	 * @return The full path, ending in a subdirectory, of the Neo4j database for this project
 	 */
 	public String getNeo4jGraphDBFilePath() {
-		return Utils.formatPath(Utils.formatPath(getFilePath()) + getProjectName()) + getNeo4jDBDirectory();		// This is an absolute path. Do not let Neo4j see it.
+//		return Utils.formatPath(Utils.formatPath(getFilePath()) + getProjectName()) + getNeo4jDBDirectory();		// This is an absolute path. Do not let Neo4j see it.
+		return Utils.formatPath(Utils.formatPath(getFilePath()) + getNeo4jDBDirectory());		// This is an absolute path. Do not let Neo4j see it.
 	}
 	/***
 	 * Copy the CSV files for this project into the super-secure location in the Neo4j file structure.
 	 */
 	public boolean copyDirectoryStructures() {
 		boolean status = true;		// hope for the best
+		// This might fail if the import directory already exists
+		String neo4jGraphDBFilePath = Utils.formatPath(Utils.formatPath(getFilePath()) + getNeo4jDBDirectory());		// This is an absolute path. Do not let Neo4j see it.
 		try {
-			String neo4jGraphDBFilePath = Utils.formatPath(Utils.formatPath(getFilePath()) + getProjectName()) +  getNeo4jDBDirectory();		// This is an absolute path. Do not let Neo4j see it.
+			// Make the import folder in the Neo4j DB file structure. Neo4j doesn't automatically do this!
+			Files.createDirectory(Paths.get(Utils.formatPath(neo4jGraphDBFilePath) + "import/"));
+		} catch (Exception ex) {
+    		Log.logError("SchemaChangeImpactProject.copyDirectoryStructures(): error creating import directory: " + ex.getLocalizedMessage());
+		}
+		try {
 			// Duplicate all the CSV files into the Neo4j super-secure file store.
 			Utils.copyDirectoryStructure(new File(Utils.formatPath(Utils.formatPath(getFullProjectPath()) + SchemaChangeImpactProject.operationalSubDirectory)),
 										 new File(Utils.formatPath(neo4jGraphDBFilePath) + "import/" + SchemaChangeImpactProject.operationalSubDirectory));
@@ -126,12 +139,13 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	 */
 	public void buildFileStructure() throws Exception {
 		try {
-    		new File(getFullProjectPath() + "/" + operationalSubDirectory).mkdirs();
-    		new File(getFullProjectPath() + "/" + idsDwhSubdirectory).mkdirs();
-    		new File(getFullProjectPath() + "/" + opsIdsSubdirectory).mkdirs();
-    		new File(getFullProjectPath() + "/" + dwhQueriesSubdirectory).mkdirs();
-    		new File(getFullProjectPath() + "/" + neo4jDBDirectory).mkdirs();
-    		new File(getFullProjectPath() + "/" + pentahoProjectDirectory).mkdirs();
+			String fullProjectPath = Utils.formatPath(getFullProjectPath()); 
+    		new File(fullProjectPath + operationalSubDirectory).mkdirs();
+    		new File(fullProjectPath + idsDwhSubdirectory).mkdirs();
+    		new File(fullProjectPath + opsIdsSubdirectory).mkdirs();
+    		new File(fullProjectPath + dwhQueriesSubdirectory).mkdirs();
+    		new File(fullProjectPath + neo4jDBDirectory).mkdirs();
+    		new File(fullProjectPath + pentahoProjectDirectory).mkdirs();
     		
 		} catch (Exception ex) {
 			throw new Exception ("SchemaChangeImpactProject.buildFileStructure()" + ex.getLocalizedMessage());

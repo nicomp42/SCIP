@@ -28,7 +28,7 @@ public class ImportFromCSVIntoGraphDB {
 		try {
 			File neo4jGraphDBSchemaFile = new File(scip.getNeo4jGraphDBFilePath());
 			if (!neo4jGraphDBSchemaFile.exists()) {	// Is the directory present?
-				Log.logError("ImportFromCSVIntoGraphDB.ImportIntoGraphDB(): error accessing " + scip.getNeo4jGraphDBFilePath() + " Please export the schema information as CSV files first and try again");
+				Log.logError("ImportFromCSVIntoGraphDB.ImportIntoGraphDB(): error accessing the directory " + scip.getNeo4jGraphDBFilePath() + " , Please export the schema information as CSV files first and try again");
 				results = enumResults.DIRECTORY_MISSING;
 			} else {
 				OperationalSchemaGraphController operationalSchemaGraphController = new OperationalSchemaGraphController();
