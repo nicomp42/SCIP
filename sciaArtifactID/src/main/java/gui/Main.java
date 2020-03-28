@@ -81,7 +81,8 @@ public class Main extends Application {
 	@FXML private AnchorPane apMainWindow;
 	@FXML private ListView<String> lvOperationalSchemaNames, lvOperationalTables, lvOperationalAttributes, lvOperationalForeignKeys, lvOperationalQuerys, lvETLLayer;
 	@FXML private ListView<String> lvDwhSchemaNames, lvDwhTables, lvDwhAttributes, lvDwhForeignKeys, lvDwhQuerys;
-	@FXML private Button btnSaveOperationalSchemaArtifactsToCSVFiles, btnPentahoProjectDirectory, btnCreateGraphDB, btnDatabaseFilePath, btnCreateDatabase, btnImportFromCSVFiles, btnLoadOperationalSchemaArtifacts, btnSavePentahoArtifactsToCSVFiles, btnLoadOperationalSchemaNames;
+	@FXML private Button btnSaveOperationalSchemaArtifactsToCSVFiles, btnPentahoProjectDirectory, btnCreateGraphDB, btnDatabaseFilePath, btnCreateDatabase;
+	@FXML private Button btnImportFromCSVFiles, btnLoadOperationalSchemaArtifacts, btnSavePentahoArtifactsToCSVFiles, btnLoadOperationalSchemaNames;
 	@FXML private Button btnSaveDwhSchemaArtifactsToCSVFiles, btnLoadDwhSchemaArtifacts, btnLoadDwhSchemaNames, btnBrowse;
 	@FXML private CheckBox cbAllETLLayers;
 	@FXML private TextArea txtProjectComment, txaPentahoProjectDirectory;
@@ -376,8 +377,10 @@ public class Main extends Application {
 		ETLToCSV e = new ETLToCSV();
 		try {
 			e.convertETLToCSV(Config.getConfig().getCurrentSchemaChangeImpactProject());
+			(new Alert(Alert.AlertType.INFORMATION, "Pentaho Artifacts saved to CSV files.", ButtonType.OK)).showAndWait();
 		} catch (Exception ex) {
 			Log.logError("Main.btnSavePentahoArtifactsToCSVFiles_OnClick(): " + ex.getLocalizedMessage(), ex.getStackTrace());
+			(new Alert(Alert.AlertType.ERROR, "Pentaho Artifacts saved to CSV files: Something went wrong. "+ ex.getLocalizedMessage(), ButtonType.OK)).showAndWait();
 		}
 	}
 	@FXML

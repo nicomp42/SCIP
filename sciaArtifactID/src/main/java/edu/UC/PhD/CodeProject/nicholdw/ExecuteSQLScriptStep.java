@@ -1,12 +1,9 @@
-/*
- * Bill Nicholson
- */
 package edu.UC.PhD.CodeProject.nicholdw;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class DimLookupUpdateStep {
-
+public class ExecuteSQLScriptStep {
 	private String transName;
 	private String stepName;
 	private String dbName;
@@ -15,12 +12,14 @@ public class DimLookupUpdateStep {
 	private String stepType;
 	private boolean isUpdateStep;
 	private String etlStage;
+	private String SQL;
+	private String xmlFilename;
 
 	@Override
 	public String toString() {
 		return "DimLookupUpdateStep [transName=" + transName + ", stepName="
 				+ stepName + ", dbName=" + dbName + ", tableName=" + tableName
-				+ ", attributes=" + attributes + "]";
+				+ ", attributes=" + attributes + ", SQL = " + SQL + "]";
 	}
 
 	public boolean isUpdateStep() {
@@ -62,17 +61,17 @@ public class DimLookupUpdateStep {
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
-
-	public DimLookupUpdateStep(String transName, String stepName, String stepType, String dbName, String tableName,	List<String> attributes, boolean isUpdateStep, String etlStage) {
+	public ExecuteSQLScriptStep(String transName, 
+			                    String stepName, 
+			                    String dbName, 
+			                    String SQL,
+			                    String xmlFilename) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
-		this.stepType = stepType;
 		this.dbName = dbName;
-		this.tableName = tableName;
-		this.attributes = attributes;
-		this.isUpdateStep = isUpdateStep;
-		this.etlStage = etlStage;
+		this.SQL = SQL;
+		this.setXmlFilename(xmlFilename);
 	}
 
 	public List<String> getAttributes() {
@@ -91,4 +90,12 @@ public class DimLookupUpdateStep {
 		this.etlStage = etlStage;
 	}
 
+	public String getXmlFilename() {
+		return xmlFilename;
+	}
+
+	public void setXmlFilename(String xmlFilename) {
+		this.xmlFilename = xmlFilename;
+	}
+	public String getSQL() {return SQL;}
 }

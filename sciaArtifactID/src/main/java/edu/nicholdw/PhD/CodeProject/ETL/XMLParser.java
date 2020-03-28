@@ -31,6 +31,8 @@ import edu.UC.PhD.CodeProject.nicholdw.DBLookupStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.DBProcStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.DimLookupUpdateStep;
 import edu.UC.PhD.CodeProject.nicholdw.DimensionLookupStepParser;
+import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStep;
+import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.InsertUpdateStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.StepName;
@@ -263,6 +265,31 @@ public class XMLParser {
 			for(String stepname:listOfAllStepNames){
 				dbjoinstep=DBJoinStepParser.parseXMLByStepName(doc, xpath, stepname, this.xmlDirectory + etlTransformationFile.getFileName());
 				dbJoinSteps.add(dbjoinstep);
+			}
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			Log.logError("XMLParser.parseXMLForDBJoinSteps(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+	}
+	public void parseXMLForExecuteSQLScriptSteps(ETLTransformationFile etlTransformationFile, List<ExecuteSQLScriptStep> executeSQLScriptSteps) {
+		Log.logProgress("XMLParser.parseXMLForDBJoinSteps(): " + this.xmlDirectory + etlTransformationFile.getFileName());
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+//		String steptype="DBJoin";
+		String steptype="ExecSQL";		// Pentaho uses this
+		ExecuteSQLScriptStep executeSQLScriptStep = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(this.xmlDirectory + etlTransformationFile.getFileName());
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			/* One transformation is composed of several Table Input steps */
+			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
+
+			for(String stepname:listOfAllStepNames){
+				executeSQLScriptStep = ExecuteSQLScriptStepParser.parseXMLByStepName(doc, xpath, stepname, this.xmlDirectory + etlTransformationFile.getFileName());
+				executeSQLScriptSteps.add(executeSQLScriptStep);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			Log.logError("XMLParser.parseXMLForDBJoinSteps(): " + e.getLocalizedMessage(), e.getStackTrace());

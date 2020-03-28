@@ -13,6 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.CombinationLookupUpdateStep;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
 import edu.UC.PhD.CodeProject.nicholdw.DBLookupStep;
 import edu.UC.PhD.CodeProject.nicholdw.DimLookupUpdateStep;
+import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
@@ -66,6 +67,7 @@ public class ETLToCSV {
 		generateDBJoinStepCsvData(                 Utils.formatPath(csv_path) + "dbjoin_steps.csv",			  scip);
 		generateDimensionLookupUpdateStepCsvData(  Utils.formatPath(csv_path) + "dimlookupupdate_steps.csv",  scip);
 		generateCombinationLookupUpdateStepCsvData(Utils.formatPath(csv_path) + "comblookupupdate_steps.csv", scip);
+		generateExecuteSQLScriptCsvData(Utils.formatPath(csv_path) + "executeSQLScript_steps.csv", scip);
 	}
 	/***
 	 * Parses XML and generate CSV for Output step types - Insert/Update and TableOutput.
@@ -165,6 +167,17 @@ public class ETLToCSV {
 			//One transformation can be reading from multiple data sources
 			xmlParser.parseXMLForDBJoinSteps(etlTransformationFile, dbJoinSteps);
 			ETLExcelExporter.generateDBJoinCsvFile(csvPath, dbJoinSteps);
+		}
+	}
+	public void generateExecuteSQLScriptCsvData(String csvPath, SchemaChangeImpactProject scip) {
+		XMLParser xmlParser=new XMLParser();
+		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+			Log.logProgress("ETLToCSV.generateExecuteSQLScriptCsvData(): File = " + etlTransformationFile.getFileName());
+			List<ExecuteSQLScriptStep> executeSQLScriptSteps = new ArrayList<ExecuteSQLScriptStep>();
+			//One transformation can be reading from multiple data sources
+			xmlParser.parseXMLForExecuteSQLScriptSteps(etlTransformationFile, executeSQLScriptSteps);
+			ETLExcelExporter.generateExecuteSQLScriptCsvFile(csvPath, executeSQLScriptSteps);
 		}
 	}
 }
