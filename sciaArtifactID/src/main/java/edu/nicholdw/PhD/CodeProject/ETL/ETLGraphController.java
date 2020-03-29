@@ -4,9 +4,15 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
+import edu.UC.PhD.CodeProject.nicholdw.query.Query;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 
 /**
@@ -41,11 +47,34 @@ public class ETLGraphController {
 		generateDBJoinStepNodes(scip, etlLayer);
 		generateDimLookupUpdateStepNodes(scip, etlLayer);
 		generateCombinationLookupUpdateStepNodes(scip, etlLayer);
+		generateExecuteSQLScriptStepNodes(scip, etlLayer);
+		generateExecuteSQLScriptAttributeNodes(scip, etlLayer);
 		Log.logProgress("ETLGraphController.generateETLStepNodes() done.");
 	}
-
+	
+	public void generateExecuteSQLScriptAttributeNodes(SchemaChangeImpactProject scip, String etlLayer) {
+		Log.logProgress("ETLGraphController.generateExecuteSQLScriptAttributeNodes()...");
+		try {
+			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
+										+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "executeSQLScript_attributes.csv\" AS line "
+										+ "MERGE (st:Step{name: line.StepName, transname: line.TransformationName,"
+										+ "steptype:\""+ "TableInput\"," + "layer:\'"+etlLayer+"\'})");
+		} catch (Exception ex) {
+			Log.logError("ETLGraphController.generateExecuteSQLScriptAttributeNodes(): " + ex.getMessage());
+		}
+	}
+	public void generateExecuteSQLScriptStepNodes(SchemaChangeImpactProject scip, String etlLayer) {
+		Log.logProgress("ETLGraphController.generateExecuteSQLScriptStepNodes()...");
+		try {
+			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
+										+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "executeSQLScript_steps.csv\" AS line "
+										+ "MERGE (st:Step{name: line.StepName, transname: line.TransformationName,"
+										+ "steptype:\""+ "TableInput\"," + "layer:\'"+etlLayer+"\'})");
+		} catch (Exception ex) {
+			Log.logError("ETLGraphController.generateExecuteSQLScriptStepNodes(): " + ex.getMessage());
+		}
+	}
 	// Neo4jUtils.filePrefix + Utils.formatPath(SchemaChangeImpactProject.operationalSubDirectory)
-
 
 	public void generateInputStepNodes(SchemaChangeImpactProject scip, String etlLayer) {
 		Log.logProgress("ETLGraphController.generateInputStepNodes()...");
@@ -69,7 +98,6 @@ public class ETLGraphController {
 		} catch (Exception ex) {
 			Log.logError("ETLGraphController.generateOutputStepNodes(): " + ex.getMessage());
 		}
-
 	}
 	public void generateDBLookupStepNodes(SchemaChangeImpactProject scip, String etlLayer) {
 		Log.logProgress("ETLGraphController.generateDBLookupStepNodes()...");

@@ -956,9 +956,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		processFullIdContext(fullIdContext);
 	}
 	@Override public void visitErrorNode(ErrorNode node) {
-		Log.logQueryParseProgress("AntlrMySQLListener.visitErrorNode()");
+		Log.logQueryParseProgress("AntlrMySQLListener.visitErrorNode(): " + node.getSymbol());
+		Log.logError("AntlrMySQLListener.visitErrorNode(): node.symbol = " + node.getSymbol());
 	}
-
 //	@Override public void enterOrderByClauseLabel(MySqlParser.OrderByClauseLabelContext ctx) {
 	@Override public void enterOrderByClause(MySqlParser.OrderByClauseContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterOrderByClause(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());

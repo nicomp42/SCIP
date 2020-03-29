@@ -68,6 +68,8 @@ public class ETLToCSV {
 		generateDimensionLookupUpdateStepCsvData(  Utils.formatPath(csv_path) + "dimlookupupdate_steps.csv",  scip);
 		generateCombinationLookupUpdateStepCsvData(Utils.formatPath(csv_path) + "comblookupupdate_steps.csv", scip);
 		generateExecuteSQLScriptCsvData(Utils.formatPath(csv_path) + "executeSQLScript_steps.csv", scip);
+		generateExecuteSQLScriptAttributesCsvData(Utils.formatPath(csv_path) + "executeSQLScript_attributes.csv", scip);
+		
 	}
 	/***
 	 * Parses XML and generate CSV for Output step types - Insert/Update and TableOutput.
@@ -167,6 +169,22 @@ public class ETLToCSV {
 			//One transformation can be reading from multiple data sources
 			xmlParser.parseXMLForDBJoinSteps(etlTransformationFile, dbJoinSteps);
 			ETLExcelExporter.generateDBJoinCsvFile(csvPath, dbJoinSteps);
+		}
+	}
+	/**
+	 * Process the attributes referenced in an ETL Step that contains a SQL script
+	 * @param csvPath Where to put the attributes
+	 * @param scip Project to process
+	 */
+	public void generateExecuteSQLScriptAttributesCsvData(String csvPath, SchemaChangeImpactProject scip) {
+		XMLParser xmlParser=new XMLParser();
+		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+			Log.logProgress("ETLToCSV.generateExecuteSQLScriptCsvData(): File = " + etlTransformationFile.getFileName());
+			List<ExecuteSQLScriptStep> executeSQLScriptSteps = new ArrayList<ExecuteSQLScriptStep>();
+			//One transformation can be reading from multiple data sources
+			xmlParser.parseXMLForExecuteSQLScriptSteps(etlTransformationFile, executeSQLScriptSteps);
+			ETLExcelExporter.generateExecuteSQLScriptAttributesCsvFile(csvPath, executeSQLScriptSteps);
 		}
 	}
 	public void generateExecuteSQLScriptCsvData(String csvPath, SchemaChangeImpactProject scip) {

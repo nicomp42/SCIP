@@ -19,6 +19,7 @@ import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;;
@@ -28,7 +29,7 @@ public class ETLExcelExporter {
 	public static void generateOutputStepsCsvFile(String sFileName, List<TableOutputStep> steps) {
 		try {
 			boolean fileExists = false;
-			Log.logProgress("ETLExcelExporter.generateOutputStepsCsvFile(): Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateOutputStepsCsvFile(): Exporting to CSV");
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
@@ -77,12 +78,12 @@ public class ETLExcelExporter {
 	/**
 	 * Create the CSV files for ETL input steps
 	 * @param sFileName The target file for the output
-	 * @param steps The
+	 * @param steps The ETL input steps
 	 */
 	public static void generateInputStepsCsvFile(String sFileName, List<TableInputStep> steps) {
 		try {
 			boolean fileExists = false;
-			Log.logProgress("ETLExcelExporter.generateInputStepsCsvFile(): Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateInputStepsCsvFile(): Exporting to CSV");
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
@@ -131,7 +132,7 @@ public class ETLExcelExporter {
 	public static void generateDBJoinCsvFile(String sFileName, List<DBJoinStep> steps) {
 		try {
 			boolean fileExists = false;
-			Log.logProgress("ETLExcelExporter.generateDBJoinCsvFile(): Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateDBJoinCsvFile(): Exporting to CSV");
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
@@ -176,7 +177,7 @@ public class ETLExcelExporter {
 	public static void generateExecuteSQLScriptCsvFile(String sFileName, List<ExecuteSQLScriptStep> steps) {
 		try {
 			boolean fileExists = false;
-			Log.logProgress("ETLExcelExporter.generateExecuteSQLScriptCsvFile(): Exporting to Excel");
+			Log.logProgress("ETLExcelExporter.generateExecuteSQLScriptCsvFile(): Exporting to CSV");
 			File f = new File(sFileName);
 			if (f.exists()) {fileExists = true;}
 
@@ -218,6 +219,60 @@ public class ETLExcelExporter {
 			Log.logError("ETLExcelExporter.generateExecuteSQLScriptCsvFile: " + e.getLocalizedMessage(), e.getStackTrace());
 		}
 	}
+
+public static void generateExecuteSQLScriptAttributesCsvFile(String sFileName, List<ExecuteSQLScriptStep> steps) {
+	try {
+		boolean fileExists = false;
+		Log.logProgress("ETLExcelExporter.generateExecuteSQLScriptCsvFile(): Exporting to CSV");
+		File f = new File(sFileName);
+		if (f.exists()) {fileExists = true;}
+
+		FileWriter writer = new FileWriter(sFileName, true);
+		if (!fileExists) {
+			writer.append("TransformationName");
+			writer.append(',');
+			writer.append("StepName");
+			writer.append(',');
+			writer.append("StepType");
+			writer.append(',');
+			writer.append("DatabaseName");
+			writer.append(',');
+			writer.append("TableName");
+			writer.append(',');
+			writer.append("AttributeName");
+			writer.append(',');
+			writer.append("ETLStage");
+			writer.append('\n');
+		}
+		for (ExecuteSQLScriptStep stepObj : steps) {
+			Log.logProgress("generateExecuteSQLScriptCsvFile.generateDBJoinCsvFile(): Step " + stepObj.getStepName());			
+			// Parse the SQL and append the table attributes referenced in that SQL to some CSV file
+			QueryDefinition qd = new QueryDefinition("", "", "", new QueryTypeSelect(), stepObj.getTransName() + ":" + stepObj.getStepName(), stepObj.getSQL(), stepObj.getDbName());		// Query Name, SQL, Schema Name
+			QueryParser qp = new QueryParser();
+			qp.parseQuery(qd);
+			// Now we have all the attributes from the SQL in this ETL step.
+
+			for(QueryAttribute qa: qd.getQueryAttributes()) {
+				writer.append(stepObj.getTransName().trim());
+				writer.append(',');
+				writer.append(stepObj.getStepName().trim());
+				writer.append(',');
+				writer.append("ExecuteETLScript");
+				writer.append(',');
+				writer.append(qa.getSchemaName());
+				writer.append(',');
+				writer.append(qa.getTableName());
+				writer.append(',');
+				writer.append(qa.getAttributeName());
+				writer.append('\n');
+			}
+		}
+		writer.flush();
+		writer.close();
+	} catch (IOException e) {
+		Log.logError("ETLExcelExporter.generateExecuteSQLScriptCsvFile: " + e.getLocalizedMessage(), e.getStackTrace());
+	}
+}
 	public static void generateDBLookupCsvFile(String sFileName, List<DBLookupStep> steps, String etlStage) {
 		try {
 			boolean fileExists = false;
@@ -278,7 +333,6 @@ public class ETLExcelExporter {
 
 			FileWriter writer = new FileWriter(sFileName, true);
 			if (!fileExists) {
-
 				writer.append("TransformationName");
 				writer.append(',');
 				writer.append("StepName");
