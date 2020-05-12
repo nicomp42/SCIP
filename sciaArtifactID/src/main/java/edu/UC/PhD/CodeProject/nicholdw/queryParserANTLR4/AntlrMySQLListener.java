@@ -36,6 +36,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDrop;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropView;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeInsert;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeRenameTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
@@ -100,6 +101,30 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		for (CompoundAlias ca: compoundAliases) {
 			Log.logQueryParseProgress(ca.toString());
 		}
+	}
+	@Override public void enterInsertStatement(MySqlParser.InsertStatementContext ctx) { 
+		Log.logQueryParseProgress("AntlrMySQLListener.enterInsertStatement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+		FullTableName fullTableName = null;
+		for (Object o : ctx.children) {
+			if (o.getClass() ==  MySqlParser.TableNameContext.class  ) {
+				enterTableName((TableNameContext)o);
+				fullTableName = fullTableNames.get(fullTableNames.size() - 1);
+			}
+			if (o.getClass() == MySqlParser.UidListContext.class ) {
+				for (Object oo : ((MySqlParser.UidListContext)o).children) {
+					try {processUidContext(((MySqlParser.UidContext)oo), fullTableName.schemaName, fullTableName.tableName);} catch (Exception ex) {}
+				}
+			}
+		}
+	}
+	@Override public void exitInsertStatement(MySqlParser.InsertStatementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.exitInsertStatement: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+	}
+	@Override public void enterInsertStatementValue(MySqlParser.InsertStatementValueContext ctx) { 
+		Log.logQueryParseProgress("AntlrMySQLListener.enterInsertStatementValue: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
+	}
+	@Override public void exitInsertStatementValue(MySqlParser.InsertStatementValueContext ctx) { 
+		Log.logQueryParseProgress("AntlrMySQLListener.exitInsertStatementValue: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
 	@Override public void enterSimpleSelect(MySqlParser.SimpleSelectContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterSimpleSelect: " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
@@ -537,6 +562,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	 * This is useful because it's called in DROP, ALTER, etc., but enter enterAtomTableItem() is not called for tables in those queries.
 	 */
 	@Override public void enterTableName(MySqlParser.TableNameContext ctx) {
+		FullIdContext f = null;
 		try {
 			Log.logQueryParseProgress("AntlrMySQLListener.enterTableName(): " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop() + " Parent Context = " + ctx.getParent().getClass());
 			FullIdContext fullIdContext = (FullIdContext)ctx.getChild(0);
@@ -602,7 +628,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterUid(): " + ctx.getText() + ", " + ctx.getChild(0).getText() + " Parent Context = " + ctx.getParent().getClass());
 //		processUidContext(ctx);
 	}
-	private void processUidContext(MySqlParser.UidContext ctx) {
+	private void processUidContext(MySqlParser.UidContext ctx, String schemaName, String tableName) {
 		String foo = " " + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop();
 		// Add to the list of columns that are referenced in this query
 		//String start = ctx.getStart().getText();
@@ -611,11 +637,15 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		switch (ctx.children.size()) {
 		case 1:	
 			// Just an attribute Name
-			fullColumnName = new FullColumnName("", "", ctx.children.get(0).getText());
+			if (ctx.children.get(0).getText().compareTo(",") != 0) { 
+				fullColumnName = new FullColumnName(schemaName, tableName, ctx.children.get(0).getText());
+			} else {
+				fullColumnName = null;
+			}
 			break;
 		case 2:
 			// An Attribute Name and a table/query name/alias
-			fullColumnName = new FullColumnName("", 
+			fullColumnName = new FullColumnName(schemaName, 
 												ctx.children.get(0).getText(),  
 					                            ctx.children.get(1).getText());
 			break;
@@ -629,8 +659,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logError("processUidContext(): unrecognized number of children (" + ctx.children.size() +")");
 			break;
 		}
-		fullColumnName.addAliasName(new AliasNameClassOLD(currentAlias));
-		fullColumnNames.addFullColumnName(fullColumnName);
+		if (fullColumnName != null) {
+			fullColumnName.addAliasName(new AliasNameClassOLD(currentAlias));
+			fullColumnNames.addFullColumnName(fullColumnName);
+		}
 	}
 	@Override public void exitUid(MySqlParser.UidContext ctx) {Log.logQueryParseProgress("AntlrMySQLListener.exitUid()");}
 	@Override public void enterSimpleId(MySqlParser.SimpleIdContext ctx) {
@@ -862,6 +894,11 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			queryDefinition.getQueryTerminalSymbols().addQueryTerminalSymbol(new QueryTerminalSymbol(node.getText()));
 		} catch (Exception ex) {}		// Eat the exception? ToDo check this.
 		switch (node.getText().toUpperCase()) {
+		case "INSERT":
+			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): found INSERT");
+			if (firstVisit == true) {queryDefinition.setQueryType(new QueryTypeInsert()); firstVisit = false;}
+			processTerminalNodeInsert(node);
+			break;
 		case "RENAME":
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): found RENAME");
 			processTerminalNodeRename(node);
@@ -933,6 +970,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): UNKNOWN symbol: " + node.getText());
 			lastTerminalNode = "UNKNOWN";
 		}
+	}
+	/***
+	 * The SQL begins with INSERT
+	 * @param ctx
+	 */
+	public void processTerminalNodeInsert(ParseTree ctx) {
+	
 	}
 	/***
 	 * The SQL begins with RENAME

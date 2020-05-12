@@ -16,6 +16,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeInsert;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 /***
@@ -23,6 +24,7 @@ import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
  * @author nicomp
  */
 public class ETLProcess implements java.io.Serializable {
+	private static final long serialVersionUID = 2729702901520146865L;
 	private String name;
 	private String description;
 	private ETLSteps etlSteps;
@@ -50,6 +52,13 @@ public class ETLProcess implements java.io.Serializable {
 		for (ETLStep etlStep : etlSteps) {
 			if (etlStep.getStepType().equals("TableInput")) {
 				processTableInputStepQuery(etlStep);
+			}
+		}
+	}
+	public void processExecuteSQLStepQueries() {
+		for (ETLStep etlStep : etlSteps) {
+			if (etlStep.getStepType().equals("ExecSQL")) {
+				processExecuteSQLScriptStepQuery(etlStep);
 			}
 		}
 	}
@@ -103,11 +112,23 @@ public class ETLProcess implements java.io.Serializable {
 				                                       etlConnection.getDatabase()));
 		etlStep.getQueryDefinition().crunchIt();
 	}
-
+	public void processExecuteSQLScriptStepQuery(ETLStep etlStep) {
+		// Look up the connection 
+		ETLConnection etlConnection = etlConnections.getConnection(etlStep.getConnection());
+		// Parse the query
+		etlStep.setQueryDefinition(new QueryDefinition(etlConnection.getServer(), 
+				                                       etlConnection.getUserName(), 
+				                                       etlConnection.getPasswordDefinedExternally(),
+				                                       new QueryTypeInsert(),
+				                                       "",				// No query name 'cause it's from an ETLStep 
+				                                       etlStep.getSql(),
+				                                       etlConnection.getDatabase()));
+		etlStep.getQueryDefinition().crunchIt();
+	}
 	public String getName() {
 		return name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -143,19 +164,17 @@ public class ETLProcess implements java.io.Serializable {
 			// CREATE (n:Person { name: 'Andy', title: 'Developer' })
 			if (etlStep.getStepType().equals("DBProc")) {
 				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
-				                         " { StepName: " + 
-				                         "'" + etlStep.getStepName() 		+ "'" + 
+				                         " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
 				                         ", procedure:'" + etlStep.getProcedure()		+ "'" + 
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 				                         ",	key:'" + etlStep.getStepName()	+ "'" +
 				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 				                         "})");
-				
+
 			} else if (etlStep.getStepType().equals("MergeJoin")) {
 					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
-					                         " { StepName: " + 
-					                         "'" + etlStep.getStepName() 		+ "'" + 
+					                         " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
 					                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 					                         ",	key:'" + etlStep.getStepName()	+ "'" +
 					                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
@@ -164,8 +183,7 @@ public class ETLProcess implements java.io.Serializable {
 
 			} else if (etlStep.getStepType().equals("TableInput")) {
 				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
-				                         " { StepName: " + 
-				                         "'" + etlStep.getStepName() 		+ "'" + 
+				                         " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
 				                         ", sql:'" + etlStep.getSql().substring(0, 6) +"..." + "'" + 
 				                         ",	table:'" + etlStep.getTableName()	+ "'" +
 				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
@@ -221,6 +239,35 @@ public class ETLProcess implements java.io.Serializable {
               				                +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
               				                + "CREATE (a)-[:" + SchemaGraph.etlFieldToETLStepLabel +"]->(t)");
 				}		
+			} else if (etlStep.getStepType().equals("ExecSQL")) {
+				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
+                        " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
+                        ", sql:'" + etlStep.getSql().substring(0, 6) +"..." + "'" + 
+                        ",	table:'" + etlStep.getTableName()	+ "'" +
+                        ",	stepType:'" + etlStep.getStepType()	+ "'" +
+                        ",	key:'" + etlStep.getKey()	+ "'" +
+                        ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+                        ", TransformationFileName:'" + etlStep.getFileName() + "'" +
+                        "})");
+				QueryDefinition qd = etlStep.getQueryDefinition();
+				// Add the nodes for the attributes in the query that this step uses
+				for (QueryAttribute qa : qd.getQueryAttributes()) {
+					String key = "";
+					key = Utils.cleanForGraph(qa.getSchemaName()) 
+						  + "." + Utils.cleanForGraph(qa.getTableName()) 
+						  + "." + Utils.cleanForGraph(qa.getAttributeName());
+					Neo4jDB.submitNeo4jQuery("CREATE (A:"
+					                         + SchemaGraph.attributeNodeLabel
+					                         + " { key: "
+					                         + "'" + key + "'" 
+					                         + ", name:" 
+					                         + "'" + Utils.cleanForGraph(qa.getAttributeName()) + "'"
+	//				                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
+					                         + "})");
+					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
+				               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
+				               				 + "CREATE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
+				}
 			} else {
 				Log.logError("ETLParser.createGraph(): No logic to process ETL step type " + etlStep.getStepType());
 			}			

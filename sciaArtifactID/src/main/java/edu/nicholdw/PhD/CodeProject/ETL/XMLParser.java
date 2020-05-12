@@ -168,7 +168,6 @@ public class XMLParser {
 			XPath xpath = xpathFactory.newXPath();
 			/* One transformation is composed of several Database lookup steps */
 			List<String> listOfAllStepNames=getStepNamesByType(xpath,doc,steptype);
-
 			for(String stepname:listOfAllStepNames){
 				dblookupstep=DBLookupStepParser.parseXMLByStepName(doc, xpath, stepname, etlTransformationFile.getEtlStage() );
 				dblookupsteps.add(dblookupstep);

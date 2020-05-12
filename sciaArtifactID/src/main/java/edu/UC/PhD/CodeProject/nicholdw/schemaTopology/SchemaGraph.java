@@ -99,11 +99,14 @@ public class SchemaGraph {
 	private static void addQueryConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.queryNodeLabel + ") ASSERT a.key IS UNIQUE");}
 	private static void addTableConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.tableNodeLabel + ") ASSERT a.key IS UNIQUE");}
 	private static void addSchemaConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.schemaNodeLabel + ") ASSERT a.key IS UNIQUE");}
+	private static void addETLStepNodeConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.etlStepNodeLabel + ") ASSERT a.key IS UNIQUE");}
+
 	public static void addAllConstraints() {
 		addAttributeConstraint();
 		addQueryConstraint();
 		addTableConstraint();
 		addSchemaConstraint();
+		addETLStepNodeConstraint();
 	}
 	public static void changeNodeLabel(String key, String oldLabel, String newLabel) {
 //		match (n:attribute {key:'temporary.store.cityid'}) remove n:attribute set n:attribute_affected

@@ -23,6 +23,7 @@ import org.w3c.dom.Document;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
+import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
@@ -328,6 +329,7 @@ public class ProcessETLController {
 			ArrayList<StepName> stepNames = new ArrayList<StepName>();
 			ArrayList<String> connectionNames = new ArrayList<String>();
 			ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
+			ArrayList<ExecuteSQLScriptStep> executeSQLScriptSteps = new ArrayList<ExecuteSQLScriptStep>();
 			ETLHops etlHops = new ETLHops();
 	//		ETLJobs etlJobs = new ETLJobs();
 			// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
@@ -367,6 +369,7 @@ public class ProcessETLController {
 					myXMLParser.parseXMLForDBJoinSteps(etlTransformationFile, dbJoinSteps);
 					myXMLParser.parseXMLForDBProcSteps(etlTransformationFile, dbProcSteps);
 					myXMLParser.parseXMLForHops(etlTransformationFile, etlHops);
+					myXMLParser.parseXMLForExecuteSQLScriptSteps(etlTransformationFile, executeSQLScriptSteps);
 					
 	//				ETLJobs tmpETLJobs = new ETLJobs();
 	//				myXMLParser.getETLJobs(myXMLParser.getXMLFilePathPrefix() + myXMLFileName, tmpETLJobs);
@@ -448,10 +451,11 @@ public class ProcessETLController {
 					disableETLLoadSelectionControls(false);
 					loadTableViewWithETLConnections(scip.getEtlProcess().getETLConnections());
 					// OK, the ETLProcess object is loaded up with ETL Steps and Connections and stuff
-					// We should be able to parse the queries in the table input steps
+					// We should be able to parse the queries in the steps that have queries
 					scip.getEtlProcess().processTableInputStepQueries();
 					scip.getEtlProcess().processTableOutputStepsFields();
 					scip.getEtlProcess().setEtlHops(etlHops);
+					scip.getEtlProcess().processExecuteSQLStepQueries();
 				} catch (Exception ex) {
 					Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 					disableETLLoadSelectionControls(false);

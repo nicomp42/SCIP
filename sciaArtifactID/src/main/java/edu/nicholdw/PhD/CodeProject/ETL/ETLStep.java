@@ -15,7 +15,6 @@ import javafx.scene.control.TableView;
  */
 public class ETLStep implements java.io.Serializable {
 	public static final String type_TableInput = "TableInput";
-	
 	private String stepType;
 	private String stepName;
 	private String sql;
