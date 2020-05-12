@@ -54,7 +54,7 @@ public class Schema {
 		try {
 			QueryParser queryParser = new QueryParser();
 			for (QueryDefinition queryDefinition: queryDefinitions) {
-				queryParser.parseQuery(queryDefinition);
+				queryDefinition.crunchIt();
 				// Now we have little query bits we can append to the CSV file.
 				// Everything goes in the same file in the Dwh step. Just keep appending.
 				QueryExcelExporter.generateCsvFile(fileName, queryDefinition);
@@ -314,6 +314,8 @@ public class Schema {
 	
 	public static String formatSchemaName(String schemaName) {
 		if (schemaName == null) {
+			return "";
+		} else if (schemaName.trim().length() == 2 && schemaName.trim().startsWith("`") && schemaName.trim().endsWith("`")) {
 			return "";
 		} else {
 			return Utils.cleanForGraph(schemaName);

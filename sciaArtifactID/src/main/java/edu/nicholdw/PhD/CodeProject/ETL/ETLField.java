@@ -23,6 +23,10 @@ public class ETLField implements java.io.Serializable {
 		setColumnName(columnName);
 		setStreamName(streamName);
 	}
+	/**
+	 * Copy Constructor
+	 * @param etlField ETLField object to be copied
+	 */
 	public ETLField(ETLField etlField) {
 		this.setColumnName(etlField.getColumnName());
 		this.setStreamName(etlField.getStreamName());
@@ -60,4 +64,18 @@ public class ETLField implements java.io.Serializable {
 	 */
 	public String toString() {return getColumnName() + ":" + getStreamName();}
 	
+	/**
+	 * Compare two ETLField objects
+	 * @param etlField1
+	 * @param etlField2
+	 * @return True if they contain all the same properties, false otherwise
+	 */
+	public static Boolean compare(ETLField etlField1, ETLField etlField2) {
+		if (etlField1.getColumnName().compareTo(etlField2.getColumnName()) == 0 &&
+			etlField1.getStreamName().compareTo(etlField2.getStreamName()) == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

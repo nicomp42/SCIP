@@ -300,7 +300,8 @@ public class Utils {
 	public static Boolean isBlank(String artifactName) {
 		Boolean isBlankFlag = false;
 		String tmp = artifactName.trim();
-		if (tmp.startsWith("`") && tmp.endsWith("`") && tmp.length() == 2) {
+		if (tmp.trim().length() == 0 || 
+			(tmp.trim().startsWith("`") && tmp.trim().endsWith("`") && tmp.length() == 2)) {
 			isBlankFlag = true;
 		}
 		return isBlankFlag;

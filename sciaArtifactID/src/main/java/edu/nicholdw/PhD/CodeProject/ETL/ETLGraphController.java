@@ -58,7 +58,7 @@ public class ETLGraphController {
 			Neo4jDB.ExecActionQuery("LOAD CSV WITH HEADERS FROM \""
 										+ Neo4jDB.filePrefix + Utils.formatPath(etlLayer) + "executeSQLScript_attributes.csv\" AS line "
 										+ "MERGE (st:Step{name: line.StepName, transname: line.TransformationName,"
-										+ "steptype:\""+ "TableInput\"," + "layer:\'"+etlLayer+"\'})");
+										+ "steptype:\""+ "ExecSQLScriptAttributes\"," + "layer:\'"+etlLayer+"\'})");
 		} catch (Exception ex) {
 			Log.logError("ETLGraphController.generateExecuteSQLScriptAttributeNodes(): " + ex.getMessage());
 		}

@@ -105,7 +105,7 @@ public class ETLExcelExporter {
 				Log.logProgress("ETLExcelExporter.generateInputStepsCsvFile(): Step " + stepObj.getStepName());			
 				QueryDefinition qd = new QueryDefinition("", "", "", new QueryTypeSelect(), stepObj.getTransName() + ":" + stepObj.getStepName(), stepObj.getSql(), stepObj.getDbName());		// Query Name, SQL, Schema Name
 				QueryParser qp = new QueryParser();
-				qp.parseQuery(qd);
+				qd.crunchIt();
 
 				// After it's parsed, we need to store it somewhere in a CSV file, including each attribute.
 				writer.append(stepObj.getTransName().trim());
@@ -164,8 +164,9 @@ public class ETLExcelExporter {
 				writer.append(',');
 				writer.append(stepObj.getDbName().trim());
 				writer.append(',');
-
 				writer.append("\"" + stepObj.getSql().replaceAll("[\\t\\n\\r\\s]", " ").trim() + "\"");
+//				writer.append(',');
+//				writer.append(stepObj.getEtlStage());
 				writer.append('\n');
 			}
 			writer.flush();
@@ -209,8 +210,9 @@ public class ETLExcelExporter {
 				writer.append(',');
 				writer.append(stepObj.getDbName().trim());
 				writer.append(',');
-
 				writer.append("\"" + stepObj.getSQL().replaceAll("[\\t\\n\\r\\s]", " ").trim() + "\"");
+				writer.append(',');
+				writer.append(stepObj.getEtlStage());
 				writer.append('\n');
 			}
 			writer.flush();
@@ -248,8 +250,7 @@ public static void generateExecuteSQLScriptAttributesCsvFile(String sFileName, L
 			Log.logProgress("generateExecuteSQLScriptCsvFile.generateDBJoinCsvFile(): Step " + stepObj.getStepName());			
 			// Parse the SQL and append the table attributes referenced in that SQL to some CSV file
 			QueryDefinition qd = new QueryDefinition("", "", "", new QueryTypeSelect(), stepObj.getTransName() + ":" + stepObj.getStepName(), stepObj.getSQL(), stepObj.getDbName());		// Query Name, SQL, Schema Name
-			QueryParser qp = new QueryParser();
-			qp.parseQuery(qd);
+			qd.crunchIt();
 			// Now we have all the attributes from the SQL in this ETL step.
 
 			for(QueryAttribute qa: qd.getQueryAttributes()) {
@@ -264,6 +265,8 @@ public static void generateExecuteSQLScriptAttributesCsvFile(String sFileName, L
 				writer.append(qa.getTableName());
 				writer.append(',');
 				writer.append(qa.getAttributeName());
+				writer.append(',');
+				writer.append(stepObj.getEtlStage());
 				writer.append('\n');
 			}
 		}

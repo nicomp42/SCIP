@@ -68,7 +68,7 @@ public class ETLStep implements java.io.Serializable {
 
 	public void addETLFields(ETLFields etlFields) {
 		for (ETLField etlField: etlFields) {
-			this.etlFields.add(etlField);
+			this.etlFields.addETLField(etlField);
 		}
 	}
 	public ETLFields getETLFields() {return etlFields;}

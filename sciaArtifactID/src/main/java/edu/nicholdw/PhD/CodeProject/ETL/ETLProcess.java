@@ -137,7 +137,7 @@ public class ETLProcess implements java.io.Serializable {
 	}
 
 	public static void createGraph(ETLProcess etlProcess) {
-		SchemaGraph.addAllConstraints();
+		SchemaGraph.addAllConstraints();	// Force keys to be unique as the graph is drawn
 		for (ETLStep etlStep : etlProcess.getETLSteps()) {
 			Log.logProgress("ETLParser.createGraph(): ETL Step Type = " + etlStep.getStepType());
 			// CREATE (n:Person { name: 'Andy', title: 'Developer' })
@@ -213,7 +213,10 @@ public class ETLProcess implements java.io.Serializable {
 	                                         ",	key:'" + key + "'" +
 	                                         ",	name:'" + etlField.getColumnName()	+ "'" +
 	                                         "})");
-
+					if (key.compareTo("..employeenumber") == 0) {
+						Log.logProgress("..employeenumber");
+					}
+					// Create a relationship between the ETL Step Node and the attribute node we just added
 					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
               				                +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
               				                + "CREATE (a)-[:" + SchemaGraph.etlFieldToETLStepLabel +"]->(t)");

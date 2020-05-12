@@ -266,6 +266,7 @@ public class Neo4jDB {
 		// Don't call getDriver here. The driver should already be configured by
 		// whomever called this method
 		// getDriver();
+		Log.logNeo4jQueryHistory(cypher);
 		Log.logProgress("Neo4jUtils.ExecActionQuery(): " + "query = " + cypher);
 		try (Session session = driver.session()) {
 			Log.logProgress("Neo4jUtils.ExecActionQuery(): " + " session is " + (session.isOpen() ? "" : "not ") + "open");

@@ -427,7 +427,9 @@ public class XMLParser {
 			if(str.equals("InsertUpdate")) {
 				stepType=0;
 			} else {
-				if(str.equals("TableOutput")) stepType=1;
+				if(str.equals("TableOutput")) {
+					stepType=1;
+				}
 			}
 
 		} catch (XPathExpressionException e) {
@@ -601,7 +603,7 @@ public class XMLParser {
 						streamName = children.item(k).getTextContent();
 					}
 				}
-				etlFields.add(new ETLField(columnName, streamName));						
+				etlFields.addETLField(new ETLField(columnName, streamName));						
 			}
 		}catch (Exception e) {
 			Log.logError("XMLParser.getETLFields(): " + e.getLocalizedMessage(), e.getStackTrace());

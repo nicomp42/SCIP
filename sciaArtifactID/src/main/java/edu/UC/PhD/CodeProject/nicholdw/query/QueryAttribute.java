@@ -115,7 +115,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * @param tableName
 	 */
 	public void setTableName(String tableName) {
-		if (tableName == null) {
+		if (tableName == null || tableName.trim().length() == 0) {
 			this.tableName = "";
 		} else {
 			this.tableName = Table.formatTableName(tableName);

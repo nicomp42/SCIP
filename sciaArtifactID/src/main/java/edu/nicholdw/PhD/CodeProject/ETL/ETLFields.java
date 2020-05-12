@@ -23,8 +23,18 @@ public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
 		etlFields = new ArrayList<ETLField>();
 	}
 
-	public void addField(ETLField etlField) {
-		etlFields.add(etlField);
+	/**
+	 * Add an ETLField object to the collection if it's not already there.
+	 * @param etlFieldToAdd ETLField object to be added. 
+	 */
+	public void addETLField(ETLField etlFieldToAdd) {
+		Boolean alreadyThere = false;
+		for (ETLField etlField : etlFields) {
+			if (ETLField.compare(etlFieldToAdd, etlField) == true) {alreadyThere = true; break;}
+		}
+		if (!alreadyThere) {
+			etlFields.add(new ETLField(etlFieldToAdd));
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -42,9 +52,9 @@ public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
 		}
 		return result;
 	}
-	public void add(ETLField etlField) {
+/*	public void add(ETLField etlField) {
 		etlFields.add(new ETLField(etlField));
-	}
+	} Use addETLField instead! */
 	
 	@Override
 	public Iterator<ETLField> iterator() {

@@ -47,11 +47,17 @@ public class Table {
 		this.tableName = Table.formatTableName(tableName);
 	}
 	public static String formatTableName(String tableName) {
-		if (tableName.trim().startsWith("`") && tableName.trim().endsWith("`")) {
-			// It's all good
-			return tableName.trim();
+		if (tableName == null ||
+			tableName.trim().length() == 0 ||
+			(tableName.trim().length() == 2 && tableName.trim().startsWith("`") && tableName.trim().endsWith("`"))) {
+			return "";
 		} else {
-			return Utils.QuoteMeBack(tableName.trim());
+			if (tableName.trim().startsWith("`") && tableName.trim().endsWith("`")) {
+				// It's all good
+				return tableName.trim();
+			} else {
+				return Utils.QuoteMeBack(tableName.trim());
+			}
 		}
 	}
 	/*
@@ -59,11 +65,17 @@ public class Table {
 	 * @param schemaName
 	 */
 	public void setSchemaName(String schemaName) {
-		if (schemaName.trim().startsWith("`") && schemaName.trim().endsWith("`")) {
-			// It's all good
-			this.schemaName = schemaName.trim();
+		if (schemaName == null ||
+			schemaName.trim().length() == 0 ||
+			(schemaName.trim().length() == 2 && schemaName.trim().startsWith("`") && schemaName.trim().endsWith("`"))) {
+			this.schemaName = "";
 		} else {
-			this.schemaName = Utils.QuoteMeBack(schemaName.trim());
+			if (schemaName.trim().startsWith("`") && schemaName.trim().endsWith("`")) {
+				// It's all good
+				this.schemaName = schemaName.trim();
+			} else {
+				this.schemaName = Utils.QuoteMeBack(schemaName.trim());
+			}
 		}
 	}
 	public String getComment() {return comment;}
