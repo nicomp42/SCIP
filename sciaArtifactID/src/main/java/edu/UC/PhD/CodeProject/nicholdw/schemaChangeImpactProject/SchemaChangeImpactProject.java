@@ -17,6 +17,7 @@ import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.ActionQueryDefinitions;
 import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 
@@ -39,6 +40,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private OpsIds opsIds;
 	private DwhQueries dwhQueries;
 	private ETLProcess etlProcess;
+	private ActionQueryDefinitions actionQueryDefinitions;
 	private static final String defaultProjectName = "[No project loaded]";	// Until the user provides a project name
 	//private ArrayList<TableOutputStep> outputSteps = new ArrayList<TableOutputStep>();
 	//private ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
@@ -46,7 +48,6 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	//private ArrayList<StepName> stepNames = new ArrayList<StepName>();
 	//private ArrayList<String> connectionNames = new ArrayList<String>();
 	//private ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
-
 
 	// Subdirectories in the project that will contain files to be processed
 	public static String operationalSubDirectory = "ops";		// Operational Data Store
@@ -58,6 +59,9 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	public SchemaChangeImpactProject() {
 		init();
 		try {setProjectName(defaultProjectName);} catch (Exception ex){}		// OK to eat this exception.
+	}
+	public ActionQueryDefinitions GetActionQueryDefinitions() {
+		return actionQueryDefinitions;
 	}
 	/**
 	 * Build the location, with fileName, where the CSV file for the Dwh step will be written
@@ -92,6 +96,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		setOpsIds(new OpsIds());
 		setDwhQueries(new DwhQueries());
 		setEtlProcess(new ETLProcess(Utils.formatPath(filePath) + pentahoProjectDirectory));
+		actionQueryDefinitions = new ActionQueryDefinitions();
 	}
 	public void loadETLTransformationFiles() {
 		etlProcess.loadETLTransformationFiles();

@@ -33,6 +33,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
@@ -95,6 +96,7 @@ public class ProcessETLController {
 		scip.getEtlProcess().setTransformationFileDirectory(Utils.formatPath(txaETLFilePath.getText().trim())); 
 		processETLTransformationFiles();
 	}
+//	@FXML	private void txaETLFilePath_DoubleClick(ActionEvent event) {txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho");}
 	@FXML	private void btnClearTransformationTable_OnClick(ActionEvent event) {clearTransformationFileTable();}
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
@@ -121,14 +123,17 @@ public class ProcessETLController {
 				qd.crunchIt();
 				txaAffectOfActionQuery.appendText("SQL: " + qd.getSql() + System.getProperty("line.separator"));
 				txaAffectOfActionQuery.appendText("Query Type: " + qd.getQueryType().toString() + System.getProperty("line.separator"));
-				txaAffectOfActionQuery.appendText("Tables:" +  System.getProperty("line.separator");
+				txaAffectOfActionQuery.appendText("Tables:" + System.getProperty("line.separator"));
 				for (QueryTable qt: qd.getQueryTables()) {
 					txaAffectOfActionQuery.appendText(qt.toString() + System.getProperty("line.separator"));
 				}
-				txaAffectOfActionQuery.appendText("Attributes:" +  System.getProperty("line.separator");
+				txaAffectOfActionQuery.appendText("Attributes:" +  System.getProperty("line.separator"));
 				for (QueryAttribute qa : qd.getQueryAttributes()) {
 					txaAffectOfActionQuery.appendText(qa.toString() + System.getProperty("line.separator"));
 				}
+				// Put the action query into the scip object
+				scip.GetActionQueryDefinitions().addActionQueryDefinition(qd);
+				
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.btnApplyActionQuery_OnClick(): ", ex);
 			}
@@ -160,7 +165,7 @@ public class ProcessETLController {
 		try {
 			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),  Config.getConfig().getNeo4jDBDefaultPassword());
 			if (cbClearDB.isSelected()) {Neo4jDB.clearDB();}
-			ETLProcess.createGraph(scip.getEtlProcess());
+			ETLProcess.createGraph(scip, true);
 			if (cbOpenInBrowser.isSelected() ) {
 				Browser browser = Browser.prepareNewBrowser();
 				browser.initAndLoad(null);
@@ -176,6 +181,7 @@ public class ProcessETLController {
 		loadTableViewWithETLSteps(scip.getEtlProcess().getETLSteps()); 
 	}
 	private void setTheScene() {
+		txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho");
 		scip = Config.getConfig().getCurrentSchemaChangeImpactProject();
 		scatter(scip);
 //		We are setting the title of this form in the Main. It works and I can't figure out how to get the stage object here.

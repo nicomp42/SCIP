@@ -22,7 +22,7 @@ import sun.misc.ClassLoaderUtil;
 /***
  * A collection of ActionQuery objects. Yes, the plural of query is not querys. However, appending an s is my standard.
  * @author nicomp
- *
+ * See also ActionQueryDefinitions class for a container of Action Query Definitions. Don't use this.
  */
 public class ActionQuerys implements Iterable<ActionQuery> {
 	private ArrayList<ActionQuery> actionQuerys;

@@ -1372,6 +1372,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			myTableName.append(child.getChild(0).getChild(0).getText());
 			Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): table name = " + myTableName + ", schema name defaulted to " + mySchemaName);
 			break;
+		case 2:
+			// A schema name and another element that is a table name prefaced by a dot. Hmm...
+			mySchemaName.setLength(0);
+			mySchemaName.append(child.getChild(0).getChild(0).getText());
+			myTableName.setLength(0);
+			myTableName.append(child.getChild(0).getChild(1).getText().substring(1));
+			break;
 		case 3:
 			// A schema name and a table name with a dot in between
 			mySchemaName.setLength(0);
@@ -1381,7 +1388,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logQueryParseProgress("AntlrMySQLListener." + caller + ": table name = " + myTableName + ", schema name = " + mySchemaName);
 			break;
 		default:
-			Log.logError("ANTLRMySQLListener." + caller + "(): unexpected number of child nodes (" + child.getChildCount() + ")");
+			Log.logError("ANTLRMySQLListener." + caller + "(): unexpected number of child nodes (" + child.getChild(0).getChildCount() + ")");
 			break;
 		}
 	}

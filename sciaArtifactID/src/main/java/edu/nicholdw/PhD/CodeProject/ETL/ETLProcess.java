@@ -18,6 +18,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeInsert;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
+import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 /***
  * Model an entire ETL Process consisting of steps and connections
@@ -156,8 +157,8 @@ public class ETLProcess implements java.io.Serializable {
 	public void setEtlConnections(ETLConnections etlConnections) {
 		this.etlConnections = etlConnections;
 	}
-
-	public static void createGraph(ETLProcess etlProcess) {
+	public static void createGraph(SchemaChangeImpactProject scip, Boolean applyActionQuerys) {
+		ETLProcess etlProcess = scip.getEtlProcess();
 		SchemaGraph.addAllConstraints();	// Force keys to be unique as the graph is drawn
 		for (ETLStep etlStep : etlProcess.getETLSteps()) {
 			Log.logProgress("ETLParser.createGraph(): ETL Step Type = " + etlStep.getStepType());
@@ -267,6 +268,14 @@ public class ETLProcess implements java.io.Serializable {
 					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
 				               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
 				               				 + "CREATE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
+				}
+				if (applyActionQuerys) {
+					// We have a graph and that's great. Now for the big finale...
+					// Apply the action querys to the graph to highlight the affected nodes
+					for (QueryDefinition aqd : scip.GetActionQueryDefinitions()) {
+						// ToDo: Make it work
+						
+					}
 				}
 			} else {
 				Log.logError("ETLParser.createGraph(): No logic to process ETL step type " + etlStep.getStepType());
