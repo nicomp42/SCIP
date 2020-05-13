@@ -32,6 +32,9 @@ import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnection;
@@ -78,16 +81,20 @@ public class ProcessETLController {
 	@FXML	private TableView<GUIETLConnection> tvETLConnections;
 	@FXML	private TableView<GUIetlTransformationFile> tvETLTransformationFiles;
 	@FXML	private AnchorPane apProcessETL;
-	@FXML	private TextArea txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults, txaETLJobs, txaDBProcStepResults;
-	@FXML	private Button btnETLSubmit, btnETLBrowse, btnCreateGraph, btnProcessETLTransformationFiles, btnClearTable;
+	@FXML	private TextArea txaAffectOfActionQuery, txaActionQueryToApply, txaETLFilePath, txaOutputStepResults, txaInputStepResults, txaJoinStepResults, txaStepNamesResults, txaETLJobs, txaDBProcStepResults;
+	@FXML	private Button btnApplyActionQuery, btnETLSubmit, btnETLBrowse, btnCreateGraph, btnProcessETLTransformationFiles, btnClearTable;
 	@FXML 	private Label lblContentsOfETL;
 	@FXML	private Label lblWorking;
 	@FXML	private CheckBox cbClearDB, cbOpenInBrowser;
-	@FXML	private Pane pneETLResults, pneETLLoad, pneCreateGraph, pneFiles;
+	@FXML	private Pane pneActionQueryToApply, pneETLResults, pneETLLoad, pneCreateGraph, pneFiles;
 	@FXML 	private void btnETLSubmit_OnClick(ActionEvent event) {loadETLTransformationFiles();}
 	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
 	@FXML	private void btnCreateGraph_OnClick(ActionEvent event) {createGraph();}
-	@FXML	private void btnProcessETLTransformationFiles_OnClick(ActionEvent event) {scip.getEtlProcess().setTransformationFileDirectory(Utils.formatPath(txaETLFilePath.getText().trim())); processETLTransformationFiles();}
+	@FXML	
+	private void btnProcessETLTransformationFiles_OnClick(ActionEvent event) {
+		scip.getEtlProcess().setTransformationFileDirectory(Utils.formatPath(txaETLFilePath.getText().trim())); 
+		processETLTransformationFiles();
+	}
 	@FXML	private void btnClearTransformationTable_OnClick(ActionEvent event) {clearTransformationFileTable();}
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
@@ -98,6 +105,27 @@ public class ProcessETLController {
 			Log.logError("ProcessETLController.initialize(): " + e.getLocalizedMessage());
 		}
 		Log.logProgress("ProcessETLController.initialize() complete");
+	}
+	@FXML private void btnApplyActionQuery_OnClick(ActionEvent event) {
+		String actionQueryText = txaActionQueryToApply.getText();
+		if (actionQueryText == null || actionQueryText.trim().length() == 0) {
+			(new Alert(Alert.AlertType.ERROR, "Enter an action query to apply.", ButtonType.OK)).showAndWait();
+		} else {
+			Log.logProgress("ProcessETLController.btnApplyActionQuery_OnClick()");
+			actionQueryText = actionQueryText.trim();
+			try {
+				// Let's find out what this query is going to do
+				QueryDefinition qd = new QueryDefinition("", "", "", null, "", actionQueryText, "");
+				QueryParser qp = new QueryParser();
+				qd.setSql(actionQueryText);
+				qd.crunchIt();
+				for (QueryAttribute qa : qd.getQueryAttributes()) {
+					txaAffectOfActionQuery.appendText(qa.toString() + System.getProperty("line.separator"));
+				}
+			} catch (Exception ex) {
+				Log.logError("ProcessETLController.btnApplyActionQuery_OnClick(): ", ex);
+			}
+		}
 	}
 	/**
 	 * This never gets called by JavaFX. It's only called in the init of the application, which in this case is Main.
@@ -149,6 +177,8 @@ public class ProcessETLController {
 		displayLoadETLResults(false);
 		btnETLSubmit.setVisible(false);
 		displayETLProcessControls(false);
+		pneCreateGraph.setVisible(false);
+		pneActionQueryToApply.setVisible(false);
 		txaETLFilePath.focusedProperty().addListener(new ChangeListener<Boolean>(){
 		    @Override
 		    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -456,6 +486,7 @@ public class ProcessETLController {
 					scip.getEtlProcess().processTableOutputStepsFields();
 					scip.getEtlProcess().setEtlHops(etlHops);
 					scip.getEtlProcess().processExecuteSQLStepQueries();
+					pneActionQueryToApply.setVisible(true);
 				} catch (Exception ex) {
 					Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 					disableETLLoadSelectionControls(false);
