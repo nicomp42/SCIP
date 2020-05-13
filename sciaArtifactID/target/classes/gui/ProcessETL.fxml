@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.cell.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.input.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.cell.PropertyValueFactory ?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="apSubmitSQL" fx:id="apProcessETL" prefHeight="837.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessETLController">
+<AnchorPane id="apSubmitSQL" fx:id="apProcessETL" prefHeight="837.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProcessETLController">
 	<padding><Insets bottom="5.0" right="5.0" top="5.0" /></padding>
 	<children>
     	<TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
@@ -34,6 +36,7 @@
 								</Pane>
 								<Pane fx:id="pneFiles" layoutX="10.0" layoutY="210.0" prefHeight="200.0" prefWidth="780.0">
                            <children>
+                              <Label layoutX="80.0" layoutY="-47.0" prefHeight="64.0" prefWidth="171.0" text="Double-click stage to toggle" />
                               <TableView fx:id="tvETLTransformationFiles" onMouseClicked="#tvETLTransformationFiles_OnClick" prefHeight="200.0" prefWidth="780.0">
                                 <columns>
                                   <TableColumn editable="false" prefWidth="75.0" text="File Name">

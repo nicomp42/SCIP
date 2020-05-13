@@ -465,7 +465,7 @@ public class ProcessETLController {
 		    thread.setDaemon(true);
 		    thread.start();
 		} else {
-			(new Alert(Alert.AlertType.ERROR, "No ETL Transformation Files have been assigned a stage. There is nothing to process.", ButtonType.OK)).showAndWait();
+			(new Alert(Alert.AlertType.ERROR, "There is nothing to process because no ETL Transformation Files have been assigned a stage. Double-click on a stage to toggle it", ButtonType.OK)).showAndWait();
 		}
 	    }
 		private void loadTableViewWithETLConnections(ETLConnections etlConnections) {
