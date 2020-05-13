@@ -119,6 +119,13 @@ public class ProcessETLController {
 				QueryParser qp = new QueryParser();
 				qd.setSql(actionQueryText);
 				qd.crunchIt();
+				txaAffectOfActionQuery.appendText("SQL: " + qd.getSql() + System.getProperty("line.separator"));
+				txaAffectOfActionQuery.appendText("Query Type: " + qd.getQueryType().toString() + System.getProperty("line.separator"));
+				txaAffectOfActionQuery.appendText("Tables:" +  System.getProperty("line.separator");
+				for (QueryTable qt: qd.getQueryTables()) {
+					txaAffectOfActionQuery.appendText(qt.toString() + System.getProperty("line.separator"));
+				}
+				txaAffectOfActionQuery.appendText("Attributes:" +  System.getProperty("line.separator");
 				for (QueryAttribute qa : qd.getQueryAttributes()) {
 					txaAffectOfActionQuery.appendText(qa.toString() + System.getProperty("line.separator"));
 				}
@@ -342,6 +349,7 @@ public class ProcessETLController {
 		btnCreateGraph.setVisible(visible);
 		cbClearDB.setVisible(visible);
 		cbOpenInBrowser.setVisible(visible);
+		pneCreateGraph.setVisible(true);
 	}
 	/**
 	 * Take apart all the select transformation files

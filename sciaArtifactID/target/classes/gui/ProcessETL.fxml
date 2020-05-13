@@ -25,7 +25,7 @@
               				<children>
                         <Pane fx:id="pneActionQueryToApply" layoutX="18.0" layoutY="639.0" prefHeight="104.0" prefWidth="625.0">
                            <children>
-                              <TextArea fx:id="txaActionQueryToApply" layoutX="154.0" layoutY="6.0" prefHeight="92.0" prefWidth="399.0" />
+                              <TextArea fx:id="txaActionQueryToApply" layoutX="154.0" layoutY="6.0" prefHeight="92.0" prefWidth="467.0" wrapText="true" />
                               <Label layoutY="21.0" prefHeight="51.0" prefWidth="148.0" text="All schema artifacts must be fully qualified" wrapText="true" />
                               <Button fx:id="btnApplyActionQuery" layoutX="103.0" layoutY="71.0" mnemonicParsing="false" onAction="#btnApplyActionQuery_OnClick" text="Apply" />
                               <Label layoutY="4.0" text="Action Query to Apply" />
@@ -222,7 +222,7 @@
     		<content>
       			<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
       				<children>
-                      <TextArea fx:id="txaAffectOfActionQuery" layoutX="10.0" layoutY="10.0" prefHeight="323.0" prefWidth="469.0" />
+                      <TextArea fx:id="txaAffectOfActionQuery" layoutX="10.0" layoutY="10.0" prefHeight="323.0" prefWidth="677.0" wrapText="true" />
       				</children>
       			</AnchorPane>
       		</content>

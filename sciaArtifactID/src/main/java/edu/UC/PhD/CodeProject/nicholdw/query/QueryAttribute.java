@@ -159,6 +159,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 			result.append(tableName + ":");
 			result.append(attributeName);
 			result.append((aliasNameToString.length() > 0? " AS " + aliasNameToString:""));
+			result.append(" (" + getAttributeDisposition().toString() + ")");
 //			result.append("  (" + queryClause.toString() + " query clause)");
 		} catch (Exception ex) {
 			Log.logError("QueryAttribute.toString(); " + ex.getLocalizedMessage());
