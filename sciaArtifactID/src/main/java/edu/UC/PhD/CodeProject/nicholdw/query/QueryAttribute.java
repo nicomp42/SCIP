@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.sun.org.apache.bcel.internal.generic.Select;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -33,6 +34,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	private Boolean affectedByActionQuery;		// Defaults to false until an action query is applied to the query where this attribute lives
 	private ATTRIBUTE_DISPOSITION attributeDisposition;
 	public enum ATTRIBUTE_DISPOSITION {Select, Add, Drop, Alter};
+	private GraphNodeAnnotation graphNodeAnnotation;
 	/**
 	 * Create a QueryAttribute object
 	 * Attribute Disposition defaults to Select
@@ -55,6 +57,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 		this.tableAliasName = tableAliasName;
 		this.setAttributeDisposition(attributeDisposition);
 		affectedByActionQuery = false;
+		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
 	/**
 	 * Create a QueryAttribute object
@@ -77,6 +80,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 		// Default the disposition to Select
 		this.setAttributeDisposition(ATTRIBUTE_DISPOSITION.Select);
 		affectedByActionQuery = false;
+		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
 	/**
 	 * Create a new QueryAttribute object
@@ -99,6 +103,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 		// Default the disposition to Select
 		this.setAttributeDisposition(ATTRIBUTE_DISPOSITION.Select);
 		affectedByActionQuery = false;
+		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
 	public String getFirstAlias() {
 		return aliasNames.getFirstAlias();
@@ -276,4 +281,12 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
 		this.affectedByActionQuery = affectedByActionQuery;
 	}
+	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
+		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);
+	}
+	/***
+	 * Get a copy of the GraphNodeAnnotation for the current object
+	 * @return A copy of the GraphNodeAnnotation for the current object
+	 */
+	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
 }

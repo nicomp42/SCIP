@@ -11,12 +11,18 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTable;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDrop;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeInsert;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeRenameTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
@@ -269,12 +275,35 @@ public class ETLProcess implements java.io.Serializable {
 				               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
 				               				 + "CREATE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 				}
+				Log.logProgress("ETLProcessController.createGraph(): applying action queries");
 				if (applyActionQuerys) {
 					// We have a graph and that's great. Now for the big finale...
-					// Apply the action querys to the graph to highlight the affected nodes
+					// Apply the action querys, if any, to the graph to highlight the affected nodes
+					// Create a GraphNodeAnnotation object that we can use to change the affected nodes
+					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
+					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 					for (QueryDefinition aqd : scip.GetActionQueryDefinitions()) {
 						// ToDo: Make it work
-						
+						Object myQueryType = aqd.getQueryType();
+						if (myQueryType instanceof QueryTypeAlterTable ) {
+							Log.logProgress("ETLProcessController.createGraph(): It's an alter table query");
+							for (QueryAttribute qa: aqd.getQueryAttributes()) {
+								// find the same query in the original QueryDefintion and change the GraphNodeAnnotation
+								Log.logProgress("ETLProcessController.createGraph: changing GraphNodeAttribute for " + qa.toString());
+								qa.setGraphNodeAnnotation(graphNodeAnnotation);
+							}
+							
+						} else if (myQueryType instanceof QueryTypeDropTable ) {
+							Log.logProgress("ETLProcessController.createGraph(): It's a drop table query");
+							// We need to get all the attributes in the table and then change each one that appears in the QueryAttributes collection
+							
+						} else if (myQueryType instanceof QueryTypeAlterView ) {
+							Log.logProgress("ETLProcessController.createGraph(): It's an alter view query");
+							
+						} else if (myQueryType instanceof QueryTypeRenameTable ) {
+							Log.logProgress("ETLProcessController.createGraph(): It's a rename table query");
+
+						}
 					}
 				}
 			} else {

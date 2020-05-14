@@ -12,6 +12,7 @@ import java.util.Iterator;
 import edu.UC.PhD.CodeProject.nicholdw.Attribute;
 import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -83,11 +84,53 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 		return result;
 	}
 	/***
+	 * Find a query attribute in the collection
+	 * @param queryAttribute A reference to the actual QueryAttribute object in the collection. Be careful!
+	 * @return
+	 */
+	private QueryAttribute findQueryAttribute(QueryAttribute queryAttribute) {
+		QueryAttribute queryAttributeFound = null;
+		for (QueryAttribute qa : queryAttributes) {
+			if (qa.equals(queryAttribute)) {queryAttributeFound = qa; break;}
+		}
+		return queryAttributeFound;
+	}
+	
+	/***
+	 * Get a copy of the QueryNodeAnnotation for a QueryAttribute in this collection
+	 * @param queryAttribute The QueryAttribute object to search for
+	 * @return A copy of the QueryNodeAnnotation or null if QueryAttribute is not found in the collection.
+	 */
+	public GraphNodeAnnotation getQueryNodeAnnotation(QueryAttribute queryAttribute) {
+		GraphNodeAnnotation graphNodeAnnotation = null;
+		graphNodeAnnotation = new GraphNodeAnnotation(findQueryAttribute(queryAttribute).getGraphNodeAnnotation());
+		return graphNodeAnnotation;
+	}
+	/***
+	 * Redefine the GraphNodeAnnotation for a QueryAttribute object
+	 * @param queryAttribute The QueryAttribute object to operate on
+	 * @param graphNodeAnnotation The new GraphNodeAnnotation
+	 * @return True if the QueryAttribute was found, false otherwise
+	 */
+	public boolean setGraphNodeAnnotation(QueryAttribute queryAttribute, GraphNodeAnnotation graphNodeAnnotation) {
+		Boolean result = false;
+		QueryAttribute queryAttributeFound = null;
+		for (QueryAttribute qa : queryAttributes) {
+			if (qa.equals(queryAttribute)) {queryAttributeFound = qa; break;}
+		}
+		if (queryAttributeFound != null) {
+			queryAttributeFound.setGraphNodeAnnotation(new GraphNodeAnnotation(graphNodeAnnotation));
+			result = true;
+		}
+		return result;
+	}
+	/***
 	 * Search for a query attribute by schema, table, and attribute name
 	 * @param queryAttribute The query attribute to search for
 	 * @return True if found
 	 */
 	public Boolean findAttribute(QueryAttribute queryAttribute) {
+		// TODO This seems to be the same as contains() in this class. 
 		Boolean queryFound = false;
 		for (QueryAttribute qa : queryAttributes) {
 			if (Config.getConfig().compareSchemaNames(qa.getSchemaName(),       queryAttribute.getSchemaName()) &&
