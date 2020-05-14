@@ -31,4 +31,7 @@ public class GraphNodeAnnotation {
 	public GraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
 		setGraphNodeAnnotation(graphNodeAnnotation.getGraphNodeAnnotation());
 	}
+	public String toString() {
+		return graphNodeAnnotation.name();
+	}
 }

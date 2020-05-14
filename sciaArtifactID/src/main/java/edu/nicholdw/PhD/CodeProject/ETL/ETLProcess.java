@@ -163,174 +163,197 @@ public class ETLProcess implements java.io.Serializable {
 	public void setEtlConnections(ETLConnections etlConnections) {
 		this.etlConnections = etlConnections;
 	}
-	public static void createGraph(SchemaChangeImpactProject scip, Boolean applyActionQuerys) {
-		ETLProcess etlProcess = scip.getEtlProcess();
-		SchemaGraph.addAllConstraints();	// Force keys to be unique as the graph is drawn
-		for (ETLStep etlStep : etlProcess.getETLSteps()) {
-			Log.logProgress("ETLParser.createGraph(): ETL Step Type = " + etlStep.getStepType());
-			// CREATE (n:Person { name: 'Andy', title: 'Developer' })
-			if (etlStep.getStepType().equals("DBProc")) {
-				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
-				                         " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
-				                         ", procedure:'" + etlStep.getProcedure()		+ "'" + 
-				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
-				                         ",	key:'" + etlStep.getStepName()	+ "'" +
-				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
-				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
-				                         "})");
-
-			} else if (etlStep.getStepType().equals("MergeJoin")) {
+	public static void createGraph(SchemaChangeImpactProject scip) {
+		try {
+			ETLProcess etlProcess = scip.getEtlProcess();
+			SchemaGraph.addAllConstraints();	// Force keys to be unique as the graph is drawn
+			for (ETLStep etlStep : etlProcess.getETLSteps()) {
+				Log.logProgress("ETLParser.createGraph(): ETL Step Type = " + etlStep.getStepType());
+				// CREATE (n:Person { name: 'Andy', title: 'Developer' })
+				if (etlStep.getStepType().equals("DBProc")) {
 					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
 					                         " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
+					                         ", procedure:'" + etlStep.getProcedure()		+ "'" + 
 					                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
 					                         ",	key:'" + etlStep.getStepName()	+ "'" +
 					                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 					                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 					                         "})");
-
-			} else if (etlStep.getStepType().equals("TableInput")) {
-				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
-				                         " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
-				                         ", sql:'" + etlStep.getSql().substring(0, 6) +"..." + "'" + 
-				                         ",	table:'" + etlStep.getTableName()	+ "'" +
-				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
-				                         ",	key:'" + etlStep.getKey()	+ "'" +
-				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
-				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
-				                         "})");
-				QueryDefinition qd = etlStep.getQueryDefinition();
-					// Add the nodes for the attributes in the query that this step uses
-				for (QueryAttribute qa : qd.getQueryAttributes()) {
-					String key = "";
-					key = Utils.cleanForGraph(qa.getSchemaName()) 
-						  + "." + Utils.cleanForGraph(qa.getTableName()) 
-						  + "." + Utils.cleanForGraph(qa.getAttributeName());
-					Neo4jDB.submitNeo4jQuery("CREATE (A:"
-					                         + SchemaGraph.attributeNodeLabel
-					                         + " { key: "
-					                         + "'" + key + "'" 
-					                         + ", name:" 
-					                         + "'" + Utils.cleanForGraph(qa.getAttributeName()) + "'"
-//					                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
-					                         + "})");
-					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
-				               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
-				               				 + "CREATE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
-				}
-			} else if (etlStep.getStepType().equals("TableOutput")) {
-				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
-				                         " { StepName: " + "'" + etlStep.getStepName() + "'" + 
-				                         ",	table:'" + etlStep.getTableName()	+ "'" +
-				                         ",	key:'" + etlStep.getKey()	+ "'" +
-				                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
-				                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
-				                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
-				                         "})");
-				// There is no query here: we just need to step through all the fields that are accessed in the output table
-				for (ETLField etlField: etlStep.getETLFields()) {
-					String key;
-					key = Utils.cleanForGraph(etlStep.getSchemaName()) 
-						  + "." + Utils.cleanForGraph(etlStep.getTableName()) 
-						  + "." + Utils.cleanForGraph(etlField.getColumnName());
-//					key = Utils.cleanForGraph(etlStep.getStepName()) + "." + Utils.cleanForGraph(etlField.getStreamName())	+ "." + Utils.cleanForGraph(etlField.getColumnName());
-					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.attributeNodeLabel + 
-	                                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
-	                                         ",	key:'" + key + "'" +
-	                                         ",	name:'" + etlField.getColumnName()	+ "'" +
-	                                         "})");
-					if (key.compareTo("..employeenumber") == 0) {
-						Log.logProgress("..employeenumber");
+	
+				} else if (etlStep.getStepType().equals("MergeJoin")) {
+						Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
+						                         " { StepName: " + "'" + etlStep.getStepName() + "'" + 
+						                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
+						                         ",	key:'" + etlStep.getStepName()	+ "'" +
+						                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+						                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
+						                         "})");
+	
+				} else if (etlStep.getStepType().equals("TableInput")) {
+					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
+					                         " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
+					                         ", sql:'" + etlStep.getSql().substring(0, 6) +"..." + "'" + 
+					                         ",	table:'" + etlStep.getTableName()	+ "'" +
+					                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
+					                         ",	key:'" + etlStep.getKey()	+ "'" +
+					                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+					                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
+					                         "})");
+					QueryDefinition qd = etlStep.getQueryDefinition();
+						// Add the nodes for the attributes in the query that this step uses
+					for (QueryAttribute qa : qd.getQueryAttributes()) {
+						String key = "";
+						key = Utils.cleanForGraph(qa.getSchemaName()) 
+							  + "." + Utils.cleanForGraph(qa.getTableName()) 
+							  + "." + Utils.cleanForGraph(qa.getAttributeName());
+						applyActionQuerys(scip, qa);
+						Neo4jDB.submitNeo4jQuery("CREATE (A:"
+						                         + SchemaGraph.attributeNodeLabel
+						                         + " { key: " + "'" + key + "'" 
+						                         + ", name:" + "'" + Utils.cleanForGraph(qa.getAttributeName()) + "'"
+						                         + buildAnnotationInfo(qa)
+	//					                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
+						                         + "})");
+						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
+					               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
+					               				 + "CREATE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 					}
-					// Create a relationship between the ETL Step Node and the attribute node we just added
-					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
-              				                +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
-              				                + "CREATE (a)-[:" + SchemaGraph.etlFieldToETLStepLabel +"]->(t)");
-				}		
-			} else if (etlStep.getStepType().equals("ExecSQL")) {
-				Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
-                        " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
-                        ", sql:'" + etlStep.getSql().substring(0, 6) +"..." + "'" + 
-                        ",	table:'" + etlStep.getTableName()	+ "'" +
-                        ",	stepType:'" + etlStep.getStepType()	+ "'" +
-                        ",	key:'" + etlStep.getKey()	+ "'" +
-                        ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
-                        ", TransformationFileName:'" + etlStep.getFileName() + "'" +
-                        "})");
-				QueryDefinition qd = etlStep.getQueryDefinition();
-				// Add the nodes for the attributes in the query that this step uses
-				for (QueryAttribute qa : qd.getQueryAttributes()) {
-					String key = "";
-					key = Utils.cleanForGraph(qa.getSchemaName()) 
-						  + "." + Utils.cleanForGraph(qa.getTableName()) 
-						  + "." + Utils.cleanForGraph(qa.getAttributeName());
-					Neo4jDB.submitNeo4jQuery("CREATE (A:"
-					                         + SchemaGraph.attributeNodeLabel
-					                         + " { key: "
-					                         + "'" + key + "'" 
-					                         + ", name:" 
-					                         + "'" + Utils.cleanForGraph(qa.getAttributeName()) + "'"
-	//				                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
-					                         + "})");
-					Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
-				               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
-				               				 + "CREATE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
-				}
-				Log.logProgress("ETLProcessController.createGraph(): applying action queries");
-				if (applyActionQuerys) {
-					// We have a graph and that's great. Now for the big finale...
-					// Apply the action querys, if any, to the graph to highlight the affected nodes
-					// Create a GraphNodeAnnotation object that we can use to change the affected nodes
-					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
-					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
-					for (QueryDefinition aqd : scip.GetActionQueryDefinitions()) {
-						// ToDo: Make it work
-						Object myQueryType = aqd.getQueryType();
-						if (myQueryType instanceof QueryTypeAlterTable ) {
-							Log.logProgress("ETLProcessController.createGraph(): It's an alter table query");
-							for (QueryAttribute qa: aqd.getQueryAttributes()) {
-								// find the same query in the original QueryDefintion and change the GraphNodeAnnotation
-								Log.logProgress("ETLProcessController.createGraph: changing GraphNodeAttribute for " + qa.toString());
-								qa.setGraphNodeAnnotation(graphNodeAnnotation);
-							}
-							
-						} else if (myQueryType instanceof QueryTypeDropTable ) {
-							Log.logProgress("ETLProcessController.createGraph(): It's a drop table query");
-							// We need to get all the attributes in the table and then change each one that appears in the QueryAttributes collection
-							
-						} else if (myQueryType instanceof QueryTypeAlterView ) {
-							Log.logProgress("ETLProcessController.createGraph(): It's an alter view query");
-							
-						} else if (myQueryType instanceof QueryTypeRenameTable ) {
-							Log.logProgress("ETLProcessController.createGraph(): It's a rename table query");
-
+				} else if (etlStep.getStepType().equals("TableOutput")) {
+					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
+					                         " { StepName: " + "'" + etlStep.getStepName() + "'" + 
+					                         ",	table:'" + etlStep.getTableName()	+ "'" +
+					                         ",	key:'" + etlStep.getKey()	+ "'" +
+					                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
+					                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+					                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
+					                         "})");
+					// There is no query here: we just need to step through all the fields that are accessed in the output table
+					for (ETLField etlField: etlStep.getETLFields()) {
+						String key;
+						key = Utils.cleanForGraph(etlStep.getSchemaName()) 
+							  + "." + Utils.cleanForGraph(etlStep.getTableName()) 
+							  + "." + Utils.cleanForGraph(etlField.getColumnName());
+	//					key = Utils.cleanForGraph(etlStep.getStepName()) + "." + Utils.cleanForGraph(etlField.getStreamName())	+ "." + Utils.cleanForGraph(etlField.getColumnName());
+						Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.attributeNodeLabel + 
+		                                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
+		                                         ",	key:'" + key + "'" +
+		                                         ",	name:'" + etlField.getColumnName()	+ "'" +
+		                                         "})");
+						if (key.compareTo("..employeenumber") == 0) {
+							Log.logProgress("..employeenumber");
 						}
+						// Create a relationship between the ETL Step Node and the attribute node we just added
+						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
+	              				                +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
+	              				                + "CREATE (a)-[:" + SchemaGraph.etlFieldToETLStepLabel +"]->(t)");
+					}		
+				} else if (etlStep.getStepType().equals("ExecSQL")) {
+					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
+	                        " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
+	                        ", sql:'" + etlStep.getSql().substring(0, 6) +"..." + "'" + 
+	                        ",	table:'" + etlStep.getTableName()	+ "'" +
+	                        ",	stepType:'" + etlStep.getStepType()	+ "'" +
+	                        ",	key:'" + etlStep.getKey()	+ "'" +
+	                        ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+	                        ", TransformationFileName:'" + etlStep.getFileName() + "'" +
+	                        "})");
+					QueryDefinition qd = etlStep.getQueryDefinition();
+					// Add the nodes for the attributes in the query that this step uses
+					for (QueryAttribute qa : qd.getQueryAttributes()) {
+						String key = "";
+						key = Utils.cleanForGraph(qa.getSchemaName()) 
+							  + "." + Utils.cleanForGraph(qa.getTableName()) 
+							  + "." + Utils.cleanForGraph(qa.getAttributeName());
+						Neo4jDB.submitNeo4jQuery("CREATE (A:"
+						                         + SchemaGraph.attributeNodeLabel
+						                         + " { key: " + "'" + key + "'" 
+						                         + ", name:"  + "'" + Utils.cleanForGraph(qa.getAttributeName()) + "'"
+						                         + buildAnnotationInfo(qa)
+						                         //				                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
+						                         + "})");
+						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
+					               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
+					               				 + "CREATE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 					}
-				}
-			} else {
-				Log.logError("ETLParser.createGraph(): No logic to process ETL step type " + etlStep.getStepType());
-			}			
-		}
-		/* Draw the hops as connections between steps */
-		for (ETLHop etlHop: etlProcess.getEtlHops()) {
-//			MATCH (t:ETLStep), (f:ETLStep) 
-//			WHERE t.StepName='WriteToTemporaryTable' AND t.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr' 
-//			AND  f.StepName='ReadFromSales.TransactionTable' AND f.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr'  
-//			CREATE (t)-[:Hop]->(f)			
-			Neo4jDB.submitNeo4jQuery("MATCH "
-					               + "(t:" +  SchemaGraph.etlStepNodeLabel +")"
-                                   + "," 
-					               + "(f:" +  SchemaGraph.etlStepNodeLabel +")"
-					               + " WHERE "
-					               + "t.StepName='" + etlHop.getToStepName() + "'"
-					               + " AND "
-					               + "f.TransformationFileName='" + etlHop.getFileName() + "'"
-					               + " AND "
-					               + "f.StepName='" + etlHop.getFromStepName() + "'"
-					               + " AND "
-					               + "t.TransformationFileName='" + etlHop.getFileName() + "'"				               
-	  				               + " CREATE (f)-[:" + SchemaGraph.etlHopLabel +"]->(t)");
+				} else {
+					Log.logError("ETLParser.applyActionQueries(): No logic to process ETL step type " + etlStep.getStepType());
+				}			
+					/* Draw the hops as connections between steps */
+					for (ETLHop etlHop: etlProcess.getEtlHops()) {
+	//					MATCH (t:ETLStep), (f:ETLStep) 
+	//					WHERE t.StepName='WriteToTemporaryTable' AND t.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr' 
+	//					AND  f.StepName='ReadFromSales.TransactionTable' AND f.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr'  
+	//					CREATE (t)-[:Hop]->(f)			
+						Neo4jDB.submitNeo4jQuery("MATCH "
+								               + "(t:" +  SchemaGraph.etlStepNodeLabel +")"
+			                                   + "," 
+								               + "(f:" +  SchemaGraph.etlStepNodeLabel +")"
+								               + " WHERE "
+								               + "t.StepName='" + etlHop.getToStepName() + "'"
+								               + " AND "
+								               + "f.TransformationFileName='" + etlHop.getFileName() + "'"
+								               + " AND "
+								               + "f.StepName='" + etlHop.getFromStepName() + "'"
+								               + " AND "
+								               + "t.TransformationFileName='" + etlHop.getFileName() + "'"				               
+				  				               + " CREATE (f)-[:" + SchemaGraph.etlHopLabel +"]->(t)");
+					}
+	/*			if (applyActionQuerysFlag) {
+					Log.logProgress("ETLProcessController.createGraph(): applying action queries");
+					applyActionQuerys(scip);
+				} */
+			}
+		} catch (Exception ex) {
+			Log.logError("ETLProcess.createGraph(): " + ex.getLocalizedMessage());
 		}
 	}
+	public static String buildAnnotationInfo(QueryAttribute qa) {
+		String annotationInfo;
+		if(qa.getGraphNodeAnnotation().getGraphNodeAnnotation() == GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed) {
+			annotationInfo = ", altered:"  + "'" + qa.getGraphNodeAnnotation().toString() + "'";
+		} else {
+			annotationInfo = "";
+		}
+		return annotationInfo;
+	}
+	/***
+	 * 
+	 * @param scip Project where the Action Queries are
+ 	 * @param qa The Query Attribute to the looked-for in the action queries
+	 */
+	public static void applyActionQuerys(SchemaChangeImpactProject scip, QueryAttribute qa) {
+		// We have a graph and that's great. Now for the big finale...
+		// Apply the action querys, if any, to the graph to highlight the affected nodes
+		// Create a GraphNodeAnnotation object that we can use to change the affected nodes
+		GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
+		graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
+		for (QueryDefinition aqd : scip.GetActionQueryDefinitions()) {
+			// ToDo: Make it work
+			Object myQueryType = aqd.getQueryType();
+			if (myQueryType instanceof QueryTypeAlterTable) {
+				Log.logProgress("ETLProcessController.applyActionQueries(): It's an alter table query");
+//				for (QueryAttribute aqa: aqd.getQueryAttributes()) {
+					// find the same query in the original QueryDefintion and change the GraphNodeAnnotation
+//					Log.logProgress("ETLProcessController.applyActionQueries: changing GraphNodeAttribute for " + aqa.toString());
+					if (aqd.getQueryAttributes().contains(qa)) {
+						qa.setGraphNodeAnnotation(graphNodeAnnotation);
+					}
+//				}
+			} else if (myQueryType instanceof QueryTypeDropTable ) {
+				Log.logProgress("ETLProcessController.applyActionQueries(): It's a drop table query");
+				// We need to get all the attributes in the table and then change each one that appears in the QueryAttributes collection
+				
+			} else if (myQueryType instanceof QueryTypeAlterView ) {
+				Log.logProgress("ETLProcessController.applyActionQueries(): It's an alter view query");
+				
+			} else if (myQueryType instanceof QueryTypeRenameTable ) {
+				Log.logProgress("ETLProcessController.applyActionQueries(): It's a rename table query");
+			} else {
+				Log.logError("ETLProcessController.applyActionQueries(): query type not recognized: " + myQueryType.toString() );
+			}
+		}
+	}
+
 	/**
 	 * ToDo: this is risky.
 	 * @return

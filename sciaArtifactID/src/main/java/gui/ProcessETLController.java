@@ -133,7 +133,7 @@ public class ProcessETLController {
 				}
 				// Put the action query into the scip object
 				scip.GetActionQueryDefinitions().addActionQueryDefinition(qd);
-				
+				//ETLProcess.applyActionQuerys(scip);
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.btnApplyActionQuery_OnClick(): ", ex);
 			}
@@ -165,7 +165,7 @@ public class ProcessETLController {
 		try {
 			Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(),  Config.getConfig().getNeo4jDBDefaultPassword());
 			if (cbClearDB.isSelected()) {Neo4jDB.clearDB();}
-			ETLProcess.createGraph(scip, true);
+			ETLProcess.createGraph(scip);
 			if (cbOpenInBrowser.isSelected() ) {
 				Browser browser = Browser.prepareNewBrowser();
 				browser.initAndLoad(null);
