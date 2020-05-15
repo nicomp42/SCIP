@@ -455,24 +455,35 @@ public class ProcessETLController {
 						stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
 						sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());
 						table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "table");
-						schemaName = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "schema");
 						connection = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "connection");
+						// We will add schemaName later after we've read all the connection objects from the XML
 						String procedure;
 						procedure = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "procedure");
 						tmp += " (" + stepType +  ")";
 						txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
 						// Add this new step to the collection of steps
-						scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), schemaName));
+						scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), "SchemaUnknown"));
 					}
-					//ETLConnections etlConnections = new ETLConnections();
 					for (String connectionName: connectionNames) {
-						scip.getEtlProcess().getETLConnections().addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
-								                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
-								                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
-								                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
-								                                          myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
-								                                         ));
+						scip.getEtlProcess()
+						    .getETLConnections()
+						    .addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
+								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
+								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
+								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
+								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
+								                                ));
 					}
+					// Resolve the schema name for all the ETL steps we just added
+					for (ETLStep etlStep : scip.getEtlProcess().getETLSteps()) {
+						String schemaName, connection;
+						connection = etlStep.getConnection();
+						schemaName = scip.getEtlProcess().getETLConnections().getConnection(connection).getDatabase();
+						etlStep.setSchemaName(schemaName);
+					}
+					//myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "schema");
+
+					//ETLConnections etlConnections = new ETLConnections();
 					for (TableOutputStep outputStep: tableOutputSteps) {
 						txaOutputStepResults.appendText(outputStep.toString() + System.getProperty("line.separator"));
 					}

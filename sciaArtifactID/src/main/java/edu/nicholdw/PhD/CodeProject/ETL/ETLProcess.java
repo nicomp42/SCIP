@@ -216,7 +216,7 @@ public class ETLProcess implements java.io.Serializable {
 						                         + "})");
 						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
 					               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
-					               				 + "CREATE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
+					               				 + " MERGE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 					}
 				} else if (etlStep.getStepType().equals("TableOutput")) {
 					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
@@ -245,7 +245,7 @@ public class ETLProcess implements java.io.Serializable {
 						// Create a relationship between the ETL Step Node and the attribute node we just added
 						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
 	              				                +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
-	              				                + "CREATE (a)-[:" + SchemaGraph.etlFieldToETLStepLabel +"]->(t)");
+	              				                + "MERGE (a)-[:" + SchemaGraph.etlFieldToETLStepLabel +"]->(t)");
 					}		
 				} else if (etlStep.getStepType().equals("ExecSQL")) {
 					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
@@ -273,7 +273,7 @@ public class ETLProcess implements java.io.Serializable {
 						                         + "})");
 						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
 					               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
-					               				 + "CREATE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
+					               				 + " MERGE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 					}
 				} else {
 					Log.logError("ETLParser.applyActionQueries(): No logic to process ETL step type " + etlStep.getStepType());
@@ -296,7 +296,7 @@ public class ETLProcess implements java.io.Serializable {
 								               + "f.StepName='" + etlHop.getFromStepName() + "'"
 								               + " AND "
 								               + "t.TransformationFileName='" + etlHop.getFileName() + "'"				               
-				  				               + " CREATE (f)-[:" + SchemaGraph.etlHopLabel +"]->(t)");
+				  				               + " MERGE (f)-[:" + SchemaGraph.etlHopLabel +"]->(t)");
 					}
 	/*			if (applyActionQuerysFlag) {
 					Log.logProgress("ETLProcessController.createGraph(): applying action queries");
