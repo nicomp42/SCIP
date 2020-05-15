@@ -447,7 +447,7 @@ public class ProcessETLController {
 							Log.logError("ProcessETLController.processETLTransformationFiles().task.setOnSucceeded: " + ex.getLocalizedMessage());
 						}
 						counter++; */
-						String tmp, stepType, sql, table, connection, schemaName;
+						String tmp, stepType, sql, table, connectionName, schemaName;
 						tmp = "";
 	//					tmp = String.valueOf(counter) + ": ";
 	//					tmp += stepName.toString();
@@ -455,33 +455,27 @@ public class ProcessETLController {
 						stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
 						sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());
 						table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "table");
-						connection = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "connection");
+						connectionName = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "connection");
 						// We will add schemaName later after we've read all the connection objects from the XML
 						String procedure;
 						procedure = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "procedure");
 						tmp += " (" + stepType +  ")";
 						txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
-						// Add this new step to the collection of steps
-						scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connection, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), "SchemaUnknown"));
-					}
-					for (String connectionName: connectionNames) {
-						scip.getEtlProcess()
-						    .getETLConnections()
-						    .addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
-								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
-								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
-								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
-								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
-								                                ));
+						// Add this new step to the collection of steps. We don't know the schema name, yet.
+						scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connectionName, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), "SchemaUnknown"));
+						//for (String connectionName: connectionNames) {
+							scip.getEtlProcess()
+							    .getETLConnections()
+							    .addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
+									                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
+									                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
+									                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
+									                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
+									                                ));
+						//}
 					}
 					// Resolve the schema name for all the ETL steps we just added
-					for (ETLStep etlStep : scip.getEtlProcess().getETLSteps()) {
-						String schemaName, connection;
-						connection = etlStep.getConnection();
-						schemaName = scip.getEtlProcess().getETLConnections().getConnection(connection).getDatabase();
-						etlStep.setSchemaName(schemaName);
-					}
-					//myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "schema");
+					resolveSchemaNamesForETLSteps(scip);
 
 					//ETLConnections etlConnections = new ETLConnections();
 					for (TableOutputStep outputStep: tableOutputSteps) {
@@ -524,6 +518,21 @@ public class ProcessETLController {
 			(new Alert(Alert.AlertType.ERROR, "There is nothing to process because no ETL Transformation Files have been assigned a stage. Double-click on a stage to toggle it", ButtonType.OK)).showAndWait();
 		}
 	    }
+	private Boolean resolveSchemaNamesForETLSteps(SchemaChangeImpactProject scip) {
+		Boolean status = true;// Hope for the best
+		try {
+		for (ETLStep etlStep : scip.getEtlProcess().getETLSteps()) {
+			String schemaName, connection;
+			connection = etlStep.getConnection();
+			schemaName = scip.getEtlProcess().getETLConnections().getConnection(connection).getDatabase();
+			etlStep.setSchemaName(schemaName);
+		}
+	} catch (Exception ex) {
+		Log.logError("ProcessETLController.resolveSchemaNamesForETLSteps: " + ex.getLocalizedMessage());
+		status = false;
+	}
+	return status;
+	}
 		private void loadTableViewWithETLConnections(ETLConnections etlConnections) {
 			ETLConnection.loadTableViewWithETLConnections(tvETLConnections, etlConnections);
 		}
