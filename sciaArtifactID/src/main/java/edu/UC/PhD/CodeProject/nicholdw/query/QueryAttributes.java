@@ -73,12 +73,23 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 	/**
 	 * Does this collection contain a particular QueryAttribute?
 	 * @param queryAttribute The QueryAttribute to look for
+	 * @param compareNameOnly Just compare attribute names. Ignore schema and table
 	 * @return true if this collection contains a particular QueryAttribute, false otherwise
 	 */
-	public boolean contains(QueryAttribute queryAttribute) {
+	public boolean contains(QueryAttribute queryAttribute, Boolean compareNameOnly) {
 		boolean result = false;
-		for (QueryAttribute qa : queryAttributes) {
-			if (qa.equals(queryAttribute)) {result = true; break;}
+		if (compareNameOnly) {
+			for (QueryAttribute qa : queryAttributes) {
+				if (Config.getConfig().compareAttributeNames(qa.getAttributeName(), 
+						                                     queryAttribute.getAttributeName())) {
+					result = true;
+					break;
+				}
+			}
+		} else {
+			for (QueryAttribute qa : queryAttributes) {
+				if (qa.equals(queryAttribute)) {result = true; break;}
+			}
 		}
 		return result;
 	}

@@ -303,7 +303,7 @@ public class ETLProcess implements java.io.Serializable {
 		                                         ",	name:'" + etlField.getColumnName()	+ "'" +
 		                                         "})");
 						// Create a relationship between the ETL Step Node and the attribute node we just added
-						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
+						Neo4jDB.submitNeo4jQuery("MATCH (t:" + nodeLabel  + "{key:'" + key + "'}), "
 	              				                +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
 	              				                + "MERGE (a)-[:" + SchemaGraph.etlFieldToETLStepLabel +"]->(t)");
 					}		
@@ -324,14 +324,18 @@ public class ETLProcess implements java.io.Serializable {
 						key = Utils.cleanForGraph(qa.getSchemaName()) 
 							  + "." + Utils.cleanForGraph(qa.getTableName()) 
 							  + "." + Utils.cleanForGraph(qa.getAttributeName());
+						if (applyActionQuerys(scip, qa)) {
+							ETLProcess.traverseFromAttribute(etlProcess, etlStep, qa);
+						}
+						String nodeLabel; nodeLabel = computeNodeLabel(qa.getGraphNodeAnnotation());						
 						Neo4jDB.submitNeo4jQuery("CREATE (A:"
-						                         + SchemaGraph.attributeNodeLabel
+						                         + nodeLabel		/* SchemaGraph.attributeNodeLabel */
 						                         + " { key: " + "'" + key + "'" 
 						                         + ", name:"  + "'" + Utils.cleanForGraph(qa.getAttributeName()) + "'"
 						                         + buildAnnotationInfo(qa.getGraphNodeAnnotation())
 						                         //				                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
 						                         + "})");
-						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
+						Neo4jDB.submitNeo4jQuery("MATCH (t:" + nodeLabel /*SchemaGraph.attributeNodeLabel*/  + "{key:'" + key + "'}), "
 					               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
 					               				 + " MERGE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 					}
@@ -405,7 +409,7 @@ public class ETLProcess implements java.io.Serializable {
 //				for (QueryAttribute aqa: aqd.getQueryAttributes()) {
 					// find the same query in the original QueryDefintion and change the GraphNodeAnnotation
 //					Log.logProgress("ETLProcessController.applyActionQueries: changing GraphNodeAttribute for " + aqa.toString());
-					if (aqd.getQueryAttributes().contains(qa)) {
+					if (aqd.getQueryAttributes().contains(qa, true)) {
 						qa.setGraphNodeAnnotation(graphNodeAnnotation);
 						attributeAffected = true;
 					}

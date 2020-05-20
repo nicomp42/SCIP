@@ -11,6 +11,7 @@ import org.Antlr4MySQLFromANTLRRepo.MySqlParser.OrderByExpressionContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.TableNameContext;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser.UidContext;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -1465,9 +1466,24 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		currentAlias = "";
 	}
 	private void processEnterSelectFunctionElement(MySqlParser.SelectFunctionElementContext ctx) {
+		String expr = buildParseRuleContext(ctx);
+		Log.logProgress("AntlrMySQLListener.processEnterSelectFunctionElement(): " + expr);
 		// Figure out what the alias is, if any
 		ParseTree aliasMaybe = ctx.getChild(ctx.getChildCount()-1);  
 		currentAlias = checkForAlias(aliasMaybe);
+	}
+	private String buildParseRuleContext(RuleContext rc) {
+		String expr = "";
+		for (int i = 0; i < rc.getChildCount(); i++) {
+			Object o;
+			o = rc.getChild(i);
+			if (o instanceof org.antlr.v4.runtime.RuleContext) {
+				expr += " " + buildParseRuleContext((org.antlr.v4.runtime.RuleContext)o);
+			} else {
+				expr += " " + o.toString().trim();
+			}
+		}
+		return expr;
 	}
 	private void processEnterSelectExpressionElement(MySqlParser.SelectExpressionElementContext ctx) {
 		// Figure out what the alias is, if any
