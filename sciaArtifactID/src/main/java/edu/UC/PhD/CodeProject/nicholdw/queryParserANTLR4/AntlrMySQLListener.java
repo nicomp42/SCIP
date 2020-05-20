@@ -1472,14 +1472,21 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		ParseTree aliasMaybe = ctx.getChild(ctx.getChildCount()-1);  
 		currentAlias = checkForAlias(aliasMaybe);
 	}
-	private String buildParseRuleContext(RuleContext rc) {
+	/***
+	 * Build a string from a RuleContext object
+	 * @param ruleContext The RuleContext object
+	 * @return The String that represents what's contained in ruleContext
+	 */
+	private String buildParseRuleContext(RuleContext ruleContext) {
 		String expr = "";
-		for (int i = 0; i < rc.getChildCount(); i++) {
+		for (int i = 0; i < ruleContext.getChildCount(); i++) {
 			Object o;
-			o = rc.getChild(i);
+			o = ruleContext.getChild(i);
 			if (o instanceof org.antlr.v4.runtime.RuleContext) {
+				// If the child is another RuleContext, then recurse into it
 				expr += " " + buildParseRuleContext((org.antlr.v4.runtime.RuleContext)o);
 			} else {
+				// Add the child to the string because it's not another RuleContext
 				expr += " " + o.toString().trim();
 			}
 		}
