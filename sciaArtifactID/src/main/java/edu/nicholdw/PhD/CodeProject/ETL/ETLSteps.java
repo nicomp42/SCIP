@@ -28,12 +28,24 @@ public class ETLSteps implements Iterable<ETLStep>, java.io.Serializable {
 		}
 		return etlStepFound;
 	}
+	public ETLStep getETLStep(String stepName, String fileName) {
+		ETLStep etlStepFound = null;
+		for (ETLStep etlStep : etlSteps) {
+			if (etlStep.getStepName().equals(stepName) && etlStep.getFileName().equals(fileName)) {
+//				etlStepFound = new ETLStep(etlStep);
+				etlStepFound = etlStep;		// ToDo: Fix ETLStep copy constructor
+				break;
+			}
+		}
+		return etlStepFound;
+	}
 	/***
 	 * Add a new object to the set
-	 * @param ETLStep The ETLStep object to be added. A deep copy is performed.
+	 * @param ETLStep The ETLStep object to be added. The reference is added. No deep copy is performed.
 	 */
 	public void addETLStep(ETLStep etlStep) {
-		etlSteps.add(new ETLStep(etlStep));
+//		etlSteps.add(new ETLStep(etlStep));	// ToDo: Fix the copy constructor in ETLStep
+		etlSteps.add(etlStep);
 	}
 
 	public String toString() {

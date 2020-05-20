@@ -17,7 +17,7 @@ public class ETLHop implements java.io.Serializable {
 	private String toStepName;
 	private Boolean enabled;
 	private String fileName;	// No path, just the filename
-	
+
 	public ETLHop(String from, String to, Boolean enabled, String fileName) {
 		setFromStepName(from);
 		setToStepName(to);
@@ -58,6 +58,6 @@ public class ETLHop implements java.io.Serializable {
 		return fileName.trim();
 	}
 	public void setFileName(String fileName) {
-		this.fileName = fileName;
+		this.fileName = fileName.trim();
 	}
 }

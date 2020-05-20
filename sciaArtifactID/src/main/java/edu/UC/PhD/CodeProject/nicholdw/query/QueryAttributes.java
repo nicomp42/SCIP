@@ -52,7 +52,6 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 				for (AliasNameClassOLD aliasName: queryAttribute.getAliasNames()) {
 					if (!qa.getAliasNames().contains(aliasName)) {
 						qa.addAliasName(aliasName);
-						break;
 					}
 				}
 				matchFound = true;
@@ -141,6 +140,22 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 			}
 		}
 		return queryFound;
+	}
+	/***
+	 * Search for a query attribute by attribute name **only**
+	 * @param queryAttribute The query attribute to search for
+	 * @return a reference to the QueryAttribute object if found, null otherwise
+	 */
+	public QueryAttribute findAttributeByNameOnly(QueryAttribute queryAttribute) {
+		// TODO This seems to be the same as contains() in this class. 
+		QueryAttribute queryAttributeFound = null;
+		for (QueryAttribute qa : queryAttributes) {
+			if (Config.getConfig().compareAttributeNames(qa.getAttributeName(), queryAttribute.getAttributeName())) {
+				queryAttributeFound = qa;
+				break;
+			}
+		}
+		return queryAttributeFound;
 	}
 	/**
 	 * Find a QueryAttribute by AttributeName or AliasName

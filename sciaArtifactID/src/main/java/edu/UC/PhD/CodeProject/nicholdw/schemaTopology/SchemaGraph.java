@@ -95,6 +95,7 @@ public class SchemaGraph {
 		schema = new Schema(schemaName);
 	}
 	// Don't call these constraint methods individually. Rather, call addAllConstriants() instead.
+	private static void addAffectedAttributeConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.affectedAttributeNodeLabel + ") ASSERT a.key IS UNIQUE");}
 	private static void addAttributeConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.attributeNodeLabel + ") ASSERT a.key IS UNIQUE");}
 	private static void addQueryConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.queryNodeLabel + ") ASSERT a.key IS UNIQUE");}
 	private static void addTableConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.tableNodeLabel + ") ASSERT a.key IS UNIQUE");}
@@ -102,6 +103,7 @@ public class SchemaGraph {
 	private static void addETLStepNodeConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.etlStepNodeLabel + ") ASSERT a.key IS UNIQUE");}
 
 	public static void addAllConstraints() {
+		addAffectedAttributeConstraint();
 		addAttributeConstraint();
 		addQueryConstraint();
 		addTableConstraint();

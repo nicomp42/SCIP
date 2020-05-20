@@ -4,6 +4,7 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 
 /**
@@ -18,10 +19,12 @@ public class ETLField implements java.io.Serializable {
 	private static final long serialVersionUID = 8544741338416810657L;
 	private String streamName;		// The name of the field in the ETL that will be written the DBMS table. 
 	private String columnName;		// The destination of the stream field. Called "Table Field" in the Pentaho/Spoon UI. Called "column_name" in the XML file 
-	
+	private GraphNodeAnnotation graphNodeAnnotation;
+
 	public ETLField(String columnName, String streamName) {
 		setColumnName(columnName);
 		setStreamName(streamName);
+		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
 	/**
 	 * Copy Constructor
@@ -30,6 +33,7 @@ public class ETLField implements java.io.Serializable {
 	public ETLField(ETLField etlField) {
 		this.setColumnName(etlField.getColumnName());
 		this.setStreamName(etlField.getStreamName());
+		this.setGraphNodeAnnotation(etlField.getGraphNodeAnnotation());
 	}
 	/**
 	 * 
@@ -78,4 +82,12 @@ public class ETLField implements java.io.Serializable {
 			return false;
 		}
 	}
+	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
+		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);
+	}
+	/***
+	 * Get a copy of the GraphNodeAnnotation for the current object
+	 * @return A copy of the GraphNodeAnnotation for the current object
+	 */
+	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
 }

@@ -16,6 +16,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
@@ -48,6 +49,64 @@ public class ETLProcess implements java.io.Serializable {
 		this.transformationFileDirectory = transformationFileDirectory;
 		if (this.transformationFileDirectory != null) {
 			etlTransformationFiles.loadETLTransformationFileNames(this.transformationFileDirectory);
+		}
+	}
+	/***
+	 * Traverse the ETL Process for a particular query attribute 
+	 * @param etlStep The step to start with
+	 * @param qa The query attribute in question
+	 */
+	public static void traverseFromAttribute(ETLProcess etlProcess, ETLStep etlStep, QueryAttribute qa) {
+		System.out.println("ETLProcess.traverseFromAttribute(): Starting step = " + etlStep.toString() + ", attribute = " + qa.toString());
+		Log.logProgress("ETLProcess.traverseFromAttribute(): " + etlProcess.toString() + ", " + etlStep.toString() + ", " + qa.toString());
+		String fileName = etlStep.getFileName();
+		ETLHop etlHopStart = etlProcess.getEtlHops().getETLHopWithStartStep(etlStep);
+		if (etlHopStart != null) {
+			while (etlHopStart != null) {
+				System.out.println("ETLProcess.traverseFromAttribute(): Hop Start = " + etlHopStart.toString());
+				Log.logProgress("ETLProcess.traverseFromAttribute(): Hop Start = " + etlHopStart.toString());
+				ETLSteps etlSteps; etlSteps = etlProcess.getETLSteps();
+				String toStepName; toStepName = etlHopStart.getToStepName();
+				ETLStep etlStepNext; etlStepNext = etlSteps.getETLStep(toStepName, fileName);
+//              .getETLStep(etlProcess.getEtlHops().getETLHop(etlHopStart.getToStepName()).getToStepName(), fileName);
+				System.out.println("ETLProcess.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
+				Log.logProgress("ETLProcess.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
+				QueryAttribute attributeFoundInAttributeCollection; ETLField attributeFoundInETLFieldCollection;
+				attributeFoundInAttributeCollection = null; attributeFoundInETLFieldCollection = null;
+				try {
+					QueryDefinition qd = etlStepNext.getQueryDefinition();
+					QueryAttributes qas = qd.getQueryAttributes();
+					attributeFoundInAttributeCollection = qas.findAttributeByNameOnly(qa);
+				} catch (Exception ex) {
+					Log.logError("ETLProcess.traverseFromAttribute(): checking for queryAttribute " , ex);
+				}	// There may not be any attributes, that's OK
+				try {
+					attributeFoundInETLFieldCollection = etlStepNext.getETLFields().findETLFieldByColumnName(qa.getAttributeName());
+				} catch (Exception ex) {}	// There may not be any attributes, that's OK
+				if (attributeFoundInAttributeCollection != null) {
+					System.out.println("ETLProcess.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
+					Log.logProgress("ETLProcess.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
+					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
+					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
+					attributeFoundInAttributeCollection.setGraphNodeAnnotation(graphNodeAnnotation);
+				} else {
+					System.out.println("ETLProcess.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
+					Log.logProgress("ETLProcess.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
+				}
+				if (attributeFoundInETLFieldCollection != null) {
+					System.out.println("ETLProcess.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
+					Log.logProgress("ETLProcess.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
+					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
+					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
+					attributeFoundInETLFieldCollection.setGraphNodeAnnotation(graphNodeAnnotation);					
+				} else {
+					System.out.println("ETLProcess.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
+					Log.logProgress("ETLProcess.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
+				}
+				etlHopStart = etlProcess.getEtlHops().getETLHopWithStartStep(etlStepNext);
+			}
+		} else {
+			Log.logProgress("ETLProcess.traverseFromAttribute(): No initial Hop Start found with this ETL step.");			
 		}
 	}
 	public void loadETLTransformationFiles() {
@@ -206,15 +265,18 @@ public class ETLProcess implements java.io.Serializable {
 						key = Utils.cleanForGraph(qa.getSchemaName()) 
 							  + "." + Utils.cleanForGraph(qa.getTableName()) 
 							  + "." + Utils.cleanForGraph(qa.getAttributeName());
-						applyActionQuerys(scip, qa);
+						if (applyActionQuerys(scip, qa)) {
+							ETLProcess.traverseFromAttribute(etlProcess, etlStep, qa);
+						}
+						String nodeLabel; nodeLabel = computeNodeLabel(qa.getGraphNodeAnnotation());
 						Neo4jDB.submitNeo4jQuery("CREATE (A:"
-						                         + SchemaGraph.attributeNodeLabel
+						                         + nodeLabel
 						                         + " { key: " + "'" + key + "'" 
 						                         + ", name:" + "'" + Utils.cleanForGraph(qa.getAttributeName()) + "'"
-						                         + buildAnnotationInfo(qa)
+						                         + buildAnnotationInfo(qa.getGraphNodeAnnotation())
 	//					                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
 						                         + "})");
-						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
+						Neo4jDB.submitNeo4jQuery("MATCH (t:" + nodeLabel  + " {key:'" + key + "'}), "
 					               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
 					               				 + " MERGE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 					}
@@ -233,15 +295,13 @@ public class ETLProcess implements java.io.Serializable {
 						key = Utils.cleanForGraph(etlStep.getSchemaName()) 
 							  + "." + Utils.cleanForGraph(etlStep.getTableName()) 
 							  + "." + Utils.cleanForGraph(etlField.getColumnName());
+						String nodeLabel; nodeLabel = computeNodeLabel(etlField.getGraphNodeAnnotation());
 	//					key = Utils.cleanForGraph(etlStep.getStepName()) + "." + Utils.cleanForGraph(etlField.getStreamName())	+ "." + Utils.cleanForGraph(etlField.getColumnName());
-						Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.attributeNodeLabel + 
+						Neo4jDB.submitNeo4jQuery("CREATE (A:" + nodeLabel + 
 		                                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
 		                                         ",	key:'" + key + "'" +
 		                                         ",	name:'" + etlField.getColumnName()	+ "'" +
 		                                         "})");
-						if (key.compareTo("..employeenumber") == 0) {
-							Log.logProgress("..employeenumber");
-						}
 						// Create a relationship between the ETL Step Node and the attribute node we just added
 						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
 	              				                +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
@@ -268,7 +328,7 @@ public class ETLProcess implements java.io.Serializable {
 						                         + SchemaGraph.attributeNodeLabel
 						                         + " { key: " + "'" + key + "'" 
 						                         + ", name:"  + "'" + Utils.cleanForGraph(qa.getAttributeName()) + "'"
-						                         + buildAnnotationInfo(qa)
+						                         + buildAnnotationInfo(qa.getGraphNodeAnnotation())
 						                         //				                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
 						                         + "})");
 						Neo4jDB.submitNeo4jQuery("MATCH (t:" + SchemaGraph.attributeNodeLabel  + "{key:'" + key + "'}), "
@@ -307,21 +367,31 @@ public class ETLProcess implements java.io.Serializable {
 			Log.logError("ETLProcess.createGraph(): " + ex.getLocalizedMessage());
 		}
 	}
-	public static String buildAnnotationInfo(QueryAttribute qa) {
+	public static String buildAnnotationInfo(GraphNodeAnnotation graphNodeAnnotation) {
 		String annotationInfo;
-		if(qa.getGraphNodeAnnotation().getGraphNodeAnnotation() == GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed) {
-			annotationInfo = ", altered:"  + "'" + qa.getGraphNodeAnnotation().toString() + "'";
+		if(graphNodeAnnotation.getGraphNodeAnnotation() == GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed) {
+			annotationInfo = ", altered:"  + "'" + graphNodeAnnotation.getGraphNodeAnnotation().toString() + "'";
 		} else {
 			annotationInfo = "";
 		}
 		return annotationInfo;
+	}
+	private static String computeNodeLabel(GraphNodeAnnotation graphNodeAnnotation) {
+		String nodeLabel;
+		if (graphNodeAnnotation.getGraphNodeAnnotation() == GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed) {
+			nodeLabel = SchemaGraph.affectedAttributeNodeLabel;
+		} else {
+			nodeLabel = SchemaGraph.attributeNodeLabel;
+		}
+		return nodeLabel;
 	}
 	/***
 	 * 
 	 * @param scip Project where the Action Queries are
  	 * @param qa The Query Attribute to the looked-for in the action queries
 	 */
-	public static void applyActionQuerys(SchemaChangeImpactProject scip, QueryAttribute qa) {
+	public static Boolean applyActionQuerys(SchemaChangeImpactProject scip, QueryAttribute qa) {
+		Boolean attributeAffected = false;
 		// We have a graph and that's great. Now for the big finale...
 		// Apply the action querys, if any, to the graph to highlight the affected nodes
 		// Create a GraphNodeAnnotation object that we can use to change the affected nodes
@@ -337,6 +407,7 @@ public class ETLProcess implements java.io.Serializable {
 //					Log.logProgress("ETLProcessController.applyActionQueries: changing GraphNodeAttribute for " + aqa.toString());
 					if (aqd.getQueryAttributes().contains(qa)) {
 						qa.setGraphNodeAnnotation(graphNodeAnnotation);
+						attributeAffected = true;
 					}
 //				}
 			} else if (myQueryType instanceof QueryTypeDropTable ) {
@@ -352,6 +423,7 @@ public class ETLProcess implements java.io.Serializable {
 				Log.logError("ETLProcessController.applyActionQueries(): query type not recognized: " + myQueryType.toString() );
 			}
 		}
+		return attributeAffected;
 	}
 
 	/**

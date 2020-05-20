@@ -28,18 +28,40 @@ public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
 	 * @param etlFieldToAdd ETLField object to be added. 
 	 */
 	public void addETLField(ETLField etlFieldToAdd) {
-		Boolean alreadyThere = false;
-		for (ETLField etlField : etlFields) {
-			if (ETLField.compare(etlFieldToAdd, etlField) == true) {alreadyThere = true; break;}
-		}
-		if (!alreadyThere) {
+		if (!contains(etlFieldToAdd)) {
 			etlFields.add(new ETLField(etlFieldToAdd));
 		}
 	}
+	public Boolean contains(ETLField etlFieldToLookFor) {
+		Boolean foundIt = false;
+		for (ETLField etlField : etlFields) {
+			if (ETLField.compare(etlFieldToLookFor, etlField) == true) {foundIt = true; break;}
+		}
+		return foundIt;
+	}
+	/**
+	 * Search for an ETL Field by column name only (Case-insensitive)
+	 * @param etlColumnName The column name to search for
+	 * @return a reference to the ETLField object if found, null otherwise
+	 */
+	public ETLField findETLFieldByColumnName(String etlColumnName) {
+		ETLField etlFieldFound = null;
+		for (ETLField etlField : etlFields) {
+			// ToDo: We are doing a case-insensitive comparison here. 
+			if (etlField.getColumnName().toUpperCase().equals(etlColumnName.toUpperCase())) {etlFieldFound = etlField; break;}
+		}
+		return etlFieldFound;
+	}
+	/**
+	 * Get the reference to the ETLFields collection
+	 * @return The reference to the ETLFields collection
+	 */
+//	@SuppressWarnings("unchecked")
+	public ArrayList<ETLField> getETLFields() {
+//		return (ArrayList<ETLField>) etlFields.clone();
+		return etlFields;
+	}
 
-	@SuppressWarnings("unchecked")
-	public ArrayList<ETLField> getETLFields() {return (ArrayList<ETLField>) etlFields.clone();}
-	
 	/**
 	 * @return A string representation of the object
 	 */

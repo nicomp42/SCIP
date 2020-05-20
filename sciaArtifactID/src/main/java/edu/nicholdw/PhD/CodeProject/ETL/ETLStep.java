@@ -4,6 +4,7 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
@@ -22,11 +23,12 @@ public class ETLStep implements java.io.Serializable {
 	private QueryDefinition queryDefinition;
 	private String connection;
 	private ETLFields etlFields;
-	private String procedure;			// Used in DBProc steps
+	private String procedure;		// Used in DBProc steps
 	private int etlStageNumber;		// Index into ETLTransformationFile.enumETLStage
 	private String fileName;		// No Path
 	private String schemaName;		// Output steps have a schema name in the XML, other steps probably do too
-	
+	private GraphNodeAnnotation graphNodeAnnotation;
+
 	/**
 	 * Copy Constructor
 	 * @param etlStep
@@ -42,6 +44,7 @@ public class ETLStep implements java.io.Serializable {
 		etlFields = new ETLFields();
 		setFileName(etlStep.getFileName());
 		setSchemaName(etlStep.getSchemaName());
+		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
 /*	public ETLStep(String stepName, String stepType, String sql, String table, String connection) {
 		setStepName(stepName);
@@ -63,8 +66,11 @@ public class ETLStep implements java.io.Serializable {
 		setETLStageNumber(etlStageNumber);
 		setFileName(fileName);
 		setSchemaName(schemaName);
+		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
-
+	public String toString() {
+		return getStepName() + ", " + getStepType() + ", " + getFileName() ;
+	}
 	public void addETLFields(ETLFields etlFields) {
 		for (ETLField etlField: etlFields) {
 			this.etlFields.addETLField(etlField);
@@ -151,4 +157,13 @@ public class ETLStep implements java.io.Serializable {
 		this.schemaName = schemaName;
 	}
 	public String getKey() {return getStepName();}
+
+	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
+		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);
+	}
+	/***
+	 * Get a copy of the GraphNodeAnnotation for the current object
+	 * @return A copy of the GraphNodeAnnotation for the current object
+	 */
+	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
 }
