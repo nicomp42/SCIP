@@ -181,7 +181,7 @@ public class ProcessETLController {
 		loadTableViewWithETLSteps(scip.getEtlProcess().getETLSteps()); 
 	}
 	private void setTheScene() {
-		txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho");
+//		txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho");
 		scip = Config.getConfig().getCurrentSchemaChangeImpactProject();
 		scatter(scip);
 //		We are setting the title of this form in the Main. It works and I can't figure out how to get the stage object here.
@@ -303,7 +303,7 @@ public class ProcessETLController {
 			int clickCount = 0;
 			clickCount = event.getClickCount();
 			if (clickCount == 2) { // It's a double click! Stuff in the default path for a test case.
-				txaETLFilePath.setText("C:\\Temp\\ThrowawayProject\\ThrowawayProject\\ETLJob\\");
+				txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho\\");
 			}
 		}
 	}
