@@ -35,6 +35,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreate;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDrop;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropForeignKey;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeInsert;
@@ -80,6 +81,12 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			Log.logQueryParseProgress(tn.toString());
 		}
 	}
+	@Override
+	public void enterDeleteStatement(MySqlParser.DeleteStatementContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterDeleteStatement()");
+		
+	}
+
 	@Override public void enterRoot(MySqlParser.RootContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterRoot()" + ctx.getText() + ", start = " + ctx.getStart() + " stop = " + ctx.getStop());
 	}
@@ -1080,9 +1087,6 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitAlterTable(MySqlParser.AlterTableContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterTable(): " + ctx.getText());
 	}
-	@Override public void enterAlterTablespace(MySqlParser.AlterTablespaceContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterTable(): " + ctx.getText());
-	}
 	@Override public void exitAlterTablespace(MySqlParser.AlterTablespaceContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterTablespace(): " + ctx.getText());
 	}
@@ -1102,16 +1106,60 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitDropView(MySqlParser.DropViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitDropView(): " + ctx.getText());
 	}
+	@Override
+	public void enterRenameTable(MySqlParser.RenameTableContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterRenameTable()");
+		String tableToRename = "";
+		queryDefinition.setTableToRename(tableToRename);
+		
+	}
+	@Override
+	public void enterRenameTableClause(MySqlParser.RenameTableClauseContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterRenameTableClause()");
+		String tableToRename = "";
+		queryDefinition.setTableToRename(tableToRename);
+		
+	}
+	@Override
+	public void enterAlterTable(MySqlParser.AlterTableContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterAlterTable()");
+		TableNameContext tnc = (TableNameContext)ctx.getChild(2);
+		String tableToRename = "";
+		tableToRename = tnc.getText();	// Combines the children together into a nice text field
+		queryDefinition.setTableToRename(tableToRename);
+	}
+	@Override
+	public void enterAlterTablespace(MySqlParser.AlterTablespaceContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterAlterTablespace()");
+		String tableToRename = "";
+		queryDefinition.setTableToRename(tableToRename);
+	}
+	
 	/**
 	 * This could be part of a DROP TABLE command or an ALTER TABLE command...
 	 * @param node
 	 */
 	private void processTerminalNodeDrop(TerminalNode node) {
+		Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop()");
 		if (firstVisit == true) {queryDefinition.setQueryType(new QueryTypeDrop()); firstVisit = false;}
 		for (int i = 1; i < node.getParent().getChildCount(); i++) {
 			String dropType = node.getParent().getChild(i).getText().trim().toUpperCase();
 			ParseTree child = null;
+			Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): drop type = " + dropType);
 			switch (dropType) {
+				case "FOREIGN":
+					if (node.getParent().getChild(i+1).getText().trim().toUpperCase().equals("KEY")) {
+						queryDefinition.setQueryType(new QueryTypeDropForeignKey());
+						Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): drop type = DROP FOREIGN KEY");
+						MySqlParser.UidContext field = (UidContext) node.getParent().getChild(i+2);
+						String foreignKeyToDrop = field.getChild(0).getText();
+						Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): foreign key to drop = " + foreignKeyToDrop);
+						queryDefinition.setForeignKeyToDrop(foreignKeyToDrop);
+					} else {
+						Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): ERROR: can't find \"KEY\" after \"FOREIGN\", found \"" + node.getParent().getChild(i+1).getText().trim().toUpperCase() + "\" instead.");
+					}
+					break;
+							
 				case "COLUMN": 
 					queryDefinition.setQueryType(new QueryTypeDropView());
 					Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): it's a " + queryDefinition.getQueryType().toString());

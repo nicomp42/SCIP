@@ -25,7 +25,18 @@ public class CaseStudyEnvironment {
 																	"ALTER TABLE `storeinspection`.`storeinspection`" +  
 																	"CHANGE COLUMN `InspectionDateTime` `InspectionDateTime` FLOAT NOT NULL ;" ));
 
-	
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Delete a foreign key",
+																	"ALTER TABLE `flight`.`tflight` " +
+																	"DROP FOREIGN KEY `tFlight_tPilot`;"));
+		
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table",
+																	"ALTER TABLE `flight`.`tflight`" + 
+																	"RENAME TO  `flight`.`tflightx`;"  ));
+		
+//		"ALTER TABLE `flight`.`tflight` "
+//		"DROP INDEX `tFlight_tPilot_idx` ;"
+		
+
 	}
 	public CaseStudyQuerys getCaseStudyQuerys() {
 		return caseStudyQuerys;
