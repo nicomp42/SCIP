@@ -22,6 +22,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Tables;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
+import edu.UC.PhD.CodeProject.nicholdw.caseStudy.CaseStudyRunner;
 import edu.UC.PhD.CodeProject.nicholdw.importFromCSVIntoGraphDB.ImportFromCSVIntoGraphDB;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
@@ -92,6 +93,7 @@ public class Main extends Application {
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout;
 	@FXML private MenuItem mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL, mnuEditProjectManager, mnuReadDBLog, mnuProcessGraphDB, mnuProcessETL;
+	@FXML private MenuItem mnuToolsCaseStudy1;
 	@FXML private WebView wbNeo4j;
 	@FXML private ImageView imgNeo4jReminder;
 	@FXML void lvOperationalSchemaNames_OnClicked(MouseEvent event) {txtOperationalSchemaName.setText(lvOperationalSchemaNames.getSelectionModel().getSelectedItem());}
@@ -107,6 +109,7 @@ public class Main extends Application {
 	@FXML void mnuEditReadDBLog_OnAction(ActionEvent event) {openTransactionLogFileReaderWindow();}
 	@FXML void mnuToolsProcessGraphDB_OnAction(ActionEvent event) {openProcessGraphDBWindow();}
 	@FXML void mnuToolsProcessETL_OnAction(ActionEvent event) {openProcessETLWindow();}
+	@FXML void mnuToolsCaseStudy1_OnAction(ActionEvent event) {runCaseStudy1();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
 		Log.logProgress("main.mnuFileSaveProject_OnAction(): Saving scip...");
@@ -174,6 +177,13 @@ public class Main extends Application {
 				keepGoing = false;
 			}
 		}
+	}
+	/***
+	 * Launch Case Study 1
+	 */
+	private void runCaseStudy1() {
+		Log.logProgress("Main.runCaseStudy1()");
+		CaseStudyRunner.run();
 	}
 	/***
 	 * Copy from SchemaChangeImpactProject object to controls on the form
