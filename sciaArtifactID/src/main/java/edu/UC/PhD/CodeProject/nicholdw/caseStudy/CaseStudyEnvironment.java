@@ -7,6 +7,9 @@ package edu.UC.PhD.CodeProject.nicholdw.caseStudy;
  */
 public class CaseStudyEnvironment {
 	private CaseStudyQuerys caseStudyQuerys;
+	/***
+	 * Constructor. Init's the query objects that will be tested in this test case.
+	 */
 	public CaseStudyEnvironment() {
 		setCaseStudyQuerys(new CaseStudyQuerys());
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table column",
@@ -33,9 +36,9 @@ public class CaseStudyEnvironment {
 																	"ALTER TABLE `flight`.`tflight`" + 
 																	"RENAME TO  `flight`.`tflightx`;"  ));
 		
-//		"ALTER TABLE `flight`.`tflight` "
-//		"DROP INDEX `tFlight_tPilot_idx` ;"
-		
+				
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a Schema",
+																	"DROP DATABASE `dw`;"));
 
 	}
 	public CaseStudyQuerys getCaseStudyQuerys() {

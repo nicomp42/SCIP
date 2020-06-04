@@ -1134,7 +1134,13 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		String tableToRename = "";
 		queryDefinition.setTableToRename(tableToRename);
 	}
-	
+	@Override
+	public void enterDropDatabase(MySqlParser.DropDatabaseContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterDropDatabase()");
+		UidContext databaseToDrop = (UidContext) ctx.getChild(2);
+		queryDefinition.setSchemaToDrop(databaseToDrop.getText());	// In MySQL a database is a schema
+		
+	}
 	/**
 	 * This could be part of a DROP TABLE command or an ALTER TABLE command...
 	 * @param node

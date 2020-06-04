@@ -183,7 +183,7 @@ public class Main extends Application {
 	 */
 	private void runCaseStudy1() {
 		Log.logProgress("Main.runCaseStudy1()");
-		CaseStudyRunner.run();
+		openCaseStudy1Window();
 	}
 	/***
 	 * Copy from SchemaChangeImpactProject object to controls on the form
@@ -664,6 +664,26 @@ public class Main extends Application {
 			stage.show();
 		} catch (Exception ex) {
 			Log.logError("Main.openConfigWindow():" + ex.getLocalizedMessage());
+		}
+	}
+	private void openCaseStudy1Window() {
+		Log.logProgress("Main.openCaseStudy1Window()");
+		try {
+			FXMLLoader fxmlLoader = null;
+			fxmlLoader = new FXMLLoader(getClass().getResource("CaseStudy1.fxml"));
+			Parent root = fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.setOpacity(1);
+			stage.setTitle("Case Study 1");
+			Scene scene = new Scene(root);
+			stage.setResizable(false);
+			stage.setScene(scene);
+			CaseStudy1Controller caseStudy1Controller = fxmlLoader.getController();
+			caseStudy1Controller.setStage(stage);
+			stage.show();
+		} catch (Exception ex) {
+			Log.logError("Main.openCaseStudy1Window():" + ex.getLocalizedMessage());
 		}
 	}
 	@FXML

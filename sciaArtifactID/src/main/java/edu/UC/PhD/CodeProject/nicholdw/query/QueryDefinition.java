@@ -60,6 +60,7 @@ public class QueryDefinition implements java.io.Serializable {
 	private QueryTerminalSymbols queryTerminalSymbols;
 	private String foreignKeyToDrop;
 	private String tableToRename;
+	private String schemaToDrop;
 	// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html
 	// However, a wildcard can appear in an ad-hoc query that shows up in the transaction log!
 	private Boolean selectIsWildcard;		 
@@ -747,5 +748,11 @@ public class QueryDefinition implements java.io.Serializable {
 	}
 	public void setTableToRename(String tableToRename) {
 		this.tableToRename = tableToRename;
+	}
+	public String getSchemaToDrop() {
+		return schemaToDrop;
+	}
+	public void setSchemaToDrop(String schemaToDrop) {
+		this.schemaToDrop = schemaToDrop;
 	}
 }
