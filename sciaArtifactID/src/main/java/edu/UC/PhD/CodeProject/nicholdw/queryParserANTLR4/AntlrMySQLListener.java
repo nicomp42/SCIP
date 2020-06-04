@@ -36,6 +36,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDrop;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropForeignKey;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropSchema;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeInsert;
@@ -71,7 +72,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		fullTableNames = new ArrayList<FullTableName>();
 		compoundAliases = new CompoundAliases();
 		currentNestingLevel = new NestingLevel();
-		queryDefinition.setQueryType(new QueryTypeUnknown());
+		this.queryDefinition.setQueryType(new QueryTypeUnknown());
 		lastTerminalNode = "";
 		firstVisit = true;
 		currentAlias = "";
@@ -1107,10 +1108,18 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.exitDropView(): " + ctx.getText());
 	}
 	@Override
+	public void enterAlterByDropForeignKey(MySqlParser.AlterByDropForeignKeyContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.AlterByDropForeignKeyContext()");
+		String tableToRename = "";
+		queryDefinition.setTableToRename(tableToRename);
+		queryDefinition.setQueryType(new QueryTypeDropForeignKey());
+	}
+	@Override
 	public void enterRenameTable(MySqlParser.RenameTableContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterRenameTable()");
 		String tableToRename = "";
 		queryDefinition.setTableToRename(tableToRename);
+		queryDefinition.setQueryType(new QueryTypeRenameTable());
 		
 	}
 	@Override
@@ -1118,7 +1127,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterRenameTableClause()");
 		String tableToRename = "";
 		queryDefinition.setTableToRename(tableToRename);
-		
+		queryDefinition.setQueryType(new QueryTypeRenameTable());		
 	}
 	@Override
 	public void enterAlterTable(MySqlParser.AlterTableContext ctx) {
@@ -1127,6 +1136,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		String tableToRename = "";
 		tableToRename = tnc.getText();	// Combines the children together into a nice text field
 		queryDefinition.setTableToRename(tableToRename);
+		queryDefinition.setQueryType(new QueryTypeAlterTable());
 	}
 	@Override
 	public void enterAlterTablespace(MySqlParser.AlterTablespaceContext ctx) {
@@ -1139,6 +1149,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterDropDatabase()");
 		UidContext databaseToDrop = (UidContext) ctx.getChild(2);
 		queryDefinition.setSchemaToDrop(databaseToDrop.getText());	// In MySQL a database is a schema
+		queryDefinition.setQueryType(new QueryTypeDropSchema());
 		
 	}
 	/**

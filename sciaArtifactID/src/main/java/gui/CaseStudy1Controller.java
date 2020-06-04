@@ -76,6 +76,7 @@ public class CaseStudy1Controller {
 	@FXML private ListView<String> lvTestCase;
 	@FXML private Button btnStart;
 	@FXML private TextArea txaProgress;
+	@FXML private TextField txtStatus;
 	@FXML private Tab tabCaseStudy1;
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileExit;
@@ -88,7 +89,9 @@ public class CaseStudy1Controller {
 	 */
 	private void runTest() {
 		txaProgress.clear();
+		txtStatus.setText("Tests running...");
 		CaseStudyRunner.run(caseStudyEnvironment, txaProgress);
+		txtStatus.setText("Tests complete");
 	}
 	public void loadTestCasesIntoListBox() {
 		CaseStudyQuerys csqs = caseStudyEnvironment.getCaseStudyQuerys();

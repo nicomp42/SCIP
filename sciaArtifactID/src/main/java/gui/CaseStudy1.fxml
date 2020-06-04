@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Bloom?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -48,8 +49,9 @@
                            </effect>
                         </ImageView>
                         <ListView fx:id="lvTestCase" layoutX="14.0" layoutY="7.0" prefHeight="579.0" prefWidth="200.0" />
-                        <Button fx:id="btnStart" layoutX="168.0" layoutY="593.0" mnemonicParsing="false" onAction="#btnStart_OnAction" text="Start" />
-                        <TextArea fx:id="txaProgress" layoutX="269.0" prefHeight="655.0" prefWidth="354.0" />
+                        <Button fx:id="btnStart" layoutX="14.0" layoutY="593.0" mnemonicParsing="false" onAction="#btnStart_OnAction" text="Start" />
+                        <TextArea fx:id="txaProgress" layoutX="227.0" layoutY="7.0" prefHeight="630.0" prefWidth="458.0" />
+                        <TextField fx:id="txtStatus" layoutX="67.0" layoutY="593.0" prefHeight="25.0" prefWidth="147.0" />
                      </children>
                   </AnchorPane>
             </content>
