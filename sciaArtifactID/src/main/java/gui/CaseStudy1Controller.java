@@ -83,8 +83,12 @@ public class CaseStudy1Controller {
 
 	private CaseStudyEnvironment caseStudyEnvironment;
 	
+	/***
+	 * Run the tests...
+	 */
 	private void runTest() {
-		
+		txaProgress.clear();
+		CaseStudyRunner.run(caseStudyEnvironment, txaProgress);
 	}
 	public void loadTestCasesIntoListBox() {
 		CaseStudyQuerys csqs = caseStudyEnvironment.getCaseStudyQuerys();
