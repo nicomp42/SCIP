@@ -1082,25 +1082,34 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		}
 		fullTableNames.add(fullTableName);
 	}
-	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) {
-		Log.logQueryParseProgress("AntlrMySQLListener.exitAtomTableItem(): " + ctx.getText());
-	}
+	@Override public void exitAtomTableItem(MySqlParser.AtomTableItemContext ctx) { }
 	@Override public void exitAlterTable(MySqlParser.AlterTableContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterTable(): " + ctx.getText());
 	}
 	@Override public void exitAlterTablespace(MySqlParser.AlterTablespaceContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterTablespace(): " + ctx.getText());
 	}
+	// The MySQL syntax is "CREATE OR ALTER VIEW" because the view may already exist, or not
+	@Override public void enterCreateView(MySqlParser.CreateViewContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.enterCreateView(): " + ctx.getText());
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (ctx.getChild(i) instanceof MySqlParser.FullIdContext) {
+				queryDefinition.setViewToCreateOrAlter(ctx.getChild(i).toString());
+			}
+		}
+		queryDefinition.setQueryType(new QueryTypeCreateView());
+	}
 	@Override public void enterAlterView(MySqlParser.AlterViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): " + ctx.getText());
-		if (queryDefinition.getQueryType() instanceof QueryTypeUnknown) {
+//		if (queryDefinition.getQueryType() instanceof QueryTypeUnknown) {
 			Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): this is an ALTER statement ");
 			queryDefinition.setQueryType(new QueryTypeAlterView());
-		} else {Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): this statement was already defined as " + queryDefinition.getQueryType().toString());}
+//		} else {Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): this statement was already defined as " + queryDefinition.getQueryType().toString());}
 	}
 	@Override public void exitAlterView(MySqlParser.AlterViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterView(): " + ctx.getText());
 	}
+
 	@Override public void enterDropView(MySqlParser.DropViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterDropView(): " + ctx.getText());
 	}

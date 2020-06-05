@@ -61,6 +61,7 @@ public class QueryDefinition implements java.io.Serializable {
 	private String foreignKeyToDrop;
 	private String tableToRename;
 	private String schemaToDrop;
+	private String viewToCreateOrAlter;
 	// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html
 	// However, a wildcard can appear in an ad-hoc query that shows up in the transaction log!
 	private Boolean selectIsWildcard;		 
@@ -84,6 +85,21 @@ public class QueryDefinition implements java.io.Serializable {
 		setQueryVariables(new QueryVariables());
 		setQueryTerminalSymbols(new QueryTerminalSymbols());		
 		setSelectIsWildcard(false);
+	}
+	/***
+	 * Find Query Attributes that went away. This is useful for schema evolution "view altering"
+	 * @param qd01 The starting query def
+	 * @param qd02 The ending query def
+	 * @return The list of attributes that were in qd01 but are not in qd02
+	 */
+	public static QueryAttributes findMissingQueryAttributes(QueryDefinition qd01, QueryDefinition qd02) {
+		QueryAttributes qas = new QueryAttributes();
+		for (QueryAttribute qa : qd01.queryAttributes) {
+			if (!(qd02.getQueryAttributes().contains(qa, false))) {
+				qas.addAttribute(new QueryAttribute(qa));
+			}
+		}
+		return qas;
 	}
 	public QueryDefinitions getChildren() {return children;}
 //	public void initWildcards() {selectIsWildcard = false;}
@@ -754,5 +770,11 @@ public class QueryDefinition implements java.io.Serializable {
 	}
 	public void setSchemaToDrop(String schemaToDrop) {
 		this.schemaToDrop = schemaToDrop;
+	}
+	public String getViewToCreateOrAlter() {
+		return viewToCreateOrAlter;
+	}
+	public void setViewToCreateOrAlter(String viewToCreateOrAlter) {
+		this.viewToCreateOrAlter = viewToCreateOrAlter;
 	}
 }

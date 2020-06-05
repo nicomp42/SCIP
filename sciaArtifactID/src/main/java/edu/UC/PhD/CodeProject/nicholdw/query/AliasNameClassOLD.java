@@ -3,6 +3,10 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 
 public class AliasNameClassOLD implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4744403665512150211L;
 	private String aliasName;
 
 	/**

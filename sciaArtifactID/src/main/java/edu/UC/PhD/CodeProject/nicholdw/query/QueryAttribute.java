@@ -35,6 +35,25 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	private ATTRIBUTE_DISPOSITION attributeDisposition;
 	public enum ATTRIBUTE_DISPOSITION {Select, Add, Drop, Alter};
 	private GraphNodeAnnotation graphNodeAnnotation;
+	public QueryAttribute(QueryAttribute qa) {
+		setSchemaName(qa.getSchemaName());
+		setTableName(qa.getTableName());
+		setTableAliasName(qa.getTableAliasName());
+		setAttributeName(qa.getAttributeName());
+		setAliasNames(qa.getAliasNames());
+		setAttributeDisposition(qa.getAttributeDisposition());
+		setQueryClause(qa.getQueryClause());
+	}
+	/***
+	 * Duplicate a list of alias names into this QueryAttributes object. Deep copy.
+	 * @param aliasNames the list of alias names to duplicate
+	 */
+	public void setAliasNames(AliasNamesOLD aliasNames) {
+		aliasNames = new AliasNamesOLD();
+		for (AliasNameClassOLD an : aliasNames) {
+			aliasNames.addAliasName(an);
+		}
+	}
 	/**
 	 * Create a QueryAttribute object
 	 * Attribute Disposition defaults to Select
@@ -45,8 +64,10 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * @param queryClause
 	 * @param attributeDisposition
 	 */
-	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, 
-			              QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
+	public QueryAttribute(String schemaName, String tableName, String attributeName, 
+			              AliasNameClassOLD aliasName, 
+			              QueryClause queryClause, String tableAliasName, 
+			              ATTRIBUTE_DISPOSITION attributeDisposition) {
 		this.setTableName(tableName);
 		aliasNames = new AliasNamesOLD();
 		this.addAliasName (aliasName);
@@ -68,7 +89,9 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * @param aliasName If you only have one alias for this QueryAttribute object
 	 * @param queryClause
 	 */
-	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName) {
+	public QueryAttribute(String schemaName, String tableName, String attributeName, 
+			              AliasNameClassOLD aliasName, QueryClause queryClause, 
+			              String tableAliasName) {
 		this.setTableName(tableName);
 		aliasNames = new AliasNamesOLD();
 		this.addAliasName (aliasName);

@@ -9,6 +9,6 @@ public  class QueryTypeDropSchema extends QueryType {
 		super(queryType);
 	}
 	public QueryTypeDropSchema() {
-		super("DROP SCHEMA");
+		super("DROP SCHEMA (database)");
 	}
 }
