@@ -87,7 +87,7 @@ public class QueryGraph {
 					attributeName = queryTable.getQueryAttributeProvenance().getAttributeName();
 					SchemaGraph.addQueryAttribute(queryTable.getSchemaName(), 
 							                      queryTable.getTableName(), 
-							                      queryTable.getQueryAttributeProvenance().getAttributeOrAliasName(),
+							                      queryTable.getQueryAttributeProvenance().getAttributeNameOrAliasName(),
 							                      queryTable.getAttributeDataType(attributeName));
 	
 					SchemaGraph.connectAttributeNodeToAttributeNode(schemaNamePrev, 
@@ -95,10 +95,10 @@ public class QueryGraph {
 																	attributeNamePrev,
 																	queryTable.getSchemaName(), 
 																	queryTable.getTableName(), 
-																	queryTable.getQueryAttributeProvenance().getAttributeOrAliasName());
+																	queryTable.getQueryAttributeProvenance().getAttributeNameOrAliasName());
 					schemaNamePrev = queryTable.getSchemaName();
 					tableNamePrev = queryTable.getTableName();
-					attributeNamePrev = queryTable.getQueryAttributeProvenance().getAttributeOrAliasName();
+					attributeNamePrev = queryTable.getQueryAttributeProvenance().getAttributeNameOrAliasName();
 				}
 			}
 		}

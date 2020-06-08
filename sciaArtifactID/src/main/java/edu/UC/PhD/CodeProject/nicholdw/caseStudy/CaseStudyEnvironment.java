@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.caseStudy;
 
 /**
@@ -9,14 +13,14 @@ package edu.UC.PhD.CodeProject.nicholdw.caseStudy;
 public class CaseStudyEnvironment {
 	private CaseStudyQuerys caseStudyQuerys;
 	/***
-	 * Constructor. Init's the query objects that will be tested in this test case.
+	 * Constructor. Initializes the query objects that will be tested in this test case.
 	 */
 	public CaseStudyEnvironment() {
 		setCaseStudyQuerys(new CaseStudyQuerys());
 		/* Rename a schema: there's no single SQL command to do this. 
 		 * You have to create a new one and copy artifacts into it.
 		 */
-		
+/*		
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a Schema",
 																	"DROP DATABASE `dw`;"));
 		
@@ -50,21 +54,23 @@ public class CaseStudyEnvironment {
 		
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a view",
 																	"DROP VIEW `hr`.`vtest`"));
-//		The entire view is redefined. This is problematic		
-//		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a view attribute",
-//																	"DROP VIEW `hr`.`vtest`"));
-		
-		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a view",
-																	"DROP VIEW `hr`.`vtest`"));
-//		Alter a view in MySQL is running CREATE VIEW with the same name as an existing view
-		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view ",
-																	"CREATE OR REPLACE VIEW `hr`.`vtest` AS\r\n" + 
-																	"SELECT \r\n" + 
-																	"`hr`.`employee`.`EmployeeID` AS `EmployeeIDX`\r\n" + 
-																	"FROM\r\n" + 
+//		Alter a view in MySQL is running "CREATE OR REPLACE VIEW" with the same name as an existing view
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (with \"OR REPLACE\")",
+				
+																	"CREATE OR REPLACE VIEW `hr`.`vtest` AS " + 
+																	"SELECT " + 
+																	"`hr`.`employee`.`EmployeeID` AS `EmployeeIDX` " + 
+																	"FROM " + 
 																	"`hr`.`employee`" + 
 																	""));
-		
+*/
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (without \"OR REPLACE\")",
+																	"CREATE VIEW `hr`.`vtest` AS " + 
+																	"SELECT " + 
+																	"`hr`.`employee`.`EmployeeID` AS `EmployeeIDX` " + 
+																	"FROM " + 
+																	"`hr`.`employee`" + 
+																	""));
 		
 	}
 	public CaseStudyQuerys getCaseStudyQuerys() {

@@ -19,6 +19,10 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8144072456742252403L;
 	private ArrayList<QueryAttribute> queryAttributes;
 
 	/**

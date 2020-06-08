@@ -32,8 +32,8 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlter;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreate;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateOrReplaceView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateTable;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDrop;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropForeignKey;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropSchema;
@@ -1089,15 +1089,19 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitAlterTablespace(MySqlParser.AlterTablespaceContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterTablespace(): " + ctx.getText());
 	}
-	// The MySQL syntax is "CREATE OR ALTER VIEW" because the view may already exist, or not
+	// The MySQL syntax is "CREATE OR REPLACE VIEW" because the view may already exist, or not
 	@Override public void enterCreateView(MySqlParser.CreateViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterCreateView(): " + ctx.getText());
 		for (int i = 0; i < ctx.getChildCount(); i++) {
 			if (ctx.getChild(i) instanceof MySqlParser.FullIdContext) {
-				queryDefinition.setViewToCreateOrAlter(ctx.getChild(i).toString());
+				queryDefinition.setViewToCreateOrReplace(ctx.getChild(i).getText());
+			}
+			
+			if (ctx.getChild(i) instanceof MySqlParser.SimpleSelectContext) {
+				queryDefinition.setSelectStatementToCreateOrReplace(ctx.getChild(i).toString());
 			}
 		}
-		queryDefinition.setQueryType(new QueryTypeCreateView());
+		queryDefinition.setQueryType(new QueryTypeCreateOrReplaceView());
 	}
 	@Override public void enterAlterView(MySqlParser.AlterViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): " + ctx.getText());
@@ -1251,7 +1255,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
 				break;
 			case "VIEW": 
-				queryDefinition.setQueryType(new QueryTypeCreateView());
+				queryDefinition.setQueryType(new QueryTypeCreateOrReplaceView());
 				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
 				break;
 			default:		// It's an error. We don't know what we're creating

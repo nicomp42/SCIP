@@ -24,6 +24,8 @@ import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngineFactory;
 import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.SystemDatabaseConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngineFactory.DATABASE_ENGINE_TYPE;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClassOLD;
+import edu.UC.PhD.CodeProject.nicholdw.query.AliasNamesOLD;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import gui.DebugController;
 import lib.SQLUtils;
@@ -339,6 +341,24 @@ public class Config implements Serializable {
 			}
 		}
 		return result;
+	}
+	/**
+	 * Compare a list of Alias Names for attributes
+	 * @param ans1 List 1
+	 * @param ans2 List 2
+	 * @return True if the lists contain the same aliases, false otherwise. Order doesn't matter
+	 */
+	public boolean compareAliasNames(AliasNamesOLD ans1, AliasNamesOLD ans2) {
+		boolean match = true;	// Assume the best
+		// Lists must be the same length
+		if (ans1.size() != ans2.size()) {
+			match = false; 
+		} else {
+			for (AliasNameClassOLD an : ans1.getAliasNames()) {
+				if (!(ans2.contains(an))) {match = false; break;}
+			}
+		}
+		return match;
 	}
 	public boolean compareTableNames(String tableName1, String tableName2) {
 		String tmp1, tmp2;

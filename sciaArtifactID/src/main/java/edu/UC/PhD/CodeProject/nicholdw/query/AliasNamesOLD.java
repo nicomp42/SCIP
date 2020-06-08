@@ -83,4 +83,5 @@ public class AliasNamesOLD implements Iterable<AliasNameClassOLD>, java.io.Seria
 		if (aliasNames.size() > 1) { result.insert(0, "{").append("}"); }
 		return result.toString();
 	}
+	public ArrayList<AliasNameClassOLD> getAliasNames() { return aliasNames;}
 }

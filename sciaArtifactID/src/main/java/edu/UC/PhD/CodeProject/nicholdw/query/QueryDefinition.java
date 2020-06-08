@@ -62,6 +62,7 @@ public class QueryDefinition implements java.io.Serializable {
 	private String tableToRename;
 	private String schemaToDrop;
 	private String viewToCreateOrAlter;
+	private String selectStatementToCreateOrReplace;
 	// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html
 	// However, a wildcard can appear in an ad-hoc query that shows up in the transaction log!
 	private Boolean selectIsWildcard;		 
@@ -774,7 +775,13 @@ public class QueryDefinition implements java.io.Serializable {
 	public String getViewToCreateOrAlter() {
 		return viewToCreateOrAlter;
 	}
-	public void setViewToCreateOrAlter(String viewToCreateOrAlter) {
+	public void setViewToCreateOrReplace(String viewToCreateOrAlter) {
 		this.viewToCreateOrAlter = viewToCreateOrAlter;
+	}
+	public String getSelectStatementToCreateOrReplace() {
+		return selectStatementToCreateOrReplace;
+	}
+	public void setSelectStatementToCreateOrReplace(String selectStatementToCreateOrReplace) {
+		this.selectStatementToCreateOrReplace = selectStatementToCreateOrReplace;
 	}
 }

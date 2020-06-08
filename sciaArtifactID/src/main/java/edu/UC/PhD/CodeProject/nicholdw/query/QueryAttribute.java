@@ -151,7 +151,9 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	}
 	public String getTableName() {return this.tableName;}
 
-	public AliasNamesOLD getAliasNames() {return aliasNames;}
+	public AliasNamesOLD getAliasNames() {
+		return aliasNames;
+	}
 	public void addAliasName(AliasNameClassOLD aliasNameClass) {
 		if (aliasNameClass != null) {
 			aliasNames.addAliasName(aliasNameClass);
@@ -242,6 +244,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	public boolean equals(QueryAttribute queryAttribute) {
 		boolean result = false;
 		if (Config.getConfig().compareAttributeNames(this.getAttributeName(), queryAttribute.getAttributeName()) && 
+			Config.getConfig().compareAliasNames(this.getAliasNames(), queryAttribute.getAliasNames()) && 
 			Config.getConfig().compareTableNames(this.getTableName(), queryAttribute.getTableName()) && 
 			Config.getConfig().compareSchemaNames(this.getSchemaName(), queryAttribute.getSchemaName())) {
 			result = true;
@@ -271,7 +274,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * If the attribute has an alias, return that, else return the attribute name
 	 * @return The alias or attribute
 	 */
-	public String getAttributeOrAliasName() {
+	public String getAttributeNameOrAliasName() {
 		if (aliasNames.size() > 0) {
 			return aliasNames.iterator().next().getAliasName();
 		} else {
