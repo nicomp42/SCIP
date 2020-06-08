@@ -4,15 +4,9 @@
  */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
-
 import edu.UC.PhD.CodeProject.nicholdw.Attribute;
 import edu.UC.PhD.CodeProject.nicholdw.Attributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
@@ -22,7 +16,6 @@ import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.exception.NotImplementedException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute.ATTRIBUTE_DISPOSITION;
 import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
@@ -61,7 +54,7 @@ public class QueryDefinition implements java.io.Serializable {
 	private String foreignKeyToDrop;
 	private String tableToRename;
 	private String schemaToDrop;
-	private String viewToCreateOrAlter;
+	private View viewToCreateOrAlter;
 	private String selectStatementToCreateOrReplace;
 	// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html
 	// However, a wildcard can appear in an ad-hoc query that shows up in the transaction log!
@@ -89,14 +82,14 @@ public class QueryDefinition implements java.io.Serializable {
 	}
 	/***
 	 * Find Query Attributes that went away. This is useful for schema evolution "view altering"
-	 * @param qd01 The starting query def
-	 * @param qd02 The ending query def
+	 * @param qdStart The starting query def
+	 * @param qdRevised The ending query def
 	 * @return The list of attributes that were in qd01 but are not in qd02
 	 */
-	public static QueryAttributes findMissingQueryAttributes(QueryDefinition qd01, QueryDefinition qd02) {
+	public static QueryAttributes findMissingQueryAttributes(QueryDefinition qdStart, QueryDefinition qdRevised) {
 		QueryAttributes qas = new QueryAttributes();
-		for (QueryAttribute qa : qd01.queryAttributes) {
-			if (!(qd02.getQueryAttributes().contains(qa, false))) {
+		for (QueryAttribute qa : qdStart.queryAttributes) {
+			if (!(qdRevised.getQueryAttributes().contains(qa, false))) {
 				qas.addAttribute(new QueryAttribute(qa));
 			}
 		}
@@ -772,10 +765,10 @@ public class QueryDefinition implements java.io.Serializable {
 	public void setSchemaToDrop(String schemaToDrop) {
 		this.schemaToDrop = schemaToDrop;
 	}
-	public String getViewToCreateOrAlter() {
+	public View getViewToCreateOrAlter() {
 		return viewToCreateOrAlter;
 	}
-	public void setViewToCreateOrReplace(String viewToCreateOrAlter) {
+	public void setViewToCreateOrReplace(View viewToCreateOrAlter) {
 		this.viewToCreateOrAlter = viewToCreateOrAlter;
 	}
 	public String getSelectStatementToCreateOrReplace() {

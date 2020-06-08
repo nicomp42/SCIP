@@ -28,6 +28,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryClauseUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTerminalSymbol;
+import edu.UC.PhD.CodeProject.nicholdw.query.View;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlter;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
@@ -1094,14 +1095,16 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.enterCreateView(): " + ctx.getText());
 		for (int i = 0; i < ctx.getChildCount(); i++) {
 			if (ctx.getChild(i) instanceof MySqlParser.FullIdContext) {
-				queryDefinition.setViewToCreateOrReplace(ctx.getChild(i).getText());
+				MySqlParser.FullIdContext fullIdContext = (MySqlParser.FullIdContext)ctx.getChild(i);
+				queryDefinition.setViewToCreateOrReplace(new View(ctx.getChild(i).getChild(0).getText(), ctx.getChild(i).getChild(2).getText()));
 			}
-			
+
 			if (ctx.getChild(i) instanceof MySqlParser.SimpleSelectContext) {
 				queryDefinition.setSelectStatementToCreateOrReplace(ctx.getChild(i).toString());
 			}
 		}
 		queryDefinition.setQueryType(new QueryTypeCreateOrReplaceView());
+		firstVisit = false;
 	}
 	@Override public void enterAlterView(MySqlParser.AlterViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAlterView(): " + ctx.getText());
@@ -1246,6 +1249,8 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		}
 	}
 	private void processTerminalNodeCreate(TerminalNode node) {
+/*
+ * We don't need this because we have better logic in the start logic for create statements
 		if (firstVisit == true) {queryDefinition.setQueryType(new QueryTypeCreate()); firstVisit = false;}
 		String createType = node.getParent().getChild(1).getText().trim().toUpperCase();
 		if (createType.trim().toUpperCase().equals("TEMPORARY")) {createType = node.getParent().getChild(1).getText().trim().toUpperCase();}
@@ -1259,9 +1264,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): it's a " + queryDefinition.getQueryType().toString());
 				break;
 			default:		// It's an error. We don't know what we're creating
-				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE somthing is unidentified: " + createType, true);
+				Log.logQueryParseProgress("AntlrMySQLListener.visitTerminal(): CREATE something is unidentified: " + createType, true);
 		}
-	}
+*/	}
 	// This is an AS for a column name and for a table/query name. We have to handle each.
 	private void processTerminalNodeAs(TerminalNode node) {
 /*		System.out.println(node.getParent().getChild(0).getClass().getName());

@@ -36,6 +36,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	public enum ATTRIBUTE_DISPOSITION {Select, Add, Drop, Alter};
 	private GraphNodeAnnotation graphNodeAnnotation;
 	public QueryAttribute(QueryAttribute qa) {
+		this.aliasNames = new AliasNamesOLD();
 		setSchemaName(qa.getSchemaName());
 		setTableName(qa.getTableName());
 		setTableAliasName(qa.getTableAliasName());
@@ -49,9 +50,14 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * @param aliasNames the list of alias names to duplicate
 	 */
 	public void setAliasNames(AliasNamesOLD aliasNames) {
-		aliasNames = new AliasNamesOLD();
-		for (AliasNameClassOLD an : aliasNames) {
-			aliasNames.addAliasName(an);
+		if (aliasNames != null) {
+			this.aliasNames = new AliasNamesOLD();
+			for (AliasNameClassOLD an : aliasNames) {
+				this.aliasNames.addAliasName(an);
+			}
+		} else {
+			// Nothing to copy, let's make it an empty data structue
+			this.aliasNames = new AliasNamesOLD();
 		}
 	}
 	/**
@@ -92,6 +98,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	public QueryAttribute(String schemaName, String tableName, String attributeName, 
 			              AliasNameClassOLD aliasName, QueryClause queryClause, 
 			              String tableAliasName) {
+		this.aliasNames = new AliasNamesOLD();
 		this.setTableName(tableName);
 		aliasNames = new AliasNamesOLD();
 		this.addAliasName (aliasName);

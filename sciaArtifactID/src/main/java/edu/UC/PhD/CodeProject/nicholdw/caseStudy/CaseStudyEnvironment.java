@@ -65,11 +65,16 @@ public class CaseStudyEnvironment {
 																	""));
 */
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (without \"OR REPLACE\")",
-																	"CREATE VIEW `hr`.`vtest` AS " + 
-																	"SELECT " + 
-																	"`hr`.`employee`.`EmployeeID` AS `EmployeeIDX` " + 
-																	"FROM " + 
-																	"`hr`.`employee`" + 
+																	"CREATE " + 
+																	"    ALGORITHM = UNDEFINED " + 
+																	"    DEFINER = `root`@`localhost` " + 
+																	"    SQL SECURITY DEFINER " + 
+																	"VIEW `hr`.`vtest` AS" + 
+																	"    SELECT " + 
+																	"        `hr`.`employee`.`EmployeeID` AS `EmployeeIDX`," + 
+																	"        `hr`.`employee`.`LastName` AS `lastName`" + 
+																	"    FROM " + 
+																	"        `hr`.`employee`" + 
 																	""));
 		
 	}
