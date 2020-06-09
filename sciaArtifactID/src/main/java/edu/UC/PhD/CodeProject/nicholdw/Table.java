@@ -144,7 +144,8 @@ public class Table {
 	 * @param name Name of table
 	 * @param schemaName Name of schema/database
 	 */
-	public Table(String tableName, String schemaName) {
+	public Table(String tableName, String schemaName) { 
+		// ToDo: The order of the parameters should be schema name first, then table name. 
 		setTableName(tableName);
 		indexList = new Indexes();
 		this.schemaName = schemaName;

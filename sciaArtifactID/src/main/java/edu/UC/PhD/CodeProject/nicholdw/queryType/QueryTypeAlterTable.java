@@ -9,4 +9,7 @@ public class QueryTypeAlterTable extends QueryTypeAlter {
 	public QueryTypeAlterTable() {
 		super("Alter Table");
 	}
+	public QueryTypeAlterTable(String type) {
+		super(type);
+	}
 }

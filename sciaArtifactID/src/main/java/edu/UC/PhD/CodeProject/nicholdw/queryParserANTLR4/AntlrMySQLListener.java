@@ -32,6 +32,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTerminalSymbol;
 import edu.UC.PhD.CodeProject.nicholdw.query.View;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlter;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTable;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTableChangeColumn;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreate;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateOrReplaceView;
@@ -1174,7 +1175,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			if (ctx.getChild(i) instanceof MySqlParser.TableNameContext) {
 				TableNameContext tnc = (TableNameContext)ctx.getChild(i);
 				FullIdContext fullIdContext = (FullIdContext) tnc.getChild(0); 
-				queryDefinition.setTableToAlter(new Table(fullIdContext.getChild(i).getChild(0).getText(), fullIdContext.getChild(2).getChild(2).getText()));
+				queryDefinition.setTableToAlter(new Table(fullIdContext.getChild(0).getText(), fullIdContext.getChild(2).getText()));
 			}
 		}
 		queryDefinition.setQueryType(new QueryTypeAlterTable());
@@ -1390,6 +1391,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 						queryDefinition.setQueryType(new QueryTypeRenameTable()); 
 						// We are renaming a table. We  have the table name being renamed because we processed the TableNameContext case already.
 						// For our purposes we don't care what the new name is anyway
+						queryDefinition.setTableToRename(new Table(myTableName, mySchemaName));
 						Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): renaming a table");
 						break;
 					case "TableNameContext":
@@ -1421,6 +1423,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 						innerClassName = "";
 						boolean keepGoing;
 						keepGoing = true;
+						queryDefinition.setQueryType(new QueryTypeAlterTableChangeColumn());
 						// Look for UIdContext class
 						for (int j = 0; keepGoing && j < node.getParent().getChild(i).getChildCount(); j++) {
 							innerClassName = getClassName(node.getParent().getChild(i).getChild(j).getClass().getName());

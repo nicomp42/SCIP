@@ -5,6 +5,10 @@ package edu.UC.PhD.CodeProject.nicholdw.queryType;
  * @author nicomp
  */
 public class QueryTypeAlter extends QueryType {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3162310338240127704L;
 	public QueryTypeAlter() {
 		super("Alter");
 	}

@@ -46,11 +46,27 @@ public class Attribute {
 	public boolean isAutoIncrement() {if (extra.toLowerCase().contains("auto_increment")) return true; else return false;}
 
 	/***
-	 * Probably not a good idea to use this -- lots of defaults are assumed.
-	 * @param name
+	 * We use this when we only need the attribute name -- lots of defaults are assumed.
+	 * @param attributeName Attribute Name
 	 */
-	public Attribute(String name) {
-		this.attributeName = name;
+	public Attribute(String attributeName) {
+		this.shotgunTheDefaults();
+		this.attributeName = attributeName;
+	}
+	/***
+	 * We use this when we only need the attribute name -- lots of defaults are assumed.
+	 * @param tableName Table Name
+	 * @param attributeName Attribute Name
+	 */
+	public Attribute(String tableName, String attributeName) {
+		this.shotgunTheDefaults();
+		this.attributeName = attributeName;
+		this.tableName = tableName;
+	}
+	/***
+	 * If we are  creating an attribute with limited information, use this to default everything first.
+	 */
+	private void shotgunTheDefaults() {
 		this.nullable = "no";
 		this.key = "no";
 		this.theDefault = "";
@@ -64,7 +80,6 @@ public class Attribute {
 		aliases = new Aliases();
 		setAffectedByActionQuery(false);
 	}
-
 	/***
 	 * Constructor
 	 * @param name name of attribute
@@ -91,6 +106,7 @@ public class Attribute {
 		this.aliases = Aliases.clone(aliases);
 		setAffectedByActionQuery(false);
 	}
+	
 	public boolean isTypeUnknown() {return type.equals(typeUnknown) ? true:false;}
 	public String getAttributeName() {return attributeName;}
 	public String getType() {return type;}
