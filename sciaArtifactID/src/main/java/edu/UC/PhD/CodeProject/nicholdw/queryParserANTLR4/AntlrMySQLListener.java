@@ -17,6 +17,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClassOLD;
@@ -1116,7 +1117,16 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override public void exitAlterView(MySqlParser.AlterViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.exitAlterView(): " + ctx.getText());
 	}
-
+	@Override public void enterDropTable(MySqlParser.DropTableContext ctx) {
+		Log.logQueryParseProgress("AntlrMySQLListener.DropTableContext(): " + ctx.getText());
+		queryDefinition.setQueryType(new QueryTypeDropTable());
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (ctx.getChild(i) instanceof MySqlParser.FullIdContext) {
+				MySqlParser.FullIdContext fullIdContext = (MySqlParser.FullIdContext)ctx.getChild(i);
+				queryDefinition.setTableToDrop(new Table(ctx.getChild(i).getChild(0).getText(), ctx.getChild(i).getChild(2).getText()));
+			}
+		}
+	}
 	@Override public void enterDropView(MySqlParser.DropViewContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterDropView(): " + ctx.getText());
 	}
@@ -1127,39 +1137,54 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	public void enterAlterByDropForeignKey(MySqlParser.AlterByDropForeignKeyContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.AlterByDropForeignKeyContext()");
 		String tableToRename = "";
-		queryDefinition.setTableToRename(tableToRename);
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (ctx.getChild(i) instanceof MySqlParser.FullIdContext) {
+//				MySqlParser.FullIdContext fullIdContext = (MySqlParser.FullIdContext)ctx.getChild(i);
+//				queryDefinition.setForeignKeyToDrop(new Table(ctx.getChild(i).getChild(0).getText(), ctx.getChild(i).getChild(2).getText()));
+			}
+		}
 		queryDefinition.setQueryType(new QueryTypeDropForeignKey());
 	}
 	@Override
 	public void enterRenameTable(MySqlParser.RenameTableContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterRenameTable()");
-		String tableToRename = "";
-		queryDefinition.setTableToRename(tableToRename);
 		queryDefinition.setQueryType(new QueryTypeRenameTable());
-		
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (ctx.getChild(i) instanceof MySqlParser.FullIdContext) {
+//				MySqlParser.FullIdContext fullIdContext = (MySqlParser.FullIdContext)ctx.getChild(i);
+				queryDefinition.setTableToRename(new Table(ctx.getChild(i).getChild(0).getText(), ctx.getChild(i).getChild(2).getText()));
+			}
+		}
 	}
 	@Override
 	public void enterRenameTableClause(MySqlParser.RenameTableClauseContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterRenameTableClause()");
-		String tableToRename = "";
-		queryDefinition.setTableToRename(tableToRename);
 		queryDefinition.setQueryType(new QueryTypeRenameTable());		
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (ctx.getChild(i) instanceof MySqlParser.FullIdContext) {
+//				MySqlParser.FullIdContext fullIdContext = (MySqlParser.FullIdContext)ctx.getChild(i);
+				queryDefinition.setTableToRename(new Table(ctx.getChild(i).getChild(0).getText(), ctx.getChild(i).getChild(2).getText()));
+			}
+		}
 	}
 	@Override
 	public void enterAlterTable(MySqlParser.AlterTableContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAlterTable()");
-		TableNameContext tnc = (TableNameContext)ctx.getChild(2);
-		String tableToRename = "";
-		tableToRename = tnc.getText();	// Combines the children together into a nice text field
-		queryDefinition.setTableToRename(tableToRename);
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (ctx.getChild(i) instanceof MySqlParser.TableNameContext) {
+				TableNameContext tnc = (TableNameContext)ctx.getChild(i);
+				FullIdContext fullIdContext = (FullIdContext) tnc.getChild(0); 
+				queryDefinition.setTableToAlter(new Table(fullIdContext.getChild(i).getChild(0).getText(), fullIdContext.getChild(2).getChild(2).getText()));
+			}
+		}
 		queryDefinition.setQueryType(new QueryTypeAlterTable());
 	}
-	@Override
+/*	@Override
 	public void enterAlterTablespace(MySqlParser.AlterTablespaceContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterAlterTablespace()");
 		String tableToRename = "";
 		queryDefinition.setTableToRename(tableToRename);
-	}
+	} */
 	@Override
 	public void enterDropDatabase(MySqlParser.DropDatabaseContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.enterDropDatabase()");
@@ -1180,6 +1205,9 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 			ParseTree child = null;
 			Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): drop type = " + dropType);
 			switch (dropType) {
+				case "DATABASE":
+					queryDefinition.setQueryType(new QueryTypeDropSchema());
+					break;
 				case "FOREIGN":
 					if (node.getParent().getChild(i+1).getText().trim().toUpperCase().equals("KEY")) {
 						queryDefinition.setQueryType(new QueryTypeDropForeignKey());

@@ -52,9 +52,11 @@ public class QueryDefinition implements java.io.Serializable {
 	private QueryVariables queryVariables;
 	private QueryTerminalSymbols queryTerminalSymbols;
 	private String foreignKeyToDrop;
-	private String tableToRename;
+	private Table tableToRename;
 	private String schemaToDrop;
 	private View viewToCreateOrAlter;
+	private Table tableToDrop;
+	private Table tableToAlter;
 	private String selectStatementToCreateOrReplace;
 	// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html
 	// However, a wildcard can appear in an ad-hoc query that shows up in the transaction log!
@@ -753,10 +755,10 @@ public class QueryDefinition implements java.io.Serializable {
 	public void setForeignKeyToDrop(String foreignKeyToDrop) {
 		this.foreignKeyToDrop = foreignKeyToDrop;
 	}
-	public String getTableToRename() {
+	public Table getTableToRename() {
 		return tableToRename;
 	}
-	public void setTableToRename(String tableToRename) {
+	public void setTableToRename(Table tableToRename) {
 		this.tableToRename = tableToRename;
 	}
 	public String getSchemaToDrop() {
@@ -776,5 +778,17 @@ public class QueryDefinition implements java.io.Serializable {
 	}
 	public void setSelectStatementToCreateOrReplace(String selectStatementToCreateOrReplace) {
 		this.selectStatementToCreateOrReplace = selectStatementToCreateOrReplace;
+	}
+	public Table getTableToDrop() {
+		return tableToDrop;
+	}
+	public void setTableToDrop(Table tableToDrop) {
+		this.tableToDrop = tableToDrop;
+	}
+	public Table getTableToAlter() {
+		return tableToAlter;
+	}
+	public void setTableToAlter(Table tableToAlter) {
+		this.tableToAlter = tableToAlter;
 	}
 }

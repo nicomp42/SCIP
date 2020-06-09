@@ -185,4 +185,7 @@ public class Attribute {
 	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
 		this.affectedByActionQuery = affectedByActionQuery;
 	}
+	public String toString() {
+		return tableName + "." + attributeName;
+	}
 }

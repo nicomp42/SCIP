@@ -56,7 +56,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 				this.aliasNames.addAliasName(an);
 			}
 		} else {
-			// Nothing to copy, let's make it an empty data structue
+			// Nothing to copy, let's make it an empty data structure
 			this.aliasNames = new AliasNamesOLD();
 		}
 	}

@@ -363,7 +363,7 @@ public class Table {
 	}
 
 	public String toString() {
-		return "table name = " + tableName;
+		return schemaName + "." + tableName;
 	}
 }
 

@@ -20,14 +20,14 @@ public class CaseStudyEnvironment {
 		/* Rename a schema: there's no single SQL command to do this. 
 		 * You have to create a new one and copy artifacts into it.
 		 */
-/*		
-		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a Schema",
-																	"DROP DATABASE `dw`;"));
 		
+/*		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a Schema",
+																	"DROP DATABASE `schemaToDrop`;"));
+*/		
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table",
-																	"ALTER TABLE `flight`.`tflight`" + 
+																	"ALTER TABLE `flight`.`tflight` " + 
 																	"RENAME TO  `flight`.`tflightx`;"  ));
-
+/*
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table column",
 				                                                    "ALTER TABLE `storeinspection`.`storeinspection`" +  
 		                                                            " CHANGE COLUMN `InspectionDateTime` `InspectionDateAndTime` DATETIME NOT NULL ;"));
@@ -63,7 +63,7 @@ public class CaseStudyEnvironment {
 																	"FROM " + 
 																	"`hr`.`employee`" + 
 																	""));
-*/
+
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (without \"OR REPLACE\")",
 																	"CREATE " + 
 																	"    ALGORITHM = UNDEFINED " + 
@@ -76,7 +76,7 @@ public class CaseStudyEnvironment {
 																	"    FROM " + 
 																	"        `hr`.`employee`" + 
 																	""));
-		
+*/		
 	}
 	public CaseStudyQuerys getCaseStudyQuerys() {
 		return caseStudyQuerys;

@@ -90,7 +90,8 @@ public class CaseStudy1Controller {
 	private void runTest() {
 		txaProgress.clear();
 		txtStatus.setText("Tests running...");
-		CaseStudyRunner.run(caseStudyEnvironment, txaProgress);
+		CaseStudyRunner caseStudyRunner = new CaseStudyRunner();
+		caseStudyRunner.run(caseStudyEnvironment, txaProgress);
 		txtStatus.setText("Tests complete");
 	}
 	public void loadTestCasesIntoListBox() {
