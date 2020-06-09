@@ -33,6 +33,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.View;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlter;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTableChangeColumn;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTableDropColumn;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreate;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateOrReplaceView;
@@ -1223,7 +1224,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 					break;
 							
 				case "COLUMN": 
-					queryDefinition.setQueryType(new QueryTypeDropView());
+					queryDefinition.setQueryType(new QueryTypeAlterTableDropColumn());
 					Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeDrop(): it's a " + queryDefinition.getQueryType().toString());
 					break;
 				case "TABLE": 
@@ -1406,6 +1407,7 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 						Log.logQueryParseProgress("AntlrMySQLListener.processTerminalNodeAlter(): dropping a column");
 						innerClassName = "";
 						// Look for UIdContext class
+						queryDefinition.setQueryType(new QueryTypeAlterTableDropColumn());
 						for (int j = 0; j < node.getParent().getChild(i).getChildCount(); j++) {
 							innerClassName = getClassName(node.getParent().getChild(i).getChild(j).getClass().getName());
 							switch (innerClassName) {

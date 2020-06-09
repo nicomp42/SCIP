@@ -15,6 +15,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.View;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTableChangeColumn;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTableDropColumn;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateOrReplaceView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropSchema;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
@@ -54,6 +55,9 @@ public class CaseStudyRunner {
 					} else if (qd.getQueryType() instanceof QueryTypeRenameTable ) {
 						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeRenameTable ");
 						processQueryTypeRenameATable(qd);
+					} else if (qd.getQueryType() instanceof QueryTypeAlterTableDropColumn) {
+						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTableDropColumn ");
+						processQueryTypeAlterTableDropColumn(qd);
 					} else if (qd.getQueryType() instanceof QueryTypeAlterTableChangeColumn ) {
 						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTableChangeColumn ");
 						processQueryTypeAlterTableChangeColumn(qd);
@@ -70,6 +74,18 @@ public class CaseStudyRunner {
 			Log.logError("CaseStudyRunner.run()", ex);
 			txaProgress.appendText("* " + ex.getLocalizedMessage() + "\n");
 		}
+	}
+	private Attributes processQueryTypeAlterTableDropColumn(QueryDefinition qd) {
+		Attributes tableAttributesAggregate = new Attributes(); 
+		for (QueryAttribute queryAttribute : qd.getQueryAttributes()) {
+			tableAttributesAggregate.addAttribute(new Attribute(queryAttribute.getTableName(), 
+					                                            queryAttribute.getAttributeName()));
+		}
+		txaProgress.appendText("   Table Attributes affected: \n");
+		for (Attribute ta : tableAttributesAggregate) {
+			txaProgress.appendText("    " + ta.toString() + "\n");
+		}
+		return tableAttributesAggregate;
 	}
 	private Attributes processQueryTypeAlterTableChangeColumn(QueryDefinition qd) {
 		Attributes tableAttributesAggregate = new Attributes(); 

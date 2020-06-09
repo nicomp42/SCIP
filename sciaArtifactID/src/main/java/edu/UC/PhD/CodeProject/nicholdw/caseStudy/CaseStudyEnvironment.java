@@ -26,7 +26,7 @@ public class CaseStudyEnvironment {
 */		
 /*		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table",
 																	"ALTER TABLE `flight`.`tflight` " + 
-																	"RENAME TO  `flight`.`tflightx`;"  )); */
+																	"RENAME TO  `flight`.`tflightx`;"  )); 
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table column",
 				                                                    "ALTER TABLE `storeinspection`.`storeinspection`" +  
@@ -38,10 +38,15 @@ public class CaseStudyEnvironment {
 																	" CHANGE COLUMN `InspectionNotes` `InspectionNotesX` LONGTEXT NULL DEFAULT NULL ;"));
 		
 		
-/*
+*/
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a table column",
-																	"ALTER TABLE `flight`.`tflight DROP COLUMN `DepartureDate`"));
+																	"ALTER TABLE `flight`.`tflight` DROP COLUMN `DepartureDate`"));
 
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop two table columns",
+																	"ALTER TABLE `testalter`.`ttestalter` " + 
+																	"DROP COLUMN `DoubleField`," + 
+																	"DROP COLUMN `IntField`;"));
+/*
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a table column",
 				                                                    "ALTER TABLE `storeinspection`.`storeinspection`" + 
 				                                                    "DROP COLUMN `InspectionDateTime`," + 
