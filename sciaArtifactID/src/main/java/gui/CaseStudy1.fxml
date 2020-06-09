@@ -49,9 +49,11 @@
                            </effect>
                         </ImageView>
                         <ListView fx:id="lvTestCase" layoutX="14.0" layoutY="7.0" prefHeight="579.0" prefWidth="200.0" />
+                        <ListView fx:id="lvTestCaseSelected" layoutX="220.0" layoutY="7.0" prefHeight="579.0" prefWidth="200.0" />
                         <Button fx:id="btnStart" layoutX="14.0" layoutY="593.0" mnemonicParsing="false" onAction="#btnStart_OnAction" text="Start" />
-                        <TextArea fx:id="txaProgress" layoutX="227.0" layoutY="7.0" prefHeight="630.0" prefWidth="458.0" />
+                        <TextArea fx:id="txaProgress" layoutX="433.0" layoutY="7.0" prefHeight="630.0" prefWidth="276.0" />
                         <TextField fx:id="txtStatus" layoutX="67.0" layoutY="593.0" prefHeight="25.0" prefWidth="147.0" />
+                        <Button fx:id="btnCopyAll" layoutX="220.0" layoutY="593.0" mnemonicParsing="false" onAction="#btnCopyAll_OnAction" text="Copy All" />
                      </children>
                   </AnchorPane>
             </content>

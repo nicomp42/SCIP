@@ -21,10 +21,10 @@ public class CaseStudyEnvironment {
 		 * You have to create a new one and copy artifacts into it.
 		 */
 		
-/*		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a Schema",
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a Schema",
 																	"DROP DATABASE `schemaToDrop`;"));
-*/		
-/*		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table",
+		
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table",
 																	"ALTER TABLE `flight`.`tflight` " + 
 																	"RENAME TO  `flight`.`tflightx`;"  )); 
 
@@ -60,10 +60,10 @@ public class CaseStudyEnvironment {
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Delete as a primary key",
 																	"ALTER TABLE `hr`.`employee` DROP PRIMARY KEY;"));
-*/		
+		
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a view",
 																	"DROP VIEW `hr`.`vtest`"));
-/*																	
+																	
 //		Alter a view in MySQL is running "CREATE OR REPLACE VIEW" with the same name as an existing view
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (with \"OR REPLACE\")",
 				
@@ -86,7 +86,7 @@ public class CaseStudyEnvironment {
 																	"    FROM " + 
 																	"        `hr`.`employee`" + 
 																	""));
-*/		
+		
 	}
 	public CaseStudyQuerys getCaseStudyQuerys() {
 		return caseStudyQuerys;

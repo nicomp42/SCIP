@@ -73,16 +73,29 @@ import javafx.scene.web.WebView;
 public class CaseStudy1Controller {
 	private Stage myStage;
 	@FXML private AnchorPane apMainWindow;
-	@FXML private ListView<String> lvTestCase;
-	@FXML private Button btnStart;
+	@FXML private ListView<String> lvTestCase, lvTestCaseSelected;
+	@FXML private Button btnStart, btnCopyAll;
 	@FXML private TextArea txaProgress;
 	@FXML private TextField txtStatus;
 	@FXML private Tab tabCaseStudy1;
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileExit;
 	@FXML void btnStart_OnAction(ActionEvent event) {runTest();}
-
+	@FXML void btnCopyAll_OnAction(ActionEvent event) {copyAll();}
+	
 	private CaseStudyEnvironment caseStudyEnvironment;
+	
+	
+	/***
+	 * Copy all the tests to the selected list box
+	 */
+	private void copyAll() {
+		lvTestCaseSelected.getItems().clear();
+		for (String description: lvTestCase.getItems()) {
+			lvTestCaseSelected.getItems().add(description);
+		}
+	}
+	
 	
 	/***
 	 * Run the tests...
@@ -90,6 +103,14 @@ public class CaseStudy1Controller {
 	private void runTest() {
 		txaProgress.clear();
 		txtStatus.setText("Tests running...");
+		// Set all tests to false
+		for (CaseStudyQuery caseStudyQuery: caseStudyEnvironment.getCaseStudyQuerys()) {
+			caseStudyQuery.setEnabled(false);
+		}
+		// Enable the tests selected by the user
+		for (String description: lvTestCaseSelected.getItems()) {
+			caseStudyEnvironment.getCaseStudyQuerys().setEnabled(description, true);
+		}
 		CaseStudyRunner caseStudyRunner = new CaseStudyRunner();
 		caseStudyRunner.run(caseStudyEnvironment, txaProgress);
 		txtStatus.setText("Tests complete");
@@ -118,7 +139,23 @@ public class CaseStudy1Controller {
 	private void setTheScene() {
 		caseStudyEnvironment = new CaseStudyEnvironment();
 		loadTestCasesIntoListBox();
+		lvTestCase.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+		    @Override
+		    public void handle(MouseEvent click) {
+		    	try {
+			        if (click.getClickCount() == 2) {
+			        	String description;
+			        	description = lvTestCase.getSelectionModel().getSelectedItem();
+			        	if (!lvTestCaseSelected.getItems().contains(description)) {
+			        		lvTestCaseSelected.getItems().add(description);
+			        	}
+			        }
+		    	} catch(Exception ex) {}
+		    }
+		});
 	}
+		
 	@FXML void mnuFileExit_OnAction(ActionEvent event) {
 		myStage.close();		
 	}

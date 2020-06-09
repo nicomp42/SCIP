@@ -23,4 +23,12 @@ public class CaseStudyQuerys implements Iterable<CaseStudyQuery> {
 		Iterator<CaseStudyQuery> iprof = caseStudyQuerys.iterator();
         return iprof;
     }
+	public void setEnabled(String description, boolean enabled) {
+		for (CaseStudyQuery csq: caseStudyQuerys) {
+			if (description.equals(csq.getDescription())) {
+				csq.setEnabled(enabled);
+				break;
+			}
+		}
+	}
 }

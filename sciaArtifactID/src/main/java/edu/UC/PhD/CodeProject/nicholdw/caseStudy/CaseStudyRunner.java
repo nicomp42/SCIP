@@ -33,49 +33,51 @@ public class CaseStudyRunner {
 		Log.logProgress("CaseStudyClassRunner.run()");
 		try {
 			for (CaseStudyQuery csq : caseStudyEnvironment.getCaseStudyQuerys()) {
-				try {
-					Log.logProgress("CaseStudyClassRunner.run(): parsing " + csq.getDescription());
-					txaProgress.appendText(csq.getDescription() + "\n");
-					// String hostName, String loginName, String password, QueryType queryType,String queryName, String sql, String schemaName) {
-					QueryDefinition qd = new QueryDefinition(Config.getConfig().getMySQLDefaultHostname(),
-															 Config.getConfig().getMySQLDefaultLoginName(),
-															 Config.getConfig().getMySQLDefaultPassword(),
-															 new QueryTypeUnknown(), "", csq.getSQL(), "");
-					qd.crunchIt();
-					txaProgress.appendText(" Query identified as " + qd.getQueryType().toString() + "\n");
-					// OK, we know what we have. 
-					// Now we need to figure out what to do with it.
-					// Be careful: an object is an instanceof even if the class is anywhere in the inheritance heirarchy.
-					//   Therefore these if/else constructs must be from most specific to least specific
-					if (qd.getQueryType() instanceof QueryTypeCreateOrReplaceView) {
-						processCreateOrReplaceView(qd);
-					} else if (qd.getQueryType() instanceof QueryTypeDropSchema) {
-						processQueryTypeDropSchema(qd);
-					} else if (qd.getQueryType() instanceof QueryTypeDropTable ) {
-						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeDropTable ");
-						processQueryTypeDropATable(qd);
-					} else if (qd.getQueryType() instanceof QueryTypeRenameTable ) {
-						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeRenameTable ");
-						processQueryTypeRenameATable(qd);
-					} else if (qd.getQueryType() instanceof QueryTypeAlterTableDropColumn) {
-						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTableDropColumn ");
-						processQueryTypeAlterTableDropColumn(qd);
-					} else if (qd.getQueryType() instanceof QueryTypeAlterTableChangeColumn ) {
-						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTableChangeColumn ");
-						processQueryTypeAlterTableChangeColumn(qd);
-					} else if (qd.getQueryType() instanceof QueryTypeAlterTable) {
-						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTable ");
-						processQueryTypeAlterTable(qd);
-					} else if (qd.getQueryType() instanceof QueryTypeDropForeignKey) {
-						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTable ");
-						processQueryTypeDropForiegnKey(qd);
-					} else if (qd.getQueryType() instanceof QueryTypeDropView) {
-						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeDropView ");
-						processQueryTypeDropView(qd);
+				if (csq.getEnabled() == true) {
+					try {
+						Log.logProgress("CaseStudyClassRunner.run(): parsing " + csq.getDescription());
+						txaProgress.appendText(csq.getDescription() + "\n");
+						// String hostName, String loginName, String password, QueryType queryType,String queryName, String sql, String schemaName) {
+						QueryDefinition qd = new QueryDefinition(Config.getConfig().getMySQLDefaultHostname(),
+																 Config.getConfig().getMySQLDefaultLoginName(),
+																 Config.getConfig().getMySQLDefaultPassword(),
+																 new QueryTypeUnknown(), "", csq.getSQL(), "");
+						qd.crunchIt();
+						txaProgress.appendText(" Query identified as " + qd.getQueryType().toString() + "\n");
+						// OK, we know what we have. 
+						// Now we need to figure out what to do with it.
+						// Be careful: an object is an instanceof even if the class is anywhere in the inheritance heirarchy.
+						//   Therefore these if/else constructs must be from most specific to least specific
+						if (qd.getQueryType() instanceof QueryTypeCreateOrReplaceView) {
+							processCreateOrReplaceView(qd);
+						} else if (qd.getQueryType() instanceof QueryTypeDropSchema) {
+							processQueryTypeDropSchema(qd);
+						} else if (qd.getQueryType() instanceof QueryTypeDropTable ) {
+							Log.logProgress("CaseStudyClassRunner.run(): QueryTypeDropTable ");
+							processQueryTypeDropATable(qd);
+						} else if (qd.getQueryType() instanceof QueryTypeRenameTable ) {
+							Log.logProgress("CaseStudyClassRunner.run(): QueryTypeRenameTable ");
+							processQueryTypeRenameATable(qd);
+						} else if (qd.getQueryType() instanceof QueryTypeAlterTableDropColumn) {
+							Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTableDropColumn ");
+							processQueryTypeAlterTableDropColumn(qd);
+						} else if (qd.getQueryType() instanceof QueryTypeAlterTableChangeColumn ) {
+							Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTableChangeColumn ");
+							processQueryTypeAlterTableChangeColumn(qd);
+						} else if (qd.getQueryType() instanceof QueryTypeAlterTable) {
+							Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTable ");
+							processQueryTypeAlterTable(qd);
+						} else if (qd.getQueryType() instanceof QueryTypeDropForeignKey) {
+							Log.logProgress("CaseStudyClassRunner.run(): QueryTypeDropForeignKey ");
+							processQueryTypeDropForiegnKey(qd);
+						} else if (qd.getQueryType() instanceof QueryTypeDropView) {
+							Log.logProgress("CaseStudyClassRunner.run(): QueryTypeDropView ");
+							processQueryTypeDropView(qd);
+						}
+					} catch (Exception ex1) {
+						Log.logError("CaseStudyRunner.run()", ex1);
+						txaProgress.appendText(" * " + ex1.getLocalizedMessage() + "\n");
 					}
-				} catch (Exception ex1) {
-					Log.logError("CaseStudyRunner.run()", ex1);
-					txaProgress.appendText(" * " + ex1.getLocalizedMessage() + "\n");
 				}
 			}
 		} catch (Exception ex) {

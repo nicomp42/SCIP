@@ -13,12 +13,24 @@ package edu.UC.PhD.CodeProject.nicholdw.caseStudy;
 public class CaseStudyQuery {
 	private String SQL;
 	private String description;
+	private Boolean enabled;
 	
+	/***
+	 * Enabled defaults to true
+	 * @param description
+	 * @param SQL
+	 */
 	public CaseStudyQuery(String description, String SQL) {
 		setSQL(SQL);
 		setDescription(description);
+		setEnabled(true);
 	}
-
+	public CaseStudyQuery(String description, String SQL, boolean enabled) {
+		setSQL(SQL);
+		setDescription(description);
+		setEnabled(enabled);
+	}
+	
 	public String getSQL() {
 		return SQL;
 	}
@@ -33,5 +45,13 @@ public class CaseStudyQuery {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 }
