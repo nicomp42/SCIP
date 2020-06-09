@@ -1138,11 +1138,10 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 	@Override
 	public void enterAlterByDropForeignKey(MySqlParser.AlterByDropForeignKeyContext ctx) {
 		Log.logQueryParseProgress("AntlrMySQLListener.AlterByDropForeignKeyContext()");
-		String tableToRename = "";
 		for (int i = 0; i < ctx.getChildCount(); i++) {
-			if (ctx.getChild(i) instanceof MySqlParser.FullIdContext) {
-//				MySqlParser.FullIdContext fullIdContext = (MySqlParser.FullIdContext)ctx.getChild(i);
-//				queryDefinition.setForeignKeyToDrop(new Table(ctx.getChild(i).getChild(0).getText(), ctx.getChild(i).getChild(2).getText()));
+			if (ctx.getChild(i) instanceof UidContext) {
+				String foreignKeyToDrop = ((MySqlParser.UidContext)ctx.getChild(i)).getText();
+				queryDefinition.setForeignKeyToDrop(foreignKeyToDrop);
 			}
 		}
 		queryDefinition.setQueryType(new QueryTypeDropForeignKey());
@@ -1242,14 +1241,15 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 					i = i + 1;
 					for (int j = i; j < node.getParent().getChildCount(); j += 2) {
 						String mySchemaName = queryDefinition.getSchemaName();
-						String myTableName = "";
+						String myViewName = "";
 						StringBuilder s = new StringBuilder();
-						StringBuilder t = new StringBuilder();
+						StringBuilder v = new StringBuilder();
 						child = node.getParent().getChild(j);
-						processUidNameContext(s, t, child, "processTerminalNodeDrop");
+						processUidNameContext(s, v, child, "processTerminalNodeDrop");
 						mySchemaName = s.toString(); 
-						myTableName = t.toString();
-						queryDefinition.getQueryTables().addQueryTable(new QueryTable(mySchemaName, myTableName, null, null));
+						myViewName = v.toString();
+						queryDefinition.getQueryTables().addQueryTable(new QueryTable(mySchemaName, myViewName, null, null));
+						queryDefinition.setViewToDrop(new View(mySchemaName, myViewName));
 					}
 					break;
 				default:		// It's an error. We don't know what we're dropping

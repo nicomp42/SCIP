@@ -17,8 +17,10 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTableChangeColumn;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTableDropColumn;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateOrReplaceView;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropForeignKey;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropSchema;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeRenameTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
@@ -64,6 +66,12 @@ public class CaseStudyRunner {
 					} else if (qd.getQueryType() instanceof QueryTypeAlterTable) {
 						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTable ");
 						processQueryTypeAlterTable(qd);
+					} else if (qd.getQueryType() instanceof QueryTypeDropForeignKey) {
+						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeAlterTable ");
+						processQueryTypeDropForiegnKey(qd);
+					} else if (qd.getQueryType() instanceof QueryTypeDropView) {
+						Log.logProgress("CaseStudyClassRunner.run(): QueryTypeDropView ");
+						processQueryTypeDropView(qd);
 					}
 				} catch (Exception ex1) {
 					Log.logError("CaseStudyRunner.run()", ex1);
@@ -74,6 +82,32 @@ public class CaseStudyRunner {
 			Log.logError("CaseStudyRunner.run()", ex);
 			txaProgress.appendText("* " + ex.getLocalizedMessage() + "\n");
 		}
+	}
+	private QueryAttributes processQueryTypeDropView(QueryDefinition qd) {
+		// What is the difference between the original view and the new version?
+		View viewToDrop = qd.getViewToDrop();
+		String sqlStart = QueryDefinition.readSQLFromDatabaseServerQueryDefinition(Config.getConfig().getMySQLDefaultHostname(),
+													  			   Config.getConfig().getMySQLDefaultLoginName(),
+													  			   Config.getConfig().getMySQLDefaultPassword(), 
+													  			   viewToDrop.getSchemaName(), 
+													  			   viewToDrop.getViewName());
+		Log.logProgress("CaseStudyClassRunner.run(): processDropView, view = " + viewToDrop.getSchemaName() + "." + viewToDrop.getViewName());
+		QueryDefinition qdStart = new QueryDefinition(Config.getConfig().getMySQLDefaultHostname(),
+													  Config.getConfig().getMySQLDefaultLoginName(),
+													  Config.getConfig().getMySQLDefaultPassword(),
+													  new QueryTypeUnknown(), "", sqlStart, "");
+		qdStart.crunchIt();
+		txaProgress.appendText("   View Attributes affected by dropping " + qd.getViewToDrop().toString() + ": \n");
+		for (QueryAttribute qa : qdStart.getQueryAttributes()) {
+			txaProgress.appendText("    " + qa.toString() + "\n");
+		}		
+		return qdStart.getQueryAttributes();
+	}
+	private Attributes processQueryTypeDropForiegnKey(QueryDefinition qd) {
+		// Not exactly sure what to do with this one. 
+		txaProgress.appendText("   Foreign Key affected: \n");
+		txaProgress.appendText("    " + qd.getForeignKeyToDrop() + "\n");
+		return null;
 	}
 	private Attributes processQueryTypeAlterTableDropColumn(QueryDefinition qd) {
 		Attributes tableAttributesAggregate = new Attributes(); 

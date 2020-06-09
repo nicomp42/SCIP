@@ -38,7 +38,7 @@ public class CaseStudyEnvironment {
 																	" CHANGE COLUMN `InspectionNotes` `InspectionNotesX` LONGTEXT NULL DEFAULT NULL ;"));
 		
 		
-*/
+
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a table column",
 																	"ALTER TABLE `flight`.`tflight` DROP COLUMN `DepartureDate`"));
 
@@ -46,26 +46,24 @@ public class CaseStudyEnvironment {
 																	"ALTER TABLE `testalter`.`ttestalter` " + 
 																	"DROP COLUMN `DoubleField`," + 
 																	"DROP COLUMN `IntField`;"));
-/*
-		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a table column",
-				                                                    "ALTER TABLE `storeinspection`.`storeinspection`" + 
-				                                                    "DROP COLUMN `InspectionDateTime`," + 
-				                                                    "DROP INDEX `Natural` ," + 
-				                                                    "ADD UNIQUE INDEX `Natural` (`StoreNumber` ASC, `EmployeeNumber` ASC) VISIBLE;"));
+
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Change data type of table column",
 																	"ALTER TABLE `storeinspection`.`storeinspection`" +  
 																	"CHANGE COLUMN `InspectionDateTime` `InspectionDateTime` FLOAT NOT NULL ;" ));
 
+
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Remove as a foreign key",
 																	"ALTER TABLE `flight`.`tflight` " +
 																	"DROP FOREIGN KEY `tFlight_tPilot`;"));
 
+
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Delete as a primary key",
 																	"ALTER TABLE `hr`.`employee` DROP PRIMARY KEY;"));
-		
+*/		
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a view",
 																	"DROP VIEW `hr`.`vtest`"));
+/*																	
 //		Alter a view in MySQL is running "CREATE OR REPLACE VIEW" with the same name as an existing view
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (with \"OR REPLACE\")",
 				
