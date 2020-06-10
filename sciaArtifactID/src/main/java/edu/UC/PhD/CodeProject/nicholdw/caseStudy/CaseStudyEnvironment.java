@@ -22,11 +22,11 @@ public class CaseStudyEnvironment {
 		 */
 		
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a Schema",
-																	"DROP DATABASE `schemaToDrop`;"));
+																	"DROP DATABASE `reconciled`;"));
 		
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table",
-																	"ALTER TABLE `flight`.`tflight` " + 
-																	"RENAME TO  `flight`.`tflightx`;"  )); 
+																	"ALTER TABLE `reconciled`.`storeinspection` " + 
+																	"RENAME TO  `reconciled`.`storeinspectionX`;"  )); 
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table column",
 				                                                    "ALTER TABLE `storeinspection`.`storeinspection`" +  
@@ -36,16 +36,14 @@ public class CaseStudyEnvironment {
 																	" ALTER TABLE `storeinspection`.`storeinspection` " + 
 																	" CHANGE COLUMN `StoreNumber` `StoreNumberX` VARCHAR(10) NOT NULL ," + 
 																	" CHANGE COLUMN `InspectionNotes` `InspectionNotesX` LONGTEXT NULL DEFAULT NULL ;"));
-		
-		
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a table column",
-																	"ALTER TABLE `flight`.`tflight` DROP COLUMN `DepartureDate`"));
+																	"ALTER TABLE `reconciled`.`storeinspection` DROP COLUMN `InspectionDateTime`"));
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop two table columns",
-																	"ALTER TABLE `testalter`.`ttestalter` " + 
-																	"DROP COLUMN `DoubleField`," + 
-																	"DROP COLUMN `IntField`;"));
+																	"ALTER TABLE `reconciled`.`storeinspection` " + 
+																	"DROP COLUMN `InspectionDateTime`," + 
+																	"DROP COLUMN `employeelastname`;"));
 
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Change data type of table column",
@@ -54,38 +52,55 @@ public class CaseStudyEnvironment {
 
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Remove as a foreign key",
-																	"ALTER TABLE `flight`.`tflight` " +
-																	"DROP FOREIGN KEY `tFlight_tPilot`;"));
+																	"ALTER TABLE `reconciled`.`storeinspection` " +
+																	"DROP FOREIGN KEY `FK_EmployeeNumber`;"));
 
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Delete as a primary key",
 																	"ALTER TABLE `hr`.`employee` DROP PRIMARY KEY;"));
 		
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a view",
-																	"DROP VIEW `hr`.`vtest`"));
+																	"DROP VIEW `dw`.`vweeklystoreinspectionsbyemployee`"));
 																	
 //		Alter a view in MySQL is running "CREATE OR REPLACE VIEW" with the same name as an existing view
+		// Took out the Sunday column:	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Sunday` AS `Sunday`" + 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (with \"OR REPLACE\")",
-				
-																	"CREATE OR REPLACE VIEW `hr`.`vtest` AS " + 
-																	"SELECT " + 
-																	"`hr`.`employee`.`EmployeeID` AS `EmployeeIDX` " + 
-																	"FROM " + 
-																	"`hr`.`employee`" + 
-																	""));
+																	"CREATE OR REPLACE " + 
+																	"VIEW " +
+																	"`dw`.`vweeklystoreinspectionsbyemployee` AS" + 
+																	"    SELECT " + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`EmployeeName` AS `EmployeeName`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`StoreNumber` AS `StoreNumber`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Monday` AS `Monday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Tuesday` AS `Tuesday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Wednesday` AS `Wednesday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Thursday` AS `Thursday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Friday` AS `Friday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Saturday` AS `Saturday`" + 
+																	"    FROM" + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`" 
+																	));
 
+		// Took out the Sunday column:	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Sunday` AS `Sunday`" + 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (without \"OR REPLACE\")",
 																	"CREATE " + 
 																	"    ALGORITHM = UNDEFINED " + 
 																	"    DEFINER = `root`@`localhost` " + 
 																	"    SQL SECURITY DEFINER " + 
-																	"VIEW `hr`.`vtest` AS" + 
+																	"VIEW " + 
+																	"`dw`.`vweeklystoreinspectionsbyemployee` AS" + 
 																	"    SELECT " + 
-																	"        `hr`.`employee`.`EmployeeID` AS `EmployeeIDX`," + 
-																	"        `hr`.`employee`.`LastName` AS `lastName`" + 
-																	"    FROM " + 
-																	"        `hr`.`employee`" + 
-																	""));
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`EmployeeName` AS `EmployeeName`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`StoreNumber` AS `StoreNumber`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Monday` AS `Monday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Tuesday` AS `Tuesday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Wednesday` AS `Wednesday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Thursday` AS `Thursday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Friday` AS `Friday`," + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Saturday` AS `Saturday`" + 
+																	"    FROM" + 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`" 
+																	));
 		
 	}
 	public CaseStudyQuerys getCaseStudyQuerys() {

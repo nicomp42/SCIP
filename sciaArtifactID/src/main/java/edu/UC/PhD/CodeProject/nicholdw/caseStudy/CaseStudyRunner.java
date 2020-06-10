@@ -103,12 +103,14 @@ public class CaseStudyRunner {
 		for (QueryAttribute qa : qdStart.getQueryAttributes()) {
 			txaProgress.appendText("    " + qa.toString() + "\n");
 		}		
+		appendDelimiter();	
 		return qdStart.getQueryAttributes();
 	}
 	private Attributes processQueryTypeDropForiegnKey(QueryDefinition qd) {
 		// Not exactly sure what to do with this one. 
 		txaProgress.appendText("   Foreign Key affected: \n");
 		txaProgress.appendText("    " + qd.getForeignKeyToDrop() + "\n");
+		appendDelimiter();	
 		return null;
 	}
 	private Attributes processQueryTypeAlterTableDropColumn(QueryDefinition qd) {
@@ -121,6 +123,7 @@ public class CaseStudyRunner {
 		for (Attribute ta : tableAttributesAggregate) {
 			txaProgress.appendText("    " + ta.toString() + "\n");
 		}
+		appendDelimiter();	
 		return tableAttributesAggregate;
 	}
 	private Attributes processQueryTypeAlterTableChangeColumn(QueryDefinition qd) {
@@ -133,11 +136,13 @@ public class CaseStudyRunner {
 		for (Attribute ta : tableAttributesAggregate) {
 			txaProgress.appendText("    " + ta.toString() + "\n");
 		}
+		appendDelimiter();	
 		return tableAttributesAggregate;
 	}
 	private void processQueryTypeAlterTable(QueryDefinition qd) {
 		txaProgress.appendText("   Altering a Table(" + qd.getTableToAlter().toString() + ")" + "\n");
 		// The list of attributes in the query definition is what's being altered
+		appendDelimiter();	
 		
 	}
 	private Attributes processQueryTypeRenameATable(QueryDefinition qd) {
@@ -155,6 +160,7 @@ public class CaseStudyRunner {
 		for (Attribute ta : tableAttributesAggregate) {
 			txaProgress.appendText("    " + ta.toString() + "\n");
 		}
+		appendDelimiter();	
 		return tableAttributesAggregate;
 	}
 	private Attributes processQueryTypeDropATable(QueryDefinition qd) {
@@ -171,6 +177,7 @@ public class CaseStudyRunner {
 		for (Attribute ta : tableAttributesAggregate) {
 			txaProgress.appendText("    " + ta.toString() + "\n");
 		}
+		appendDelimiter();	
 		return tableAttributesAggregate;
 	}
 	private void processCreateOrReplaceView(QueryDefinition qd) {
@@ -196,6 +203,7 @@ public class CaseStudyRunner {
 		} else {
 			txaProgress.appendText(" No attribute changes detected" + "\n");
 		}
+		appendDelimiter();	
 		
 	}
 	private void processQueryTypeDropSchema(QueryDefinition qd) {
@@ -246,5 +254,7 @@ public class CaseStudyRunner {
 		for (Attribute ta : tableAttributesAggregate) {
 			txaProgress.appendText("    " + ta.toString() + "\n");
 		}
+		appendDelimiter();	
 	}
+	private void appendDelimiter() {txaProgress.appendText("*****************************" + "\n");}
 }

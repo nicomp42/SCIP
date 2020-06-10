@@ -50,6 +50,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -74,7 +75,7 @@ public class CaseStudy1Controller {
 	private Stage myStage;
 	@FXML private AnchorPane apMainWindow;
 	@FXML private ListView<String> lvTestCase, lvTestCaseSelected;
-	@FXML private Button btnStart, btnCopyAll;
+	@FXML private Button btnStart, btnCopyAll, btnClearSelectedTests;
 	@FXML private TextArea txaProgress;
 	@FXML private TextField txtStatus;
 	@FXML private Tab tabCaseStudy1;
@@ -82,9 +83,12 @@ public class CaseStudy1Controller {
 	@FXML private MenuItem mnuFileExit;
 	@FXML void btnStart_OnAction(ActionEvent event) {runTest();}
 	@FXML void btnCopyAll_OnAction(ActionEvent event) {copyAll();}
-	
+	@FXML void btnClearSelectedTests_OnAction(ActionEvent event) {clearSelectedTests();}
 	private CaseStudyEnvironment caseStudyEnvironment;
 	
+	private void clearSelectedTests() {
+		lvTestCaseSelected.getItems().clear();
+	}
 	
 	/***
 	 * Copy all the tests to the selected list box
@@ -101,6 +105,10 @@ public class CaseStudy1Controller {
 	 * Run the tests...
 	 */
 	private void runTest() {
+		if (lvTestCaseSelected.getItems().size() == 0) {
+			Alert alert = new Alert(AlertType.ERROR, "No tests selected.", ButtonType.OK);
+			alert.showAndWait();			
+		}
 		txaProgress.clear();
 		txtStatus.setText("Tests running...");
 		// Set all tests to false
