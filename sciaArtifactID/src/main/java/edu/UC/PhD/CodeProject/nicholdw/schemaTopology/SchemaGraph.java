@@ -381,14 +381,21 @@ public class SchemaGraph {
 			// traverse queryAttributes and add a relation from the query to the attribute
 			for (QueryAttribute queryAttribute: queryAttributes.values()) {
 				String neo4jQuery;
-				String nodeLabel;
-				nodeLabel = attributeNodeLabel;
-				if (queryAttribute.getAffectedByActionQuery() == true) {
-					nodeLabel = affectedAttributeNodeLabel;
-				}
+//				String nodeLabel;
+//				nodeLabel = attributeNodeLabel;
+//				if (queryAttribute.getAffectedByActionQuery() == true) {
+//					nodeLabel = affectedAttributeNodeLabel;
+//				}
 				neo4jQuery = "MATCH "
 				           + " (q:" + queryNodeLabel  + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()) + "'}), "
-			               + " (a:" + nodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName()) + "'}) "
+			               + " (a:" + attributeNodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName()) + "'}) "
+					       + " MERGE (q)-[:" + queryToAttributeLabel +"]->(a)";
+				Neo4jDB.submitNeo4jQuery(neo4jQuery);
+				// This is hokey but it should work because we have a uniqueness constraint on the key attribute.
+				// Only one of these two MATCH queries should work because the attribute is either a attributeNodeLabel or a affectedAttributeNodeLabel.
+				neo4jQuery = "MATCH "
+				           + " (q:" + queryNodeLabel  + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()) + "'}), "
+			               + " (a:" + affectedAttributeNodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName()) + "'}) "
 					       + " MERGE (q)-[:" + queryToAttributeLabel +"]->(a)";
 				Neo4jDB.submitNeo4jQuery(neo4jQuery);
 				schemaTopologyResults.incrementTotalQueryAttributes();
