@@ -37,7 +37,7 @@ public class DataBehavior {
 	 */
 	TableAttributes checkForNulls(Table table, java.sql.Connection connection) {
 		System.out.println("DataBehavior.checkForNulls(): Processing table " + table.getTableName());
-		TableAttributes attributes = table.getAttributes();
+		TableAttributes attributes = table.getTableAttributes();
 		// Step through the attributes that are nullable and see if any of them are never null. 
 		for (TableAttribute attribute :  attributes) {
 			if (attribute.isNullable()) {

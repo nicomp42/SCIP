@@ -24,6 +24,7 @@ public class CaseStudyEnvironment {
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a Schema",
 																	"DROP DATABASE `reconciled`;"));
 		
+		// This SQL parses OK but still throws off a parser error. "line 1:66 mismatched input '.' expecting {<EOF>, '--'}"
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a table",
 																	"ALTER TABLE `reconciled`.`storeinspection` " + 
 																	"RENAME TO  `reconciled`.`storeinspectionX`;"  )); 
@@ -33,7 +34,7 @@ public class CaseStudyEnvironment {
 		                                                            " CHANGE COLUMN `InspectionDateTime` `InspectionDateAndTime` DATETIME NOT NULL ;"));
 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename 2 table columns",
-																	" ALTER TABLE `storeinspection`.`storeinspection` " + 
+																	"ALTER TABLE `storeinspection`.`storeinspection` " + 
 																	" CHANGE COLUMN `StoreNumber` `StoreNumberX` VARCHAR(10) NOT NULL ," + 
 																	" CHANGE COLUMN `InspectionNotes` `InspectionNotesX` LONGTEXT NULL DEFAULT NULL ;"));
 

@@ -320,17 +320,17 @@ public class DatabaseGraphController {
 		String where = " WHERE ";
 
 		if (cbDisplayAttributes.isSelected()) {
-				cypherStatement += (where + or + " n:Attribute ");
+				cypherStatement += (where + or + " n:" + SchemaGraph.attributeNodeLabel);
 				where = "";
 				or = " or ";
 		}
 		if (cbDisplayTables.isSelected()) {
-			cypherStatement += (where + or + " n:Table ");
+			cypherStatement += (where + or + " n:" + SchemaGraph.tableNodeLabel);
 			where = "";
 			or = " or ";
 		}
 		if (cbDisplayQuerys.isSelected()) {
-			cypherStatement += (where + or + "n:Query ");
+			cypherStatement += (where + or + "n:" + SchemaGraph.queryNodeLabel);
 			where = "";
 			or = " or ";
 		}

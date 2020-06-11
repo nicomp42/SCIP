@@ -40,7 +40,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			QueryTable queryTable = lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getTableName());
 			if (queryTable != null) {
 				// Find the attribute in the table
-				for (TableAttribute qa : queryTable.getAttributes()) {
+				for (TableAttribute qa : queryTable.getTableAttributes()) {
 					if (Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) && 
 						Config.getConfig().compareTableNames(queryTable.getTableName(),   queryAttribute.getTableName()) &&
 						Config.getConfig().compareAttributeNames(qa.getAttributeName(),   queryAttribute.getAttributeName())) {

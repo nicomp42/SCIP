@@ -509,7 +509,7 @@ public class QueryDefinition implements java.io.Serializable {
 		if (qd.getQueryType() instanceof QueryTypeDropTable) {
 			// We need to load all the attributes into the query attribute collection from the table(s) we are dropping
 			for (QueryTable qt: qd.getQueryTables()) {
-				for (TableAttribute ta: qt.getAttributes()) {
+				for (TableAttribute ta: qt.getTableAttributes()) {
 //					public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
 					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getTableName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
 				}
@@ -518,7 +518,7 @@ public class QueryDefinition implements java.io.Serializable {
 		if (qd.getQueryType() instanceof QueryTypeRenameTable) {
 			// We need to load all the attributes into the query attribute collection from the table(s) we are renaming
 			for (QueryTable qt: qd.getQueryTables()) {
-				for (TableAttribute ta: qt.getAttributes()) {
+				for (TableAttribute ta: qt.getTableAttributes()) {
 //					public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
 					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getTableName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
 				}

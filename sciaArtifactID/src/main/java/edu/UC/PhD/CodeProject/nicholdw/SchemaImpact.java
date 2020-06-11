@@ -10,7 +10,6 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 /**
  * Aggregation of the impact of an action query on a schema
  * @author nicomp
- *
  */
 public class SchemaImpact {
 	private QueryDefinition queryDefinition;

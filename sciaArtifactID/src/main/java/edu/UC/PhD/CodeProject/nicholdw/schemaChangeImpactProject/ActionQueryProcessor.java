@@ -1,3 +1,7 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject;
 
 import java.util.ArrayList;
@@ -30,6 +34,7 @@ import javafx.scene.control.TextArea;
 
 public class ActionQueryProcessor {
 	public static void processActionQuery(String sql, SchemaImpact schemaImpact) {
+		Log.logProgress("ActionQueryProcessor.processActionQuery()");
 		// String hostName, String loginName, String password, QueryType queryType,String queryName, String sql, String schemaName) {
 		QueryDefinition qd = new QueryDefinition(Config.getConfig().getMySQLDefaultHostname(),
 												 Config.getConfig().getMySQLDefaultLoginName(),
@@ -69,6 +74,7 @@ public class ActionQueryProcessor {
 		}
 	}
 	private static void processQueryTypeDropView(SchemaImpact schemaImpact) {
+		Log.logProgress("ActionQueryProcessor.processQueryTypeDropView()");
 		// What is the difference between the original view and the new version?
 		View viewToDrop = schemaImpact.getQueryDefinition().getViewToDrop();
 		String sqlStart = QueryDefinition.readSQLFromDatabaseServerQueryDefinition(Config.getConfig().getMySQLDefaultHostname(),
@@ -86,27 +92,31 @@ public class ActionQueryProcessor {
 			schemaImpact.getQueryAttributes().addAttribute(qa);
 		}		
 	}
-	private static TableAttributes processQueryTypeDropForiegnKey(SchemaImpact schemaImpact) {
+	private static void processQueryTypeDropForiegnKey(SchemaImpact schemaImpact) {
+		Log.logProgress("ActionQueryProcessor.processQueryTypeDropForiegnKey()");
 		// Not exactly sure what to do with this one. 
-		return null;
 	}
 	private static void processQueryTypeAlterTableDropColumn(SchemaImpact schemaImpact) {
+		Log.logProgress("ActionQueryProcessor.processQueryTypeAlterTableDropColumn()");
 		for (QueryAttribute queryAttribute : schemaImpact.getQueryDefinition().getQueryAttributes()) {
 			schemaImpact.getTableAttributes().addAttribute(new TableAttribute(queryAttribute.getTableName(), 
 														   queryAttribute.getAttributeName()));
 		}
 	}
 	private static void processQueryTypeAlterTableChangeColumn(SchemaImpact schemaImpact) {
+		Log.logProgress("ActionQueryProcessor.processQueryTypeAlterTableChangeColumn()");
 		for (QueryAttribute queryAttribute : schemaImpact.getQueryDefinition().getQueryAttributes()) {
 			schemaImpact.getTableAttributes().addAttribute(new TableAttribute(queryAttribute.getTableName(), 
 					                                  	   queryAttribute.getAttributeName()));
 		}
 	}
 	private static void processQueryTypeAlterTable(SchemaImpact schemaImpact) {
+		Log.logProgress("ActionQueryProcessor.processQueryTypeAlterTable()");
 		// The list of attributes in the query definition is what's being altered
 		
 	}
 	private static void processQueryTypeRenameATable(SchemaImpact schemaImpact) {
+		Log.logProgress("ActionQueryProcessor.processQueryTypeRenameATable()");
 		// Same as dropping a table
 		// All the columns in the table will potentially impact the schema.
 		TableAttributes tableAttributes;
@@ -117,6 +127,7 @@ public class ActionQueryProcessor {
 		}
 	}
 	private static void processQueryTypeDropATable(SchemaImpact schemaImpact) {
+		Log.logProgress("ActionQueryProcessor.processQueryTypeDropATable()");
 		// All the columns in the table will potentially impact the schema because they are, well, deleted.
 		TableAttributes tableAttributes;
 		tableAttributes = QueryTable.readAttributesFromTableDefinition(schemaImpact.getQueryDefinition().getTableToDrop().getTableName(), 
@@ -133,7 +144,7 @@ public class ActionQueryProcessor {
 													  			   Config.getConfig().getMySQLDefaultPassword(), 
 													  			   viewStart.getSchemaName(), 
 													  			   viewStart.getViewName());
-		Log.logProgress("CaseStudyClassRunner.run(): QueryTypeCreateOrReplaceView, view = " + viewStart.toString() + "." + viewStart);
+		Log.logProgress("ActionQueryProcessor.processCreateOrReplaceView():  QueryTypeCreateOrReplaceView, view = " + viewStart.toString() + "." + viewStart);
 		QueryDefinition qdStart = new QueryDefinition(Config.getConfig().getMySQLDefaultHostname(),
 													  Config.getConfig().getMySQLDefaultLoginName(),
 													  Config.getConfig().getMySQLDefaultPassword(),
@@ -146,7 +157,7 @@ public class ActionQueryProcessor {
 		
 	}
 	private static void processQueryTypeDropSchema(SchemaImpact schemaImpact) {
-		Log.logProgress("   Dropping Schema (" + schemaImpact.getQueryDefinition().getSchemaToDrop() + ")");
+		Log.logProgress("ActionQueryProcessor.processQueryTypeDropSchema(): Dropping Schema (" + schemaImpact.getQueryDefinition().getSchemaToDrop() + ")");
 		// Oh, my. Drop an entire schema? Yikes
 		// We need all the tables and all the views in the schema
 		ArrayList<String> viewNames;

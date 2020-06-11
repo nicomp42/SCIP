@@ -196,7 +196,7 @@ public class Table {
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
 	}
-	public TableAttributes getAttributes() {return attributes;}
+	public TableAttributes getTableAttributes() {return attributes;}
 	public void setAttributes(TableAttributes attributes) {this.attributes = attributes;}
 	public Indexes getIndexList() {return indexList;}
 	public String getTableName() {return tableName;}

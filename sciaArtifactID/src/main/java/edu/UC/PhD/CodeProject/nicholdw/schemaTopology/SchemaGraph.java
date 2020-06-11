@@ -11,6 +11,7 @@ import edu.UC.PhD.CodeProject.nicholdw.ActionQuerys;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
+import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Tables;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
@@ -22,6 +23,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitions;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
+import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.ActionQueryProcessor;
 
 /**
  * Generate a schema graph
@@ -57,7 +59,7 @@ public class SchemaGraph {
 	 * Test main. Schema name defaults to localhost.schematopologytest
 	 * @param args
 	 */
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		Log.logProgress("SchemaGraph.main(): working...");
 
 		Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
@@ -74,7 +76,7 @@ public class SchemaGraph {
 		} catch (Exception e) {
 			Log.logError("SchemaGraph.main(): " + e.getLocalizedMessage());
 		}
-	}
+	} */
 	/**
 	 *
 	 * @param hostName
@@ -129,22 +131,25 @@ public class SchemaGraph {
 			table.setAttributes(Table.readAttributesFromTableDefinition(table.getTableName(), schema.getSchemaName()));
 		}
 		try {
+			// If we weren't given any query defs then we will read all of them from the schema and process all of them.
 			if (queryDefinitions == null || queryDefinitions.getQueryDefinitions().size() == 0) {
 				loadQueryDefinitions();
 				if ((actionQuerySQL != null) && (actionQuerySQL.trim().length() > 0)) {
 					// Parse the action query and apply it to the schema topology
-					QueryDefinition actionQueryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), "myActionQuery", actionQuerySQL, schema.getSchemaName());
-					actionQueryDefinition.crunchIt();
-					applyActionQuery(actionQueryDefinition);
+					SchemaImpact schemaImpact = new SchemaImpact();
+					ActionQueryProcessor.processActionQuery(actionQuerySQL, schemaImpact);
+//					QueryDefinition actionQueryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), "myActionQuery", actionQuerySQL, schema.getSchemaName());
+//					actionQueryDefinition.crunchIt();
+					applyActionQuery(schemaImpact);
 				}
 				if ((actionQueryFile != null) && (actionQueryFile.trim().length() > 0)) {
 					// Parse the action querys in the text file and apply them to the schema topology
 					ActionQuerys actionQuerys = new ActionQuerys();
 					actionQuerys.loadActionQueries(actionQueryFile);
-					for (ActionQuery ac : actionQuerys) {	// Yay Iterable interface!
-						QueryDefinition actionQueryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), "myActionQuery", ac.getSql(), schema.getSchemaName());
-						actionQueryDefinition.crunchIt();
-						applyActionQuery(actionQueryDefinition);
+					for (ActionQuery ac : actionQuerys) {
+						SchemaImpact schemaImpact = new SchemaImpact();
+						ActionQueryProcessor.processActionQuery(ac.getSql(), schemaImpact);
+						applyActionQuery(schemaImpact);
 					}
 				}				
 				addNodesToGraph();
@@ -162,13 +167,14 @@ public class SchemaGraph {
 	 * Apply an action query to the schema to see what views would be affected
 	 * @param actionQueryDefinition The action query
 	 */
-	private void applyActionQuery(QueryDefinition actionQueryDefinition) {
+//	private void applyActionQuery(QueryDefinition actionQueryDefinition) {
+	private void applyActionQuery(SchemaImpact schemaImpact) {
 		Log.logProgress("SchemaGraph.ApplyActionQueryDefinition()");
 //		SchemaDiff schemaDiff = new SchemaDiff();
 		try {
-			for (QueryDefinition qd: queryDefinitions) {
-				for (QueryAttribute qa : qd.getQueryAttributes()) {
-					if (actionQueryDefinition.getQueryAttributes().findAttribute(qa)) {
+			for (QueryDefinition qd: queryDefinitions) {	// All the views in this schema
+				for (QueryAttribute qa : qd.getQueryAttributes()) {	// All the attributes in the view
+					if (schemaImpact.getQueryAttributes().findAttribute(qa)) {
 						// The query attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
 						qa.setAffectedByActionQuery(true);
 						qd.getQueryTables().setAffectedByActionQuery(qa, true);
@@ -176,6 +182,17 @@ public class SchemaGraph {
 						schemaTopologyResults.incrementTotalAffectedAttributes();
 					}
 				}
+			}
+			for (Table table : schema.getTables()) {
+				for (TableAttribute tableAttribute : table.getTableAttributes()) 
+				if (schemaImpact.getTableAttributes().findAttributeByName(tableAttribute.getAttributeName()) != null) {
+					// The table attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
+					tableAttribute.setAffectedByActionQuery(true);
+//					table.setAffectedByActionQuery(tableAttribute, true);
+//					schema.getTables().setAffectedByActionQuery(tableAttribute, true);
+					schemaTopologyResults.incrementTotalAffectedAttributes();
+				}
+				
 			}
 		} catch (Exception ex) {
 			Log.logError("SchemaGraph.ApplyActionQueryDefinition(): " + ex.getLocalizedMessage());
@@ -314,7 +331,7 @@ public class SchemaGraph {
 	private void addAttributeNodes() {
 		Tables tables = schema.getTables();	// Get the list of loaded tables. By now we have also populated the attribute collection in each table.
 		for (Table table : tables) {
-			for (TableAttribute attribute: table.getAttributes()) {
+			for (TableAttribute attribute: table.getTableAttributes()) {
 				schemaTopologyResults.incrementTotalAttributes();
 				String nodeLabel;
 				nodeLabel = attributeNodeLabel;

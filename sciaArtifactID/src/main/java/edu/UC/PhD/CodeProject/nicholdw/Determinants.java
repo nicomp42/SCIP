@@ -33,7 +33,7 @@ public class Determinants implements Iterable<Determinant> {
 			for (Determinant myDeterminant : determinants) {
 				myDeterminant.setRedundant(false);
 			}
-			int attributeCountInTable = table.getAttributes().size();
+			int attributeCountInTable = table.getTableAttributes().size();
 			// Process all determinants with one attribute, then 2, etc., up to (total attributes in the table - 1)
 			for (int i = 1; i < attributeCountInTable - 1; i++) {
 				for (Determinant targetDeterminant : determinants) {
@@ -174,13 +174,13 @@ public class Determinants implements Iterable<Determinant> {
 										// of the major loop
 		table.setAttributes(Table.readAttributesFromTableDefinition(table.getTableName(), table.getSchemaName()));
 		// Set up an array of flags to allow us to pick out all combinations of the attributes
-		int[] idx = new int[(table.getAttributes()).size()];
-		int[] idxAlreadyUsed = new int[(table.getAttributes()).size()];
+		int[] idx = new int[(table.getTableAttributes()).size()];
+		int[] idxAlreadyUsed = new int[(table.getTableAttributes()).size()];
 		for (int i = 0; i < idx.length; i++) {idx[i] = 0;}
 		for (int i = 0; i < idxAlreadyUsed.length; i++) {idxAlreadyUsed[i] = 0;}
 		TableAttributes groupByAttributes = null;
 		TableAttributes countOfAttributes = null;
-		TableAttributes attributes = table.getAttributes();
+		TableAttributes attributes = table.getTableAttributes();
 		// Step through all combinations of attributes to check for determinants
 		java.sql.Connection connection = new MySQL().connectToDatabase(table.getSchemaName());
 		// CurrentNumberOfOnes must be less than the total number of attributes because otherwise we won't have anything to count in the select string
