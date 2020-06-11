@@ -7,11 +7,11 @@ package edu.UC.PhD.CodeProject.nicholdw;
 
 public class Determinant {
 		
-	private Attributes attributes;
-	private Attribute attributeThatIsDetermimed;
+	private TableAttributes attributes;
+	private TableAttribute attributeThatIsDetermimed;
 	private boolean isRedundant;		// If redundant then it can be deleted form the list
 	public Determinant() {
-		attributes = new Attributes();
+		attributes = new TableAttributes();
 		setRedundant(false);
 	}
 
@@ -32,9 +32,9 @@ public class Determinant {
 		if (attributeThatIsDetermimed.getAttributeName().contentEquals(anotherDeterminant.getAttributeThatIsDetermined().getAttributeName()) == false) {
 			result = false;
 		} else {
-			Attributes anotherAttributes = anotherDeterminant.getAttributes();
+			TableAttributes anotherAttributes = anotherDeterminant.getAttributes();
 			if (anotherAttributes.size() == attributes.size()) {
-				for (Attribute tmpAttribute : anotherAttributes) {
+				for (TableAttribute tmpAttribute : anotherAttributes) {
 					if (!containsAttributeByName(tmpAttribute)) {result = false; break;}
 				}
 			} else {result = false;}
@@ -46,9 +46,9 @@ public class Determinant {
 	 * @param attributeTarget The attribute to be scanned for
 	 * @return True if the Attribute reference is found in the Determinant, false otherwise.
 	 */
-	public boolean containsAttributeByName(Attribute attributeTarget) {
+	public boolean containsAttributeByName(TableAttribute attributeTarget) {
 		boolean contains = false;
-		for (Attribute tmpAttribute : attributes) {
+		for (TableAttribute tmpAttribute : attributes) {
 			if (tmpAttribute.getAttributeName().contentEquals(attributeTarget.getAttributeName())) {
 				contains = true;
 				break;
@@ -62,9 +62,9 @@ public class Determinant {
 	 * @param attributeTarget The attribute to be scanned for
 	 * @return True if the Attribute reference is found in the Determinant, false otherwise.
 	 */
-	public boolean containsAttribute(Attribute attributeTarget) {
+	public boolean containsAttribute(TableAttribute attributeTarget) {
 		boolean contains = false;
-		for (Attribute tmpAttribute : attributes) {
+		for (TableAttribute tmpAttribute : attributes) {
 			if (tmpAttribute == attributeTarget) {
 				contains = true;
 				break;
@@ -77,7 +77,7 @@ public class Determinant {
 	 * Get the list of attributes in this determinant
 	 * @return The list of attributes in this determinant
 	 */
-	public Attributes getAttributes() {
+	public TableAttributes getAttributes() {
 		return attributes;
 	}
 	
@@ -85,7 +85,7 @@ public class Determinant {
 	 * Add an attribute to this determinant
 	 * @param attribute The attribute to add
 	 */
-	public void addAttribute(Attribute attribute) {
+	public void addAttribute(TableAttribute attribute) {
 		attributes.addAttribute(attribute);
 	}
 	
@@ -93,18 +93,18 @@ public class Determinant {
 	 * Add a set of attributes to this determinant
 	 * @param attributes The set of attributes to add
 	 */
-	public void addAttributes(Attributes newAttributes) {
-		for (Attribute attribute: newAttributes) {
+	public void addAttributes(TableAttributes newAttributes) {
+		for (TableAttribute attribute: newAttributes) {
 			attributes.addAttribute(attribute);
 		}
 	}
 
-	public void setAttributeThatIsDetermined(Attribute attributeThatIsDetermimed) {
+	public void setAttributeThatIsDetermined(TableAttribute attributeThatIsDetermimed) {
 		// ToDo make a copy constructor for the Attribute class and use it here.
 		this.attributeThatIsDetermimed = attributeThatIsDetermimed;		// new Attribute(attributeThatIsDetermimed);
 	}
 
-	public Attribute getAttributeThatIsDetermined() {
+	public TableAttribute getAttributeThatIsDetermined() {
 		return attributeThatIsDetermimed;
 	}
 	/**
@@ -113,7 +113,7 @@ public class Determinant {
 	public String toString() {
 		String result = "";
 		String comma = "";
-		for (Attribute myAttribute: attributes) {
+		for (TableAttribute myAttribute: attributes) {
 			result += comma + myAttribute.getAttributeName();
 			comma = ", " ;
 		}
@@ -126,7 +126,7 @@ public class Determinant {
 	public String toCSV() {
 		String result = "";
 		String comma = "";
-		for (Attribute myAttribute: attributes) {
+		for (TableAttribute myAttribute: attributes) {
 			result += comma + myAttribute.getAttributeName();
 			comma = "," ;
 		}

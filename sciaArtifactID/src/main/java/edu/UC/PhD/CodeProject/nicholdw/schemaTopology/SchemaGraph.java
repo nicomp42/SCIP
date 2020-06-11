@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import edu.UC.PhD.CodeProject.nicholdw.ActionQuery;
 import edu.UC.PhD.CodeProject.nicholdw.ActionQuerys;
-import edu.UC.PhD.CodeProject.nicholdw.Attribute;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
@@ -314,7 +314,7 @@ public class SchemaGraph {
 	private void addAttributeNodes() {
 		Tables tables = schema.getTables();	// Get the list of loaded tables. By now we have also populated the attribute collection in each table.
 		for (Table table : tables) {
-			for (Attribute attribute: table.getAttributes()) {
+			for (TableAttribute attribute: table.getAttributes()) {
 				schemaTopologyResults.incrementTotalAttributes();
 				String nodeLabel;
 				nodeLabel = attributeNodeLabel;

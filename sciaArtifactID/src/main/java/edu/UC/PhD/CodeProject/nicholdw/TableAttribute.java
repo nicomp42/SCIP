@@ -15,7 +15,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
  * @author nicomp
  *
  */
-public class Attribute {
+public class TableAttribute {
 
 	/**
 	 * An attribute that is nullable according to the table definition may not have any null values in the table.
@@ -49,7 +49,7 @@ public class Attribute {
 	 * We use this when we only need the attribute name -- lots of defaults are assumed.
 	 * @param attributeName Attribute Name
 	 */
-	public Attribute(String attributeName) {
+	public TableAttribute(String attributeName) {
 		this.shotgunTheDefaults();
 		this.attributeName = attributeName;
 	}
@@ -58,7 +58,7 @@ public class Attribute {
 	 * @param tableName Table Name
 	 * @param attributeName Attribute Name
 	 */
-	public Attribute(String tableName, String attributeName) {
+	public TableAttribute(String tableName, String attributeName) {
 		this.shotgunTheDefaults();
 		this.attributeName = attributeName;
 		this.tableName = tableName;
@@ -90,7 +90,7 @@ public class Attribute {
 	 * @param theDefault default
 	 * @param extra extra
 	 */
-	public Attribute(String name, String tableName, Boolean isPrimaryKey, String type, String nullable, String key, String theDefault, String extra, int length, Aliases aliases ) {
+	public TableAttribute(String name, String tableName, Boolean isPrimaryKey, String type, String nullable, String key, String theDefault, String extra, int length, Aliases aliases ) {
 		this.attributeName = name;
 		this.type = type;
 		this.nullable = nullable;
@@ -155,20 +155,20 @@ public class Attribute {
 	 * @return The corresponding value of the enumerated data type
 	 * @throws Exception if type cannot be mapped.
 	 */
-	public static Attribute.enumType mapType(String type) throws Exception {
-		Attribute.enumType myEnumType = Attribute.enumType.intType;
+	public static TableAttribute.enumType mapType(String type) throws Exception {
+		TableAttribute.enumType myEnumType = TableAttribute.enumType.intType;
 		boolean notFound = false;
 		switch(type.toLowerCase().trim()) {
 			case "int":
-				myEnumType = Attribute.enumType.intType;
+				myEnumType = TableAttribute.enumType.intType;
 				break;
 
 			case "varchar":
-				myEnumType = Attribute.enumType.varchar;
+				myEnumType = TableAttribute.enumType.varchar;
 				break;
 
 			case "date":
-				myEnumType = Attribute.enumType.dateType;
+				myEnumType = TableAttribute.enumType.dateType;
 				break;
 
 			default:
@@ -177,9 +177,9 @@ public class Attribute {
 		}
 		if (notFound) {
 			if (type.toLowerCase().startsWith("varchar")) {
-				myEnumType = Attribute.enumType.varchar;
+				myEnumType = TableAttribute.enumType.varchar;
 			} else if (type.toLowerCase().startsWith("int(")) {
-				myEnumType = Attribute.enumType.intType;
+				myEnumType = TableAttribute.enumType.intType;
 			} else {
 				Log.logError("Attribute.mapType(" + type.trim() + "): unknown type");
 				throw new Exception("Attribute.mapType(" + type.trim() + "): unknown type");

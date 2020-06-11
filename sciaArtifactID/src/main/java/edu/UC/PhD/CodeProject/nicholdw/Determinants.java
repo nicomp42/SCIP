@@ -68,12 +68,12 @@ public class Determinants implements Iterable<Determinant> {
 	 * @param myDeterminantAttributes
 	 * @return True if myDeterminantAttributes is a superset of targetDeterminantAttributes, false otherwise.
 	 */
-	private boolean checkForSuperset(Attributes targetDeterminantAttributes, Attributes myDeterminantAttributes) {
+	private boolean checkForSuperset(TableAttributes targetDeterminantAttributes, TableAttributes myDeterminantAttributes) {
 		boolean isSuperset = true;
 		// myDeterminantAttributes must have more members than  targetDeterminantAttributes
 		if (targetDeterminantAttributes.size() < myDeterminantAttributes.size()) {
 			// We need to know if all the attributes in targetDeterminantAttributes are also in myDeterminantAttributes
-			for (Attribute targetAttribute: targetDeterminantAttributes) {
+			for (TableAttribute targetAttribute: targetDeterminantAttributes) {
 				if (myDeterminantAttributes.findAttributeByName(targetAttribute.getAttributeName()) == null) {
 					// Attribute is in targetDeterminantAttributes but not in myDeterminantAttributes, give up.
 					isSuperset = false;
@@ -91,14 +91,14 @@ public class Determinants implements Iterable<Determinant> {
 	 *            The Attribute set to check
 	 * @return True if the attribute set is a determinant, false otherwise
 	 */
-	public boolean isDeterminant(Attributes attributes) {
+	public boolean isDeterminant(TableAttributes attributes) {
 		boolean result = false;
 		int count;
 		for (Determinant myDeterminant : determinants) {
 			count = 0;
-			Attributes myAttributes = myDeterminant.getAttributes();
+			TableAttributes myAttributes = myDeterminant.getAttributes();
 			if (attributes.size() == myAttributes.size()) {
-				for (Attribute attribute : attributes) {
+				for (TableAttribute attribute : attributes) {
 					if (myAttributes.findAttributeByName(attribute.getAttributeName()) != null) {
 						count++;
 					}
@@ -178,9 +178,9 @@ public class Determinants implements Iterable<Determinant> {
 		int[] idxAlreadyUsed = new int[(table.getAttributes()).size()];
 		for (int i = 0; i < idx.length; i++) {idx[i] = 0;}
 		for (int i = 0; i < idxAlreadyUsed.length; i++) {idxAlreadyUsed[i] = 0;}
-		Attributes groupByAttributes = null;
-		Attributes countOfAttributes = null;
-		Attributes attributes = table.getAttributes();
+		TableAttributes groupByAttributes = null;
+		TableAttributes countOfAttributes = null;
+		TableAttributes attributes = table.getAttributes();
 		// Step through all combinations of attributes to check for determinants
 		java.sql.Connection connection = new MySQL().connectToDatabase(table.getSchemaName());
 		// CurrentNumberOfOnes must be less than the total number of attributes because otherwise we won't have anything to count in the select string
@@ -198,8 +198,8 @@ public class Determinants implements Iterable<Determinant> {
 				// Build the combination of attributes that we are checking
 				//if ((currentNumberOfOnes == 1) && (idx[0] == 1))
 				//	Config.getConfig()DebugLine("Hoo");
-				groupByAttributes = new Attributes();
-				countOfAttributes = new Attributes();
+				groupByAttributes = new TableAttributes();
+				countOfAttributes = new TableAttributes();
 				String groupByComma, groupBy, selectComma, select;
 				groupByComma = "";
 				selectComma = "";
@@ -503,9 +503,9 @@ public class Determinants implements Iterable<Determinant> {
 		}
 	}
 	class TaggedAttribute {
-		Attribute attribute;
+		TableAttribute attribute;
 		boolean tagged;
-		public TaggedAttribute(Attribute attribute) {
+		public TaggedAttribute(TableAttribute attribute) {
 			tagged = false;
 			this.attribute = attribute;
 		}

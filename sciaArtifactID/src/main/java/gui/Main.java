@@ -11,8 +11,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.neo4j.graphdb.GraphDatabaseService;
-import edu.UC.PhD.CodeProject.nicholdw.Attribute;
-import edu.UC.PhD.CodeProject.nicholdw.Attributes;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.ForeignKey;
 import edu.UC.PhD.CodeProject.nicholdw.ForeignKeys;
@@ -512,9 +512,9 @@ public class Main extends Application {
 		lv.getItems().clear();
 		Schema schema = new Schema(schemaName);
 		schema.loadAttributes(hostName, loginName, password);			// Load all the attributes for the schema
-		Attributes attributes;
+		TableAttributes attributes;
 		attributes = schema.getAttributes();	// Get the list of loaded attributes.
-		for (Attribute attribute : attributes) {
+		for (TableAttribute attribute : attributes) {
 			lv.getItems().add(attribute.getTableName() + "." + attribute.getAttributeName());
 		}
 		return lv.getItems().size();

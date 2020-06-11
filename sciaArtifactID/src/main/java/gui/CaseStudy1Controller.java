@@ -9,8 +9,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.neo4j.graphdb.GraphDatabaseService;
-import edu.UC.PhD.CodeProject.nicholdw.Attribute;
-import edu.UC.PhD.CodeProject.nicholdw.Attributes;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.ForeignKey;
 import edu.UC.PhD.CodeProject.nicholdw.ForeignKeys;

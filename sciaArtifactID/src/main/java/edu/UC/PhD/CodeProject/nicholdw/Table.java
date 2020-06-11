@@ -19,7 +19,7 @@ public class Table {
 
 	protected String tableName;
 	private Indexes indexList;
-	private Attributes attributes;
+	private TableAttributes attributes;
 	protected String schemaName;
 	private String comment;	// mySQL-specific. A comment attached to the table
 	private final String engine = "InnoDB";
@@ -85,9 +85,9 @@ public class Table {
 	 * @param attributeName The name to search for
 	 * @return The corresponding Attribute object or null if no match
 	 */
-	public Attribute findAttribute(String attributeName) {
-		Attribute attributeFound = null;
-		for(Attribute attribute : attributes) {
+	public TableAttribute findAttribute(String attributeName) {
+		TableAttribute attributeFound = null;
+		for(TableAttribute attribute : attributes) {
 			if (Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName) == true) {
 				attributeFound = attribute;
 				break;
@@ -99,7 +99,7 @@ public class Table {
 		String script = "CREATE TABLE " + tableName + " (";
 		String comma = "";
 		String primaryKeyClause = "";
-		for (Attribute a : attributes) {
+		for (TableAttribute a : attributes) {
 			script += comma;
 			script += " " + Utils.QuoteMeBack(a.getAttributeName());
 			script += " ";
@@ -128,7 +128,7 @@ public class Table {
 			script += " (" ;
 			String indexComma;
 			indexComma = "";
-			for (Attribute indexAttribute : index.getAttributes()) {
+			for (TableAttribute indexAttribute : index.getAttributes()) {
 				script += indexComma + Utils.QuoteMeBack(indexAttribute.getAttributeName());
 				indexComma = ", ";
 			}
@@ -149,7 +149,7 @@ public class Table {
 		setTableName(tableName);
 		indexList = new Indexes();
 		this.schemaName = schemaName;
-		attributes = new Attributes();
+		attributes = new TableAttributes();
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
 	}
@@ -160,7 +160,7 @@ public class Table {
 	 * @param attributeList
 	 * @param indexList
 	 */
-	public Table(String tableName, String schemaName, Attributes attributeList, Indexes indexList) {
+	public Table(String tableName, String schemaName, TableAttributes attributeList, Indexes indexList) {
 		setTableName(tableName);
 		this.indexList = indexList;
 		this.schemaName = schemaName;
@@ -178,7 +178,7 @@ public class Table {
 		setTableName(tableName);
 		this.schemaName = schemaName;
 		this.indexList = indexList;
-		attributes = new Attributes();
+		attributes = new TableAttributes();
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
 	}
@@ -188,7 +188,7 @@ public class Table {
 	 * @param schemaName Name of database/schema
 	 * @param attributeList
 	 */
-	public Table(String tableName, String schemaName, Attributes attributeList) {
+	public Table(String tableName, String schemaName, TableAttributes attributeList) {
 		setTableName(tableName);
 		this.schemaName = schemaName;
 		this.attributes = attributeList;
@@ -196,8 +196,8 @@ public class Table {
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
 	}
-	public Attributes getAttributes() {return attributes;}
-	public void setAttributes(Attributes attributes) {this.attributes = attributes;}
+	public TableAttributes getAttributes() {return attributes;}
+	public void setAttributes(TableAttributes attributes) {this.attributes = attributes;}
 	public Indexes getIndexList() {return indexList;}
 	public String getTableName() {return tableName;}
 	/**
@@ -214,8 +214,8 @@ public class Table {
 	 * @return The collection of attributes
 	 */
 
-	public static Attributes readAttributesFromTableDefinition(String rawTableName, String rawSchemaName) {
-		Attributes myAttributeList = new Attributes();
+	public static TableAttributes readAttributesFromTableDefinition(String rawTableName, String rawSchemaName) {
+		TableAttributes myAttributeList = new TableAttributes();
 		java.sql.Connection connection = null;
 		String sql = null;
 		String tableName = rawTableName.trim();
@@ -255,7 +255,7 @@ public class Table {
 					dataType = trimDataType(dataType);
 					// That's it. That's the list. No more descriptors.
 					// ToDo: The IsPrimary key argument is defaulted to false because it comes from another table.
-					Attribute myAttribute = new Attribute(name, tableName, false, dataType, nullable, key, theDefault, extra, length, (Aliases)null);
+					TableAttribute myAttribute = new TableAttribute(name, tableName, false, dataType, nullable, key, theDefault, extra, length, (Aliases)null);
 
 					myAttributeList.addAttribute(myAttribute);
 
@@ -332,7 +332,7 @@ public class Table {
 	 * Add a surrogate key to the table
 	 */
 	public void addSurrogateKey() {
-		Attribute a = new Attribute(getTableName() + "ID", this.tableName, true, "int", "no", "yes", "", "", 1, (Aliases)null );
+		TableAttribute a = new TableAttribute(getTableName() + "ID", this.tableName, true, "int", "no", "yes", "", "", 1, (Aliases)null );
 		a.setAutoIncrement(true);
 		attributes.addAttribute(a);
 		setAlreadyHasSurrogateKey(true);
@@ -347,7 +347,7 @@ public class Table {
 	public String getAttributeDataType(String attributeName) {
 		String attributeDataType = "";
 		try {
-			for (Attribute attribute: attributes) {
+			for (TableAttribute attribute: attributes) {
 				if ((Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName) == true)) { 
 					attributeDataType = attribute.getType();
 					break;

@@ -31,7 +31,7 @@ public class Schema {
 	private String schemaName;
 	private Tables tables;						// Tables in this schema
 	private QueryDefinitions queryDefinitions;	// Queries in this schema
-	private Attributes attributes;		// A big jumble of all the attributes in all the tables in the schema. See OperationalSchemaQueries.qAttributesbySchema
+	private TableAttributes attributes;		// A big jumble of all the attributes in all the tables in the schema. See OperationalSchemaQueries.qAttributesbySchema
 	private ForeignKeys foreignKeys;	// A big jumble of all the foreign keys in all the tables in the schema. See OperationalSchemaQueries.qForeignKeysbySchema
 //	private java.sql.Connection connection;
 
@@ -114,7 +114,7 @@ public class Schema {
 	public Schema(String schemaName) {
 		setSchemaName(schemaName);
 		tables = new Tables();
-		setAttributes(new Attributes());
+		setAttributes(new TableAttributes());
 		foreignKeys = new ForeignKeys();
 //		connection = null;
 		setQueryDefinitions(new QueryDefinitions());
@@ -270,7 +270,7 @@ public class Schema {
 					String tableName = resultSet.getString(2);
 					String type = resultSet.getString(3);
 					Boolean isPrimaryKey = resultSet.getString(4).equals("YES") == true? true:false;
-					attributes.addAttribute(new Attribute(attributeName, tableName, isPrimaryKey, type, null, null, null, null, 0, (Aliases)null));
+					attributes.addAttribute(new TableAttribute(attributeName, tableName, isPrimaryKey, type, null, null, null, null, 0, (Aliases)null));
 					count++;
 				}
 			} catch (Exception e) {Log.logError("Schema.loadAttributes(): " + e.getLocalizedMessage());}
@@ -326,8 +326,8 @@ public class Schema {
 			}
 */		}		
 	}
-	public Attributes getAttributes() {return attributes;}
-	public void setAttributes(Attributes attributes) {this.attributes = attributes;}
+	public TableAttributes getAttributes() {return attributes;}
+	public void setAttributes(TableAttributes attributes) {this.attributes = attributes;}
 	public ForeignKeys getForeignKeys() {return foreignKeys;}
 	public void setForeignKeys(ForeignKeys foreignKeys) {this.foreignKeys = foreignKeys;}
 

@@ -10,7 +10,7 @@ package edu.UC.PhD.CodeProject.nicholdw;
  *
  */
 public class Index {
-	private Attributes attributes;	// The attributes comprising the index
+	private TableAttributes attributes;	// The attributes comprising the index
 	private Boolean unique;
 	private String name;
 	private Boolean primary;
@@ -26,10 +26,10 @@ public class Index {
 		this.unique = unique;
 		this.name = name;
 		this.primary = primary;
-		attributes = new Attributes();
+		attributes = new TableAttributes();
 	}
 
-	public void AddAttribute(Attribute attribute) {
+	public void AddAttribute(TableAttribute attribute) {
 		attributes.addAttribute(attribute);
 	}	
 
@@ -44,12 +44,12 @@ public class Index {
 	public String buildIndexName() {
 		String result = "";
 		String underscore = "";
-		for (Attribute a : attributes) {
+		for (TableAttribute a : attributes) {
 			result = result + underscore + a.getAttributeName();
 			underscore = "_";
 		}
 		return result;
 	}
 	
-	Attributes getAttributes() {return attributes;}
+	TableAttributes getAttributes() {return attributes;}
 }

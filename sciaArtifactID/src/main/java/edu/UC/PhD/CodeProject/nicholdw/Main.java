@@ -61,12 +61,12 @@ public class Main {
 
 	public static void testTableScripting() {
 		Table t = new Table("tTestTable", "");
-		t.getAttributes().addAttribute(new Attribute("testTableID"            , "", false, "int"    , "no" , "yes", "yes", "auto_increment", 11, (Aliases)null));
-		t.getAttributes().addAttribute(new Attribute("testTable"              , "", false,  "int"    , "no" , "yes", "no" , "", 11, (Aliases)null));
-		Attribute indexableAttribute = new Attribute("testTableString"        , "", false,  "varchar", "no" , "yes", "no" , "", 50, (Aliases)null);
+		t.getAttributes().addAttribute(new TableAttribute("testTableID"            , "", false, "int"    , "no" , "yes", "yes", "auto_increment", 11, (Aliases)null));
+		t.getAttributes().addAttribute(new TableAttribute("testTable"              , "", false,  "int"    , "no" , "yes", "no" , "", 11, (Aliases)null));
+		TableAttribute indexableAttribute = new TableAttribute("testTableString"        , "", false,  "varchar", "no" , "yes", "no" , "", 50, (Aliases)null);
 		t.getAttributes().addAttribute(indexableAttribute);
-		t.getAttributes().addAttribute(new Attribute("testTableStringNullable", "", false,  "varchar", "yes", "yes", "no" , "", 50, (Aliases)null));
-		Attribute indexableAttribute01 = new Attribute("testTableDate"        , "", false,  "date"   , "no" , "yes", "no" , "", 0, (Aliases)null);
+		t.getAttributes().addAttribute(new TableAttribute("testTableStringNullable", "", false,  "varchar", "yes", "yes", "no" , "", 50, (Aliases)null));
+		TableAttribute indexableAttribute01 = new TableAttribute("testTableDate"        , "", false,  "date"   , "no" , "yes", "no" , "", 0, (Aliases)null);
 		t.getAttributes().addAttribute(indexableAttribute01);
 
 		// Add an index to the table because we can
@@ -114,7 +114,7 @@ public class Main {
 	}
 	public static void testAttributeExtractionFromTable() {
 		TableAnalysis tableAnalysis = new TableAnalysis();
-		Attributes attributes = Table.readAttributesFromTableDefinition("tStore", Config.getConfig().getMySQLDefaultDatabaseName());
+		TableAttributes attributes = Table.readAttributesFromTableDefinition("tStore", Config.getConfig().getMySQLDefaultDatabaseName());
 	}
 
 	public static void testReferentialConstraintExtractionFromTable() {

@@ -7,8 +7,8 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.HashMap;
-import edu.UC.PhD.CodeProject.nicholdw.Attribute;
-import edu.UC.PhD.CodeProject.nicholdw.Attributes;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.OperationalSchemaQueries;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
@@ -190,7 +190,7 @@ public class QueryDefinition implements java.io.Serializable {
 	 */
 	public void readTableDefinitions() {
 		for (QueryTable queryTable : queryTables) {
-			Attributes attributes;
+			TableAttributes attributes;
 			attributes = QueryTable.readAttributesFromTableDefinition(queryTable.getTableName(), queryTable.getSchemaName());
 			queryTable.setAttributes(attributes);
 		}
@@ -303,7 +303,7 @@ public class QueryDefinition implements java.io.Serializable {
 				Log.logProgress("QueryDefinition.reconcileAttributes(): Wildcard found");
 				// we need all the attributes in all the tables in this select statement
 				for (QueryTable qt: this.getQueryTables()) {
-					Attributes as = new Attributes();
+					TableAttributes as = new TableAttributes();
 					Log.logProgress("QueryDefinition.reconcileAttributes(): Wildcard found, copying attributes from " + qt.getSchemaName() + "." + qt.getTableName());
 					as = Table.readAttributesFromTableDefinition(qt.getTableName(), qt.getSchemaName());
 					this.getQueryAttributes().addTableAttributes(qt.getSchemaName(), as);
@@ -509,7 +509,7 @@ public class QueryDefinition implements java.io.Serializable {
 		if (qd.getQueryType() instanceof QueryTypeDropTable) {
 			// We need to load all the attributes into the query attribute collection from the table(s) we are dropping
 			for (QueryTable qt: qd.getQueryTables()) {
-				for (Attribute ta: qt.getAttributes()) {
+				for (TableAttribute ta: qt.getAttributes()) {
 //					public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
 					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getTableName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
 				}
@@ -518,7 +518,7 @@ public class QueryDefinition implements java.io.Serializable {
 		if (qd.getQueryType() instanceof QueryTypeRenameTable) {
 			// We need to load all the attributes into the query attribute collection from the table(s) we are renaming
 			for (QueryTable qt: qd.getQueryTables()) {
-				for (Attribute ta: qt.getAttributes()) {
+				for (TableAttribute ta: qt.getAttributes()) {
 //					public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
 					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getTableName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
 				}

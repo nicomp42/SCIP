@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute.ATTRIBUTE_DISPOSITION;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryClause;
 import java.util.Iterator;
-import edu.UC.PhD.CodeProject.nicholdw.Attribute;
-import edu.UC.PhD.CodeProject.nicholdw.Attributes;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
@@ -38,8 +38,8 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 	public ArrayList<QueryAttribute> getAttributes (){return queryAttributes;}
 	public QueryAttribute getQueryAttribute(int i) {return queryAttributes.get(i);}
 	
-	public void addTableAttributes(String schemaName, Attributes attributes) {
-		for (Attribute a: attributes) {
+	public void addTableAttributes(String schemaName, TableAttributes attributes) {
+		for (TableAttribute a: attributes) {
 			addAttribute(new QueryAttribute(schemaName, a.getTableName(), a.getAttributeName(), 
 					     (AliasNameClassOLD)null, new QueryClauseSelect(), "", ATTRIBUTE_DISPOSITION.Select));
 		}

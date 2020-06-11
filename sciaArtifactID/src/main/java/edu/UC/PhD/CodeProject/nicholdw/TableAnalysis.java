@@ -41,7 +41,7 @@ public class TableAnalysis {
 				intermediateTableIndexes = indexes;
 				for (Index index : intermediateTableIndexes) {
 					System.out.println("DetectAndAnalyzeManyToManyRelationship: The index " + index.getName() + " in table " + intermediateTable.getTableName() + " is composed of all foreign keys.");
-					for (Attribute attribute : index.getAttributes()) {
+					for (TableAttribute attribute : index.getAttributes()) {
 					}
 				}
 			}
@@ -66,16 +66,16 @@ public class TableAnalysis {
 	 */
 	public boolean isIntermediateTable(String databaseName, String tableName, Indexes indexesFound) {
 		boolean status = false;
-		Attributes attributes = Table.readAttributesFromTableDefinition(tableName, databaseName);				// Build the Attribute List for the table
+		TableAttributes attributes = Table.readAttributesFromTableDefinition(tableName, databaseName);				// Build the Attribute List for the table
 		ProcessReferentialConstraints(databaseName, tableName, attributes);		// Look through the Attribute List for any referential constraints
 		Indexes indexes = ProcessIndices(databaseName, tableName, attributes);
 		// Look for an index consisting of two or more fields that are all foreign keys
 		for (Index index : indexes) {
-			Attributes idxAttributes = index.getAttributes();
+			TableAttributes idxAttributes = index.getAttributes();
 			if (index.isUnique() &&  idxAttributes.size() > 1) {
 				// Are all the attributes foreign keys?
 				boolean allForeignKeys = true;
-				for (Attribute attribute : idxAttributes) {
+				for (TableAttribute attribute : idxAttributes) {
 					if (!attribute.isForeignKey() ) {
 						allForeignKeys = false;
 					}
@@ -89,7 +89,7 @@ public class TableAnalysis {
 		return status;
 	}
 
-	private Indexes ProcessIndices(String databaseName, String tableName, Attributes attributes) {
+	private Indexes ProcessIndices(String databaseName, String tableName, TableAttributes attributes) {
 		Indexes indexes = new Indexes();
 		java.sql.Connection connection = null;
 	    java.sql.PreparedStatement indexPreparedStatement = null;
@@ -144,7 +144,7 @@ public class TableAnalysis {
 		return indexes;
 	}
 
-	public void ProcessReferentialConstraints(String databaseName, String tableName, Attributes attributeList) {
+	public void ProcessReferentialConstraints(String databaseName, String tableName, TableAttributes attributeList) {
 		// SELECT * FROM `REFERENTIAL_CONSTRAINTS`
 		java.sql.Connection connection = null;
 	    java.sql.ResultSet referentialConstraintsResultSet = null;

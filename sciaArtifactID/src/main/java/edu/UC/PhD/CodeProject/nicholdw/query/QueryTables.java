@@ -6,7 +6,7 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import edu.UC.PhD.CodeProject.nicholdw.Attribute;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -40,7 +40,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 			QueryTable queryTable = lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getTableName());
 			if (queryTable != null) {
 				// Find the attribute in the table
-				for (Attribute qa : queryTable.getAttributes()) {
+				for (TableAttribute qa : queryTable.getAttributes()) {
 					if (Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) && 
 						Config.getConfig().compareTableNames(queryTable.getTableName(),   queryAttribute.getTableName()) &&
 						Config.getConfig().compareAttributeNames(qa.getAttributeName(),   queryAttribute.getAttributeName())) {

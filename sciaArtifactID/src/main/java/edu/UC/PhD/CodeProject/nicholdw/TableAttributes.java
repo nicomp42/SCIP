@@ -6,37 +6,37 @@ package edu.UC.PhD.CodeProject.nicholdw;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Attributes implements Iterable<Attribute> {
+public class TableAttributes implements Iterable<TableAttribute> {
 
-	private ArrayList<Attribute> attributes;
+	private ArrayList<TableAttribute> tableAttributes;
 
 	/**
 	 * Constructor
 	 */
-	public Attributes() {
-		attributes = new ArrayList<Attribute>();
+	public TableAttributes() {
+		tableAttributes = new ArrayList<TableAttribute>();
 	}
 
 	/**
 	 * Retrieve the list of attributes in this Attribute List
 	 * @return A reference to the attribute list in the current object.
 	 */
-	public ArrayList<Attribute> getAttributes ()
+	public ArrayList<TableAttribute> getAttributes ()
 	{
-		return attributes;
+		return tableAttributes;
 	}
-	public Attribute getAttribute(int i) {
-		return attributes.get(i);
+	public TableAttribute getAttribute(int i) {
+		return tableAttributes.get(i);
 	}
-	public void addAttribute(Attribute attribute) {
-		attributes.add(attribute);
+	public void addAttribute(TableAttribute attribute) {
+		tableAttributes.add(attribute);
 	}
 	public void clear() {
-		attributes.clear();
+		tableAttributes.clear();
 	}
 	@Override
-	public Iterator<Attribute> iterator() {
-		Iterator<Attribute> myIterator = attributes.iterator();
+	public Iterator<TableAttribute> iterator() {
+		Iterator<TableAttribute> myIterator = tableAttributes.iterator();
         return myIterator;
     }
 	/***
@@ -50,7 +50,7 @@ public class Attributes implements Iterable<Attribute> {
 		// find the attribute in the AttributeList
 		int i = 0;
 		boolean found = false;
-		for (Attribute attribute : attributes) {
+		for (TableAttribute attribute : tableAttributes) {
 			if (attribute.getAttributeName().equals(attributeName)) {
 				found = true;
 				break;
@@ -58,19 +58,19 @@ public class Attributes implements Iterable<Attribute> {
 			i++;
 		}
 		if (found) {
-			attributes.get(i).addForeignKeyRef(referencedTableName, foreignKeyName, referencedAttributeName);
+			tableAttributes.get(i).addForeignKeyRef(referencedTableName, foreignKeyName, referencedAttributeName);
 		}
 	}
-	public int size() {return attributes.size();}
+	public int size() {return tableAttributes.size();}
 
 	/**
 	 * Search the list of attributes by attribute name
 	 * @param attributeName The attribute name to search for
 	 * @return The Attribute object corresponding to attributeName
 	 */
-	public Attribute findAttributeByName(String attributeName) {
-		Attribute tmp = null;
-		for (Attribute attribute: attributes) {
+	public TableAttribute findAttributeByName(String attributeName) {
+		TableAttribute tmp = null;
+		for (TableAttribute attribute: tableAttributes) {
 			if (attribute.getAttributeName().contentEquals(attributeName)) {
 				tmp = attribute;
 				break;
@@ -85,7 +85,7 @@ public class Attributes implements Iterable<Attribute> {
 	public String toString() {
 		String result = "";
 		String comma = "";
-		for (Attribute attribute: attributes) {
+		for (TableAttribute attribute: tableAttributes) {
 			result += comma + attribute.getAttributeName();
 			comma = ", ";
 		}

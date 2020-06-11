@@ -60,10 +60,10 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 			Boolean found = false;
 			for (Entry<String, Table> entry: tableHashMap.entrySet()) {
 				// Find the attribute in the table
-				for (Attribute qa : entry.getValue().getAttributes()) {
+				for (TableAttribute qa : entry.getValue().getAttributes()) {
 					if (Config.getConfig().compareSchemaNames(entry.getValue().getSchemaName(), queryAttribute.getSchemaName()) && 
 						Config.getConfig().compareTableNames(entry.getValue().getTableName(),   queryAttribute.getTableName())) {
-						Attribute attribute;
+						TableAttribute attribute;
 						attribute = entry.getValue().findAttribute(queryAttribute.getAttributeName());
 						if (attribute != null) {
 							attribute.setAffectedByActionQuery(value);

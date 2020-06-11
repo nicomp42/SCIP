@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import lib.MySQL;
 
 public class PrimaryKey {
-	private Attributes globalAttributeList;
+	private TableAttributes globalAttributeList;
 	private int[] attributeMask;
 	private ArrayList<int[]> attributeMaskList;		// The list of attribute combinations that can be candidate keys
 	private int totalColumnsInFirstRow;
@@ -21,13 +21,13 @@ public class PrimaryKey {
 	 * @param firstColumnHasAttributeName true if the first row contains column names, false otherwise
 	 * @return The list of Candidate Keys
 	 */
-	ArrayList<Attributes> Find(String fileName, String targetTable, boolean firstColumnHasAttributeName, boolean dataAlreadyLoaded) {
-		ArrayList<Attributes> attributeLists = new ArrayList<Attributes>();
+	ArrayList<TableAttributes> Find(String fileName, String targetTable, boolean firstColumnHasAttributeName, boolean dataAlreadyLoaded) {
+		ArrayList<TableAttributes> attributeLists = new ArrayList<TableAttributes>();
 		Results results = new Results();
 		try {
 			FileReader fr = new FileReader(fileName);
 			BufferedReader br = new BufferedReader(fr);
-			globalAttributeList = new Attributes();
+			globalAttributeList = new TableAttributes();
 			attributeMaskList = new ArrayList<int[]>();
 			String tmp;
 			if (!dataAlreadyLoaded) {
@@ -36,7 +36,7 @@ public class PrimaryKey {
 					tmp = br.readLine();
 					String[] attributeNames = tmp.split(",");
 					for (String attributeName : attributeNames) {
-						globalAttributeList.addAttribute(new Attribute(attributeName.trim()));
+						globalAttributeList.addAttribute(new TableAttribute(attributeName.trim()));
 					}
 				} else {
 					// The first line is just data, no attribute names.
@@ -44,7 +44,7 @@ public class PrimaryKey {
 					tmp = br.readLine();
 					String attributeValues[] = tmp.split(",");
 					for (int i = 0; i < attributeValues.length; i++) {
-						globalAttributeList.addAttribute(new Attribute(Config.getConfig().getAttributenameprefix() + (i+1)));
+						globalAttributeList.addAttribute(new TableAttribute(Config.getConfig().getAttributenameprefix() + (i+1)));
 					}
 				}
 				try {br.close();} catch(Exception ex) {}
@@ -384,7 +384,7 @@ public class PrimaryKey {
 	 * @param globalAttributeList
 	 * @param tableName
 	 */
-	private void populateGlobalAttributeListFromExistingTable(Attributes globalAttributeList, String tableName) {
+	private void populateGlobalAttributeListFromExistingTable(TableAttributes globalAttributeList, String tableName) {
 		String cmd = "select column_name,data_type from information_schema.columns where table_name =  '" + tableName + "' order by column_name;";
 		java.sql.PreparedStatement preparedStatement = null;
 		java.sql.ResultSet resultSet = null;
@@ -396,7 +396,7 @@ public class PrimaryKey {
 		    while (resultSet.next()) {
 		    	String columnName;
 		    	columnName= resultSet.getString(1);
-		    	globalAttributeList.addAttribute(new Attribute(columnName));
+		    	globalAttributeList.addAttribute(new TableAttribute(columnName));
 		    }
 		} catch (Exception ex) {
 			System.out.println("PrimaryKey.populateGlobalAttributeListFromExistingTable(): " + ex.getLocalizedMessage());

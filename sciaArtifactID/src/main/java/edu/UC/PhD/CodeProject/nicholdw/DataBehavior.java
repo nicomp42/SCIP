@@ -4,7 +4,7 @@
  */
 package edu.UC.PhD.CodeProject.nicholdw;
 
-import edu.UC.PhD.CodeProject.nicholdw.Attribute.enumNullableCheck;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttribute.enumNullableCheck;
 import lib.MySQL;
 import lib.SQLUtils;
 
@@ -21,7 +21,7 @@ public class DataBehavior {
 	 * @param databaseName
 	 * @return The list of attributes in the table
 	 */
-	Attributes checkForNulls(String tableName, String databaseName) {
+	TableAttributes checkForNulls(String tableName, String databaseName) {
 
 		java.sql.Connection connection = null;
 	    connection = new MySQL().connectToDatabase(databaseName);
@@ -35,11 +35,11 @@ public class DataBehavior {
 	 * @param connection An open connection to the database
 	 * @return The list of attributes, but that list is already a member of the table object, so it's redundant.
 	 */
-	Attributes checkForNulls(Table table, java.sql.Connection connection) {
+	TableAttributes checkForNulls(Table table, java.sql.Connection connection) {
 		System.out.println("DataBehavior.checkForNulls(): Processing table " + table.getTableName());
-		Attributes attributes = table.getAttributes();
+		TableAttributes attributes = table.getAttributes();
 		// Step through the attributes that are nullable and see if any of them are never null. 
-		for (Attribute attribute :  attributes) {
+		for (TableAttribute attribute :  attributes) {
 			if (attribute.isNullable()) {
 				System.out.print("Attribute " + attribute.getAttributeName() + " can be null ");
 				// The table design says it can be null: are any of the values null?

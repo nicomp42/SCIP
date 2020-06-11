@@ -60,7 +60,7 @@ public class CaseStudyEnvironment {
 																	"ALTER TABLE `hr`.`employee` DROP PRIMARY KEY;"));
 		
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a view",
-																	"DROP VIEW `dw`.`vweeklystoreinspectionsbyemployee`"));
+																	"DROP VIEW `dw`.`vweeklystoreinspectionsbyemployee`;"));
 																	
 //		Alter a view in MySQL is running "CREATE OR REPLACE VIEW" with the same name as an existing view
 		// Took out the Sunday column:	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Sunday` AS `Sunday`" + 
@@ -78,7 +78,7 @@ public class CaseStudyEnvironment {
 																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Friday` AS `Friday`," + 
 																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Saturday` AS `Saturday`" + 
 																	"    FROM" + 
-																	"        `dw`.`weeklyinspectionsbyemployeeandstore`" 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`;" 
 																	));
 
 		// Took out the Sunday column:	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Sunday` AS `Sunday`" + 
@@ -99,7 +99,7 @@ public class CaseStudyEnvironment {
 																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Friday` AS `Friday`," + 
 																	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Saturday` AS `Saturday`" + 
 																	"    FROM" + 
-																	"        `dw`.`weeklyinspectionsbyemployeeandstore`" 
+																	"        `dw`.`weeklyinspectionsbyemployeeandstore`;" 
 																	));
 		
 	}
