@@ -39,6 +39,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -60,9 +61,10 @@ public class DatabaseGraphController {
 	DatabaseGraphResults schemaTopologyResults;
 	@FXML	private Pane pneFilter, pneQuickGraphs, pneActionQuery;
 	@FXML	private AnchorPane apMain;
-	@FXML	private TextField txtHostName, txtLoginName, txtPassword, txtSchemaName;
+	@FXML	private TextField txtHostName, txtLoginName, txtPassword;
+	@FXML	private ComboBox<String> cbSchema;
 	@FXML	private Button btnLoadSchemaNames, btnLoadSchema, btnProcessSchema, btnApplyFilter, btnAttributesInQueries, btnAttributesNotInQueries;
-	@FXML	private Button btnBrowseForActionQueryFile;
+	@FXML	private Button btnBrowseForActionQueryFile, btnClearSchemaComboBox;
 	//	@FXML	private ListView<String> lvTables, lvAttributes, lvSchemas;
 	@FXML	private TreeView<String> tvSchemas;
 	@FXML	private Label lblSchemaToProcess, lblContentsOfDatabaseHost, lblResults, lblWorking, lblActionQuery;
@@ -70,6 +72,7 @@ public class DatabaseGraphController {
 	@FXML	private CheckBox cbClearDB, cbIncludeSchemaNodes, cbOpenInBrowser, cbDisplayAttributes, cbDisplayTables, cbDisplayQuerys;
 	@FXML	void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {openBrowserWindow();}
 	@FXML	void btnBrowseForActionQueryFile_OnClick(ActionEvent event) {browseForActionQueryFile();}
+	@FXML	void btnClearSchemaComboBox_OnClck(ActionEvent event) {clearSchemaComboBox();}
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("DatabaseGraphController.Initialize() starting...");
@@ -79,6 +82,9 @@ public class DatabaseGraphController {
 			Log.logError("DatabaseGraphController.Initialize(): " + e.getLocalizedMessage());
 		}
 		Log.logProgress("DatabaseGraphController.Initialize() complete");
+	}
+	private void clearSchemaComboBox() {
+		cbSchema.getItems().clear();
 	}
 	private void setTheScene() {
 		txtHostName.setText(Config.getConfig().getMySQLDefaultHostname());
@@ -162,14 +168,16 @@ public class DatabaseGraphController {
 	}
 	@FXML
 	void tvSchemas_OnClicked(MouseEvent event) {
-		processSelectedSchemaInTreeView();
+		if (event.getClickCount() == 2) {
+			processSelectedSchemaInTreeView();
+		}
 	}
 	private void processSelectedSchemaInTreeView(){
 		showProcessSchemaControls(false);
 		showArtifacts(false);
 		// We don't know what was clicked: this could throw an error. If a query was clicked, we're good to go.
 		try {
-			txtSchemaName.setText(/*tvSchemas.getSelectionModel().getSelectedItem().getParent().getValue()	+ "." + */tvSchemas.getSelectionModel().getSelectedItem().getValue());
+			cbSchema.getItems().add(tvSchemas.getSelectionModel().getSelectedItem().getValue());
 			showProcessSchemaControls(true);
 			taResults.setText("");
 		} catch (Exception ex) {
@@ -178,7 +186,8 @@ public class DatabaseGraphController {
 	}
 	private void showProcessSchemaControls(Boolean visible) {
 		btnProcessSchema.setVisible(visible);
-		txtSchemaName.setVisible(visible);
+		cbSchema.setVisible(visible);
+		btnClearSchemaComboBox.setVisible(visible);
 		lblSchemaToProcess.setVisible(visible);
 		cbClearDB.setVisible(visible);
 		cbIncludeSchemaNodes.setVisible(visible);
@@ -207,7 +216,7 @@ public class DatabaseGraphController {
 		showArtifacts(true);
 	}
 	private void processSchema() {
- 		if ( txtSchemaName.getText().trim().length() > 0) {
+ 		if ( cbSchema.getItems().size() > 0) {
 			schemaTopologyResults = new DatabaseGraphResults();
 			DatabaseGraphConfig schemaTopologyConfig = new DatabaseGraphConfig();
 			// Here is some stuff we want to run in another thread so the window has time to update itself.
@@ -222,8 +231,8 @@ public class DatabaseGraphController {
 					schemaTopologyConfig.setIncludeSchemaNodeInGraph(cbIncludeSchemaNodes.isSelected());
 					schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
 					Schemas schemas = new Schemas();
-					schemas.addSchema(new Schema(txtSchemaName.getText()));
-				    schemaTopology = new SchemaGraph(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), schemas, null);
+					for (Object schemaNameObject: cbSchema.getItems()) {schemas.addSchema(new Schema((String)schemaNameObject));}
+				    schemaTopology = new SchemaGraph(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), schemas);
 					try {
 						schemaTopologyResults = schemaTopology.generateGraph(taActionQuery.getText().trim(), taActionQueryFile.getText());
 						if (cbOpenInBrowser.isSelected() ) {
@@ -269,8 +278,8 @@ public class DatabaseGraphController {
 				Log.logError("DatabaseGraphController.ProcessSchema(): " + e.getLocalizedMessage());
 			}
 		} else {
-			(new Alert(Alert.AlertType.ERROR, "Please enter an existing schema name or select one from the list", ButtonType.OK)).showAndWait();
-			txtSchemaName.requestFocus();
+			(new Alert(Alert.AlertType.ERROR, "Please select one or more schemas from the list", ButtonType.OK)).showAndWait();
+			cbSchema.requestFocus();
 		}
 	}
 	/**

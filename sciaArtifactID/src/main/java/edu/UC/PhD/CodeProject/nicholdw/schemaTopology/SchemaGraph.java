@@ -34,7 +34,7 @@ public class SchemaGraph {
 	private DatabaseGraphResults schemaTopologyResults;
 	private String hostName, userName, password;
 //	private String schemaName;
-	private QueryDefinitions queryDefinitions;
+//	private QueryDefinitions queryDefinitions;
 	private Schemas schemas;
 	private DatabaseGraphConfig schemaTopologyConfig;
 	// Keep in lower case - Neo4j is case sensitive but MySQL is not. This will save a lot of debugging
@@ -88,12 +88,12 @@ public class SchemaGraph {
 	 * @param schemaName
 	 * @param queryDefinitions The list of query definitions to be processed, or {null or zero-length} for all queries in the schema.
 	 */
-	public SchemaGraph(DatabaseGraphConfig schemaTopologyConfig, String hostName, String userName, String password, Schemas schemas, QueryDefinitions queryDefinitions) {
+	public SchemaGraph(DatabaseGraphConfig schemaTopologyConfig, String hostName, String userName, String password, Schemas schemas) { /*, QueryDefinitions queryDefinitions) { */
 		this.hostName = hostName;
 		this.userName = userName;
 		this.password = password;
 //		this.schemaName = schemaName;
-		this.queryDefinitions = queryDefinitions;
+//		this.queryDefinitions = queryDefinitions;
 		this.schemaTopologyConfig = schemaTopologyConfig;
 		this.schemaTopologyResults = new DatabaseGraphResults();
 		setSchemas(schemas);
@@ -128,32 +128,26 @@ public class SchemaGraph {
 				for (Table table: tables) {	// Get all the attributes from the tables
 					table.setAttributes(Table.readAttributesFromTableDefinition(table.getTableName(), schema.getSchemaName()));
 				}
-				// If we weren't given any query defs then we will read all of them from the schema and process all of them.
-				if (queryDefinitions == null || queryDefinitions.getQueryDefinitions().size() == 0) {
-					loadQueryDefinitions(schema);
-					if ((actionQuerySQL != null) && (actionQuerySQL.trim().length() > 0)) {
-						// Parse the action query and apply it to the schema topology
+				loadQueryDefinitions(schema);
+				if ((actionQuerySQL != null) && (actionQuerySQL.trim().length() > 0)) {
+					// Parse the action query and apply it to the schema topology
+					SchemaImpact schemaImpact = new SchemaImpact();
+					ActionQueryProcessor.processActionQuery(actionQuerySQL, schemaImpact);
+//					QueryDefinition actionQueryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), "myActionQuery", actionQuerySQL, schema.getSchemaName());
+//					actionQueryDefinition.crunchIt();
+					applyActionQuery(schemaImpact, schema);
+				}
+				if ((actionQueryFile != null) && (actionQueryFile.trim().length() > 0)) {
+					// Parse the action querys in the text file and apply them to the schema topology
+					ActionQuerys actionQuerys = new ActionQuerys();
+					actionQuerys.loadActionQueries(actionQueryFile);
+					for (ActionQuery ac: actionQuerys) {
 						SchemaImpact schemaImpact = new SchemaImpact();
-						ActionQueryProcessor.processActionQuery(actionQuerySQL, schemaImpact);
-	//					QueryDefinition actionQueryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), "myActionQuery", actionQuerySQL, schema.getSchemaName());
-	//					actionQueryDefinition.crunchIt();
+						ActionQueryProcessor.processActionQuery(ac.getSql(), schemaImpact);
 						applyActionQuery(schemaImpact, schema);
 					}
-					if ((actionQueryFile != null) && (actionQueryFile.trim().length() > 0)) {
-						// Parse the action querys in the text file and apply them to the schema topology
-						ActionQuerys actionQuerys = new ActionQuerys();
-						actionQuerys.loadActionQueries(actionQueryFile);
-						for (ActionQuery ac: actionQuerys) {
-							SchemaImpact schemaImpact = new SchemaImpact();
-							ActionQueryProcessor.processActionQuery(ac.getSql(), schemaImpact);
-							applyActionQuery(schemaImpact, schema);
-						}
-					}				
-					addNodesToGraph();
-				} else {
-					Log.logError("SchemaGraph.generateGraph(): subset of queries is not yet supported. Only 'all' queries can be processed");
-					throw new Exception ("SchemaGraph.generateGraph(): subset of queries is not yet supported. Only 'all' queries can be processed");		// TODO implement this.
-				}
+				}				
+				addNodesToGraph();
 			} catch (Exception ex) {
 				Log.logError("SchemaGraph.generateGraph(): " + ex.getLocalizedMessage());
 				status = false;
@@ -170,7 +164,7 @@ public class SchemaGraph {
 		Log.logProgress("SchemaGraph.ApplyActionQueryDefinition()");
 //		SchemaDiff schemaDiff = new SchemaDiff();
 		try {
-			for (QueryDefinition qd: queryDefinitions) {	// All the views in this schema
+			for (QueryDefinition qd: schema.getQueryDefinitions()) {	// All the views in this schema
 				for (QueryAttribute qa : qd.getQueryAttributes()) {	// All the attributes in the view
 					if (schemaImpact.getQueryAttributes().findAttribute(qa)) {
 						// The query attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
@@ -198,7 +192,6 @@ public class SchemaGraph {
 	}
 	private void loadQueryDefinitions(Schema schema) {
 		// Use all the queries in the schema
-		queryDefinitions = new QueryDefinitions();
 		// Populate our collection with all the query definitions in the schema
 		ArrayList<String> queryNames = Schema.readQueryNames(hostName, schema.getSchemaName(), userName, password);
 		QueryDefinition queryDefinition;
@@ -206,7 +199,7 @@ public class SchemaGraph {
 			String sql;
 			sql = QueryDefinition.readSQLFromDatabaseServerQueryDefinition(hostName, userName, password, schema.getSchemaName(), queryName);
 			queryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), queryName, sql, schema.getSchemaName() );
-			queryDefinitions.addQueryDefinition(queryDefinition);
+			schema.getQueryDefinitions().addQueryDefinition(queryDefinition);
 			queryDefinition.crunchIt();
 			schemaTopologyResults.incrementTotalQueries();
 		}
@@ -235,7 +228,7 @@ public class SchemaGraph {
 	               + "   name:" + Utils.wrapInDelimiter(Utils.cleanForGraph(schemaName), "\"") + "})");
 	}
 	private void addQueryNodes(Schema schema) {
-		for (QueryDefinition queryDefinition : queryDefinitions) {
+		for (QueryDefinition queryDefinition : schema.getQueryDefinitions()) {
 			String queryName;
 			queryName = queryDefinition.getQueryName();
 			addQueryNode(schema.getSchemaName(), queryName);
@@ -323,10 +316,15 @@ public class SchemaGraph {
 			schemaTopologyResults.incrementTotalTables();
 			if (schemaTopologyConfig.getIncludeSchemaNodeInGraph() == true) {
 				// Add relationships from the schema to the tables
+				String key1, key2, relationshipKey;
+				key1 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName());
+				key2 = Utils.cleanForGraph(schema.getSchemaName());
+				relationshipKey = key1 + "->" + key2;
 				Neo4jDB.submitNeo4jQuery("MATCH "
-				                       + "(t:" + tableNodeLabel  + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "'}), "
-			                           + " (s:" + schemaNodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "'}) "
-					                   + "CREATE (s)-[:" + schemaToTableLabel +"]->(t)");
+				                       + "(t:" + tableNodeLabel  + "{key:'" + key1 + "'}), "
+			                           + " (s:" + schemaNodeLabel + "{key:'" + key2 + "'}) "
+					                   + "CREATE (s)-[:" + schemaToTableLabel + "{key:\"" + relationshipKey + "\"}]->(t)");
+				
 			}
 		}
 	}
@@ -342,7 +340,7 @@ public class SchemaGraph {
 						                 Utils.cleanForGraph(attribute.getAttributeName()) + 
 				                         ":" + 
 				                         nodeLabel + 
-				                         " { key:" 
+				                         " {key:" 
 						                 + "\"" 
 				                         + Utils.cleanForGraph(schema.getSchemaName())
 				                         + "." 
@@ -361,24 +359,28 @@ public class SchemaGraph {
 				                         + "}"
 				                         + ")");
 				// Add the relationship between the table and the attribute now because we have everything we need.
+				String key1, key2, relationshipKey;
+				key1 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName());
+				key2 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "." + Utils.cleanForGraph(attribute.getAttributeName());
+				relationshipKey = key1 + "->" + key2;
 				Neo4jDB.submitNeo4jQuery("MATCH (t:" + tableNodeLabel     
 						               + "{key:"
 					                   + "\"" 
-						               + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) 
+						               + key1 
 						               + "\"" 
 						               + "}), "
 				                       + " (a:" + nodeLabel 
 				                       + "{key:" 
 						               + "\"" 
-				                       + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName()) + "." + Utils.cleanForGraph(attribute.getAttributeName()) 
+				                       + key2  
 						               + "\"" 
 				                       + "}) "
-						               + "MERGE (t)-[:" + tableToAttributeLabel +"]->(a)");
+						               + "MERGE (t)-[:" + tableToAttributeLabel + " {key:\"" + relationshipKey + "\"}]->(a)");
 			}
 		}
 	}
 	private void addQueryToAttributeRelationships(Schema schema) {
-		for (QueryDefinition queryDefinition : queryDefinitions) {
+		for (QueryDefinition queryDefinition : schema.getQueryDefinitions()) {
 			HashMap<String, QueryAttribute> queryAttributes = queryDefinition.getUniqueQueryAttributes(true);
 			// traverse queryAttributes and add a relation from the query to the attribute
 			for (QueryAttribute queryAttribute: queryAttributes.values()) {
@@ -388,17 +390,21 @@ public class SchemaGraph {
 //				if (queryAttribute.getAffectedByActionQuery() == true) {
 //					nodeLabel = affectedAttributeNodeLabel;
 //				}
+				String key1, key2, relationshipKey;
+				key1 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName());
+				key2 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName());
+				relationshipKey = key1 + "->" + key2;
 				neo4jQuery = "MATCH "
-				           + " (q:" + viewNodeLabel  + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()) + "'}), "
-			               + " (a:" + attributeNodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName()) + "'}) "
+				           + " (q:" + viewNodeLabel  + "{key:'" + key1 + "'}), "
+			               + " (a:" + attributeNodeLabel + "{key:'" + key2 + "'}) "
 					       + " MERGE (q)-[:" + viewToAttributeLabel +"]->(a)";
 				Neo4jDB.submitNeo4jQuery(neo4jQuery);
 				// This is hokey but it should work because we have a uniqueness constraint on the key attribute.
 				// Only one of these two MATCH queries should work because the attribute is either a attributeNodeLabel or a affectedAttributeNodeLabel.
 				neo4jQuery = "MATCH "
-				           + " (q:" + viewNodeLabel  + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName()) + "'}), "
-			               + " (a:" + affectedAttributeNodeLabel + "{key:'" + Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName()) + "'}) "
-					       + " MERGE (q)-[:" + viewToAttributeLabel +"]->(a)";
+				           + " (q:" + viewNodeLabel  + "{key:'" + key1 + "'}), "
+			               + " (a:" + affectedAttributeNodeLabel + "{key:'" + key2 + "'}) "
+					       + " MERGE (q)-[:" + viewToAttributeLabel + " {key:\"" + relationshipKey + "\"}]->(a)";
 				Neo4jDB.submitNeo4jQuery(neo4jQuery);
 				schemaTopologyResults.incrementTotalQueryAttributes();
 			}
