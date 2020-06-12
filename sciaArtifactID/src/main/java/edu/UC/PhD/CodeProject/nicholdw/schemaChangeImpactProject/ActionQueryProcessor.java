@@ -82,7 +82,7 @@ public class ActionQueryProcessor {
 													  			   Config.getConfig().getMySQLDefaultPassword(), 
 													  			   viewToDrop.getSchemaName(), 
 													  			   viewToDrop.getViewName());
-		Log.logProgress("CaseStudyClassRunner.run(): processDropView, view = " + viewToDrop.getSchemaName() + "." + viewToDrop.getViewName());
+		Log.logProgress("ActionQueryProcessor.run(): processDropView, view = " + viewToDrop.getSchemaName() + "." + viewToDrop.getViewName());
 		QueryDefinition qdStart = new QueryDefinition(Config.getConfig().getMySQLDefaultHostname(),
 													  Config.getConfig().getMySQLDefaultLoginName(),
 													  Config.getConfig().getMySQLDefaultPassword(),
@@ -154,7 +154,6 @@ public class ActionQueryProcessor {
 		for (QueryAttribute queryAttribute : qas) {
 			schemaImpact.getQueryAttributes().addAttribute(queryAttribute);
 		}
-		
 	}
 	private static void processQueryTypeDropSchema(SchemaImpact schemaImpact) {
 		Log.logProgress("ActionQueryProcessor.processQueryTypeDropSchema(): Dropping Schema (" + schemaImpact.getQueryDefinition().getSchemaToDrop() + ")");

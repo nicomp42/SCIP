@@ -29,12 +29,12 @@ public class Schema {
 	private static final String qSQLbyQueryName = "SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = '#' AND TABLE_NAME = '@';";
 
 	private String schemaName;
-	private Tables tables;						// Tables in this schema
+	private Tables tables;						// All tables in all the schemas
 	private QueryDefinitions queryDefinitions;	// Queries in this schema
-	private TableAttributes attributes;		// A big jumble of all the attributes in all the tables in the schema. See OperationalSchemaQueries.qAttributesbySchema
+	private TableAttributes tableAttributes;		// A big jumble of all the attributes in all the tables in the schema. See OperationalSchemaQueries.qAttributesbySchema
 	private ForeignKeys foreignKeys;	// A big jumble of all the foreign keys in all the tables in the schema. See OperationalSchemaQueries.qForeignKeysbySchema
 //	private java.sql.Connection connection;
-
+	
 	/**
 	 * Load all the query/view definitions in this schema into our collection
 	 */
@@ -270,7 +270,7 @@ public class Schema {
 					String tableName = resultSet.getString(2);
 					String type = resultSet.getString(3);
 					Boolean isPrimaryKey = resultSet.getString(4).equals("YES") == true? true:false;
-					attributes.addAttribute(new TableAttribute(attributeName, tableName, isPrimaryKey, type, null, null, null, null, 0, (Aliases)null));
+					tableAttributes.addAttribute(new TableAttribute(attributeName, tableName, isPrimaryKey, type, null, null, null, null, 0, (Aliases)null));
 					count++;
 				}
 			} catch (Exception e) {Log.logError("Schema.loadAttributes(): " + e.getLocalizedMessage());}
@@ -326,8 +326,8 @@ public class Schema {
 			}
 */		}		
 	}
-	public TableAttributes getAttributes() {return attributes;}
-	public void setAttributes(TableAttributes attributes) {this.attributes = attributes;}
+	public TableAttributes getTableAttributes() {return tableAttributes;}
+	public void setAttributes(TableAttributes attributes) {this.tableAttributes = attributes;}
 	public ForeignKeys getForeignKeys() {return foreignKeys;}
 	public void setForeignKeys(ForeignKeys foreignKeys) {this.foreignKeys = foreignKeys;}
 

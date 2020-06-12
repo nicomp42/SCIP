@@ -1,0 +1,325 @@
+-- MySQL Workbench Forward Engineering
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema sakila_op1
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema sakila_op1
+
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `sakila_op1` DEFAULT CHARACTER SET utf8 ;
+USE `sakila_op1` ;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`actor`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`actor` (
+`actor_id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+`fname` VARCHAR(45) NOT NULL,
+`lname` VARCHAR(45) NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`actor_id`),
+INDEX `idx_actor_last_name` (`lname` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`address`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`address` (
+`address_id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+`street_address` VARCHAR(50) NOT NULL,
+`city` VARCHAR(50) NOT NULL,
+`country` VARCHAR(25) NOT NULL,
+`postal_code` VARCHAR(10) NULL DEFAULT NULL,
+`phone` VARCHAR(20) NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`address_id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 8
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`category`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`category` (
+`category_id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(25) NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`category_id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 15
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`staff`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`staff` (
+`staff_id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+`first_name` VARCHAR(45) NOT NULL,
+`last_name` VARCHAR(45) NOT NULL,
+`address_id` SMALLINT(5) UNSIGNED NOT NULL,
+`picture` BLOB NULL DEFAULT NULL,
+`email` VARCHAR(50) NULL DEFAULT NULL,
+`store_id` TINYINT(3) UNSIGNED NOT NULL,
+`active` TINYINT(1) NOT NULL DEFAULT '1',
+`username` VARCHAR(16) NOT NULL,
+`password` VARCHAR(40) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL
+DEFAULT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`staff_id`),
+INDEX `idx_fk_store_id` (`store_id` ASC),
+INDEX `idx_fk_address_id` (`address_id` ASC),
+CONSTRAINT `fk_staff_address`
+FOREIGN KEY (`address_id`)
+REFERENCES `sakila_op1`.`address` (`address_id`)
+ON UPDATE CASCADE,
+CONSTRAINT `fk_staff_store`
+FOREIGN KEY (`store_id`)
+REFERENCES `sakila_op1`.`store` (`store_id`)
+ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`store`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`store` (
+`store_id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+
+`manager_staff_id` TINYINT(3) UNSIGNED NOT NULL,
+`address_id` SMALLINT(5) UNSIGNED NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`store_id`),
+UNIQUE INDEX `idx_unique_manager` (`manager_staff_id` ASC),
+INDEX `idx_fk_address_id` (`address_id` ASC),
+CONSTRAINT `fk_store_address`
+FOREIGN KEY (`address_id`)
+REFERENCES `sakila_op1`.`address` (`address_id`)
+ON UPDATE CASCADE,
+CONSTRAINT `fk_store_staff`
+FOREIGN KEY (`manager_staff_id`)
+REFERENCES `sakila_op1`.`staff` (`staff_id`)
+ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`customer`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`customer` (
+`customer_id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+`store_id` TINYINT(3) UNSIGNED NOT NULL,
+`first_name` VARCHAR(45) NOT NULL,
+`last_name` VARCHAR(45) NOT NULL,
+`email` VARCHAR(50) NULL DEFAULT NULL,
+`address_id` SMALLINT(5) UNSIGNED NOT NULL,
+`active` TINYINT(1) NOT NULL DEFAULT '1',
+`create_date` DATETIME NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`customer_id`),
+INDEX `idx_fk_store_id` (`store_id` ASC),
+INDEX `idx_fk_address_id` (`address_id` ASC),
+INDEX `idx_last_name` (`last_name` ASC),
+CONSTRAINT `fk_customer_address`
+FOREIGN KEY (`address_id`)
+REFERENCES `sakila_op1`.`address` (`address_id`)
+ON UPDATE CASCADE,
+CONSTRAINT `fk_customer_store`
+FOREIGN KEY (`store_id`)
+REFERENCES `sakila_op1`.`store` (`store_id`)
+
+ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`language`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`language` (
+`language_id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` CHAR(20) NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`language_id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`film`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`film` (
+`film_id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+`title` VARCHAR(255) NOT NULL,
+`description` TEXT NULL DEFAULT NULL,
+`release_year` YEAR NULL DEFAULT NULL,
+`language_id` TINYINT(3) UNSIGNED NOT NULL,
+`original_language_id` TINYINT(3) UNSIGNED NULL DEFAULT NULL,
+`rental_duration` TINYINT(3) UNSIGNED NOT NULL DEFAULT '3',
+`rental_rate` DECIMAL(4,2) NOT NULL DEFAULT '4.99',
+`length` SMALLINT(5) UNSIGNED NULL DEFAULT NULL,
+`replacement_cost` DECIMAL(5,2) NOT NULL DEFAULT '19.99',
+`rating` ENUM('G','PG','PG-13','R','NC-17') NULL DEFAULT 'G',
+`special_features` SET('Trailers','Commentaries','Deleted Scenes',
+'Behind the Scenes')
+NULL DEFAULT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`film_id`),
+INDEX `idx_title` (`title` ASC),
+INDEX `idx_fk_language_id` (`language_id` ASC),
+INDEX `idx_fk_original_language_id` (`original_language_id` ASC),
+CONSTRAINT `fk_film_language`
+
+FOREIGN KEY (`language_id`)
+REFERENCES `sakila_op1`.`language` (`language_id`)
+ON UPDATE CASCADE,
+CONSTRAINT `fk_film_language_original`
+FOREIGN KEY (`original_language_id`)
+REFERENCES `sakila_op1`.`language` (`language_id`)
+ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 968
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`film_actor`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`film_actor` (
+`actor_id` SMALLINT(5) UNSIGNED NOT NULL,
+`film_id` SMALLINT(5) UNSIGNED NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`actor_id`, `film_id`),
+INDEX `idx_fk_film_id` (`film_id` ASC),
+CONSTRAINT `fk_film_actor_actor`
+FOREIGN KEY (`actor_id`)
+REFERENCES `sakila_op1`.`actor` (`actor_id`)
+ON UPDATE CASCADE,
+CONSTRAINT `fk_film_actor_film`
+FOREIGN KEY (`film_id`)
+REFERENCES `sakila_op1`.`film` (`film_id`)
+ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`film_category`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`film_category` (
+`film_id` SMALLINT(5) UNSIGNED NOT NULL,
+`category_id` TINYINT(3) UNSIGNED NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`film_id`, `category_id`),
+INDEX `fk_film_category_category` (`category_id` ASC),
+CONSTRAINT `fk_film_category_category`
+
+FOREIGN KEY (`category_id`)
+REFERENCES `sakila_op1`.`category` (`category_id`)
+ON UPDATE CASCADE,
+CONSTRAINT `fk_film_category_film`
+FOREIGN KEY (`film_id`)
+REFERENCES `sakila_op1`.`film` (`film_id`)
+ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`inventory`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`inventory` (
+`inventory_id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+`film_id` SMALLINT(5) UNSIGNED NOT NULL,
+`store_id` TINYINT(3) UNSIGNED NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`inventory_id`),
+INDEX `idx_fk_film_id` (`film_id` ASC),
+INDEX `idx_store_id_film_id` (`store_id` ASC, `film_id` ASC),
+CONSTRAINT `fk_inventory_film`
+FOREIGN KEY (`film_id`)
+REFERENCES `sakila_op1`.`film` (`film_id`)
+ON UPDATE CASCADE,
+CONSTRAINT `fk_inventory_store`
+FOREIGN KEY (`store_id`)
+REFERENCES `sakila_op1`.`store` (`store_id`)
+ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 4423
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`rental`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`rental` (
+`rental_id` INT(11) NOT NULL AUTO_INCREMENT,
+`rental_date` DATETIME NOT NULL,
+`inventory_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+`customer_id` SMALLINT(5) UNSIGNED NOT NULL,
+`return_date` DATETIME NULL DEFAULT NULL,
+
+`staff_id` TINYINT(3) UNSIGNED NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`rental_id`),
+UNIQUE INDEX `rental_date` (`rental_date` ASC, `inventory_id` ASC, `customer_id` ASC),
+INDEX `idx_fk_inventory_id` (`inventory_id` ASC),
+INDEX `idx_fk_customer_id` (`customer_id` ASC),
+INDEX `idx_fk_staff_id` (`staff_id` ASC),
+CONSTRAINT `fk_rental_customer`
+FOREIGN KEY (`customer_id`)
+REFERENCES `sakila_op1`.`customer` (`customer_id`)
+ON UPDATE CASCADE,
+CONSTRAINT `fk_rental_inventory`
+FOREIGN KEY (`inventory_id`)
+REFERENCES `sakila_op1`.`inventory` (`inventory_id`)
+ON UPDATE CASCADE,
+CONSTRAINT `fk_rental_staff`
+FOREIGN KEY (`staff_id`)
+REFERENCES `sakila_op1`.`staff` (`staff_id`)
+ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 11257
+DEFAULT CHARACTER SET = utf8;
+-- -----------------------------------------------------
+-- Table `sakila_op1`.`payment`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sakila_op1`.`payment` (
+`payment_id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+`customer_id` SMALLINT(5) UNSIGNED NOT NULL,
+`staff_id` TINYINT(3) UNSIGNED NOT NULL,
+`rental_id` INT(11) NULL DEFAULT NULL,
+`amount` DECIMAL(5,2) NOT NULL,
+`payment_date` DATETIME NOT NULL,
+`last_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (`payment_id`),
+INDEX `idx_fk_staff_id` (`staff_id` ASC),
+INDEX `idx_fk_customer_id` (`customer_id` ASC),
+INDEX `fk_payment_rental` (`rental_id` ASC),
+CONSTRAINT `fk_payment_customer`
+FOREIGN KEY (`customer_id`)
+REFERENCES `sakila_op1`.`customer` (`customer_id`)
+ON UPDATE CASCADE,
+
+CONSTRAINT `fk_payment_rental`
+FOREIGN KEY (`rental_id`)
+REFERENCES `sakila_op1`.`rental` (`rental_id`)
+ON DELETE SET NULL
+ON UPDATE CASCADE,
+CONSTRAINT `fk_payment_staff`
+FOREIGN KEY (`staff_id`)
+REFERENCES `sakila_op1`.`staff` (`staff_id`)
+ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 54
+DEFAULT CHARACTER SET = utf8;
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

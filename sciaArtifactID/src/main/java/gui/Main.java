@@ -513,7 +513,7 @@ public class Main extends Application {
 		Schema schema = new Schema(schemaName);
 		schema.loadAttributes(hostName, loginName, password);			// Load all the attributes for the schema
 		TableAttributes attributes;
-		attributes = schema.getAttributes();	// Get the list of loaded attributes.
+		attributes = schema.getTableAttributes();	// Get the list of loaded attributes.
 		for (TableAttribute attribute : attributes) {
 			lv.getItems().add(attribute.getTableName() + "." + attribute.getAttributeName());
 		}

@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import javafx.concurrent.Task;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Schemas;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
@@ -218,9 +219,11 @@ public class DatabaseGraphController {
 					Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 					Neo4jDB.getDriver();
 					if (cbClearDB.isSelected()) {Neo4jDB.clearDB();}
-					schemaTopologyConfig.setIncludeSchemaInGraph(cbIncludeSchemaNodes.isSelected());
+					schemaTopologyConfig.setIncludeSchemaNodeInGraph(cbIncludeSchemaNodes.isSelected());
 					schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
-				    schemaTopology = new SchemaGraph(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), txtSchemaName.getText(), null);
+					Schemas schemas = new Schemas();
+					schemas.addSchema(new Schema(txtSchemaName.getText()));
+				    schemaTopology = new SchemaGraph(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), schemas, null);
 					try {
 						schemaTopologyResults = schemaTopology.generateGraph(taActionQuery.getText().trim(), taActionQueryFile.getText());
 						if (cbOpenInBrowser.isSelected() ) {
@@ -330,7 +333,7 @@ public class DatabaseGraphController {
 			or = " or ";
 		}
 		if (cbDisplayQuerys.isSelected()) {
-			cypherStatement += (where + or + "n:" + SchemaGraph.queryNodeLabel);
+			cypherStatement += (where + or + "n:" + SchemaGraph.viewNodeLabel);
 			where = "";
 			or = " or ";
 		}
@@ -350,18 +353,19 @@ public class DatabaseGraphController {
 		}
 	}
 	/**
-	 * Draw the graph with only the attributes that are referenced by at least one query
+	 * Filter the graph with only the attributes that are referenced by at least one query.
+	 * The graph should be
 	 */
 	private void GenerateGraphAttributesInQueries() {
-		String cypherStatement = "MATCH (n:Attribute) WHERE size((n)-[]-()) > 1 RETURN n UNION MATCH (n:Table) RETURN n union MATCH (n:Query) RETURN n;";
+		String cypherStatement = "MATCH (n:attribute) WHERE size((n)-[]-()) > 1 RETURN n UNION MATCH (n:table) RETURN n union MATCH (n:view) RETURN n;";
 		Browser browser = Browser.prepareNewBrowser();
 		browser.initAndLoad(cypherStatement);
 	}
 	/**
-	 * Draw the graph with only the attributes that are not referenced by at least one query
+	 * Filter the graph with only the attributes that are not referenced by at least one view
 	 */
 	private void GenerateGraphAttributesNotInQueries() {
-		String cypherStatement = "MATCH (n:Attribute) WHERE size((n)-[]-()) < 2 RETURN n UNION MATCH (n:Table) RETURN n union MATCH (n:Query) RETURN n;";
+		String cypherStatement = "MATCH (n:attribute) WHERE size((n)-[]-()) < 2 RETURN n UNION MATCH (n:table) RETURN n union MATCH (n:view) RETURN n;";
 		Browser browser = Browser.prepareNewBrowser();
 		browser.initAndLoad(cypherStatement);
 	}

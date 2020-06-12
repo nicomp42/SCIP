@@ -64,6 +64,23 @@ public class TableAttributes implements Iterable<TableAttribute> {
 	public int size() {return tableAttributes.size();}
 
 	/**
+	 * Search the list of attributes by attribute name and table name
+	 * @param attributeName The attribute name to search for
+	 * @param tableName the table name to search for
+	 * @return The Attribute object corresponding to tableName.attributeName
+	 */
+	public TableAttribute findAttributeByTableAndName( String tableName, String attributeName) {
+		TableAttribute tmp = null;
+		for (TableAttribute attribute: tableAttributes) {
+			if ((Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName)) &&
+				(Config.getConfig().compareTableNames(attribute.getTableName(), tableName))) {
+				tmp = attribute;
+				break;
+			}
+		}
+		return tmp;
+	}
+	/**
 	 * Search the list of attributes by attribute name
 	 * @param attributeName The attribute name to search for
 	 * @return The Attribute object corresponding to attributeName
