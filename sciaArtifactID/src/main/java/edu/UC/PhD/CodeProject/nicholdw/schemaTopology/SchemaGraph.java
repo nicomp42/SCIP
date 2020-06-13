@@ -319,12 +319,11 @@ public class SchemaGraph {
 				String key1, key2, relationshipKey;
 				key1 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName());
 				key2 = Utils.cleanForGraph(schema.getSchemaName());
-				relationshipKey = key1 + "->" + key2;
+				relationshipKey = key2 + "->" + key1;
 				Neo4jDB.submitNeo4jQuery("MATCH "
 				                       + "(t:" + tableNodeLabel  + "{key:'" + key1 + "'}), "
 			                           + " (s:" + schemaNodeLabel + "{key:'" + key2 + "'}) "
 					                   + "CREATE (s)-[:" + schemaToTableLabel + "{key:\"" + relationshipKey + "\"}]->(t)");
-				
 			}
 		}
 	}

@@ -409,7 +409,8 @@ public class ETLProcess implements java.io.Serializable {
 //				for (QueryAttribute aqa: aqd.getQueryAttributes()) {
 					// find the same query in the original QueryDefintion and change the GraphNodeAnnotation
 //					Log.logProgress("ETLProcessController.applyActionQueries: changing GraphNodeAttribute for " + aqa.toString());
-					if (aqd.getQueryAttributes().contains(qa, true)) {
+//					if (aqd.getQueryAttributes().contains(qa, true)) {
+					if (aqd.getQueryAttributes().contains(qa, false)) {
 						qa.setGraphNodeAnnotation(graphNodeAnnotation);
 						attributeAffected = true;
 					}

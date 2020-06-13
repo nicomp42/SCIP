@@ -78,7 +78,7 @@
                            <Button id="btnLoadSchemaNames" fx:id="btnLoadSchemaNames" layoutX="189.0" layoutY="117.0" mnemonicParsing="false" onAction="#btnLoadSchemaNames_OnClick" text="Load from Host" textFill="OLIVE" />
        	                <TreeView id="tvSchemas" fx:id="tvSchemas" layoutX="557.0" layoutY="74.0" onMouseClicked="#tvSchemas_OnClicked" prefHeight="634.0" prefWidth="228.0" />
                            <Label fx:id="lblSchemaToProcess" layoutX="14.0" layoutY="154.0" text="Schemas to process" />
-       	                <Label fx:id="lblContentsOfDatabaseHost" alignment="TOP_LEFT" layoutX="557.0" layoutY="11.0" prefHeight="57.0" prefWidth="173.0" text="Contents of database host (double-click to add)" />
+       	                <Label fx:id="lblContentsOfDatabaseHost" alignment="TOP_LEFT" layoutX="557.0" layoutY="11.0" prefHeight="25.0" prefWidth="173.0" text="Schemas in database host" />
                            <Button id="btnProcessSchema" fx:id="btnProcessSchema" layoutX="188.0" layoutY="379.0" mnemonicParsing="false" onAction="#btnProcessSchema_OnClick" text="Go" textFill="TEAL" />
          <Label fx:id="lblResults" layoutX="14.0" layoutY="411.0" text="Results" />
          <CheckBox fx:id="cbClearDB" contentDisplay="RIGHT" layoutX="191.0" layoutY="183.0" mnemonicParsing="false" text="Clear graph before generating" />
@@ -104,6 +104,7 @@
          </Label>
                         <ComboBox fx:id="cbSchema" layoutX="189.0" layoutY="149.0" prefWidth="150.0" />
                         <Button fx:id="btnClearSchemaComboBox" layoutX="341.0" layoutY="149.0" mnemonicParsing="false" onAction="#btnClearSchemaComboBox_OnClck" text="Clear" />
+                        <Label fx:id="lblDoubleClickPrompt" layoutX="557.0" layoutY="32.0" text="(double-click to select)" />
          </children>
               </AnchorPane>
             </content>

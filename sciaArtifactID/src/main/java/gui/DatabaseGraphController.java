@@ -67,7 +67,7 @@ public class DatabaseGraphController {
 	@FXML	private Button btnBrowseForActionQueryFile, btnClearSchemaComboBox;
 	//	@FXML	private ListView<String> lvTables, lvAttributes, lvSchemas;
 	@FXML	private TreeView<String> tvSchemas;
-	@FXML	private Label lblSchemaToProcess, lblContentsOfDatabaseHost, lblResults, lblWorking, lblActionQuery;
+	@FXML	private Label lblSchemaToProcess, lblContentsOfDatabaseHost, lblDoubleClickPrompt, lblResults, lblWorking, lblActionQuery;
 	@FXML	private TextArea taResults, taActionQuery, taActionQueryFile;
 	@FXML	private CheckBox cbClearDB, cbIncludeSchemaNodes, cbOpenInBrowser, cbDisplayAttributes, cbDisplayTables, cbDisplayQuerys;
 	@FXML	void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {openBrowserWindow();}
@@ -133,6 +133,7 @@ public class DatabaseGraphController {
 	private void showContentsOfDatabaseHostControls(Boolean visible) {
 		tvSchemas.setVisible(visible);
 		lblContentsOfDatabaseHost.setVisible(visible);
+		lblDoubleClickPrompt.setVisible(visible);
 	}
 	@FXML void btnLoadSchema_OnClick(ActionEvent event) {
 
@@ -177,7 +178,9 @@ public class DatabaseGraphController {
 		showArtifacts(false);
 		// We don't know what was clicked: this could throw an error. If a query was clicked, we're good to go.
 		try {
-			cbSchema.getItems().add(tvSchemas.getSelectionModel().getSelectedItem().getValue());
+			String newSchema = tvSchemas.getSelectionModel().getSelectedItem().getValue();
+			cbSchema.getItems().add(newSchema);
+			cbSchema.setValue(newSchema);
 			showProcessSchemaControls(true);
 			taResults.setText("");
 		} catch (Exception ex) {
