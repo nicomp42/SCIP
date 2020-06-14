@@ -18,6 +18,7 @@ public class TableOutputStep {
 	private String xmlFilePath;
 	private String etlStage;
 	private String schemaName;
+	private String connectionName;
 	
 	/**
 	 * Constructor
@@ -32,7 +33,7 @@ public class TableOutputStep {
 	 * @param etlStage
 	 * @param schemaName
 	 */
-	public TableOutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilePath, String xmlFilename, String etlStage, String schemaName) {
+	public TableOutputStep(String transName, String stepName, String stepType, String dbName, String tableName, List<String> attributes, String xmlFilePath, String xmlFilename, String etlStage, String schemaName, String connectionName) {
 		super();
 		this.transName = transName;
 		this.stepName = stepName;
@@ -44,6 +45,7 @@ public class TableOutputStep {
 		this.xmlFilePath = xmlFilePath;
 		this.etlStage = etlStage;
 		this.schemaName = schemaName;
+		this.connectionName = connectionName;
 	}
 	public String getTransName() {
 		return transName;
@@ -111,5 +113,11 @@ public class TableOutputStep {
 	}
 	public void setSchemaName(String schemaName) {
 		this.schemaName = schemaName;
+	}
+	public String getConnectionName() {
+		return connectionName;
+	}
+	public void setConnectionName(String connectionName) {
+		this.connectionName = connectionName;
 	}
 }

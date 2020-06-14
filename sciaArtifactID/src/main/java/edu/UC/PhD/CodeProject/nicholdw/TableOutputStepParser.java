@@ -24,12 +24,23 @@ public class TableOutputStepParser {
 		String dbname = getDatabaseName(doc, xpath, stepname);
 		String tableName = getTableName(doc, xpath, stepname);
 		String schemaName = getSchemaName(doc, xpath, stepname);
+		String connectionName = getConnectionName(doc, xpath, stepname);
 
 		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, stepname);
 
-		stepObject = new TableOutputStep(transname, stepname, "TableOutput", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage, schemaName);
+		stepObject = new TableOutputStep(transname, stepname, "TableOutput", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage, schemaName, connectionName);
 
 		return stepObject;
+	}
+	private static String getConnectionName(Document doc, XPath xpath, String stepname) {
+		String connectionName = null;
+		try {
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/connection/text()");
+			connectionName = (String) expr.evaluate(doc, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return connectionName;
 	}
 
 	private static String getDatabaseName(Document doc, XPath xpath,

@@ -18,30 +18,34 @@ public class InsertUpdateStepParser {
 
 	public static TableOutputStep parseXMLForInsertUpdateStep(Document doc, XPath xpath, String step, String xmlFilePath, String fileName, String etlStage) {
 		TableOutputStep stepObject = null;
-		String transname = getTransformationName(doc, xpath);
-		String dbname = getDatabaseName(doc, xpath, step);
+		String transName = getTransformationName(doc, xpath);
+		String dbName = getDatabaseName(doc, xpath, step);
 		String tableName = getTableName(doc, xpath, step);
 		String schemaName = getSchemaName(doc, xpath, step);
-		List<String> fieldnames = getDatabaseFieldNames(doc, xpath, step);
-		stepObject = new TableOutputStep(transname, step, "Insert/Update", dbname, tableName, fieldnames, xmlFilePath, fileName, etlStage, schemaName);
+		String connectionName = getConnectionName(doc, xpath, step);
+		List<String> fieldNames = getDatabaseFieldNames(doc, xpath, step);
+		stepObject = new TableOutputStep(transName, step, "Insert/Update", dbName, tableName, fieldNames, xmlFilePath, fileName, etlStage, schemaName, connectionName);
 		return stepObject;
 	}
 	private static String getDatabaseName(Document doc, XPath xpath, String stepname) {
-		String connectionname = null;
-		String dbname = null;
-
+		String dbName = null;
 		try {
-
-			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/connection/text()");
-			connectionname = (String) expr.evaluate(doc, XPathConstants.STRING);
-
-			XPathExpression dbexpr = xpath.compile("/transformation/connection[name='" + connectionname + "']/database/text()");
-			dbname = (String) dbexpr.evaluate(doc, XPathConstants.STRING);
-
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/lookup/schema/text()");
+			dbName = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		return dbname;
+		return dbName;
+	}
+	private static String getConnectionName(Document doc, XPath xpath, String stepname) {
+		String connectionName = null;
+		try {
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/connection/text()");
+			connectionName = (String) expr.evaluate(doc, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return connectionName;
 	}
 	private static List<String> getDatabaseFieldNames(Document doc,	XPath xpath, String stepname) {
 		List<String> list = new ArrayList<String>();
@@ -80,7 +84,7 @@ public class InsertUpdateStepParser {
 	private static String getSchemaName(Document doc, XPath xpath, String stepname) {
 		String schemaName = null;
 		try {
-			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/lookup/table/text()");
+			XPathExpression expr = xpath.compile("/transformation/step[name=\'"	+ stepname + "\']/lookup/schema/text()");
 			schemaName = (String) expr.evaluate(doc, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();

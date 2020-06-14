@@ -562,6 +562,43 @@ public class XMLParser {
 	}
 	
 	/**
+	 * Read fields for an ETLStep that is an InsertUpdate Step 
+	 * @param xpath
+	 * @param doc
+	 * @param stepName
+	 * @return
+	 */
+	public ETLFields getETLFieldsForInsertUpdateStep(XPath xpath, Document doc, String stepName){
+		Log.logProgress("XMLParser.getFields(" + xpath + ")");
+		String cleanStepName=stepName.replace("'", "");
+		ETLFields etlFields = new ETLFields();
+		try {
+			String myPath = "/transformation/step[name='" + cleanStepName + "']/lookup/value";
+			XPathExpression expr = xpath.compile(myPath);
+
+			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Node node = nodes.item(i);			
+				NodeList children = node.getChildNodes();
+				String streamName = "", columnName = "";
+				streamName  = ""; columnName = "";
+				for (int k = 0; k < children.getLength(); k++) {
+					if (children.item(k).getNodeName().equals("#text")) {continue;}
+					if (children.item(k).getNodeName().equals("name") ) {
+						columnName = children.item(k).getTextContent();
+					}
+					if (children.item(k).getNodeName().equals("rename")) {
+						streamName = children.item(k).getTextContent();
+					}
+				}
+				etlFields.addETLField(new ETLField(columnName, streamName));						
+			}
+		}catch (Exception e) {
+			Log.logError("XMLParser.getETLFields(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+		return etlFields;
+	}
+	/**
 	 * Read fields for an ETLStep that is an OutputStep 
 	 * @param xpath
 	 * @param doc

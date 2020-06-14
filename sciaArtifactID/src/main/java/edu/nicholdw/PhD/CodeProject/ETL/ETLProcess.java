@@ -136,7 +136,35 @@ public class ETLProcess implements java.io.Serializable {
 			Log.logProgress("ETLProcess.processTableOutputStepsFields(): ETL Step Name = " + etlStep.getStepName() + ", ETL Step Type = " + etlStep.getStepType());
 			if (etlStep.getStepType().equals("TableOutput")) {
 				processTableOutputStepFields(transformationFileDirectory, etlStep);
+			} else if (etlStep.getStepType().equals("InsertUpdate")) {
+				processTableInsertUpdateStepFields(transformationFileDirectory, etlStep);
 			}
+		}
+	}
+	/**
+	 * Look up the fields for a Table Output Step and add them to the etlStep
+	 * @param etlStep The ETLStep to receive the fields
+	 */
+	public void processTableInsertUpdateStepFields(String xmlFilePath, ETLStep etlStep) {
+		// Look up the connection 
+		ETLConnection etlConnection = etlConnections.getConnection(etlStep.getConnection());
+		// Read the fields into the etlStep object
+		XMLParser myXMLParser = new XMLParser();
+		//myXMLParser.getStepNames(xmlFilePath, stepNames);
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(xmlFilePath + etlStep.getFileName());
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			ETLFields etlFields;
+			etlFields = myXMLParser.getETLFieldsForInsertUpdateStep(xpath, doc, etlStep.getStepName());
+			etlStep.addETLFields(etlFields);
+		} catch (Exception ex) {		
+			Log.logError("ETLProcess.processTableOutputStepFields(): " + ex.getLocalizedMessage());
 		}
 	}
 	/**
@@ -280,7 +308,7 @@ public class ETLProcess implements java.io.Serializable {
 					               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
 					               				 + " MERGE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 					}
-				} else if (etlStep.getStepType().equals("TableOutput")) {
+				} else if (etlStep.getStepType().equals("TableOutput") || etlStep.getStepType().equals("InsertUpdate")) {
 					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
 					                         " { StepName: " + "'" + etlStep.getStepName() + "'" + 
 					                         ",	table:'" + etlStep.getTableName()	+ "'" +
