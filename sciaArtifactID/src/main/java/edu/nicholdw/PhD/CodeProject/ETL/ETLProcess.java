@@ -252,6 +252,7 @@ public class ETLProcess implements java.io.Serializable {
 	}
 	public static void createGraph(SchemaChangeImpactProject scip) {
 		try {
+			SchemaGraph.addAllConstraints();
 			ETLProcess etlProcess = scip.getEtlProcess();
 			SchemaGraph.addAllConstraints();	// Force keys to be unique as the graph is drawn
 			for (ETLStep etlStep : etlProcess.getETLSteps()) {
@@ -262,7 +263,7 @@ public class ETLProcess implements java.io.Serializable {
 					                         " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
 					                         ", procedure:'" + etlStep.getProcedure()		+ "'" + 
 					                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
-					                         ",	key:'" + etlStep.getStepName()	+ "'" +
+					                         ",	key:'" + etlStep.getKey()	+ "'" +
 					                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 					                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 					                         "})");
@@ -271,7 +272,7 @@ public class ETLProcess implements java.io.Serializable {
 						Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
 						                         " { StepName: " + "'" + etlStep.getStepName() + "'" + 
 						                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
-						                         ",	key:'" + etlStep.getStepName()	+ "'" +
+						                         ",	key:'" + etlStep.getKey()	+ "'" +
 						                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 						                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 						                         "})");
@@ -305,7 +306,7 @@ public class ETLProcess implements java.io.Serializable {
 	//					                         + ",	etlStage:'" + etlStep.getEtlStage()	+ "'" 
 						                         + "})");
 						Neo4jDB.submitNeo4jQuery("MATCH (t:" + nodeLabel  + " {key:'" + key + "'}), "
-					               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getStepName() + "'}) "
+					               				 +     "(a:" + SchemaGraph.etlStepNodeLabel    + "{key:'" + etlStep.getKey() + "'}) "
 					               				 + " MERGE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 					}
 				} else if (etlStep.getStepType().equals("TableOutput") || etlStep.getStepType().equals("InsertUpdate")) {
@@ -370,31 +371,30 @@ public class ETLProcess implements java.io.Serializable {
 				} else {
 					Log.logError("ETLParser.applyActionQueries(): No logic to process ETL step type " + etlStep.getStepType());
 				}			
-					/* Draw the hops as connections between steps */
-					for (ETLHop etlHop: etlProcess.getEtlHops()) {
-	//					MATCH (t:ETLStep), (f:ETLStep) 
-	//					WHERE t.StepName='WriteToTemporaryTable' AND t.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr' 
-	//					AND  f.StepName='ReadFromSales.TransactionTable' AND f.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr'  
-	//					CREATE (t)-[:Hop]->(f)			
-						Neo4jDB.submitNeo4jQuery("MATCH "
-								               + "(t:" +  SchemaGraph.etlStepNodeLabel +")"
-			                                   + "," 
-								               + "(f:" +  SchemaGraph.etlStepNodeLabel +")"
-								               + " WHERE "
-								               + "t.StepName='" + etlHop.getToStepName() + "'"
-								               + " AND "
-								               + "f.TransformationFileName='" + etlHop.getFileName() + "'"
-								               + " AND "
-								               + "f.StepName='" + etlHop.getFromStepName() + "'"
-								               + " AND "
-								               + "t.TransformationFileName='" + etlHop.getFileName() + "'"				               
-				  				               + " MERGE (f)-[:" + SchemaGraph.etlHopLabel +"]->(t)");
-					}
-	/*			if (applyActionQuerysFlag) {
-					Log.logProgress("ETLProcessController.createGraph(): applying action queries");
-					applyActionQuerys(scip);
-				} */
 			}
+			/* Draw the hops as connections between steps */
+			for (ETLHop etlHop: etlProcess.getEtlHops()) {
+//					MATCH (t:ETLStep), (f:ETLStep) 
+//					WHERE t.StepName='WriteToTemporaryTable' AND t.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr' 
+//					AND  f.StepName='ReadFromSales.TransactionTable' AND f.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr'  
+//					CREATE (t)-[:Hop]->(f)			
+				Neo4jDB.submitNeo4jQuery("MATCH "
+						               + "(t:" +  SchemaGraph.etlStepNodeLabel +")"
+	                                   + "," 
+						               + "(f:" +  SchemaGraph.etlStepNodeLabel +")"
+						               + " WHERE "
+						               + "t.StepName='" + etlHop.getToStepName() + "'"
+						               + " AND "
+						               + "f.TransformationFileName='" + etlHop.getFileName() + "'"
+						               + " AND "
+						               + "f.StepName='" + etlHop.getFromStepName() + "'"
+						               + " AND "
+						               + "t.TransformationFileName='" + etlHop.getFileName() + "'"
+		  				               + " CREATE (f)-[:" + SchemaGraph.etlHopLabel +"{key:\"" + etlHop.getKey() +"\"}]->(t)");
+//		                   + "CREATE (s)-[:" + schemaToTableLabel + "{key:\"" + relationshipKey + "\"}]->(t)");
+
+			}
+			
 		} catch (Exception ex) {
 			Log.logError("ETLProcess.createGraph(): " + ex.getLocalizedMessage());
 		}

@@ -24,6 +24,9 @@ public class ETLHop implements java.io.Serializable {
 		setEnabled(enabled);
 		setFileName(fileName);
 	}
+	public String getKey() {
+		return fromStepName + "->" + toStepName;
+	}
 	public ETLHop(ETLHop etlHop) {
 		this.setFromStepName(etlHop.getFromStepName());
 		this.setToStepName(etlHop.getToStepName());

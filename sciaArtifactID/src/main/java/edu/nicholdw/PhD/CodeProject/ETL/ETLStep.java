@@ -156,7 +156,7 @@ public class ETLStep implements java.io.Serializable {
 	public void setSchemaName(String schemaName) {
 		this.schemaName = schemaName;
 	}
-	public String getKey() {return getStepName();}
+	public String getKey() {return getFileName() + "." + getStepName();}
 
 	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
 		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);
