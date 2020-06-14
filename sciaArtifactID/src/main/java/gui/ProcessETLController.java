@@ -382,8 +382,6 @@ public class ProcessETLController {
 		        	// Do not write to any controls in here. An exception will be thrown. It's ugly.
 		    		try {
 		    			try {
-	//	    				XMLParser myXMLParser = new XMLParser();
-	//	    				myXMLParser.setXMLFilePathPrefix(scip.getEtlProcess().getTransformationFileDirectory());
 		    				// Step through the selected files in the TableView control
 							for (ETLTransformationFile etlTransformationFile: scip.getEtlProcess().getEtlTransformationFiles()) {
 								Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Checking " + etlTransformationFile.toString());
@@ -439,18 +437,8 @@ public class ProcessETLController {
 						doc = builder.parse(scip.getEtlProcess().getTransformationFileDirectory() + stepName.getFileName());
 						XPathFactory xpathFactory = XPathFactory.newInstance();
 						xpath = xpathFactory.newXPath();
-						// Get # lines that were already in the TextArea and use are the line number for each new line we add.
-	/*					int counter = 0;
-						try {
-							counter = txaStepNamesResults.getText().split("\n").length - 1 ;
-						} catch (Exception ex) {
-							Log.logError("ProcessETLController.processETLTransformationFiles().task.setOnSucceeded: " + ex.getLocalizedMessage());
-						}
-						counter++; */
 						String tmp, stepType, sql, table, connectionName, schemaName;
 						tmp = "";
-	//					tmp = String.valueOf(counter) + ": ";
-	//					tmp += stepName.toString();
 						// Not all the types of steps will have all these artifacts.
 						stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
 						sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());

@@ -23,7 +23,7 @@
             		<content>
               			<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               				<children>
-                        <Pane fx:id="pneActionQueryToApply" layoutX="18.0" layoutY="639.0" prefHeight="104.0" prefWidth="625.0">
+                        <Pane fx:id="pneActionQueryToApply" layoutX="14.0" layoutY="452.0" prefHeight="104.0" prefWidth="625.0">
                            <children>
                               <TextArea fx:id="txaActionQueryToApply" layoutX="154.0" layoutY="6.0" prefHeight="92.0" prefWidth="467.0" wrapText="true" />
                               <Label layoutY="21.0" prefHeight="51.0" prefWidth="148.0" text="All schema artifacts must be fully qualified" wrapText="true" />
@@ -41,10 +41,11 @@
 	            						</Label>
 									</children>
 								</Pane>
-								<Pane fx:id="pneFiles" layoutX="10.0" layoutY="210.0" prefHeight="200.0" prefWidth="780.0">
+								<Pane fx:id="pneFiles" layoutX="10.0" layoutY="105.0" prefHeight="281.0" prefWidth="780.0">
                            <children>
-                              <Label layoutX="80.0" layoutY="-47.0" prefHeight="64.0" prefWidth="171.0" text="Double-click stage to toggle" />
-                              <TableView fx:id="tvETLTransformationFiles" onMouseClicked="#tvETLTransformationFiles_OnClick" prefHeight="200.0" prefWidth="780.0">
+                              <Label layoutX="74.0" layoutY="3.0" prefHeight="23.0" prefWidth="171.0" text="Double-click to toggle stage" />
+                              <Button fx:id="btnClearTransformationTable" layoutX="474.0" layoutY="2.0" mnemonicParsing="false" onAction="#btnClearTransformationTable_OnClick" text="Clear Table" />
+                              <TableView fx:id="tvETLTransformationFiles" layoutY="30.0" onMouseClicked="#tvETLTransformationFiles_OnClick" prefHeight="247.0" prefWidth="780.0">
                                 <columns>
                                   <TableColumn editable="false" prefWidth="75.0" text="File Name">
 	   								<cellValueFactory>
@@ -60,15 +61,14 @@
                               </TableView>
                            </children>
                               </Pane>
-								<Pane fx:id="pneCreateGraph" layoutX="10.0" layoutY="423.0" prefHeight="200.0" prefWidth="780.0">
+								<Pane fx:id="pneCreateGraph" layoutX="10.0" layoutY="556.0" prefHeight="135.0" prefWidth="780.0" visible="false">
                                  <children>
-									<Button fx:id="btnCreateGraph" layoutX="8.0" layoutY="68.0" mnemonicParsing="false" onAction="#btnCreateGraph_OnClick" text="Create Graph" />
-									<CheckBox fx:id="cbClearDB" layoutX="8.0" layoutY="104.0" mnemonicParsing="false" text="Clear Graph Before Creation" />
-                              <Button fx:id="btnProcessETLTransformationFiles" layoutX="8.0" layoutY="14.0" mnemonicParsing="false" onAction="#btnProcessETLTransformationFiles_OnClick" text="Process ETL Transformation Files" />
-                              <CheckBox fx:id="cbOpenInBrowser" layoutX="8.0" layoutY="132.0" mnemonicParsing="false" text="Open Graph after Creation" />
+									<Button fx:id="btnCreateGraph" layoutX="8.0" layoutY="100.0" mnemonicParsing="false" onAction="#btnCreateGraph_OnClick" text="Create Graph" />
+									<CheckBox fx:id="cbClearDB" layoutX="9.0" layoutY="47.0" mnemonicParsing="false" text="Clear Graph Before Creation" />
+                              <CheckBox fx:id="cbOpenInBrowser" layoutX="9.0" layoutY="75.0" mnemonicParsing="false" text="Open Graph after Creation" />
                                  </children>
                               </Pane>
-                        <Button fx:id="btnClearTransformationTable" layoutX="715.0" layoutY="177.0" mnemonicParsing="false" onAction="#btnClearTransformationTable_OnClick" text="Clear Table" />
+                        <Button fx:id="btnProcessETLTransformationFiles" layoutX="10.0" layoutY="420.0" mnemonicParsing="false" onAction="#btnProcessETLTransformationFiles_OnClick" text="Process ETL Transformation Files" />
 							</children>
 						</AnchorPane>
 					</content>

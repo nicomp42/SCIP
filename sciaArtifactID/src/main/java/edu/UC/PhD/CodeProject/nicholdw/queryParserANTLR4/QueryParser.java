@@ -38,7 +38,11 @@ public class QueryParser {
 	 * @throws IOException
 	 */
 	public void parseQuery(QueryDefinition queryDefinition) throws IOException {
-		String sql = queryDefinition.getSql();
+		String sql = queryDefinition.getSql().trim();
+		if (sql.endsWith("?")) {
+			Log.logQueryParseProgress("QueryParser.parseQuery(): replacing trailing question mark");
+			sql = sql.substring(0, sql.length() -2 ) + "'dummy'";
+		}
 		// Get our lexxer
 //		This works for ANTLR Runtime 4.7, but not for 4.3.5
 //		InputStream stream = new ByteArrayInputStream(sql.getBytes(StandardCharsets.UTF_8));
