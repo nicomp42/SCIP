@@ -267,7 +267,7 @@ public class ETLProcess implements java.io.Serializable {
 					                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 					                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 					                         "})");
-	
+
 				} else if (etlStep.getStepType().equals("MergeJoin")) {
 						Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
 						                         " { StepName: " + "'" + etlStep.getStepName() + "'" + 
@@ -276,7 +276,7 @@ public class ETLProcess implements java.io.Serializable {
 						                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
 						                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
 						                         "})");
-	
+
 				} else if (etlStep.getStepType().equals("TableInput")) {
 					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
 					                         " { StepName: " + "'" + etlStep.getStepName() 		+ "'" + 
@@ -369,19 +369,32 @@ public class ETLProcess implements java.io.Serializable {
 					               				 + " MERGE (a)-[:" + SchemaGraph.etlStepToQueryAttributeLbel +"]->(t)");
 					}
 				} else {
-					Log.logError("ETLParser.applyActionQueries(): No logic to process ETL step type " + etlStep.getStepType());
+					// All the other steps
+					Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
+	                         " { StepName: " + "'" + etlStep.getStepName() + "'" + 
+	                         ",	stepType:'" + etlStep.getStepType()	+ "'" +
+	                         ",	key:'" + etlStep.getKey()	+ "'" +
+	                         ",	etlStage:'" + etlStep.getEtlStage()	+ "'" +
+	                         ", TransformationFileName:'" + etlStep.getFileName() + "'" +
+	                         "})");
+
+//					Log.logError("ETLParser.applyActionQueries(): No logic to process ETL step type " + etlStep.getStepType());
 				}			
 			}
+/*			for (ETLHop etlHop: etlProcess.getEtlHops()) {
+				Neo4jDB.submitNeo4jQuery("CREATE (A:"
+	                    + SchemaGraph.etlStepNodeLabel
+	                    + " { key: " + "'" + etlHop.getKey() + "'" 
+	                    + ", StepName:"  + "'" + etlHop.getStepName()) + "'"
+	                    + ", TransformationFileName:"  + "'" + etlHop.getFileName()) + "'"
+	                    + "})");
+			} */
 			/* Draw the hops as connections between steps */
 			for (ETLHop etlHop: etlProcess.getEtlHops()) {
-//					MATCH (t:ETLStep), (f:ETLStep) 
-//					WHERE t.StepName='WriteToTemporaryTable' AND t.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr' 
-//					AND  f.StepName='ReadFromSales.TransactionTable' AND f.TransformationFileName='SmallTestOfTableInputAndTableOutput.ktr'  
-//					CREATE (t)-[:Hop]->(f)			
 				Neo4jDB.submitNeo4jQuery("MATCH "
-						               + "(t:" +  SchemaGraph.etlStepNodeLabel +")"
+						               + "(t:" + SchemaGraph.etlStepNodeLabel +")"
 	                                   + "," 
-						               + "(f:" +  SchemaGraph.etlStepNodeLabel +")"
+						               + "(f:" + SchemaGraph.etlStepNodeLabel +")"
 						               + " WHERE "
 						               + "t.StepName='" + etlHop.getToStepName() + "'"
 						               + " AND "
@@ -392,9 +405,7 @@ public class ETLProcess implements java.io.Serializable {
 						               + "t.TransformationFileName='" + etlHop.getFileName() + "'"
 		  				               + " CREATE (f)-[:" + SchemaGraph.etlHopLabel +"{key:\"" + etlHop.getKey() +"\"}]->(t)");
 //		                   + "CREATE (s)-[:" + schemaToTableLabel + "{key:\"" + relationshipKey + "\"}]->(t)");
-
 			}
-			
 		} catch (Exception ex) {
 			Log.logError("ETLProcess.createGraph(): " + ex.getLocalizedMessage());
 		}
