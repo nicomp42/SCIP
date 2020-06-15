@@ -482,6 +482,15 @@ public class Neo4jDB {
 		}
 		return status;
 	}
+	public static boolean renameNodeLabel(String key, String oldLabel, String newLabel) {
+		boolean success = true;
+		Neo4jDB.submitNeo4jQuery("MATCH (n:" + 
+		                         "\"" + oldLabel + "\"" + 
+				                 "{key:" + "\"" + key + "\"" + "})" +		                         
+		                         " REMOVE n:" + "\"" + oldLabel + "\"" + 
+		                         " SET n:" + "\"" + newLabel + "\"");
+		return success;
+	}
 	public static boolean submitNeo4jQuery(String query) {
 		boolean status = true;		// Hope for the best
 		try {

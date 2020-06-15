@@ -8,6 +8,7 @@ package edu.UC.PhD.CodeProject.nicholdw;
 
 import java.util.ArrayList;
 
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation.GRAPH_NODE_ANNOTATION;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 /***
@@ -39,6 +40,7 @@ public class TableAttribute {
 	protected String tableName;		// This is redundant if the attribute is contained in the Attributes collection contained in a table object.
 	private Aliases aliases;		// A table attribute won't have aliases but a query attribute will
 	private Boolean affectedByActionQuery;		// Defaults to false until an action query is applied to the query where this attribute lives
+	private GraphNodeAnnotation graphNodeAnnotation;
 	public boolean getAutoIncrement() {return autoIncrement;}
 	public void setAutoIncrement(boolean autoIncrement) {this.autoIncrement = autoIncrement;}
 	public int getLength() {return length;}
@@ -68,7 +70,7 @@ public class TableAttribute {
 	 */
 	private void shotgunTheDefaults() {
 		this.nullable = "no";
-		this.key = "no";
+		this.setKey("no");
 		this.theDefault = "";
 		this.extra = "";
 		this.length = 11;		// This number comes from the length that mySQL uses for an attribute that is of type int.
@@ -79,6 +81,7 @@ public class TableAttribute {
 		setAutoIncrement(false);
 		aliases = new Aliases();
 		setAffectedByActionQuery(false);
+		setDefaultGraphNodeAnnotation();
 	}
 	/***
 	 * Constructor
@@ -94,7 +97,7 @@ public class TableAttribute {
 		this.attributeName = name;
 		this.type = type;
 		this.nullable = nullable;
-		this.key = key;
+		this.setKey(key);
 		this.theDefault = theDefault;
 		this.extra = extra;
 		this.length = length;
@@ -105,8 +108,13 @@ public class TableAttribute {
 		this.tableName = tableName;
 		this.aliases = Aliases.clone(aliases);
 		setAffectedByActionQuery(false);
+		setDefaultGraphNodeAnnotation();
 	}
-	
+	private void setDefaultGraphNodeAnnotation() {
+		GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
+		graphNodeAnnotation.setGraphNodeAnnotation(GRAPH_NODE_ANNOTATION.None);
+		this.setGraphNodeAnnotation(graphNodeAnnotation);		
+	}
 	public boolean isTypeUnknown() {return type.equals(typeUnknown) ? true:false;}
 	public String getAttributeName() {return attributeName;}
 	public String getType() {return type;}
@@ -204,4 +212,19 @@ public class TableAttribute {
 	public String toString() {
 		return tableName + "." + attributeName;
 	}
+	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
+		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);
+	}
+	/***
+	 * Get a copy of the GraphNodeAnnotation for the current object
+	 * @return A copy of the GraphNodeAnnotation for the current object
+	 */
+	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+
 }

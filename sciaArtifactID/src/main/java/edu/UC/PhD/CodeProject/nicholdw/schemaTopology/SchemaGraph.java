@@ -10,6 +10,8 @@ import edu.UC.PhD.CodeProject.nicholdw.ActionQuery;
 import edu.UC.PhD.CodeProject.nicholdw.ActionQuerys;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation.GRAPH_NODE_ANNOTATION;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
 import edu.UC.PhD.CodeProject.nicholdw.Schemas;
@@ -148,6 +150,7 @@ public class SchemaGraph {
 					}
 				}				
 				addNodesToGraph();
+				
 			} catch (Exception ex) {
 				Log.logError("SchemaGraph.generateGraph(): " + ex.getLocalizedMessage());
 				status = false;
@@ -175,11 +178,15 @@ public class SchemaGraph {
 					}
 				}
 			}
+			// Create a GraphNodeAnnotation object that can be copied into any attributes that have suffered a change
+			GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
+			graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 			for (Table table: schema.getTables()) {
 				for (TableAttribute tableAttribute : table.getTableAttributes()) 
 				if (schemaImpact.getTableAttributes().findAttributeByTableAndName(tableAttribute.getTableName(), tableAttribute.getAttributeName()) != null) {
 					// The table attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
 					tableAttribute.setAffectedByActionQuery(true);
+					tableAttribute.setGraphNodeAnnotation(graphNodeAnnotation);
 //					table.setAffectedByActionQuery(tableAttribute, true);
 //					schema.getTables().setAffectedByActionQuery(tableAttribute, true);
 					schemaTopologyResults.incrementTotalAffectedAttributes();
@@ -333,19 +340,22 @@ public class SchemaGraph {
 			for (TableAttribute attribute: table.getTableAttributes()) {
 				schemaTopologyResults.incrementTotalAttributes();
 				String nodeLabel;
-				nodeLabel = attributeNodeLabel;
-				if (attribute.getAffectedByActionQuery() == true) {nodeLabel = affectedAttributeNodeLabel;}
+				String key;
+				key = Utils.cleanForGraph(schema.getSchemaName())
+		                + "." 
+		                + Utils.cleanForGraph(table.getTableName())
+		                + "." 
+		                + Utils.cleanForGraph(attribute.getAttributeName());
+		        attribute.setKey(key);
+				nodeLabel = SchemaGraph.computeNodeLabel(attribute.getGraphNodeAnnotation());						
+				//if (attribute.getAffectedByActionQuery() == true) {nodeLabel = affectedAttributeNodeLabel;}
 				Neo4jDB.submitNeo4jQuery("CREATE (" + 
 						                 Utils.cleanForGraph(attribute.getAttributeName()) + 
 				                         ":" + 
 				                         nodeLabel + 
 				                         " {key:" 
 						                 + "\"" 
-				                         + Utils.cleanForGraph(schema.getSchemaName())
-				                         + "." 
-				                         + Utils.cleanForGraph(table.getTableName())
-				                         + "." 
-				                         + Utils.cleanForGraph(attribute.getAttributeName())
+				                         + key
 						                 + "\"" 
 				                         + ", name:" 
 						                 + "\"" 
@@ -425,4 +435,17 @@ public class SchemaGraph {
 	public void setSchemas(Schemas schemas) {
 		this.schemas = schemas;
 	}
+	public static String computeNodeLabel(GraphNodeAnnotation graphNodeAnnotation) {
+		String nodeLabel;
+		nodeLabel = SchemaGraph.attributeNodeLabel;
+		if (Config.getConfig().isAdjustNodeLabelAsNodeIsAdded()) {
+			if (graphNodeAnnotation.getGraphNodeAnnotation() == GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed) {
+				nodeLabel = SchemaGraph.affectedAttributeNodeLabel;
+			} else {
+				nodeLabel = SchemaGraph.attributeNodeLabel;
+			}
+		}
+		return nodeLabel;
+	}
+	
 }

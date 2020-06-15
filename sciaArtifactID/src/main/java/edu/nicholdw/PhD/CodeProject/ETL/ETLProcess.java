@@ -11,6 +11,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
@@ -297,7 +298,7 @@ public class ETLProcess implements java.io.Serializable {
 						if (applyActionQuerys(scip, qa)) {
 							ETLProcess.traverseFromAttribute(etlProcess, etlStep, qa);
 						}
-						String nodeLabel; nodeLabel = computeNodeLabel(qa.getGraphNodeAnnotation());
+						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(qa.getGraphNodeAnnotation());
 						Neo4jDB.submitNeo4jQuery("CREATE (A:"
 						                         + nodeLabel
 						                         + " { key: " + "'" + key + "'" 
@@ -324,7 +325,7 @@ public class ETLProcess implements java.io.Serializable {
 						key = Utils.cleanForGraph(etlStep.getSchemaName()) 
 							  + "." + Utils.cleanForGraph(etlStep.getTableName()) 
 							  + "." + Utils.cleanForGraph(etlField.getColumnName());
-						String nodeLabel; nodeLabel = computeNodeLabel(etlField.getGraphNodeAnnotation());
+						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(etlField.getGraphNodeAnnotation());
 	//					key = Utils.cleanForGraph(etlStep.getStepName()) + "." + Utils.cleanForGraph(etlField.getStreamName())	+ "." + Utils.cleanForGraph(etlField.getColumnName());
 						Neo4jDB.submitNeo4jQuery("CREATE (A:" + nodeLabel + 
 		                                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
@@ -356,7 +357,7 @@ public class ETLProcess implements java.io.Serializable {
 						if (applyActionQuerys(scip, qa)) {
 							ETLProcess.traverseFromAttribute(etlProcess, etlStep, qa);
 						}
-						String nodeLabel; nodeLabel = computeNodeLabel(qa.getGraphNodeAnnotation());						
+						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(qa.getGraphNodeAnnotation());						
 						Neo4jDB.submitNeo4jQuery("CREATE (A:"
 						                         + nodeLabel		/* SchemaGraph.attributeNodeLabel */
 						                         + " { key: " + "'" + key + "'" 
@@ -418,15 +419,6 @@ public class ETLProcess implements java.io.Serializable {
 			annotationInfo = "";
 		}
 		return annotationInfo;
-	}
-	private static String computeNodeLabel(GraphNodeAnnotation graphNodeAnnotation) {
-		String nodeLabel;
-		if (graphNodeAnnotation.getGraphNodeAnnotation() == GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed) {
-			nodeLabel = SchemaGraph.affectedAttributeNodeLabel;
-		} else {
-			nodeLabel = SchemaGraph.attributeNodeLabel;
-		}
-		return nodeLabel;
 	}
 	/***
 	 * 

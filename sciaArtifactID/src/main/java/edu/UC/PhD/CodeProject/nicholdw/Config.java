@@ -68,11 +68,13 @@ public class Config implements Serializable {
 	private Config() {
 		try {
 			setDatabaseEngine(DatabaseEngineFactory.createDatabaseEngine(DATABASE_ENGINE_TYPE.MySQL));	// MySQL, etc.
+			adjustNodeLabelAsNodeIsAdded = false;
 		} catch (Exception ex) {
 			System.out.println("Config.Config(): Unable to create database engine.");
 			Log.logError("Config.Config(): Unable to create database engine.");
 		}
 	}
+	private boolean adjustNodeLabelAsNodeIsAdded;	// We probably won't ever set this to true. 
 	private DatabaseEngine databaseEngine;
 	private final String version = "0.06";
 	private final int mySQLDefaultPort = 3306;
@@ -558,6 +560,12 @@ public class Config implements Serializable {
 	}
 	public void setCompensateForWeakParser(Boolean compensateForWeakParser) {
 		this.compensateForWeakParser = compensateForWeakParser;
+	}
+	public boolean isAdjustNodeLabelAsNodeIsAdded() {
+		return adjustNodeLabelAsNodeIsAdded;
+	}
+	public void setAdjustNodeLabelAsNodeIsAdded(boolean adjustNodeLabelAsNodeIsAdded) {
+		this.adjustNodeLabelAsNodeIsAdded = adjustNodeLabelAsNodeIsAdded;
 	}
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.

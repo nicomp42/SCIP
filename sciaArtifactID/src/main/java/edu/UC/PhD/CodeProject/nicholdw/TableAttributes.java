@@ -6,6 +6,10 @@ package edu.UC.PhD.CodeProject.nicholdw;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation.GRAPH_NODE_ANNOTATION;
+import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
+
 public class TableAttributes implements Iterable<TableAttribute> {
 
 	private ArrayList<TableAttribute> tableAttributes;
@@ -107,5 +111,14 @@ public class TableAttributes implements Iterable<TableAttribute> {
 			comma = ", ";
 		}
 		return result;
+	}
+	public int applyNodeChangeLabels() {
+		int count = 0;
+		for (TableAttribute tableAttribute: tableAttributes) {
+			if (tableAttribute.getGraphNodeAnnotation().getGraphNodeAnnotation() == GRAPH_NODE_ANNOTATION.Changed) {
+				Neo4jDB.renameNodeLabel(tableAttribute.getKey(), SchemaGraph.attributeNodeLabel, SchemaGraph.affectedAttributeNodeLabel);
+			}
+		}
+		return count;
 	}
 }
