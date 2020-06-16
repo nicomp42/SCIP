@@ -19,7 +19,7 @@ public class Table {
 
 	protected String tableName;
 	private Indexes indexList;
-	private TableAttributes attributes;
+	private TableAttributes tableAttributes;
 	protected String schemaName;
 	private String comment;	// mySQL-specific. A comment attached to the table
 	private final String engine = "InnoDB";
@@ -87,7 +87,7 @@ public class Table {
 	 */
 	public TableAttribute findAttribute(String attributeName) {
 		TableAttribute attributeFound = null;
-		for(TableAttribute attribute : attributes) {
+		for(TableAttribute attribute : tableAttributes) {
 			if (Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName) == true) {
 				attributeFound = attribute;
 				break;
@@ -99,7 +99,7 @@ public class Table {
 		String script = "CREATE TABLE " + tableName + " (";
 		String comma = "";
 		String primaryKeyClause = "";
-		for (TableAttribute a : attributes) {
+		for (TableAttribute a : tableAttributes) {
 			script += comma;
 			script += " " + Utils.QuoteMeBack(a.getAttributeName());
 			script += " ";
@@ -149,7 +149,7 @@ public class Table {
 		setTableName(tableName);
 		indexList = new Indexes();
 		this.schemaName = schemaName;
-		attributes = new TableAttributes();
+		tableAttributes = new TableAttributes();
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
 	}
@@ -164,7 +164,7 @@ public class Table {
 		setTableName(tableName);
 		this.indexList = indexList;
 		this.schemaName = schemaName;
-		this.attributes = attributeList;
+		this.tableAttributes = attributeList;
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
 	}
@@ -178,7 +178,7 @@ public class Table {
 		setTableName(tableName);
 		this.schemaName = schemaName;
 		this.indexList = indexList;
-		attributes = new TableAttributes();
+		tableAttributes = new TableAttributes();
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
 	}
@@ -191,13 +191,13 @@ public class Table {
 	public Table(String tableName, String schemaName, TableAttributes attributeList) {
 		setTableName(tableName);
 		this.schemaName = schemaName;
-		this.attributes = attributeList;
+		this.tableAttributes = attributeList;
 		indexList = new Indexes();
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
 	}
-	public TableAttributes getTableAttributes() {return attributes;}
-	public void setAttributes(TableAttributes attributes) {this.attributes = attributes;}
+	public TableAttributes getTableAttributes() {return tableAttributes;}
+	public void setAttributes(TableAttributes attributes) {this.tableAttributes = attributes;}
 	public Indexes getIndexList() {return indexList;}
 	public String getTableName() {return tableName;}
 	/**
@@ -334,7 +334,7 @@ public class Table {
 	public void addSurrogateKey() {
 		TableAttribute a = new TableAttribute(getTableName() + "ID", this.tableName, true, "int", "no", "yes", "", "", 1, (Aliases)null, schemaName );
 		a.setAutoIncrement(true);
-		attributes.addAttribute(a);
+		tableAttributes.addAttribute(a);
 		setAlreadyHasSurrogateKey(true);
 	}
 	public String getSchemaName() {return schemaName;}
@@ -347,7 +347,7 @@ public class Table {
 	public String getAttributeDataType(String attributeName) {
 		String attributeDataType = "";
 		try {
-			for (TableAttribute attribute: attributes) {
+			for (TableAttribute attribute: tableAttributes) {
 				if ((Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName) == true)) { 
 					attributeDataType = attribute.getType();
 					break;

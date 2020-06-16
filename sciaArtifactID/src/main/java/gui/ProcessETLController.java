@@ -6,7 +6,6 @@
 
 package gui;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -34,24 +33,18 @@ import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
-import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnection;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnections;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLHops;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLJob;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLJobs;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFile;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFiles;
 import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -70,7 +63,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.TableView;
@@ -117,22 +109,20 @@ public class ProcessETLController {
 			actionQueryText = actionQueryText.trim();
 			try {
 				// Let's find out what this query is going to do
-				QueryDefinition qd = new QueryDefinition("", "", "", null, "", actionQueryText, "");
-				QueryParser qp = new QueryParser();
-				qd.setSql(actionQueryText);
-				qd.crunchIt();
-				txaAffectOfActionQuery.appendText("SQL: " + qd.getSql() + System.getProperty("line.separator"));
-				txaAffectOfActionQuery.appendText("Query Type: " + qd.getQueryType().toString() + System.getProperty("line.separator"));
-				txaAffectOfActionQuery.appendText("Tables:" + System.getProperty("line.separator"));
-				for (QueryTable qt: qd.getQueryTables()) {
-					txaAffectOfActionQuery.appendText(qt.toString() + System.getProperty("line.separator"));
+				// Try to put the action query into the scip object
+				QueryDefinition qd = scip.addActionQuery(actionQueryText);
+				if (qd != null) {
+					txaAffectOfActionQuery.appendText("SQL: " + qd.getSql() + System.getProperty("line.separator"));
+					txaAffectOfActionQuery.appendText("Query Type: " + qd.getQueryType().toString() + System.getProperty("line.separator"));
+					txaAffectOfActionQuery.appendText("Tables:" + System.getProperty("line.separator"));
+					for (QueryTable qt: qd.getQueryTables()) {
+						txaAffectOfActionQuery.appendText(qt.toString() + System.getProperty("line.separator"));
+					}
+					txaAffectOfActionQuery.appendText("Attributes:" +  System.getProperty("line.separator"));
+					for (QueryAttribute qa : qd.getQueryAttributes()) {
+						txaAffectOfActionQuery.appendText(qa.toString() + System.getProperty("line.separator"));
+					}
 				}
-				txaAffectOfActionQuery.appendText("Attributes:" +  System.getProperty("line.separator"));
-				for (QueryAttribute qa : qd.getQueryAttributes()) {
-					txaAffectOfActionQuery.appendText(qa.toString() + System.getProperty("line.separator"));
-				}
-				// Put the action query into the scip object
-				scip.GetActionQueryDefinitions().addActionQueryDefinition(qd);
 				//ETLProcess.applyActionQuerys(scip);
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.btnApplyActionQuery_OnClick(): ", ex);
@@ -443,7 +433,8 @@ public class ProcessETLController {
 						// Not all the types of steps will have all these artifacts.
 						stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
 						sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());
-						table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "table");
+						table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "lookup/table");
+						if (table == "") {table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "table");}
 						connectionName = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "connection");
 						// We will add schemaName later after we've read all the connection objects from the XML
 						String procedure;

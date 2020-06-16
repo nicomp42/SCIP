@@ -18,6 +18,7 @@ import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.ActionQueryDefinitions;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 
@@ -59,6 +60,26 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	public SchemaChangeImpactProject() {
 		init();
 		try {setProjectName(defaultProjectName);} catch (Exception ex){}		// OK to eat this exception.
+	}
+	/***
+	 * Try to add an action query to the collection.
+	 * The action query is not applied to the schemas, it's just parsed and stored. 
+	 * @param actionQuerySQL The SQL  of the action query
+	 * @return The QueryDefinition object representing the action query SQL, or null
+	 */
+	public QueryDefinition addActionQuery(String actionQuerySQL) {
+		QueryDefinition qd = null;
+		try {
+			qd = new QueryDefinition("", "", "", null, "", actionQuerySQL, "");
+//			QueryParser qp = new QueryParser();
+			qd.setSql(actionQuerySQL);
+			qd.crunchIt();
+			actionQueryDefinitions.addActionQueryDefinition(qd);
+		} catch (Exception ex) {
+			Log.logError("SchemaChangeImpactProject.addActionQuery()" + ex.getLocalizedMessage() + " SQL = " + actionQuerySQL);
+			qd = null;	
+		}
+		return qd;
 	}
 	public ActionQueryDefinitions GetActionQueryDefinitions() {
 		return actionQueryDefinitions;
