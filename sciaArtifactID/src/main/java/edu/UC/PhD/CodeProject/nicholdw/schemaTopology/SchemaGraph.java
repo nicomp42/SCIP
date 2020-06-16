@@ -55,6 +55,7 @@ public class SchemaGraph {
 	public  static final String etlStepNodeLabel = "etl_step";
 	public  static final String etlStepToQueryAttributeLbel = "etl_step_to_query_attribute";
 	public  static final String etlFieldToETLStepLabel = "etl_field_to_etl_step";
+	public	static final String tableAttributeNodePropertyAffectedBySQL = "impacted";
 //	public  static final String etlDBProcNodeLabel = "DBProc";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
 	public	static final String etlHopLabel = "hop";
 //	public	static final String etlMergeJoinLabel = "MergeJoin";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
@@ -381,10 +382,13 @@ public class SchemaGraph {
 				                       + " (a:" + nodeLabel 
 				                       + "{key:" 
 						               + "\"" 
-				                       + key2  
-						               + "\"" 
+				                       + key2
+						               + "\""
 				                       + "}) "
 						               + "MERGE (t)-[:" + tableToAttributeLabel + " {key:\"" + relationshipKey + "\"}]->(a)");
+				if (attribute.getGraphNodeAnnotation().getGraphNodeAnnotation() == GRAPH_NODE_ANNOTATION.Changed) {
+					Neo4jDB.setNodeProperty(tableNodeLabel, attribute.getKey(), tableAttributeNodePropertyAffectedBySQL, "changed");
+				}
 			}
 		}
 	}

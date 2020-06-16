@@ -620,4 +620,28 @@ public class Neo4jDB {
 		} finally {}
 		return status;
 	}
+	public static Boolean setNodeProperty(String label, String key, String property, String propertyValue) {
+		Boolean status = true;
+		String cypher = "MERGE (n:attribute" + 
+						"{" +
+						"key: " +
+						Utils.quoteMeSingle(key) +
+						"}) " + 
+						"SET n." +
+						property +
+						"=" + 
+						Utils.quoteMeSingle(propertyValue) ; 
+
+		try {
+			Neo4jDB.ExecActionQuery(cypher);
+			status = true;
+		} catch (Exception ex) {
+			Log.logError("Neo4jDB.setNodeProperty(): " + ex.getLocalizedMessage());
+			status = false;
+		} finally {}
+		return status;
+	}
 }
+
+	
+	
