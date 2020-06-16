@@ -184,7 +184,7 @@ public class SchemaGraph {
 			graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 			for (Table table: schema.getTables()) {
 				for (TableAttribute tableAttribute : table.getTableAttributes()) 
-				if (schemaImpact.getTableAttributes().findAttributeByTableAndName(tableAttribute.getTableName(), tableAttribute.getAttributeName()) != null) {
+				if (schemaImpact.getTableAttributes().findAttributeByTableAndName(tableAttribute.getContainerName(), tableAttribute.getAttributeName()) != null) {
 					// The table attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
 					tableAttribute.setAffectedByActionQuery(true);
 					tableAttribute.setGraphNodeAnnotation(graphNodeAnnotation);
@@ -364,7 +364,7 @@ public class SchemaGraph {
 						                 + "\"" 
 				                         + ", table:"
 						                 + "\"" 
-				                         + Utils.cleanForGraph(attribute.getTableName())
+				                         + Utils.cleanForGraph(attribute.getContainerName())
 						                 + "\"" 
 				                         + "}"
 				                         + ")");
@@ -405,7 +405,7 @@ public class SchemaGraph {
 //				}
 				String key1, key2, relationshipKey;
 				key1 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryDefinition.getQueryName());
-				key2 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getTableName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName());
+				key2 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(queryAttribute.getContainerName()) + "." + Utils.cleanForGraph(queryAttribute.getAttributeName());
 				relationshipKey = key1 + "->" + key2;
 				neo4jQuery = "MATCH "
 				           + " (q:" + viewNodeLabel  + "{key:'" + key1 + "'}), "

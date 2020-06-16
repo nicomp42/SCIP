@@ -120,7 +120,7 @@ public class GeneralLogReader {
                                      ", " + 
                                      Utils.quoteMeSingle(schemaName) + 
                                      ", " + 
-                                     Utils.quoteMeSingle(qa.getTableName()) + 
+                                     Utils.quoteMeSingle(qa.getContainerName()) + 
                                      ", " + 
                                      Utils.quoteMeSingle(qa.aliasNameListToString()) + 
                                      ", " + projectID + ")";

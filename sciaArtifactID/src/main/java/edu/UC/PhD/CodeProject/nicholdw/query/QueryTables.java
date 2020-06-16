@@ -36,20 +36,20 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 		 * @param value true if affected by action query is true for this attribute
 		 */
 		public void setAffectedByActionQuery(QueryAttribute queryAttribute, Boolean value) {
-			Log.logProgress("QueryTables.setAffectedByActionQuery(): looking for " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName());
-			QueryTable queryTable = lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getTableName());
+			Log.logProgress("QueryTables.setAffectedByActionQuery(): looking for " + queryAttribute.getSchemaName() + "." + queryAttribute.getContainerName() + "." + queryAttribute.getAttributeName());
+			QueryTable queryTable = lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getContainerName());
 			if (queryTable != null) {
 				// Find the attribute in the table
 				for (TableAttribute qa : queryTable.getTableAttributes()) {
 					if (Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) && 
-						Config.getConfig().compareTableNames(queryTable.getTableName(),   queryAttribute.getTableName()) &&
+						Config.getConfig().compareTableNames(queryTable.getTableName(),   queryAttribute.getContainerName()) &&
 						Config.getConfig().compareAttributeNames(qa.getAttributeName(),   queryAttribute.getAttributeName())) {
 						qa.setAffectedByActionQuery(value);
 						break;
 					}
 				}
 			} else {
-				Log.logError("QueryTables.setAffectedByActionQuery(): can't find table " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName());
+				Log.logError("QueryTables.setAffectedByActionQuery(): can't find table " + queryAttribute.getSchemaName() + "." + queryAttribute.getContainerName());
 			}
 		}
 		
@@ -135,7 +135,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 					// Check the schema name first or skip it if the attribute has no schema name
 					if (Utils.isBlank(queryAttribute.getSchemaName()) || (Config.getConfig().compareSchemaNames(queryTable.getSchemaName(), queryAttribute.getSchemaName()) == true)) {
 						// Check the table name for a match or skip if it the attribute has no table name
-						if (Utils.isBlank(queryAttribute.getTableName()) || (Config.getConfig().compareTableNames(queryTable.getTableName(), queryAttribute.getTableName()) == true)) {
+						if (Utils.isBlank(queryAttribute.getContainerName()) || (Config.getConfig().compareTableNames(queryTable.getTableName(), queryAttribute.getContainerName()) == true)) {
 							if (queryTable.findAttribute(queryAttribute.getAttributeName()) != null) {
 								Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): found the attribute in table " + queryTable.toString());
 								queryTableResult = queryTable;
@@ -148,7 +148,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 						if (foundTable == false) {
 							// No match in the table names? Perhaps the table name in the queryAttribute is an alias
 							for (AliasNameClassOLD aliasNameClass : queryTable.getAliasNames()) {
-								if (Config.getConfig().compareAliasNames(aliasNameClass.getAliasName(), queryAttribute.getTableName()) == true) {
+								if (Config.getConfig().compareAliasNames(aliasNameClass.getAliasName(), queryAttribute.getContainerName()) == true) {
 									if (queryTable.findAttribute(queryAttribute.getAttributeName()) != null) {
 										Log.logProgress("QueryTables.findQueryOrTableContainingAttribute(): found the attribute in table using alias " + queryTable.toString());
 										queryTableResult = queryTable;

@@ -270,7 +270,7 @@ public class Schema {
 					String tableName = resultSet.getString(2);
 					String type = resultSet.getString(3);
 					Boolean isPrimaryKey = resultSet.getString(4).equals("YES") == true? true:false;
-					tableAttributes.addAttribute(new TableAttribute(attributeName, tableName, isPrimaryKey, type, null, null, null, null, 0, (Aliases)null));
+					tableAttributes.addAttribute(new TableAttribute(attributeName, tableName, isPrimaryKey, type, null, null, null, null, 0, (Aliases)null, schemaName));
 					count++;
 				}
 			} catch (Exception e) {Log.logError("Schema.loadAttributes(): " + e.getLocalizedMessage());}

@@ -56,13 +56,13 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 		 * @param value true if affected by action query is true for this attribute
 		 */
 		public void setAffectedByActionQuery(QueryAttribute queryAttribute, Boolean value) {
-			Log.logProgress("Tables.setAffectedByActionQuery(): looking for " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName());
+			Log.logProgress("Tables.setAffectedByActionQuery(): looking for " + queryAttribute.getSchemaName() + "." + queryAttribute.getContainerName() + "." + queryAttribute.getAttributeName());
 			Boolean found = false;
 			for (Entry<String, Table> entry: tableHashMap.entrySet()) {
 				// Find the attribute in the table
 				for (TableAttribute qa : entry.getValue().getTableAttributes()) {
 					if (Config.getConfig().compareSchemaNames(entry.getValue().getSchemaName(), queryAttribute.getSchemaName()) && 
-						Config.getConfig().compareTableNames(entry.getValue().getTableName(),   queryAttribute.getTableName())) {
+						Config.getConfig().compareTableNames(entry.getValue().getTableName(),   queryAttribute.getContainerName())) {
 						TableAttribute attribute;
 						attribute = entry.getValue().findAttribute(queryAttribute.getAttributeName());
 						if (attribute != null) {
@@ -74,7 +74,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 				}
 			} 
 			if (!found) {
-				Log.logError("QueryTables.setAffectedByActionQuery(): can't find table " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName());
+				Log.logError("QueryTables.setAffectedByActionQuery(): can't find table " + queryAttribute.getSchemaName() + "." + queryAttribute.getContainerName());
 			}
 		}		
 		

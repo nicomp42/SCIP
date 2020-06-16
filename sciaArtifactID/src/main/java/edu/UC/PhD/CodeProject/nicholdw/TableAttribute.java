@@ -16,7 +16,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
  * @author nicomp
  *
  */
-public class TableAttribute {
+public class TableAttribute implements Attributable, java.io.Serializable  {
 
 	/**
 	 * An attribute that is nullable according to the table definition may not have any null values in the table.
@@ -33,6 +33,7 @@ public class TableAttribute {
 	private String key;
 	private String theDefault;
 	private String extra;
+	private String schemaName;
 	private ArrayList<ForeignKey> foreignKeyRefs;
 	private enumNullableCheck nullableCheck;
 	private int length;
@@ -82,6 +83,7 @@ public class TableAttribute {
 		aliases = new Aliases();
 		setAffectedByActionQuery(false);
 		setDefaultGraphNodeAnnotation();
+		this.schemaName = "";
 	}
 	/***
 	 * Constructor
@@ -93,7 +95,7 @@ public class TableAttribute {
 	 * @param theDefault default
 	 * @param extra extra
 	 */
-	public TableAttribute(String name, String tableName, Boolean isPrimaryKey, String type, String nullable, String key, String theDefault, String extra, int length, Aliases aliases ) {
+	public TableAttribute(String name, String tableName, Boolean isPrimaryKey, String type, String nullable, String key, String theDefault, String extra, int length, Aliases aliases, String schemaName ) {
 		this.attributeName = name;
 		this.type = type;
 		this.nullable = nullable;
@@ -109,6 +111,7 @@ public class TableAttribute {
 		this.aliases = Aliases.clone(aliases);
 		setAffectedByActionQuery(false);
 		setDefaultGraphNodeAnnotation();
+		this.schemaName = schemaName;
 	}
 	private void setDefaultGraphNodeAnnotation() {
 		GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
@@ -197,15 +200,17 @@ public class TableAttribute {
 	}
 	public boolean isPrimaryKey() {return isPrimaryKey;}
 	public void setPrimaryKey(boolean isPrimaryKey) {this.isPrimaryKey = isPrimaryKey;}
-	public String getTableName() {
+	public String getContainerName() {
 		return tableName;
 	}
-	public void setTableName(String tableName) {
+	public void setContainerName(String tableName) {
 		this.tableName = tableName;
 	}
+	@Override
 	public Boolean getAffectedByActionQuery() {
 		return affectedByActionQuery;
 	}
+	@Override
 	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
 		this.affectedByActionQuery = affectedByActionQuery;
 	}
@@ -226,5 +231,18 @@ public class TableAttribute {
 	public void setKey(String key) {
 		this.key = key;
 	}
+	@Override
+	public String getSchemaName() {
+		return schemaName;
+	}
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
+	@Override
+	public void setAttributeName(String attributeName) {
+		this.attributeName = attributeName;
+		
+	}
+
 
 }

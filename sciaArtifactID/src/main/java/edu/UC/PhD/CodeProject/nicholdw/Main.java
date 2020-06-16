@@ -61,12 +61,12 @@ public class Main {
 
 	public static void testTableScripting() {
 		Table t = new Table("tTestTable", "");
-		t.getTableAttributes().addAttribute(new TableAttribute("testTableID"            , "", false, "int"    , "no" , "yes", "yes", "auto_increment", 11, (Aliases)null));
-		t.getTableAttributes().addAttribute(new TableAttribute("testTable"              , "", false,  "int"    , "no" , "yes", "no" , "", 11, (Aliases)null));
-		TableAttribute indexableAttribute = new TableAttribute("testTableString"        , "", false,  "varchar", "no" , "yes", "no" , "", 50, (Aliases)null);
+		t.getTableAttributes().addAttribute(new TableAttribute("testTableID"            , "", false, "int"    , "no" , "yes", "yes", "auto_increment", 11, (Aliases)null, ""));
+		t.getTableAttributes().addAttribute(new TableAttribute("testTable"              , "", false,  "int"    , "no" , "yes", "no" , "", 11, (Aliases)null, ""));
+		TableAttribute indexableAttribute = new TableAttribute("testTableString"        , "", false,  "varchar", "no" , "yes", "no" , "", 50, (Aliases)null, "");
 		t.getTableAttributes().addAttribute(indexableAttribute);
-		t.getTableAttributes().addAttribute(new TableAttribute("testTableStringNullable", "", false,  "varchar", "yes", "yes", "no" , "", 50, (Aliases)null));
-		TableAttribute indexableAttribute01 = new TableAttribute("testTableDate"        , "", false,  "date"   , "no" , "yes", "no" , "", 0, (Aliases)null);
+		t.getTableAttributes().addAttribute(new TableAttribute("testTableStringNullable", "", false,  "varchar", "yes", "yes", "no" , "", 50, (Aliases)null, ""));
+		TableAttribute indexableAttribute01 = new TableAttribute("testTableDate"        , "", false,  "date"   , "no" , "yes", "no" , "", 0, (Aliases)null, "");
 		t.getTableAttributes().addAttribute(indexableAttribute01);
 
 		// Add an index to the table because we can

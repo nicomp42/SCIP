@@ -77,7 +77,7 @@ public class TableAttributes implements Iterable<TableAttribute> {
 		TableAttribute tmp = null;
 		for (TableAttribute attribute: tableAttributes) {
 			if ((Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName)) &&
-				(Config.getConfig().compareTableNames(attribute.getTableName(), tableName))) {
+				(Config.getConfig().compareTableNames(attribute.getContainerName(), tableName))) {
 				tmp = attribute;
 				break;
 			}

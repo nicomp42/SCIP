@@ -515,7 +515,7 @@ public class Main extends Application {
 		TableAttributes attributes;
 		attributes = schema.getTableAttributes();	// Get the list of loaded attributes.
 		for (TableAttribute attribute : attributes) {
-			lv.getItems().add(attribute.getTableName() + "." + attribute.getAttributeName());
+			lv.getItems().add(attribute.getContainerName() + "." + attribute.getAttributeName());
 		}
 		return lv.getItems().size();
 	}

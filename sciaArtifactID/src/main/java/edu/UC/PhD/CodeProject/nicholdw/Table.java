@@ -255,7 +255,7 @@ public class Table {
 					dataType = trimDataType(dataType);
 					// That's it. That's the list. No more descriptors.
 					// ToDo: The IsPrimary key argument is defaulted to false because it comes from another table.
-					TableAttribute myAttribute = new TableAttribute(name, tableName, false, dataType, nullable, key, theDefault, extra, length, (Aliases)null);
+					TableAttribute myAttribute = new TableAttribute(name, tableName, false, dataType, nullable, key, theDefault, extra, length, (Aliases)null, schemaName);
 
 					myAttributeList.addAttribute(myAttribute);
 
@@ -332,7 +332,7 @@ public class Table {
 	 * Add a surrogate key to the table
 	 */
 	public void addSurrogateKey() {
-		TableAttribute a = new TableAttribute(getTableName() + "ID", this.tableName, true, "int", "no", "yes", "", "", 1, (Aliases)null );
+		TableAttribute a = new TableAttribute(getTableName() + "ID", this.tableName, true, "int", "no", "yes", "", "", 1, (Aliases)null, schemaName );
 		a.setAutoIncrement(true);
 		attributes.addAttribute(a);
 		setAlreadyHasSurrogateKey(true);

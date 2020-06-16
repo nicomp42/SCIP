@@ -52,7 +52,7 @@ public class QueryExcelExporter {
 				writer.append(',');
 				writer.append(queryAttribute.getAttributeName().toLowerCase());
 				writer.append(',');
-				writer.append(queryAttribute.getTableName().toLowerCase());
+				writer.append(queryAttribute.getContainerName().toLowerCase());
 				writer.append(',');
 				writer.append(queryAttribute.getSchemaName().toLowerCase());
 				writer.append('\n');

@@ -11,6 +11,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryClause;
 import java.util.Iterator;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttributes;
+import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
@@ -40,7 +41,7 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 	
 	public void addTableAttributes(String schemaName, TableAttributes attributes) {
 		for (TableAttribute a: attributes) {
-			addAttribute(new QueryAttribute(schemaName, a.getTableName(), a.getAttributeName(), 
+			addAttribute(new QueryAttribute(schemaName, a.getContainerName(), a.getAttributeName(), 
 					     (AliasNameClassOLD)null, new QueryClauseSelect(), "", ATTRIBUTE_DISPOSITION.Select));
 		}
 	}
@@ -51,7 +52,7 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 		for (QueryAttribute qa : queryAttributes) {
 			if (qa.getAttributeName().trim().toLowerCase().equals(queryAttribute.getAttributeName().trim().toLowerCase()) &&
 				qa.getSchemaName().trim().toLowerCase().equals(queryAttribute.getSchemaName().trim().toLowerCase()) &&
-				qa.getTableName().trim().toLowerCase().equals(queryAttribute.getTableName().trim().toLowerCase())) {
+				qa.getContainerName().trim().toLowerCase().equals(queryAttribute.getContainerName().trim().toLowerCase())) {
 				// We found a match. If the alias doesn't already exist, add that to the matching Query Attribute. Otherwise we're done.
 				for (AliasNameClassOLD aliasName: queryAttribute.getAliasNames()) {
 					if (!qa.getAliasNames().contains(aliasName)) {
@@ -80,7 +81,7 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 	 * @param compareNameOnly Just compare attribute names. Ignore schema and table
 	 * @return true if this collection contains a particular QueryAttribute, false otherwise
 	 */
-	public boolean contains(QueryAttribute queryAttribute, Boolean compareNameOnly) {
+	public boolean contains(Attributable queryAttribute, Boolean compareNameOnly) {
 		boolean result = false;
 		if (compareNameOnly) {
 			for (QueryAttribute qa : queryAttributes) {
@@ -148,7 +149,7 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 		Boolean queryFound = false;
 		for (QueryAttribute qa : queryAttributes) {
 			if (Config.getConfig().compareSchemaNames(qa.getSchemaName(),       queryAttribute.getSchemaName()) &&
-				Config.getConfig().compareTableNames(qa.getTableName(),         queryAttribute.getTableName()) &&	
+				Config.getConfig().compareTableNames(qa.getContainerName(),         queryAttribute.getContainerName()) &&	
 				Config.getConfig().compareAttributeNames(qa.getAttributeName(), queryAttribute.getAttributeName())) {
 				queryFound = true;
 				break;
@@ -188,7 +189,7 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 				for (QueryAttribute queryAttribute : queryAttributes) {
 					matchFound = false;
 					if ((!needSchemaMatch || Config.getConfig().compareSchemaNames(fcn.getSchemaName(), queryAttribute.getSchemaName())) &&
-						(!needTableMatch  || Config.getConfig().compareTableNames(fcn.getTableName(), queryAttribute.getTableName())) &&	
+						(!needTableMatch  || Config.getConfig().compareTableNames(fcn.getTableName(), queryAttribute.getContainerName())) &&	
 						(Config.getConfig().compareAttributeNames(queryAttribute.getAttributeName(), fcn.getAttributeName()) == true)) {
 						result = queryAttribute;
 						matchFound = true;

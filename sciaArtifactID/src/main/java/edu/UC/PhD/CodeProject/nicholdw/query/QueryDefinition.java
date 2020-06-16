@@ -123,7 +123,7 @@ public class QueryDefinition implements java.io.Serializable {
 		String type = "";
 		try {
 			// Get the schema/table where the attribute resides
-			String tableName = queryAttribute.getTableName();
+			String tableName = queryAttribute.getContainerName();
 			String schemaName = queryAttribute.getSchemaName();
 			// Get the table definition for the table where the attribute resides. It has to be in the collection of tables in this query definition or in one of the children.
 			QueryTable queryTable = lookupTable(this, schemaName, tableName);
@@ -317,7 +317,7 @@ public class QueryDefinition implements java.io.Serializable {
 			for (QueryAttribute qa : this.getQueryAttributes()) {
 				Log.logProgress("QueryDefinition.reconcileAttributes(): processing the attribute " + qa.toString());
 //				Log.logProgress("QueryDefinition.reconcileAttributes(): attribute = " + qa.toString());
-				if (!Utils.isBlank(qa.getTableName()) && !Utils.isBlank(qa.getSchemaName())) {
+				if (!Utils.isBlank(qa.getContainerName()) && !Utils.isBlank(qa.getSchemaName())) {
 					Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a schema and a table. Checking to see it it's a table alias.");
 					// However, the table name could be an alias name. We need to use the actual table name rather than the table alias.
 					// found = false
@@ -338,17 +338,17 @@ public class QueryDefinition implements java.io.Serializable {
 					boolean found = false;
 					for (QueryTable qt: queryTables) {
 						if (Config.getConfig().compareTableNames(qt.getSchemaName(), qa.getSchemaName())) {
-							if (Config.getConfig().compareTableNames(qt.getTableName(), qa.getTableName())) {
+							if (Config.getConfig().compareTableNames(qt.getTableName(), qa.getContainerName())) {
 								found = true;
-								Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a table name that is actually a table name (" + qa.getTableName() + ").");
+								Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a table name that is actually a table name (" + qa.getContainerName() + ").");
 								break;
 							}
 							// Check the list of aliases for this table
 							for (AliasNameClassOLD an: qt.getAliasNames()) {
-								if (Config.getConfig().compareAliasNames(an.getAliasName(), qa.getTableName())) {
-									Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a table name that is an alias (" + qa.getTableName() + "), changing to " + qt.getTableName() + ".");
-									qa.setTableAliasName(qa.getTableName());
-									qa.setTableName(qt.getTableName());
+								if (Config.getConfig().compareAliasNames(an.getAliasName(), qa.getContainerName())) {
+									Log.logProgress("QueryDefinition.reconcileArtifacts(); Attribute has a table name that is an alias (" + qa.getContainerName() + "), changing to " + qt.getTableName() + ".");
+									qa.setTableAliasName(qa.getContainerName());
+									qa.setContainerName(qt.getTableName());
 									found = true;
 									break;
 								}
@@ -357,21 +357,21 @@ public class QueryDefinition implements java.io.Serializable {
 						}
 					}
 					if (!found) {
-						Log.logError("QueryDefinition.reconcileArtifacts(): Very bad: attribute has a schema and a table BUT table not found in the query definition (" + qa.getTableName() + ")");
+						Log.logError("QueryDefinition.reconcileArtifacts(): Very bad: attribute has a schema and a table BUT table not found in the query definition (" + qa.getContainerName() + ")");
 					}
 				} else  {
 					QueryTable qt = null;
 					qt = this.getQueryTables().findQueryOrTableContainingAttribute(qa);	// This must work, else the query is not properly formed or there are > 0 nested queries to search
 					if (qt != null) {
 						Log.logProgress("QueryDefinition.reconcileArtifacts(): found the table: " + qt.toString());
-						qa.setTableName(qt.getTableName());
+						qa.setContainerName(qt.getTableName());
 						qa.setSchemaName(qt.getSchemaName());
 					} else {
 						Log.logError("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " not found in any tables. Even checked aliases. Looking in child queries");
 						for (QueryDefinition qdChild : children) {
 							qt = qdChild.getQueryTables().findQueryOrTableContainingAttribute(qa);	// This must work, else the query is not properly formed
 							if (qt != null) {
-								qa.setTableName(qt.getTableName());
+								qa.setContainerName(qt.getTableName());
 								qa.setSchemaName(qt.getSchemaName());
 								// TODO: need data type
 								Log.logProgress("QueryDefinition.reconcileAttributes(); Attribute " + qa.getAttributeName() + " found in nested query " + qt.getSchemaName() + "." +  qt.getTableName());
@@ -511,7 +511,7 @@ public class QueryDefinition implements java.io.Serializable {
 			for (QueryTable qt: qd.getQueryTables()) {
 				for (TableAttribute ta: qt.getTableAttributes()) {
 //					public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
-					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getTableName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
+					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getContainerName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
 				}
 			}
 		}
@@ -520,7 +520,7 @@ public class QueryDefinition implements java.io.Serializable {
 			for (QueryTable qt: qd.getQueryTables()) {
 				for (TableAttribute ta: qt.getTableAttributes()) {
 //					public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNameClassOLD aliasName, QueryClause queryClause, String tableAliasName, ATTRIBUTE_DISPOSITION attributeDisposition) {
-					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getTableName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
+					qd.queryAttributes.addAttribute(new QueryAttribute(qt.getSchemaName(), ta.getContainerName(), ta.getAttributeName(), new AliasNameClassOLD(""), new QueryClauseUndefined(), null));
 				}
 			}
 		}
@@ -579,7 +579,7 @@ public class QueryDefinition implements java.io.Serializable {
 					if (queryAttribute != null) {
 						Log.logProgress("QueryDefinition.buildProvenance(): query attribute with alias `" + currentFCN.toString() + "` = " + queryAttribute.toString());
 						currentFCN = queryAttribute.getFullColumnName();
-						qt = qdTmp.getQueryTables().lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getTableName());
+						qt = qdTmp.getQueryTables().lookupBySchemaAndTable(queryAttribute.getSchemaName(), queryAttribute.getContainerName());
 						// If this is a table, we're done. If it's not a table, it's a query and we need to find that query in the children collection for this Query Definition
 						queryTableProvenance = null;
 						queryAttributeProvenance = null;
@@ -590,8 +590,8 @@ public class QueryDefinition implements java.io.Serializable {
 						queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
 						queryTablesProvenance.addQueryTable(queryTableProvenance);
 						Log.logProgress("QueryDefinition.buildProvenance(): table added to provenance: " + qdTmp.getSchemaName() + "." + qdTmp.getQueryName());
-						Log.logProgress("QueryDefinition.buildProvenance(): searching for table/query with attribute: " + queryAttributeProvenance.getSchemaName() + "." +  queryAttributeProvenance.getTableName() + "." +  queryAttributeProvenance.getAttributeName() );
-						qdTmp = qdTmp.children.findQueryDefinitionBySchemaAndTableName(queryAttribute.getSchemaName(), queryAttribute.getTableName());
+						Log.logProgress("QueryDefinition.buildProvenance(): searching for table/query with attribute: " + queryAttributeProvenance.getSchemaName() + "." +  queryAttributeProvenance.getContainerName() + "." +  queryAttributeProvenance.getAttributeName() );
+						qdTmp = qdTmp.children.findQueryDefinitionBySchemaAndTableName(queryAttribute.getSchemaName(), queryAttribute.getContainerName());
 //						currentAliasName = currentAttributeName;		// We need the attribute name used in this query
 					} else {
 						// If queryAttribute is null, we need to look in the list of compoundAliases
@@ -619,7 +619,7 @@ public class QueryDefinition implements java.io.Serializable {
 					// ToDo: This is hinkey: A table attribute dressed up as a query attribute so it will fit into the queryTableProvenance data structure
 					queryAttributeProvenance = new QueryAttribute(qt.getSchemaName(), qt.getTableName(), currentFCN.getAttributeName(), new AliasNameClassOLD((String) null), null, "");
 					queryTableProvenance.setQueryAttributeProvenance(queryAttributeProvenance);
-					Log.logProgress("QueryDefinition.buildProvenance(): adding last item to provenance: " + queryAttributeProvenance.getSchemaName() + "." +  queryAttributeProvenance.getTableName() + "." +  queryAttributeProvenance.getAttributeName() );
+					Log.logProgress("QueryDefinition.buildProvenance(): adding last item to provenance: " + queryAttributeProvenance.getSchemaName() + "." +  queryAttributeProvenance.getContainerName() + "." +  queryAttributeProvenance.getAttributeName() );
 					queryTablesProvenance.addQueryTable(queryTableProvenance);
 					keepGoing = false;
 				}
@@ -676,12 +676,12 @@ public class QueryDefinition implements java.io.Serializable {
 		Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): " + qd.getSchemaName() + "." + qd.getQueryName() );
 		for (QueryAttribute queryAttribute : qd.getQueryAttributes()) {
 			Boolean isItAQuery;
-			isItAQuery = QueryDefinition.isItAQuery(queryAttribute.getSchemaName(), queryAttribute.getTableName(), qd);
-			Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): checking " + queryAttribute.getSchemaName() +  queryAttribute.getTableName() + "." + queryAttribute.getAttributeName() );
+			isItAQuery = QueryDefinition.isItAQuery(queryAttribute.getSchemaName(), queryAttribute.getContainerName(), qd);
+			Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): checking " + queryAttribute.getSchemaName() +  queryAttribute.getContainerName() + "." + queryAttribute.getAttributeName() );
 			// We only want attributes that are in the originating table, or are a constant because a query can define a constant.
 			if (!isItAQuery || !tablesOnly || queryAttribute.isConstant())  {
-				Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): adding " + queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName() );
-				attributes.put(queryAttribute.getSchemaName() + "." + queryAttribute.getTableName() + "." + queryAttribute.getAttributeName(), queryAttribute);
+				Log.logProgress("QueryDefinition.traverseForUniqueAttributes(): adding " + queryAttribute.getSchemaName() + "." + queryAttribute.getContainerName() + "." + queryAttribute.getAttributeName() );
+				attributes.put(queryAttribute.getSchemaName() + "." + queryAttribute.getContainerName() + "." + queryAttribute.getAttributeName(), queryAttribute);
 			}
 		}
 		for (QueryDefinition qdChild: qd.children) {

@@ -73,7 +73,7 @@ public class QueryGraph {
 			// Build provenance for the attribute node we just added to the graph
 			QueryTables qt = new QueryTables();
 			QueryDefinition.buildProvenance(qd, new FullColumnName(queryAttribute.getSchemaName(),
-																   queryAttribute.getTableName(),
+																   queryAttribute.getContainerName(),
 					                                               queryAttribute.getAttributeName()), 
 					                        qt);
 			int count = 0;
@@ -289,7 +289,7 @@ public class QueryGraph {
 			for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
 				writer.append(Utils.cleanForGraph(queryAttribute.getAttributeName()));
 				writer.append(",");
-				writer.append(Utils.cleanForGraph(queryAttribute.getTableName()));
+				writer.append(Utils.cleanForGraph(queryAttribute.getContainerName()));
 				writer.append(",");
 				writer.append(Utils.cleanForGraph(queryAttribute.getSchemaName()));
 				writer.append(",");

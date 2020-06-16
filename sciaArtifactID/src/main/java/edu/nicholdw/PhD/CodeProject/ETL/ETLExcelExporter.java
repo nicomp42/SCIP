@@ -262,7 +262,7 @@ public static void generateExecuteSQLScriptAttributesCsvFile(String sFileName, L
 				writer.append(',');
 				writer.append(qa.getSchemaName());
 				writer.append(',');
-				writer.append(qa.getTableName());
+				writer.append(qa.getContainerName());
 				writer.append(',');
 				writer.append(qa.getAttributeName());
 				writer.append(',');

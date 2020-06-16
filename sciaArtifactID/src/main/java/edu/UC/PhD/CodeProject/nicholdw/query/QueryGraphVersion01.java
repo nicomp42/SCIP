@@ -59,12 +59,12 @@ public class QueryGraphVersion01 {
 		Log.logProgress("QueryDefinitionFileProcessing.createGraph(): writing query attributes");
 		for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
 			SchemaGraph.addQueryAttribute(queryAttribute.getSchemaName(), 
-					                      queryAttribute.getTableName(), 
+					                      queryAttribute.getContainerName(), 
 					                      queryAttribute.getAttributeName(), 
 					                      qd.getQueryAttributeDataType(queryAttribute));
 			SchemaGraph.connectQueryNodeToAttributeNode(qd.getSchemaName(), qd.getQueryName(),
 					                                    queryAttribute.getSchemaName(), 
-                                                        queryAttribute.getTableName(), 
+                                                        queryAttribute.getContainerName(), 
                                                         queryAttribute.getAttributeName());
 		}
 		if (traverseChildQueries) {
@@ -254,7 +254,7 @@ public class QueryGraphVersion01 {
 			for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
 				writer.append(Utils.cleanForGraph(queryAttribute.getAttributeName()));
 				writer.append(",");
-				writer.append(Utils.cleanForGraph(queryAttribute.getTableName()));
+				writer.append(Utils.cleanForGraph(queryAttribute.getContainerName()));
 				writer.append(",");
 				writer.append(Utils.cleanForGraph(queryAttribute.getSchemaName()));
 				writer.append(",");

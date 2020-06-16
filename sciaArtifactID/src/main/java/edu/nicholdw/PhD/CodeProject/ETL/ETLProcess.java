@@ -11,6 +11,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 
+import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
@@ -293,7 +294,7 @@ public class ETLProcess implements java.io.Serializable {
 					for (QueryAttribute qa : qd.getQueryAttributes()) {
 						String key = "";
 						key = Utils.cleanForGraph(qa.getSchemaName()) 
-							  + "." + Utils.cleanForGraph(qa.getTableName()) 
+							  + "." + Utils.cleanForGraph(qa.getContainerName()) 
 							  + "." + Utils.cleanForGraph(qa.getAttributeName());
 						if (applyActionQuerys(scip, qa)) {
 							ETLProcess.traverseFromAttribute(etlProcess, etlStep, qa);
@@ -352,7 +353,7 @@ public class ETLProcess implements java.io.Serializable {
 					for (QueryAttribute qa : qd.getQueryAttributes()) {
 						String key = "";
 						key = Utils.cleanForGraph(qa.getSchemaName()) 
-							  + "." + Utils.cleanForGraph(qa.getTableName()) 
+							  + "." + Utils.cleanForGraph(qa.getContainerName()) 
 							  + "." + Utils.cleanForGraph(qa.getAttributeName());
 						if (applyActionQuerys(scip, qa)) {
 							ETLProcess.traverseFromAttribute(etlProcess, etlStep, qa);
@@ -425,7 +426,7 @@ public class ETLProcess implements java.io.Serializable {
 	 * @param scip Project where the Action Queries are
  	 * @param qa The Query Attribute to the looked-for in the action queries
 	 */
-	public static Boolean applyActionQuerys(SchemaChangeImpactProject scip, QueryAttribute qa) {
+	public static Boolean applyActionQuerys(SchemaChangeImpactProject scip, Attributable qa) {
 		Boolean attributeAffected = false;
 		// We have a graph and that's great. Now for the big finale...
 		// Apply the action querys, if any, to the graph to highlight the affected nodes
@@ -463,8 +464,8 @@ public class ETLProcess implements java.io.Serializable {
 	}
 
 	/**
-	 * ToDo: this is risky.
-	 * @return
+	 * 
+	 * @return A reference to the ETL Transformation files collection
 	 */
 	public ETLTransformationFiles getEtlTransformationFiles() {
 		return etlTransformationFiles;

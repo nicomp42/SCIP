@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import com.sun.org.apache.bcel.internal.generic.Select;
 
+import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
@@ -18,7 +19,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
  * A member of a QueryDefinition object.
  * @author nicomp
  */
-public class QueryAttribute extends QueryComponent implements Name, java.io.Serializable  {
+public class QueryAttribute extends QueryComponent implements Name, java.io.Serializable, Attributable  {
 	/**
 	 * 
 	 */
@@ -38,7 +39,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	public QueryAttribute(QueryAttribute qa) {
 		this.aliasNames = new AliasNamesOLD();
 		setSchemaName(qa.getSchemaName());
-		setTableName(qa.getTableName());
+		setContainerName(qa.getContainerName());
 		setTableAliasName(qa.getTableAliasName());
 		setAttributeName(qa.getAttributeName());
 		setAliasNames(qa.getAliasNames());
@@ -74,7 +75,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 			              AliasNameClassOLD aliasName, 
 			              QueryClause queryClause, String tableAliasName, 
 			              ATTRIBUTE_DISPOSITION attributeDisposition) {
-		this.setTableName(tableName);
+		this.setContainerName(tableName);
 		aliasNames = new AliasNamesOLD();
 		this.addAliasName (aliasName);
 		this.setSchemaName(schemaName);
@@ -99,7 +100,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 			              AliasNameClassOLD aliasName, QueryClause queryClause, 
 			              String tableAliasName) {
 		this.aliasNames = new AliasNamesOLD();
-		this.setTableName(tableName);
+		this.setContainerName(tableName);
 		aliasNames = new AliasNamesOLD();
 		this.addAliasName (aliasName);
 		this.setSchemaName(schemaName);
@@ -122,7 +123,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * @param queryClause
 	 */
 	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNamesOLD aliasNames, QueryClause queryClause, String tableAliasName) {
-		this.setTableName(tableName);
+		this.setContainerName(tableName);
 		this.aliasNames = new AliasNamesOLD();
 		this.aliasNames.addAliasNames(aliasNames);
 		this.setSchemaName(schemaName);
@@ -149,14 +150,14 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * Set the table name from whence this attribute originates. This could be an alias!
 	 * @param tableName
 	 */
-	public void setTableName(String tableName) {
+	public void setContainerName(String tableName) {
 		if (tableName == null || tableName.trim().length() == 0) {
 			this.tableName = "";
 		} else {
 			this.tableName = Table.formatTableName(tableName);
 		}
 	}
-	public String getTableName() {return this.tableName;}
+	public String getContainerName() {return this.tableName;}
 
 	public AliasNamesOLD getAliasNames() {
 		return aliasNames;
@@ -229,14 +230,14 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * @return
 	 */
 	public String getUniqueAttributeName() {
-		return  getSchemaName() + "#" + getTableName() + "#" + getAttributeName();
+		return  getSchemaName() + "#" + getContainerName() + "#" + getAttributeName();
 	}
 	/**
 	 * Build the name of the attribute with schema name and table name for display purposes.
 	 * @return The formatted name
 	 */
 	public String getFullyQualifiedName() {
-		return  getSchemaName() + "." + getTableName() + "." + getAttributeName();
+		return  getSchemaName() + "." + getContainerName() + "." + getAttributeName();
 	}
 	/** The attribute could be part of a function call, a math expression, etc.
 	 * @return The expression, or null if none.
@@ -252,7 +253,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 		boolean result = false;
 		if (Config.getConfig().compareAttributeNames(this.getAttributeName(), queryAttribute.getAttributeName()) && 
 			Config.getConfig().compareAliasNames(this.getAliasNames(), queryAttribute.getAliasNames()) && 
-			Config.getConfig().compareTableNames(this.getTableName(), queryAttribute.getTableName()) && 
+			Config.getConfig().compareTableNames(this.getContainerName(), queryAttribute.getContainerName()) && 
 			Config.getConfig().compareSchemaNames(this.getSchemaName(), queryAttribute.getSchemaName())) {
 			result = true;
 		}
@@ -275,7 +276,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	}
 	
 	public FullColumnName getFullColumnName() {
-		return new FullColumnName(getSchemaName(), getTableName(), getAttributeName());
+		return new FullColumnName(getSchemaName(), getContainerName(), getAttributeName());
 	}
 	/***
 	 * If the attribute has an alias, return that, else return the attribute name
@@ -308,9 +309,11 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	public void setAttributeDisposition(ATTRIBUTE_DISPOSITION attributeDisposition) {
 		this.attributeDisposition = attributeDisposition;
 	}
+	@Override
 	public Boolean getAffectedByActionQuery() {
 		return affectedByActionQuery;
 	}
+	@Override
 	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
 		this.affectedByActionQuery = affectedByActionQuery;
 	}
@@ -322,4 +325,5 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * @return A copy of the GraphNodeAnnotation for the current object
 	 */
 	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
+
 }
