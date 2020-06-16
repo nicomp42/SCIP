@@ -92,8 +92,13 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 				}
 			}
 		} else {
+			// Compare schema, container, and name
 			for (QueryAttribute qa : queryAttributes) {
-				if (qa.equals(queryAttribute)) {result = true; break;}
+				if ((Config.getConfig().compareSchemaNames(qa.getSchemaName(), queryAttribute.getSchemaName())) &&
+					(Config.getConfig().compareTableNames(qa.getContainerName(), queryAttribute.getContainerName())) &&
+					(Config.getConfig().compareAttributeNames(qa.getAttributeName(), queryAttribute.getAttributeName()))) {
+					result = true;
+				}
 			}
 		}
 		return result;
@@ -162,7 +167,7 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 	 * @param queryAttribute The query attribute to search for
 	 * @return a reference to the QueryAttribute object if found, null otherwise
 	 */
-	public QueryAttribute findAttributeByNameOnly(QueryAttribute queryAttribute) {
+	public QueryAttribute findAttributeByNameOnly(Attributable queryAttribute) {
 		// TODO This seems to be the same as contains() in this class. 
 		QueryAttribute queryAttributeFound = null;
 		for (QueryAttribute qa : queryAttributes) {

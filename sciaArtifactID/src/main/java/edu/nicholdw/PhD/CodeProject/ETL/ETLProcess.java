@@ -58,7 +58,7 @@ public class ETLProcess implements java.io.Serializable {
 	 * @param etlStep The step to start with
 	 * @param qa The query attribute in question
 	 */
-	public static void traverseFromAttribute(ETLProcess etlProcess, ETLStep etlStep, QueryAttribute qa) {
+	public static void traverseFromAttribute(ETLProcess etlProcess, ETLStep etlStep, Attributable qa) {
 		System.out.println("ETLProcess.traverseFromAttribute(): Starting step = " + etlStep.toString() + ", attribute = " + qa.toString());
 		Log.logProgress("ETLProcess.traverseFromAttribute(): " + etlProcess.toString() + ", " + etlStep.toString() + ", " + qa.toString());
 		String fileName = etlStep.getFileName();
@@ -323,15 +323,21 @@ public class ETLProcess implements java.io.Serializable {
 					// There is no query here: we just need to step through all the fields that are accessed in the output table
 					for (ETLField etlField: etlStep.getETLFields()) {
 						String key;
+						etlField.setContainerName(etlStep.getTableName());
+						etlField.setSchemaName(etlStep.getSchemaName());
 						key = Utils.cleanForGraph(etlStep.getSchemaName()) 
 							  + "." + Utils.cleanForGraph(etlStep.getTableName()) 
 							  + "." + Utils.cleanForGraph(etlField.getColumnName());
 						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(etlField.getGraphNodeAnnotation());
 	//					key = Utils.cleanForGraph(etlStep.getStepName()) + "." + Utils.cleanForGraph(etlField.getStreamName())	+ "." + Utils.cleanForGraph(etlField.getColumnName());
+						if (applyActionQuerys(scip, etlField)) {
+							ETLProcess.traverseFromAttribute(etlProcess, etlStep, etlField);
+						}
 						Neo4jDB.submitNeo4jQuery("CREATE (A:" + nodeLabel + 
 		                                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
 		                                         ",	key:'" + key + "'" +
 		                                         ",	name:'" + etlField.getColumnName()	+ "'" +
+						                         buildAnnotationInfo(etlField.getGraphNodeAnnotation()) +
 		                                         "})");
 						// Create a relationship between the ETL Step Node and the attribute node we just added
 						Neo4jDB.submitNeo4jQuery("MATCH (t:" + nodeLabel  + "{key:'" + key + "'}), "
@@ -424,9 +430,9 @@ public class ETLProcess implements java.io.Serializable {
 	/***
 	 * 
 	 * @param scip Project where the Action Queries are
- 	 * @param qa The Query Attribute to the looked-for in the action queries
+ 	 * @param attribute The Query Attribute to the looked-for in the action queries
 	 */
-	public static Boolean applyActionQuerys(SchemaChangeImpactProject scip, Attributable qa) {
+	public static Boolean applyActionQuerys(SchemaChangeImpactProject scip, Attributable attribute) {
 		Boolean attributeAffected = false;
 		// We have a graph and that's great. Now for the big finale...
 		// Apply the action querys, if any, to the graph to highlight the affected nodes
@@ -442,8 +448,9 @@ public class ETLProcess implements java.io.Serializable {
 					// find the same query in the original QueryDefintion and change the GraphNodeAnnotation
 //					Log.logProgress("ETLProcessController.applyActionQueries: changing GraphNodeAttribute for " + aqa.toString());
 //					if (aqd.getQueryAttributes().contains(qa, true)) {
-					if (aqd.getQueryAttributes().contains(qa, false)) {
-						qa.setGraphNodeAnnotation(graphNodeAnnotation);
+					if (aqd.getQueryAttributes().contains(attribute, false)) {
+						attribute.setGraphNodeAnnotation(graphNodeAnnotation);
+						attribute.setAffectedByActionQuery(true);
 						attributeAffected = true;
 					}
 //				}

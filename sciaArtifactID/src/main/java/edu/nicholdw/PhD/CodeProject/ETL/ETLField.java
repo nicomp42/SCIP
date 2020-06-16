@@ -4,6 +4,7 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 
@@ -12,7 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
  * @author nicomp
  *
  */
-public class ETLField implements java.io.Serializable {
+public class ETLField implements java.io.Serializable, Attributable {
 	/**
 	 * 
 	 */
@@ -20,6 +21,8 @@ public class ETLField implements java.io.Serializable {
 	private String streamName;		// The name of the field in the ETL that will be written the DBMS table. 
 	private String columnName;		// The destination of the stream field. Called "Table Field" in the Pentaho/Spoon UI. Called "column_name" in the XML file 
 	private GraphNodeAnnotation graphNodeAnnotation;
+	private String tableName, schemaName;
+	private boolean affectedByActionQuery;
 
 	public ETLField(String columnName, String streamName) {
 		setColumnName(columnName);
@@ -90,4 +93,37 @@ public class ETLField implements java.io.Serializable {
 	 * @return A copy of the GraphNodeAnnotation for the current object
 	 */
 	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
+	@Override
+	public String getContainerName() {
+		return tableName;
+	}
+	@Override
+	public String getSchemaName() {
+		return schemaName;
+	}
+	@Override
+	public String getAttributeName() {
+		return columnName;
+	}
+	@Override
+	public void setContainerName(String containerName) {
+		this.tableName = containerName;
+	}
+	@Override
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;		
+	}
+	@Override
+	public void setAttributeName(String attributeName) {
+		this.columnName = attributeName;
+	}
+	@Override
+	public Boolean getAffectedByActionQuery() {
+		return affectedByActionQuery;
+	}
+	@Override
+	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
+		this.affectedByActionQuery = affectedByActionQuery;
+		
+	}
 }
