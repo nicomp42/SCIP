@@ -20,17 +20,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import javafx.concurrent.Task;
+import edu.UC.PhD.CodeProject.nicholdw.ActionQuery;
+import edu.UC.PhD.CodeProject.nicholdw.ActionQuerys;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
+import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
 import edu.UC.PhD.CodeProject.nicholdw.Schemas;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
+import edu.UC.PhD.CodeProject.nicholdw.query.ActionQueryDefinitions;
+import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.ActionQueryProcessor;
+import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphConfig;
-import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphResults;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.GraphResults;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -57,19 +63,21 @@ import javafx.stage.Stage;
 public class DatabaseGraphController {
 	private Scene myScene;
 	private Stage myStage;
-	SchemaGraph schemaTopology;
-	DatabaseGraphResults schemaTopologyResults;
+	private SchemaChangeImpactProject scip;
+	GraphResults graphResults;
 	@FXML	private Pane pneFilter, pneQuickGraphs, pneActionQuery;
 	@FXML	private AnchorPane apMain;
 	@FXML	private TextField txtHostName, txtLoginName, txtPassword;
 	@FXML	private ComboBox<String> cbSchema;
-	@FXML	private Button btnLoadSchemaNames, btnLoadSchema, btnProcessSchema, btnApplyFilter, btnAttributesInQueries, btnAttributesNotInQueries;
+	@FXML	private Button btnLoadSchemaNames, btnLoadSchema, btnProcessSchema;
+	@FXML	private Button btnApplyFilter, btnAttributesInQueries, btnAttributesNotInQueries;
 	@FXML	private Button btnBrowseForActionQueryFile, btnClearSchemaComboBox;
-	//	@FXML	private ListView<String> lvTables, lvAttributes, lvSchemas;
 	@FXML	private TreeView<String> tvSchemas;
-	@FXML	private Label lblSchemaToProcess, lblContentsOfDatabaseHost, lblDoubleClickPrompt, lblResults, lblWorking, lblActionQuery;
+	@FXML	private Label lblSchemaToProcess, lblContentsOfDatabaseHost;
+	@FXML	private Label lblDoubleClickPrompt, lblResults, lblWorking, lblActionQuery;
 	@FXML	private TextArea taResults, taActionQuery, taActionQueryFile;
-	@FXML	private CheckBox cbClearDB, cbIncludeSchemaNodes, cbOpenInBrowser, cbDisplayAttributes, cbDisplayTables, cbDisplayQuerys;
+	@FXML	private CheckBox cbClearDB, cbIncludeSchemaNodes, cbOpenInBrowser;
+	@FXML	private CheckBox cbDisplayAttributes, cbDisplayTables, cbDisplayQuerys;
 	@FXML	void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {openBrowserWindow();}
 	@FXML	void btnBrowseForActionQueryFile_OnClick(ActionEvent event) {browseForActionQueryFile();}
 	@FXML	void btnClearSchemaComboBox_OnClck(ActionEvent event) {clearSchemaComboBox();}
@@ -96,6 +104,7 @@ public class DatabaseGraphController {
 		showResultsControls(false);
 		displayWorkingMessage(false);
 		showFilters(false);
+		scip = Config.getConfig().getCurrentSchemaChangeImpactProject();		
 	}
 	private void browseForActionQueryFile() {
 		try {
@@ -215,13 +224,13 @@ public class DatabaseGraphController {
 	@FXML
 	private void btnProcessSchema_OnClick(ActionEvent event) throws InterruptedException {
 		// OK, the user has drilled down to a schema. Generate the topology...
-		processSchema();
+		processSchemas();
 		showArtifacts(true);
 	}
-	private void processSchema() {
+	private void processSchemas() {
  		if ( cbSchema.getItems().size() > 0) {
-			schemaTopologyResults = new DatabaseGraphResults();
-			DatabaseGraphConfig schemaTopologyConfig = new DatabaseGraphConfig();
+//			databaseGraphResults = new GraphResults();
+			DatabaseGraphConfig databaseGraphConfig = new DatabaseGraphConfig();
 			// Here is some stuff we want to run in another thread so the window has time to update itself.
 			 Task<Void> runnable = new Task<Void>() {		// https://docs.oracle.com/javafx/2/threads/jfxpub-threads.htm
 				 // This thread cannot write to JavaFX controls, even in the Debug window.
@@ -231,13 +240,22 @@ public class DatabaseGraphController {
 					Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
 					Neo4jDB.getDriver();
 					if (cbClearDB.isSelected()) {Neo4jDB.clearDB();}
-					schemaTopologyConfig.setIncludeSchemaNodeInGraph(cbIncludeSchemaNodes.isSelected());
-					schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
+					databaseGraphConfig.setIncludeSchemaNodeInGraph(cbIncludeSchemaNodes.isSelected());
+					databaseGraphConfig.setUseFriendlyNameAsDisplayName(true);
 					Schemas schemas = new Schemas();
 					for (Object schemaNameObject: cbSchema.getItems()) {schemas.addSchema(new Schema((String)schemaNameObject));}
-				    schemaTopology = new SchemaGraph(schemaTopologyConfig, txtHostName.getText(), txtLoginName.getText(), txtPassword.getText(), schemas);
+					scip.setSchemas(schemas);
+					scip.setDatabaseGraphConfig(databaseGraphConfig);
+					scip.setHostName(txtHostName.getText()); scip.setUserName(txtLoginName.getText()); scip.setPassword(txtPassword.getText());
+				    String actionQueryFile = taActionQueryFile.getText();
+					ActionQuerys actionQuerys = new ActionQuerys();
+					if ((actionQueryFile != null) && (actionQueryFile.trim().length() > 0)) {
+						actionQuerys.loadActionQuerys(actionQueryFile);
+					}
+					if (taActionQuery.getText().trim().length() > 0) {actionQuerys.add(new ActionQuery(taActionQuery.getText().trim()));}
+					scip.setActionQuerys(actionQuerys);
 					try {
-						schemaTopologyResults = schemaTopology.generateGraph(taActionQuery.getText().trim(), taActionQueryFile.getText());
+						scip.generateGraph();
 						if (cbOpenInBrowser.isSelected() ) {
 							Browser browser = Browser.prepareNewBrowser();
 							browser.initAndLoad(null);
@@ -256,7 +274,7 @@ public class DatabaseGraphController {
 		        final long endTime = System.currentTimeMillis();
 		        disableEverything(false);
 				displayWorkingMessage(false);
-				taResults.setText(schemaTopologyResults.toString());
+				taResults.setText(scip.getGraphResults().toString());
 				taResults.setText(taResults.getText() + "\n" + "Total execution time: " + ((double)(endTime - startTime))/1000. + " seconds.");
 				showResultsControls(true);
 				btnProcessSchema.setVisible(true);

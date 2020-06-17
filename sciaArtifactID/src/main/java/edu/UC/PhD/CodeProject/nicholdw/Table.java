@@ -31,14 +31,14 @@ public class Table {
 	/**
 	 * Test some stuff
 	 * @param args
-	 */
-	public void main(String[] args) {
+	 *
+/*	public void main(String[] args) {
 		Log.logProgress("Table.main()...");
 		Table myFlightTable = new Table("flight", "tFlight");
 		Table myPilotTable = new Table("flight", "tPilot");
 		myFlightTable.setAttributes(Table.readAttributesFromTableDefinition(myFlightTable.getSchemaName(), myFlightTable.getTableName()));
 		myPilotTable.setAttributes(Table.readAttributesFromTableDefinition(myPilotTable.getSchemaName(), myPilotTable.getTableName()));
-	}
+	} */
 	/*
 	 * Define the table name of the table
 	 * @param tableName

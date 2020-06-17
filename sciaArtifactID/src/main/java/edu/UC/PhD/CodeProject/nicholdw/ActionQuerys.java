@@ -22,7 +22,8 @@ import sun.misc.ClassLoaderUtil;
 /***
  * A collection of ActionQuery objects. Yes, the plural of query is not querys. However, appending an s is my standard.
  * @author nicomp
- * See also ActionQueryDefinitions class for a container of Action Query Definitions. Don't use this.
+ * See also ActionQueryDefinitions class for a container of Action Query Definitions. 
+ * Don't use this if you really need ActionQueryDefinitions
  */
 public class ActionQuerys implements Iterable<ActionQuery> {
 	private ArrayList<ActionQuery> actionQuerys;
@@ -41,7 +42,7 @@ public class ActionQuerys implements Iterable<ActionQuery> {
 	 * @param filePath The location and name of the file. It's an absolute file path!
 	 * @return the number of lines read
 	 */
-	public int loadActionQueries(String filePath) {
+	public int loadActionQuerys(String filePath) {
 		DatabaseEngine databaseEngine = Config.getConfig().getDatabaseEngine();		// TODO generalize
 		int count = 0;
 		File file = null;

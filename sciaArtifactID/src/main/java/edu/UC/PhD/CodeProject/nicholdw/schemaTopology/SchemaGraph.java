@@ -5,40 +5,30 @@ package edu.UC.PhD.CodeProject.nicholdw.schemaTopology;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import edu.UC.PhD.CodeProject.nicholdw.ActionQuery;
-import edu.UC.PhD.CodeProject.nicholdw.ActionQuerys;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation.GRAPH_NODE_ANNOTATION;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
-import edu.UC.PhD.CodeProject.nicholdw.Schemas;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Tables;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitions;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryType;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.ActionQueryProcessor;
+import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 
 /**
  * Generate a schema graph
  * @author nicomp
  */
 public class SchemaGraph {
-	private DatabaseGraphResults schemaTopologyResults;
-	private String hostName, userName, password;
-//	private String schemaName;
-//	private QueryDefinitions queryDefinitions;
-	private Schemas schemas;
-	private DatabaseGraphConfig schemaTopologyConfig;
+	private SchemaChangeImpactProject scip;
 	// Keep in lower case - Neo4j is case sensitive but MySQL is not. This will save a lot of debugging
 	public  static final String schemaNodeLabel = "schema";
 	public  static final String viewNodeLabel = "view";
@@ -61,28 +51,6 @@ public class SchemaGraph {
 //	public	static final String etlMergeJoinLabel = "MergeJoin";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
 
 	/**
-	 * Test main. Schema name defaults to localhost.schematopologytest
-	 * @param args
-	 */
-/*	public static void main(String[] args) {
-		Log.logProgress("SchemaGraph.main(): working...");
-
-		Neo4jDB.setNeo4jConnectionParameters(Config.getConfig().getNeo4jDBDefaultUser(), Config.getConfig().getNeo4jDBDefaultPassword());
-		Neo4jDB.getDriver();
-		Neo4jDB.clearDB();
-		DatabaseGraphConfig schemaTopologyConfig = new DatabaseGraphConfig();
-		schemaTopologyConfig.setIncludeSchemaInGraph(false);
-		schemaTopologyConfig.setUseFriendlyNameAsDisplayName(true);
-
-		SchemaGraph schemaTopology = new SchemaGraph(schemaTopologyConfig, "localhost", "root", "Danger42", "SchemaGraphtest", null);
-		try {
-			//SchemaTopologyResults schemaTopologyResults = new SchemaTopologyResults();
-			schemaTopology.generateGraph(null, null);
-		} catch (Exception e) {
-			Log.logError("SchemaGraph.main(): " + e.getLocalizedMessage());
-		}
-	} */
-	/**
 	 *
 	 * @param hostName
 	 * @param databaseName
@@ -91,15 +59,9 @@ public class SchemaGraph {
 	 * @param schemaName
 	 * @param queryDefinitions The list of query definitions to be processed, or {null or zero-length} for all queries in the schema.
 	 */
-	public SchemaGraph(DatabaseGraphConfig schemaTopologyConfig, String hostName, String userName, String password, Schemas schemas) { /*, QueryDefinitions queryDefinitions) { */
-		this.hostName = hostName;
-		this.userName = userName;
-		this.password = password;
-//		this.schemaName = schemaName;
-//		this.queryDefinitions = queryDefinitions;
-		this.schemaTopologyConfig = schemaTopologyConfig;
-		this.schemaTopologyResults = new DatabaseGraphResults();
-		setSchemas(schemas);
+//	public SchemaGraph(DatabaseGraphConfig schemaTopologyConfig, String hostName, String userName, String password, Schemas schemas) { /*, QueryDefinitions queryDefinitions) { */
+	public SchemaGraph(SchemaChangeImpactProject scip) { /*, QueryDefinitions queryDefinitions) { */
+		this.scip = scip;
 	}
 
 	public static void addAllConstraints() {
@@ -122,42 +84,29 @@ public class SchemaGraph {
 				                + " set n:" 
 				                + newLabel);
 	}
-	public DatabaseGraphResults generateGraph(String actionQuerySQL, String actionQueryFile) throws Exception {
+	public void generateGraph() {
+		Log.logProgress("SchemaGraph.generateGraph()");
+		scip.setGraphResults(new GraphResults());
 		boolean status = true;		// Hope for the best
-		for (Schema schema: schemas) {
+		for (Schema schema: scip.getSchemas()) {
 			try {
-				schema.loadTables(hostName, userName, password);
-				Tables tables = schema.getTables();	// Get the list of loaded tables.
+				schema.loadTables(scip.getHostName(), scip.getUserName(), scip.getPassword());
+				Tables tables = schema.getTables();
 				for (Table table: tables) {	// Get all the attributes from the tables
 					table.setAttributes(Table.readAttributesFromTableDefinition(table.getTableName(), schema.getSchemaName()));
 				}
 				loadQueryDefinitions(schema);
-				if ((actionQuerySQL != null) && (actionQuerySQL.trim().length() > 0)) {
-					// Parse the action query and apply it to the schema topology
+				for (ActionQuery ac: scip.getActionQuerys()) {
 					SchemaImpact schemaImpact = new SchemaImpact();
-					ActionQueryProcessor.processActionQuery(actionQuerySQL, schemaImpact);
-//					QueryDefinition actionQueryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), "myActionQuery", actionQuerySQL, schema.getSchemaName());
-//					actionQueryDefinition.crunchIt();
+					ActionQueryProcessor.processActionQuery(ac.getSql(), schemaImpact);
 					applyActionQuery(schemaImpact, schema);
 				}
-				if ((actionQueryFile != null) && (actionQueryFile.trim().length() > 0)) {
-					// Parse the action querys in the text file and apply them to the schema topology
-					ActionQuerys actionQuerys = new ActionQuerys();
-					actionQuerys.loadActionQueries(actionQueryFile);
-					for (ActionQuery ac: actionQuerys) {
-						SchemaImpact schemaImpact = new SchemaImpact();
-						ActionQueryProcessor.processActionQuery(ac.getSql(), schemaImpact);
-						applyActionQuery(schemaImpact, schema);
-					}
-				}				
-				addNodesToGraph();
-				
+				addNodesToGraph();			
 			} catch (Exception ex) {
 				Log.logError("SchemaGraph.generateGraph(): " + ex.getLocalizedMessage());
 				status = false;
 			}
 		}
-		return schemaTopologyResults;
 	}
 	/**
 	 * Apply an action query to the schema to see what views would be affected
@@ -175,7 +124,7 @@ public class SchemaGraph {
 						qa.setAffectedByActionQuery(true);
 						qd.getQueryTables().setAffectedByActionQuery(qa, true);
 						schema.getTables().setAffectedByActionQuery(qa, true);
-						schemaTopologyResults.incrementTotalAffectedAttributes();
+						scip.getGraphResults().incrementTotalAffectedAttributes();
 					}
 				}
 			}
@@ -186,12 +135,14 @@ public class SchemaGraph {
 				for (TableAttribute tableAttribute : table.getTableAttributes()) 
 				if (schemaImpact.getTableAttributes().findAttributeByTableAndName(tableAttribute.getContainerName(), tableAttribute.getAttributeName()) != null) {
 					// The table attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
-					tableAttribute.setAffectedByActionQuery(true);
-					tableAttribute.setGraphNodeAnnotation(graphNodeAnnotation);
+					if (tableAttribute.getAffectedByActionQuery() == false) {
+						scip.getGraphResults().incrementTotalAffectedAttributes();
+						tableAttribute.setAffectedByActionQuery(true);
+						tableAttribute.setGraphNodeAnnotation(graphNodeAnnotation);
+					}
 //					table.setAffectedByActionQuery(tableAttribute, true);
 //					schema.getTables().setAffectedByActionQuery(tableAttribute, true);
-					schemaTopologyResults.incrementTotalAffectedAttributes();
-				}	
+				}
 			}
 		} catch (Exception ex) {
 			Log.logError("SchemaGraph.ApplyActionQueryDefinition(): " + ex.getLocalizedMessage());
@@ -201,23 +152,24 @@ public class SchemaGraph {
 	private void loadQueryDefinitions(Schema schema) {
 		// Use all the queries in the schema
 		// Populate our collection with all the query definitions in the schema
-		ArrayList<String> queryNames = Schema.readQueryNames(hostName, schema.getSchemaName(), userName, password);
+		ArrayList<String> queryNames = Schema.readQueryNames(scip.getHostName(), schema.getSchemaName(), scip.getUserName(), scip.getPassword());
 		QueryDefinition queryDefinition;
 		for (String queryName : queryNames) {
 			String sql;
-			sql = QueryDefinition.readSQLFromDatabaseServerQueryDefinition(hostName, userName, password, schema.getSchemaName(), queryName);
-			queryDefinition = new QueryDefinition(hostName, userName, password, new QueryTypeUnknown(), queryName, sql, schema.getSchemaName() );
+			sql = QueryDefinition.readSQLFromDatabaseServerQueryDefinition(scip.getHostName(), scip.getUserName(), scip.getPassword(), schema.getSchemaName(), queryName);
+			queryDefinition = new QueryDefinition(scip.getHostName(), scip.getUserName(), scip.getPassword(), new QueryTypeUnknown(), queryName, sql, schema.getSchemaName() );
 			schema.getQueryDefinitions().addQueryDefinition(queryDefinition);
 			queryDefinition.crunchIt();
-			schemaTopologyResults.incrementTotalQueries();
+			scip.getGraphResults().incrementTotalQueries();
 		}
 	}
 	/**
 	 * Actually put nodes and edges on the graph. Finally.
 	 */
 	private void addNodesToGraph() {
+		Log.logProgress("SchemaGraph.addNodesToGraph()");
 		addAllConstraints();
-		for (Schema schema: schemas) {
+		for (Schema schema: scip.getSchemas()) {
 			addSchemaNode(schema);
 			addQueryNodes(schema);
 			addTableNodes(schema);
@@ -226,7 +178,7 @@ public class SchemaGraph {
 		}
 	}
 	private void addSchemaNode(Schema schema) {
-		if (schemaTopologyConfig.getIncludeSchemaNodeInGraph() == true) {
+		if (scip.getDatabaseGraphConfig().getIncludeSchemaNodeInGraph() == true) {
 			addSchemaNode(schema.getSchemaName());
 		}
 	}
@@ -240,7 +192,7 @@ public class SchemaGraph {
 			String queryName;
 			queryName = queryDefinition.getQueryName();
 			addQueryNode(schema.getSchemaName(), queryName);
-			if (schemaTopologyConfig.getIncludeSchemaNodeInGraph() == true) {
+			if (scip.getDatabaseGraphConfig().getIncludeSchemaNodeInGraph() == true) {
 				// Add relationships from the schema to the queries
 				connectSchemaNodeToQueryNode(schema.getSchemaName(), queryName);
 			}
@@ -321,8 +273,8 @@ public class SchemaGraph {
 		Tables tables = schema.getTables();	// Get the list of loaded tables.
 		for (Table table : tables) {
 			addTableNode(schema.getSchemaName(), table.getTableName());
-			schemaTopologyResults.incrementTotalTables();
-			if (schemaTopologyConfig.getIncludeSchemaNodeInGraph() == true) {
+			scip.getGraphResults().incrementTotalTables();
+			if (scip.getDatabaseGraphConfig().getIncludeSchemaNodeInGraph() == true) {
 				// Add relationships from the schema to the tables
 				String key1, key2, relationshipKey;
 				key1 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName());
@@ -335,11 +287,15 @@ public class SchemaGraph {
 			}
 		}
 	}
+	/**
+	 * Call addTableNodes before calling this
+	 * @param schema The schema that has the tables in it
+	 */
 	private void addAttributeNodes(Schema schema) {
 		Tables tables = schema.getTables();	// Get the list of loaded tables. By now we have also populated the attribute collection in each table.
 		for (Table table : tables) {
 			for (TableAttribute attribute: table.getTableAttributes()) {
-				schemaTopologyResults.incrementTotalAttributes();
+				scip.getGraphResults().incrementTotalAttributes();
 				String nodeLabel;
 				String key;
 				key = Utils.cleanForGraph(schema.getSchemaName())
@@ -355,9 +311,9 @@ public class SchemaGraph {
 				                         ":" + 
 				                         nodeLabel + 
 				                         " {key:" 
-						                 + "\"" 
+						                 + "\""
 				                         + key
-						                 + "\"" 
+						                 + "\""
 				                         + ", name:" 
 						                 + "\"" 
 				                         + Utils.cleanForGraph(attribute.getAttributeName())
@@ -387,7 +343,7 @@ public class SchemaGraph {
 				                       + "}) "
 						               + "MERGE (t)-[:" + tableToAttributeLabel + " {key:\"" + relationshipKey + "\"}]->(a)");
 				if (attribute.getGraphNodeAnnotation().getGraphNodeAnnotation() == GRAPH_NODE_ANNOTATION.Changed) {
-					Neo4jDB.setNodeProperty(tableNodeLabel, attribute.getKey(), tableAttributeNodePropertyAffectedBySQL, "changed");
+					Neo4jDB.setNodeProperty(nodeLabel, attribute.getKey(), tableAttributeNodePropertyAffectedBySQL, "changed");
 				}
 			}
 		}
@@ -419,7 +375,7 @@ public class SchemaGraph {
 			               + " (a:" + affectedAttributeNodeLabel + "{key:'" + key2 + "'}) "
 					       + " MERGE (q)-[:" + viewToAttributeLabel + " {key:\"" + relationshipKey + "\"}]->(a)";
 				Neo4jDB.submitNeo4jQuery(neo4jQuery);
-				schemaTopologyResults.incrementTotalQueryAttributes();
+				scip.getGraphResults().incrementTotalQueryAttributes();
 			}
 		}
 	}
@@ -432,13 +388,13 @@ public class SchemaGraph {
 	private static void addSchemaConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.schemaNodeLabel + ") ASSERT a.key IS UNIQUE");}
 	private static void addETLStepNodeConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.etlStepNodeLabel + ") ASSERT a.key IS UNIQUE");}
 
-	public Schemas getSchemas() {
-		return schemas;
+/*	public Schemas getSchemas() {
+		return scip.getSchemas();
 	}
 
 	public void setSchemas(Schemas schemas) {
 		this.schemas = schemas;
-	}
+	} */
 	public static String computeNodeLabel(GraphNodeAnnotation graphNodeAnnotation) {
 		String nodeLabel;
 		nodeLabel = SchemaGraph.attributeNodeLabel;

@@ -171,7 +171,6 @@ public class ProcessETLController {
 		loadTableViewWithETLSteps(scip.getEtlProcess().getETLSteps()); 
 	}
 	private void setTheScene() {
-//		txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho");
 		scip = Config.getConfig().getCurrentSchemaChangeImpactProject();
 		scatter(scip);
 //		We are setting the title of this form in the Main. It works and I can't figure out how to get the stage object here.
@@ -444,15 +443,15 @@ public class ProcessETLController {
 						// Add this new step to the collection of steps. We don't know the schema name, yet.
 						scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connectionName, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), "SchemaUnknown"));
 						//for (String connectionName: connectionNames) {
-							scip.getEtlProcess()
-							    .getETLConnections()
-							    .addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
-									                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
-									                                // "database" is the schema in MySQL. 
-									                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
-									                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
-									                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
-									                                ));
+						scip.getEtlProcess()
+						    .getETLConnections()
+						    .addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
+								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
+								                                // "database" is the schema in MySQL. 
+								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
+								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
+								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
+								                                ));
 						//}
 					}
 					// Resolve the schema name for all the ETL steps we just added

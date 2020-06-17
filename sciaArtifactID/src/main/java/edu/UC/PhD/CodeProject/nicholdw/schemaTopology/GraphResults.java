@@ -9,7 +9,7 @@ package edu.UC.PhD.CodeProject.nicholdw.schemaTopology;
  * @author nicomp
  *
  */
-public class DatabaseGraphResults {
+public class GraphResults {
 	private int totalQueries;
 	private int totalTables;
 	private int totalAttributes;

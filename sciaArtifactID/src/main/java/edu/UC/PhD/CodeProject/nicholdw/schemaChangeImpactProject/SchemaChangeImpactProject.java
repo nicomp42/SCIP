@@ -10,8 +10,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 
+import edu.UC.PhD.CodeProject.nicholdw.ActionQuerys;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
+import edu.UC.PhD.CodeProject.nicholdw.Schemas;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
@@ -19,6 +21,9 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.ActionQueryDefinitions;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphConfig;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.GraphResults;
+import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 
@@ -29,6 +34,7 @@ import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 public class SchemaChangeImpactProject implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private String hostName, userName, password;
 	private String projectName;
 	private String filePath;
 	private Date dateCreated;
@@ -41,7 +47,12 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private OpsIds opsIds;
 	private DwhQueries dwhQueries;
 	private ETLProcess etlProcess;
+	private Schemas schemas;
+	private DatabaseGraphConfig databaseGraphConfig;
+	private ActionQuerys actionQuerys;
 	private ActionQueryDefinitions actionQueryDefinitions;
+//	private GraphTopology schemaTolopogy;
+	private GraphResults graphResults;
 	private static final String defaultProjectName = "[No project loaded]";	// Until the user provides a project name
 	//private ArrayList<TableOutputStep> outputSteps = new ArrayList<TableOutputStep>();
 	//private ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
@@ -61,6 +72,29 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		init();
 		try {setProjectName(defaultProjectName);} catch (Exception ex){}		// OK to eat this exception.
 	}
+	
+	/***
+	 * Populates graphResults object in this object.
+	 * call getGraphResults();
+	 */
+	public void generateGraph() {
+		// Everything we need should already be in the current scip object
+		SchemaGraph schemaGraph = new SchemaGraph(this);
+		schemaGraph.generateGraph();
+	}
+	public GraphResults getGraphResults() {return graphResults;}
+	public void setGraphResults(GraphResults graphResults) {this.graphResults = graphResults;}
+	
+	public void setDatabaseGraphConfig(DatabaseGraphConfig databaseGraphConfig) {
+		this.databaseGraphConfig = databaseGraphConfig;
+	}
+	public DatabaseGraphConfig getDatabaseGraphConfig() {
+		return databaseGraphConfig;
+	}
+	public void setActionQuerys(ActionQuerys actionQuerys) {
+		this.actionQuerys = actionQuerys;
+	}
+	public ActionQuerys getActionQuerys() {return actionQuerys;}
 	/***
 	 * Try to add an action query to the collection.
 	 * The action query is not applied to the schemas, it's just parsed and stored. 
@@ -116,8 +150,9 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		setIdsDwh(new IdsDwh());
 		setOpsIds(new OpsIds());
 		setDwhQueries(new DwhQueries());
-		setEtlProcess(new ETLProcess(Utils.formatPath(filePath) + pentahoProjectDirectory));
+//		setEtlProcess(new ETLProcess(Utils.formatPath(filePath) + pentahoProjectDirectory));
 		actionQueryDefinitions = new ActionQueryDefinitions();
+		actionQuerys = new ActionQuerys();
 	}
 	public void loadETLTransformationFiles() {
 		etlProcess.loadETLTransformationFiles();
@@ -286,5 +321,35 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	}
 	public void setEtlProcess(ETLProcess etlProcess) {
 		this.etlProcess = etlProcess;
+	}
+	public Schemas getSchemas() {
+		return schemas;
+	}
+	public void setSchemas(Schemas schemas) {
+		this.schemas = schemas;
+	}
+
+	public String getHostName() {
+		return hostName;
+	}
+
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

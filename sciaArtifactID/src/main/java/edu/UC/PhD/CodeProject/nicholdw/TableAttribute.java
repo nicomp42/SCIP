@@ -83,7 +83,7 @@ public class TableAttribute implements Attributable, java.io.Serializable  {
 		aliases = new Aliases();
 		setAffectedByActionQuery(false);
 		setDefaultGraphNodeAnnotation();
-		this.schemaName = "";
+		setSchemaName("");
 	}
 	/***
 	 * Constructor
@@ -111,7 +111,7 @@ public class TableAttribute implements Attributable, java.io.Serializable  {
 		this.aliases = Aliases.clone(aliases);
 		setAffectedByActionQuery(false);
 		setDefaultGraphNodeAnnotation();
-		this.schemaName = schemaName;
+		setSchemaName(schemaName);
 	}
 	private void setDefaultGraphNodeAnnotation() {
 		GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();

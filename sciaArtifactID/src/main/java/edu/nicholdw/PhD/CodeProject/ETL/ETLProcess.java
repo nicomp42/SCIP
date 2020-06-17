@@ -254,7 +254,6 @@ public class ETLProcess implements java.io.Serializable {
 	}
 	public static void createGraph(SchemaChangeImpactProject scip) {
 		try {
-			SchemaGraph.addAllConstraints();
 			ETLProcess etlProcess = scip.getEtlProcess();
 			SchemaGraph.addAllConstraints();	// Force keys to be unique as the graph is drawn
 			for (ETLStep etlStep : etlProcess.getETLSteps()) {
@@ -428,7 +427,6 @@ public class ETLProcess implements java.io.Serializable {
 		return annotationInfo;
 	}
 	/***
-	 * 
 	 * @param scip Project where the Action Queries are
  	 * @param attribute The Query Attribute to the looked-for in the action queries
 	 */

@@ -17,7 +17,7 @@ class ActionQuerys_test {
 	void test() {
 		ActionQuerys actionQuerys = new ActionQuerys();
 		// File path is relative to src/main/test/resources folder, not the src/main/resources folder!. 
-		actionQuerys.loadActionQueries("actionQuerysUnitTest.txt");
+		actionQuerys.loadActionQuerys("actionQuerysUnitTest.txt");
     	assertEquals("Action Querys read from text file", 4, actionQuerys.getSize());
 	}
 }
