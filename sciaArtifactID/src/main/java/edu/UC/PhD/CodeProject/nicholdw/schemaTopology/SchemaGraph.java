@@ -88,7 +88,7 @@ public class SchemaGraph {
 		Log.logProgress("SchemaGraph.generateGraph()");
 		scip.setGraphResults(new GraphResults());
 		boolean status = true;		// Hope for the best
-		for (Schema schema: scip.getSchemas()) {
+		for (Schema schema: scip.getSchemas()) {	// There may not be any schemas so plan accordingly
 			try {
 				schema.loadTables(scip.getHostName(), scip.getUserName(), scip.getPassword());
 				Tables tables = schema.getTables();

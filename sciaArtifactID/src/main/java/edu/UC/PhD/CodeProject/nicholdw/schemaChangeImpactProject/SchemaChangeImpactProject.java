@@ -150,7 +150,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		setIdsDwh(new IdsDwh());
 		setOpsIds(new OpsIds());
 		setDwhQueries(new DwhQueries());
-//		setEtlProcess(new ETLProcess(Utils.formatPath(filePath) + pentahoProjectDirectory));
+		setEtlProcess(new ETLProcess(null));
 		actionQueryDefinitions = new ActionQueryDefinitions();
 		actionQuerys = new ActionQuerys();
 	}

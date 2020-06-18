@@ -153,13 +153,6 @@
                               </TableView>
                            </children>
                               </Pane>
-								<Pane fx:id="pneCreateGraph" layoutX="10.0" layoutY="556.0" prefHeight="135.0" prefWidth="780.0" visible="false">
-                                 <children>
-									<Button fx:id="btnCreateGraph" layoutX="8.0" layoutY="100.0" mnemonicParsing="false" onAction="#btnCreateGraph_OnClick" text="Create Graph" />
-									<CheckBox fx:id="cbClearDB" layoutX="9.0" layoutY="47.0" mnemonicParsing="false" text="Clear Graph Before Creation" />
-                              <CheckBox fx:id="cbOpenInBrowser" layoutX="9.0" layoutY="75.0" mnemonicParsing="false" text="Open Graph after Creation" />
-                                 </children>
-                              </Pane>
                         <Button fx:id="btnProcessETLTransformationFiles" layoutX="10.0" layoutY="400.0" mnemonicParsing="false" onAction="#btnProcessETLTransformationFiles_OnClick" text="Test Process ETL Transformation Files" />
 							</children>
 						</AnchorPane>

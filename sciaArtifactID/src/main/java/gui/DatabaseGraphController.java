@@ -39,7 +39,6 @@ import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
 import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStep;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
-import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
 import edu.UC.PhD.CodeProject.nicholdw.Schemas;
 import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
@@ -47,13 +46,8 @@ import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
-import edu.UC.PhD.CodeProject.nicholdw.query.ActionQueryDefinitions;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
-import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.ActionQueryProcessor;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
@@ -278,9 +272,11 @@ public class DatabaseGraphController {
 		cbSchema.setVisible(visible);
 		btnClearSchemaComboBox.setVisible(visible);
 		lblSchemaToProcess.setVisible(visible);
-//		taActionQuery.setVisible(visible);
-//		lblActionQuery.setVisible(visible);
 		pneActionQuery.setVisible(visible);
+		btnProcessSchema.setVisible(visible);
+		cbClearDB.setVisible(visible);
+		cbIncludeSchemaNodes.setVisible(visible);
+		cbOpenInBrowser.setVisible(visible);
 	}
 	@FXML
 	private void btnAttributesNotInQueries_OnClick(ActionEvent event) throws InterruptedException {
@@ -330,6 +326,8 @@ public class DatabaseGraphController {
 					scip.setActionQuerys(actionQuerys);
 					try {
 						scip.generateGraph();
+						// Add in the ETL steps, if any
+						ETLProcess.createGraph(scip);
 						if (cbOpenInBrowser.isSelected() ) {
 							Browser browser = Browser.prepareNewBrowser();
 							browser.initAndLoad(null);
@@ -722,7 +720,7 @@ public class DatabaseGraphController {
 		        }
 		    };
 		    task.setOnSucceeded(e -> {
-		    	lblWorking.setVisible(false);
+		    	lblWorkingOnETL.setVisible(false);
 				XMLParser myXMLParser = new XMLParser();
 				//myXMLParser.getStepNames(xmlFilePath, stepNames);
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

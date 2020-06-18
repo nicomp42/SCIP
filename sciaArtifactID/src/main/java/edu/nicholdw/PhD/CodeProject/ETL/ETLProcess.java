@@ -49,8 +49,12 @@ public class ETLProcess implements java.io.Serializable {
 		etlTransformationFiles = new ETLTransformationFiles();
 		etlHops = new ETLHops();
 		this.transformationFileDirectory = transformationFileDirectory;
-		if (this.transformationFileDirectory != null) {
-			etlTransformationFiles.loadETLTransformationFileNames(this.transformationFileDirectory);
+		try {
+			if (this.transformationFileDirectory != null) {
+				etlTransformationFiles.loadETLTransformationFileNames(this.transformationFileDirectory);
+			}
+		} catch (Exception ex) {
+			Log.logError("ETLProcess.ETLProcess: " + ex.getLocalizedMessage());
 		}
 	}
 	/***

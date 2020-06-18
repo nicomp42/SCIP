@@ -122,7 +122,6 @@ public class ProcessETLController {
 						txaAffectOfActionQuery.appendText(qa.toString() + System.getProperty("line.separator"));
 					}
 				}
-				//ETLProcess.applyActionQuerys(scip);
 			} catch (Exception ex) {
 				Log.logError("ProcessETLController.btnApplyActionQuery_OnClick(): ", ex);
 			}
@@ -280,7 +279,7 @@ public class ProcessETLController {
 			int clickCount = 0;
 			clickCount = event.getClickCount();
 			if (clickCount == 2) { // It's a double click! Stuff in the default path for a test case.
-				txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho\\");
+				txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\");
 			}
 		}
 	}
@@ -350,10 +349,8 @@ public class ProcessETLController {
 			ArrayList<StepName> stepNames = new ArrayList<StepName>();
 			ArrayList<String> connectionNames = new ArrayList<String>();
 			ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
-//			ArrayList<>
 			ArrayList<ExecuteSQLScriptStep> executeSQLScriptSteps = new ArrayList<ExecuteSQLScriptStep>();
 			ETLHops etlHops = new ETLHops();
-	//		ETLJobs etlJobs = new ETLJobs();
 			// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 		    Task <Void> task = new Task<Void>() {
 		        @Override public Void call() throws InterruptedException {
