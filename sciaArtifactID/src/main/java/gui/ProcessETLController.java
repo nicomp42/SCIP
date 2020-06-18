@@ -69,7 +69,6 @@ import javafx.scene.control.TableView;
 
 public class ProcessETLController {
 	private SchemaChangeImpactProject scip;
-	private Stage myPrimaryStage;
 	@FXML	private TableView<GUIETLStep> tvETLSteps;
 	@FXML	private TableView<GUIETLConnection> tvETLConnections;
 	@FXML	private TableView<GUIetlTransformationFile> tvETLTransformationFiles;
@@ -129,17 +128,6 @@ public class ProcessETLController {
 			}
 		}
 	}
-	/**
-	 * This never gets called by JavaFX. It's only called in the init of the application, which in this case is Main.
-	 */
-/*	public void start(Stage primaryStage) {
-		Log.logProgress("ProcessETLController.start() starting...");
-		try {
-			myPrimaryStage = primaryStage;
-		} catch (Exception ex) {
-			Log.logError("ProcessETLController.start(): " + ex.getLocalizedMessage());
-		}
-	} */
 	private DataBrowseController dataBrowseController;
 
 	private void clearTransformationFileTable() {
