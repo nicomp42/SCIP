@@ -298,7 +298,7 @@ public class DatabaseGraphController {
 		showArtifacts(true);
 	}
 	private void processSchemas() {
- 		if ( cbSchema.getItems().size() > 0) {
+ 		if ( cbSchema.getItems().size() > 0 || countNumberOfETLTransformationFilesWithAStage() > 0) {
 //			databaseGraphResults = new GraphResults();
 			DatabaseGraphConfig databaseGraphConfig = new DatabaseGraphConfig();
 			// Here is some stuff we want to run in another thread so the window has time to update itself.
@@ -371,7 +371,7 @@ public class DatabaseGraphController {
 				Log.logError("DatabaseGraphController.ProcessSchema(): " + e.getLocalizedMessage());
 			}
 		} else {
-			(new Alert(Alert.AlertType.ERROR, "Please select one or more schemas from the list", ButtonType.OK)).showAndWait();
+			(new Alert(Alert.AlertType.ERROR, "Please select one or more schemas and/or ETL Steps", ButtonType.OK)).showAndWait();
 			cbSchema.requestFocus();
 		}
 	}
@@ -669,10 +669,8 @@ public class DatabaseGraphController {
 			ArrayList<StepName> stepNames = new ArrayList<StepName>();
 			ArrayList<String> connectionNames = new ArrayList<String>();
 			ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
-//			ArrayList<>
 			ArrayList<ExecuteSQLScriptStep> executeSQLScriptSteps = new ArrayList<ExecuteSQLScriptStep>();
 			ETLHops etlHops = new ETLHops();
-	//		ETLJobs etlJobs = new ETLJobs();
 			// See https://stackoverflow.com/questions/19968012/javafx-update-ui-label-asynchronously-with-messages-while-application-different/19969793#19969793
 		    Task <Void> task = new Task<Void>() {
 		        @Override public Void call() throws InterruptedException {

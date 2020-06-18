@@ -22,6 +22,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.ActionQueryProcessor;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 
 /**
  * Generate a schema graph
@@ -84,7 +85,7 @@ public class SchemaGraph {
 				                + " set n:" 
 				                + newLabel);
 	}
-	public void generateGraph() {
+	public Boolean generateGraph() {
 		Log.logProgress("SchemaGraph.generateGraph()");
 		scip.setGraphResults(new GraphResults());
 		boolean status = true;		// Hope for the best
@@ -101,12 +102,14 @@ public class SchemaGraph {
 					ActionQueryProcessor.processActionQuery(ac.getSql(), schemaImpact);
 					applyActionQuery(schemaImpact, schema);
 				}
-				addNodesToGraph();			
+				addNodesToGraph();	
+				ETLProcess.createGraph(scip);
 			} catch (Exception ex) {
 				Log.logError("SchemaGraph.generateGraph(): " + ex.getLocalizedMessage());
 				status = false;
 			}
 		}
+		return status;
 	}
 	/**
 	 * Apply an action query to the schema to see what views would be affected
