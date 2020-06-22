@@ -47,6 +47,11 @@ public class TableAttribute implements Attributable, java.io.Serializable  {
 	public int getLength() {return length;}
 	public void setLength(int length) {this.length = length;}
 	public boolean isAutoIncrement() {if (extra.toLowerCase().contains("auto_increment")) return true; else return false;}
+	private boolean indirectlyAffectedByActionQuery;
+	public Boolean getIndirectlyAffectedByActionQuery() {return indirectlyAffectedByActionQuery;}
+	public void setIndirectlyAffectedByActionQuery(Boolean indirectlyAffectedByActionQuery) {
+		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
+	}
 
 	/***
 	 * We use this when we only need the attribute name -- lots of defaults are assumed.

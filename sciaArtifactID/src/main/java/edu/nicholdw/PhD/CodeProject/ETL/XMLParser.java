@@ -46,19 +46,29 @@ import java.io.*;
 public class XMLParser {
 	public static Document dom;
 	private String xmlDirectory;
-/*	
+
 	public static void main(String[] args) {
 		Log.logProgress("XMLParser.main(): ");
 		try {
-			XMLParser myXNMLParser = new XMLParser();
-			List<OutputStep> os = myXNMLParser.parseXMLForOutputSteps("c:\\temp\\foop.xml");
+			
+			XMLParser myXMLParser = new XMLParser();
+			ETLJobs etlJobs = new ETLJobs();
+			myXMLParser.getETLJobs("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb", etlJobs);
+			for (ETLJob etlJob: etlJobs) {
+				System.out.println(etlJob.toString());
+			}
+			ETLHops etlHops = new ETLHops();
+			myXMLParser.getETLHopsFromPentahoKJBFile("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb", etlHops);
+			
+/*			List<OutputStep> os = myXNMLParser.parseXMLForOutputSteps("c:\\temp\\foop.xml");
 			List<TableInputStep> is = myXNMLParser.parseXMLForInputSteps("c:\\temp\\foop.xml");
 			List<DBJoinStep> js = myXNMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml");
-			Log.logProgress("XMLParser.main(): parsing complete.");
+			Log.logProgress("XMLParser.main(): parsing complete.");*/
 		} catch (Exception ex) {
+			System.err.println("XMLParser.main(): " + ex.getLocalizedMessage());
 			Log.logError("XMLParser.main(): " + ex.getLocalizedMessage());
 		}
-	}*/
+	}
 	/***
 	 * Lop off the file name from the end of a fully qualified path or a relative path 
 	 * @param filePath
@@ -461,9 +471,8 @@ public class XMLParser {
 		}
 	}
 	/***
-	 * Read the complete list of jobs in the job
+	 * Read the complete list of jobs in the .kjb file
 	 * @param xmlFilePath The location of the XML file, as exported from Pentaho
-	 * @return The list of job names
 	 */
 	public void getETLJobs(String xmlFilePath, ETLJobs etlJobs) {
 		Log.logProgress("XMLParser.getETLJobs(" + xmlFilePath + ")");
@@ -476,10 +485,29 @@ public class XMLParser {
 			doc = builder.parse(xmlFilePath);
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
-			/* One transformation is composed of several steps */
 			ETLJobs tmpETLJobs;
 			tmpETLJobs = getETLJobs(xpath, doc);
 			for (ETLJob etlJob: tmpETLJobs) {etlJobs.addETLJob(new ETLJob(etlJob));}
+		} catch (Exception ex) {
+			Log.logProgress("XMLParser.getJobNames(): " + ex.getLocalizedMessage());
+		}
+	}
+	/***
+	 * Read the complete list of hops (in order) in the .kjb file
+	 * @param xmlFilePath The location of the XML file, as exported from Pentaho
+	 */
+	public void getETLHopsFromPentahoKJBFile(String xmlFilePath, ETLHops etlHops) {
+		Log.logProgress("XMLParser.getETLHopsFromPentahoKJBFile(" + xmlFilePath + ")");
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(xmlFilePath);
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			etlHops = getETLHopsFromPentahoKJBXML(xpath, doc);
 		} catch (Exception ex) {
 			Log.logProgress("XMLParser.getJobNames(): " + ex.getLocalizedMessage());
 		}
@@ -519,41 +547,51 @@ public class XMLParser {
 		}
 		return stepNames;
 	}
+	/***
+	 * This method is used to read hops from .ktr files and .kjb files
+	 * @param xpath
+	 * @param doc
+	 * @return The ETLHops object with all the hops in it
+	 */
+	private ETLHops getETLHopsFromPentahoKJBXML(XPath xpath, Document doc){
+		Log.logProgress("XMLParser.getETLJobs(" + xpath + ")");
+		ETLHops etlHops = new ETLHops();
+		try {		
+			XPathExpression expr = xpath.compile("/job/entries/hops");
+			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Node nNode = nodes.item(i);
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element eElement = (Element) nNode;
+					String from, to, enabled, filename;
+					from = eElement.getElementsByTagName("from").item(0).getTextContent();
+					to = eElement.getElementsByTagName("to").item(0).getTextContent();
+					enabled = eElement.getElementsByTagName("enabled").item(0).getTextContent();
+					filename = eElement.getElementsByTagName("filename").item(0).getTextContent();
+					etlHops.addETLHop(new ETLHop(from, to ,enabled.toUpperCase().contentEquals("Y")?true:false, filename));
+				}			
+			}
+		}catch (XPathExpressionException e) {
+			Log.logError("XMLParser.getETLHopsFromPentahoKJBXML(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+		return etlHops;
+	}
 	private ETLJobs getETLJobs(XPath xpath, Document doc){
 		Log.logProgress("XMLParser.getETLJobs(" + xpath + ")");
 		ETLJobs etljobs = new ETLJobs();
-		try {
-			// /*/item[id/@isInStock='true']/category/text()
-			//  //job/entries/entry[./type[.='JOB']]
-//			XPathExpression expr = xpath.compile("/job/entries/entry/name/text()");
-			XPathExpression expr = xpath.compile("/job/entries/entry[./type[.='JOB']]/name/text()");
-
+		try {		
+			XPathExpression expr = xpath.compile("/job/entries/entry");
 			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 			for (int i = 0; i < nodes.getLength(); i++) {
-				String name;
-				name = nodes.item(i).getNodeValue();
-				String pattern;
-				//        "/job/entries/entry[./type[.='JOB']]/name/text()"
-//				pattern = "/job/entries/entry[./type[.='JOB']]/[./name[.='" + name + "']]/filename/text()";
-				pattern = "/job/entries/entry[./type[.='JOB'] and ./name[.='" + name + "']]/filename/text()";
-				XPathExpression exprFilename = xpath.compile(pattern);
-				String filename;
-				NodeList filenameNodes;
-				filenameNodes = (NodeList) exprFilename.evaluate(doc, XPathConstants.NODESET);
-				filename = filenameNodes.item(0).getNodeValue();
-				String description;
-				NodeList descriptionNodes;
-				pattern = "/job/entries/entry[./type[.='JOB'] and ./name[.='" + name + "']]/description/text()";
-				XPathExpression exprDescription = xpath.compile(pattern);
-				descriptionNodes = (NodeList) exprDescription.evaluate(doc, XPathConstants.NODESET);
-				description = "";
-				try {
-					description = descriptionNodes.item(0).getNodeValue();
-				} catch (Exception ex) {
-					// If the description is null we will end up here. 
-					Log.logError("XMLParser.getETLJobs(): Null description. This is probably not a problem. " + ex.getLocalizedMessage());
-				}
-				etljobs.addETLJob(new ETLJob(name, filename, description));		// new nodes.item(i).getNodeValue());
+				Node nNode = nodes.item(i);
+//				System.out.println("\nCurrent Element :" + nNode.getNodeName());
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element eElement = (Element) nNode;
+					String filename, name;
+					filename = eElement.getElementsByTagName("filename").item(0).getTextContent();
+					name = eElement.getElementsByTagName("name").item(0).getTextContent();
+					etljobs.addETLJob(new ETLJob(name, filename, ""));
+				}			
 			}
 		}catch (XPathExpressionException e) {
 			Log.logError("XMLParser.getJobNames(): " + e.getLocalizedMessage(), e.getStackTrace());

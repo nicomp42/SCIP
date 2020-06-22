@@ -65,7 +65,7 @@ public class ETLTransformationFile implements java.io.Serializable {
 	public void setEtlType(enumETLType etlType) {
 		this.etlType = etlType;
 	} */
-	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView, ETLProcess etlProcess) {
+	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView, ETLKTRFile etlProcess) {
         ObservableList<gui.GUIetlTransformationFile> data = tableView.getItems();
         data.clear();
         for (ETLTransformationFile etlTransformationFile : etlProcess.getEtlTransformationFiles()) {

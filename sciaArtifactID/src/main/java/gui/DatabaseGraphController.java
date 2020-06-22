@@ -54,7 +54,7 @@ import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnection;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLConnections;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLHops;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFile;
@@ -134,7 +134,7 @@ public class DatabaseGraphController {
 	@FXML 	private void btnETLBrowse_OnClick(ActionEvent event) {browseETL();}
 	@FXML	
 	private void btnProcessETLTransformationFiles_OnClick(ActionEvent event) {
-		scip.getEtlProcess().setTransformationFileDirectory(Utils.formatPath(txaETLFilePath.getText().trim())); 
+		scip.getETLKTRFile().setTransformationFileDirectory(Utils.formatPath(txaETLFilePath.getText().trim())); 
 		processETLTransformationFiles();
 	}
 //	@FXML	private void txaETLFilePath_DoubleClick(ActionEvent event) {txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho");}
@@ -327,7 +327,7 @@ public class DatabaseGraphController {
 					try {
 						scip.generateGraph();
 						// Add in the ETL steps, if any
-						ETLProcess.createGraph(scip);
+						ETLKTRFile.createGraph(scip);
 						if (cbOpenInBrowser.isSelected() ) {
 							Browser browser = Browser.prepareNewBrowser();
 							browser.initAndLoad(null);
@@ -498,7 +498,7 @@ public class DatabaseGraphController {
 	private DataBrowseController dataBrowseController;
 
 	private void clearTransformationFileTable() {
-		scip.getEtlProcess().getEtlTransformationFiles().deleteAll();
+		scip.getETLKTRFile().getEtlTransformationFiles().deleteAll();
 		tvETLTransformationFiles.getItems().clear();
 		displayETLProcessControls(false);
 	}
@@ -506,7 +506,7 @@ public class DatabaseGraphController {
 		
 	}
 	private void scatter(SchemaChangeImpactProject scip) {
-		loadTableViewWithETLSteps(scip.getEtlProcess().getETLSteps()); 
+		loadTableViewWithETLSteps(scip.getETLKTRFile().getETLSteps()); 
 	}
 	private void checkToEnableSubmitButton() {
 		if (txaETLFilePath.getText() != null && txaETLFilePath.getText().trim().length() > 0) {
@@ -527,8 +527,8 @@ public class DatabaseGraphController {
 //		            System.out.println(guiETLStep.toString());
 		            if (dataBrowseController == null) {dataBrowseController = openDataBrowse();} 
 	            	dataBrowseController.appendToTextArea(guiETLStep.toString());
-	            	ETLStep etlStep = scip.getEtlProcess().getETLSteps().getETLStep(guiETLStep.getStepName());
-	            	scip.getEtlProcess().processTableInputStepQuery(etlStep);
+	            	ETLStep etlStep = scip.getETLKTRFile().getETLSteps().getETLStep(guiETLStep.getStepName());
+	            	scip.getETLKTRFile().processTableInputStepQuery(etlStep);
 	            	for (QueryAttribute queryAttribute : etlStep.getQueryDefinition().getQueryAttributes()) {
 	            		String tmp;
 	            		tmp = queryAttribute.toString();
@@ -603,7 +603,7 @@ public class DatabaseGraphController {
 			int clickCount = 0;
 			clickCount = event.getClickCount();
 			if (clickCount == 2) { // It's a double click! Stuff in the default path for a test case.
-				txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho\\");
+				txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\");
 			}
 		}
 	}
@@ -620,7 +620,7 @@ public class DatabaseGraphController {
 					int idx = tvETLTransformationFiles.getSelectionModel().getSelectedIndex();
 					tvETLTransformationFiles.getItems().set(idx, g);
 					// Now we must update the ETLTransformationFile in the etlProcess object.
-					scip.getEtlProcess().getEtlTransformationFiles().updateETLStageInETLTransformationFile(g.getFileName(), g.getEtlStage());
+					scip.getETLKTRFile().getEtlTransformationFiles().updateETLStageInETLTransformationFile(g.getFileName(), g.getEtlStage());
 				}
 			}
 		} catch (Exception ex) {
@@ -634,7 +634,7 @@ public class DatabaseGraphController {
 	 * @param etlSteps The set of ETL steps
 	 */
 	public void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView) {
-		ETLTransformationFile.loadTableViewWithTransformationFileNames(tableView, scip.getEtlProcess());
+		ETLTransformationFile.loadTableViewWithTransformationFileNames(tableView, scip.getETLKTRFile());
     }
 	/**
 	 * Process the directory that contains some Pentaho transformation files. It should be all .ktr (transformation) files 
@@ -642,10 +642,10 @@ public class DatabaseGraphController {
 	 */
 	private void loadETLTransformationFiles() {
 		Log.logProgress("processETLTransformationFiles.loadETLTransformationFiles() " + Utils.formatPath(txaETLFilePath.getText().trim()));
-		scip.getEtlProcess().setTransformationFileDirectory(Utils.formatPath(txaETLFilePath.getText().trim()));
-		ArrayList<String> files = readDirectory(scip.getEtlProcess().getTransformationFileDirectory());
+		scip.getETLKTRFile().setTransformationFileDirectory(Utils.formatPath(txaETLFilePath.getText().trim()));
+		ArrayList<String> files = readDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 		for (String file : files) {
-			scip.getEtlProcess().getEtlTransformationFiles().add(new ETLTransformationFile(file));	// ETL Stage will default to unknown
+			scip.getETLKTRFile().getEtlTransformationFiles().add(new ETLTransformationFile(file));	// ETL Stage will default to unknown
 		}
 		loadTableViewWithTransformationFileNames(tvETLTransformationFiles);
 		displayETLProcessControls(true);
@@ -657,7 +657,7 @@ public class DatabaseGraphController {
 	 * Take apart all the select transformation files
 	 */
 	private void processETLTransformationFiles() {
-		Log.logProgress("ProcessETLController.processETLTransformationFiles() " + scip.getEtlProcess().getTransformationFileDirectory());
+		Log.logProgress("ProcessETLController.processETLTransformationFiles() " + scip.getETLKTRFile().getTransformationFileDirectory());
 		if (countNumberOfETLTransformationFilesWithAStage() > 0) {
 			displayLoadETLResults(false);
 			disableETLLoadSelectionControls(true);
@@ -678,7 +678,7 @@ public class DatabaseGraphController {
 		    		try {
 		    			try {
 		    				// Step through the selected files in the TableView control
-							for (ETLTransformationFile etlTransformationFile: scip.getEtlProcess().getEtlTransformationFiles()) {
+							for (ETLTransformationFile etlTransformationFile: scip.getETLKTRFile().getEtlTransformationFiles()) {
 								Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Checking " + etlTransformationFile.toString());
 								if (ETLTransformationFile.isStageUnknown(etlTransformationFile.getEtlStage()) == false) {
 									Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Processing " + etlTransformationFile.toString());
@@ -696,9 +696,9 @@ public class DatabaseGraphController {
 		        	return null;
 		        }
 		        public void processETLFile(ETLTransformationFile etlTransformationFile) {
-					Log.logProgress("ProcessETLController.processETLFile() parsing file at " + scip.getEtlProcess().getTransformationFileDirectory() + etlTransformationFile.toString()); 
+					Log.logProgress("ProcessETLController.processETLFile() parsing file at " + scip.getETLKTRFile().getTransformationFileDirectory() + etlTransformationFile.toString()); 
 					XMLParser myXMLParser = new XMLParser();
-					myXMLParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
+					myXMLParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 					myXMLParser.getStepNames(etlTransformationFile, stepNames);
 					myXMLParser.getConnectionNames(etlTransformationFile, connectionNames);
 					myXMLParser.parseXMLForTableOutputSteps(etlTransformationFile, tableOutputSteps);
@@ -729,7 +729,7 @@ public class DatabaseGraphController {
 				try {
 					for (StepName stepName: stepNames) {
 						builder = factory.newDocumentBuilder();
-						doc = builder.parse(scip.getEtlProcess().getTransformationFileDirectory() + stepName.getFileName());
+						doc = builder.parse(scip.getETLKTRFile().getTransformationFileDirectory() + stepName.getFileName());
 						XPathFactory xpathFactory = XPathFactory.newInstance();
 						xpath = xpathFactory.newXPath();
 						String tmp, stepType, sql, table, connectionName, schemaName;
@@ -746,9 +746,9 @@ public class DatabaseGraphController {
 						tmp += " (" + stepType +  ")";
 						txaStepNamesResults.appendText(tmp + System.getProperty("line.separator"));
 						// Add this new step to the collection of steps. We don't know the schema name, yet.
-						scip.getEtlProcess().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connectionName, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), "SchemaUnknown"));
+						scip.getETLKTRFile().getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connectionName, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), "SchemaUnknown"));
 						//for (String connectionName: connectionNames) {
-						scip.getEtlProcess()
+						scip.getETLKTRFile()
 						    .getETLConnections()
 						    .addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
 								                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
@@ -780,16 +780,16 @@ public class DatabaseGraphController {
 	//					txaETLJobs.appendText(etlJob.toString() + System.getProperty("line.separator"));
 	//				}
 					// Copy the collection of steps to the table view control on the GUI
-					loadTableViewWithETLSteps(scip.getEtlProcess().getETLSteps());
+					loadTableViewWithETLSteps(scip.getETLKTRFile().getETLSteps());
 					displayLoadETLResults(true);
 					disableETLLoadSelectionControls(false);
-					loadTableViewWithETLConnections(scip.getEtlProcess().getETLConnections());
+					loadTableViewWithETLConnections(scip.getETLKTRFile().getETLConnections());
 					// OK, the ETLProcess object is loaded up with ETL Steps and Connections and stuff
 					// We should be able to parse the queries in the steps that have queries
-					scip.getEtlProcess().processTableInputStepQueries();
-					scip.getEtlProcess().processTableOutputStepsFields();
-					scip.getEtlProcess().setEtlHops(etlHops);
-					scip.getEtlProcess().processExecuteSQLStepQueries();
+					scip.getETLKTRFile().processTableInputStepQueries();
+					scip.getETLKTRFile().processTableOutputStepsFields();
+					scip.getETLKTRFile().setEtlHops(etlHops);
+					scip.getETLKTRFile().processExecuteSQLStepQueries();
 				} catch (Exception ex) {
 					Log.logError("ProcessETLController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 					disableETLLoadSelectionControls(false);
@@ -805,10 +805,10 @@ public class DatabaseGraphController {
 	private Boolean resolveSchemaNamesForETLSteps(SchemaChangeImpactProject scip) {
 		Boolean status = true;// Hope for the best
 		try {
-		for (ETLStep etlStep : scip.getEtlProcess().getETLSteps()) {
+		for (ETLStep etlStep : scip.getETLKTRFile().getETLSteps()) {
 			String schemaName, connection;
 			connection = etlStep.getConnection();
-			schemaName = scip.getEtlProcess().getETLConnections().getConnection(connection).getDatabase();
+			schemaName = scip.getETLKTRFile().getETLConnections().getConnection(connection).getDatabase();
 			etlStep.setSchemaName(schemaName);
 		}
 	} catch (Exception ex) {
@@ -860,7 +860,7 @@ public class DatabaseGraphController {
 		private int countNumberOfETLTransformationFilesWithAStage() {
 			int count = 0;
 			try {
-				for (ETLTransformationFile etlTransformationFile: scip.getEtlProcess().getEtlTransformationFiles()) {
+				for (ETLTransformationFile etlTransformationFile: scip.getETLKTRFile().getEtlTransformationFiles()) {
 					Log.logProgress("ProcessETLController.processETLTransformationFiles().task: Checking " + etlTransformationFile.toString());
 					if (ETLTransformationFile.isStageUnknown(etlTransformationFile.getEtlStage()) == false) {
 						count++;

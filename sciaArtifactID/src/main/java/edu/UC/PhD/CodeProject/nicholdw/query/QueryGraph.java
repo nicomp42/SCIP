@@ -39,7 +39,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
 
 public class QueryGraph {
 	

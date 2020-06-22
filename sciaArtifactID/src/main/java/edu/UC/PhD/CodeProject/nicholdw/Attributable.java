@@ -9,6 +9,8 @@ public interface Attributable {
 	public String getContainerName();
 	public String getSchemaName();
 	public String getAttributeName();
+	public String getKey();
+	public void setKey(String key);
 	/**
 	 * Container is a table or a query
 	 * @param containerName
@@ -22,5 +24,8 @@ public interface Attributable {
 	
 	public Boolean getAffectedByActionQuery();
 	public void setAffectedByActionQuery(Boolean affectedByActionQuery);
+	
+	public Boolean getIndirectlyAffectedByActionQuery();
+	public void setIndirectlyAffectedByActionQuery(Boolean indirectlyAffectedByActionQuery);
 	
 }

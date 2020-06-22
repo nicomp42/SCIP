@@ -77,8 +77,8 @@ public class ETLToCSV {
 	 */
 	public void generateOutputStepsCsvData(String csvPath, SchemaChangeImpactProject scip){
 		XMLParser xmlParser = new XMLParser();
-		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
-		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateOutputStepsCsvData(): File = " + etlTransformationFile.getFileName());
 			List<TableOutputStep> outputSteps = new ArrayList<TableOutputStep>(); 
 			xmlParser.parseXMLForTableOutputSteps(etlTransformationFile, outputSteps);
@@ -106,8 +106,8 @@ public class ETLToCSV {
 	} */
 	public void generateInputStepsCsvData(String csvPath, SchemaChangeImpactProject scip){
 		XMLParser xmlParser=new XMLParser();
-		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
-		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateOutputStepsCsvData(): File = " + etlTransformationFile.getFileName());
 			List<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>(); 
 			xmlParser.parseXMLForTableInputSteps(etlTransformationFile, tableInputSteps);
@@ -130,8 +130,8 @@ public class ETLToCSV {
 	}
 	public void generateDBLookupStepCsvData(String csvPath, SchemaChangeImpactProject scip) {
 		XMLParser xmlParser=new XMLParser();
-		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
-		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateDBLookupStepCsvData(): File = " + etlTransformationFile.getFileName());
 			//One transformation can be reading from multiple data sources
 			List<DBLookupStep> dbLookupSteps = new ArrayList<DBLookupStep>(); 
@@ -141,8 +141,8 @@ public class ETLToCSV {
 	}
 	public void generateDimensionLookupUpdateStepCsvData(String csvPath, SchemaChangeImpactProject scip){
 		XMLParser xmlParser=new XMLParser();
-		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
-		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateDimensionLookupUpdateStepCsvData(): File = " + etlTransformationFile.getFileName());
 			List<DimLookupUpdateStep> dimLookupUpdateSteps = new ArrayList<DimLookupUpdateStep>();
 			xmlParser.parseXMLForDimLookupUpdateSteps(etlTransformationFile, dimLookupUpdateSteps);
@@ -151,8 +151,8 @@ public class ETLToCSV {
 	}
 	public void generateCombinationLookupUpdateStepCsvData(String csvPath, SchemaChangeImpactProject scip){
 		XMLParser xmlParser=new XMLParser();
-		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
-		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateCombinationLookupUpdateStepCsvData(): File = " + etlTransformationFile.getFileName());
 			List<CombinationLookupUpdateStep> combinationlookupupdatesteps =
 					xmlParser.parseXMLForCombinationLookupUpdateSteps(pentahoProjectDirectoryFullPath + "/" + etlTransformationFile.getFileName());
@@ -162,8 +162,8 @@ public class ETLToCSV {
 	}
 	public void generateDBJoinStepCsvData(String csvPath, SchemaChangeImpactProject scip){
 		XMLParser xmlParser=new XMLParser();
-		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
-		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateDBJoinStepCsvData(): File = " + etlTransformationFile.getFileName());
 			List<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
 			//One transformation can be reading from multiple data sources
@@ -178,8 +178,8 @@ public class ETLToCSV {
 	 */
 	public void generateExecuteSQLScriptAttributesCsvData(String csvPath, SchemaChangeImpactProject scip) {
 		XMLParser xmlParser=new XMLParser();
-		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
-		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateExecuteSQLScriptCsvData(): File = " + etlTransformationFile.getFileName());
 			List<ExecuteSQLScriptStep> executeSQLScriptSteps = new ArrayList<ExecuteSQLScriptStep>();
 			//One transformation can be reading from multiple data sources
@@ -189,8 +189,8 @@ public class ETLToCSV {
 	}
 	public void generateExecuteSQLScriptCsvData(String csvPath, SchemaChangeImpactProject scip) {
 		XMLParser xmlParser=new XMLParser();
-		xmlParser.setxmlDirectory(scip.getEtlProcess().getTransformationFileDirectory());
-		for (ETLTransformationFile etlTransformationFile : scip.getEtlProcess().getEtlTransformationFiles()) {
+		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
+		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateExecuteSQLScriptCsvData(): File = " + etlTransformationFile.getFileName());
 			List<ExecuteSQLScriptStep> executeSQLScriptSteps = new ArrayList<ExecuteSQLScriptStep>();
 			//One transformation can be reading from multiple data sources

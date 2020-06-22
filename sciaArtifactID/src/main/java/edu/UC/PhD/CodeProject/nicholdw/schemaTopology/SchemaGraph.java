@@ -12,6 +12,7 @@ import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation.GRAPH_NODE_ANNOTATION;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
+import edu.UC.PhD.CodeProject.nicholdw.SchemaImpacts;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.Tables;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
@@ -22,7 +23,9 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.ActionQueryProcessor;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLField;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
 
 /**
  * Generate a schema graph
@@ -47,6 +50,7 @@ public class SchemaGraph {
 	public  static final String etlStepToQueryAttributeLbel = "etl_step_to_query_attribute";
 	public  static final String etlFieldToETLStepLabel = "etl_field_to_etl_step";
 	public	static final String tableAttributeNodePropertyAffectedBySQL = "impacted";
+	public	static final String tableAttributeNodePropertyIndirectlyAffectedBySQL = "indirectly_impacted";
 //	public  static final String etlDBProcNodeLabel = "DBProc";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
 	public	static final String etlHopLabel = "hop";
 //	public	static final String etlMergeJoinLabel = "MergeJoin";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
@@ -74,23 +78,14 @@ public class SchemaGraph {
 		addSchemaConstraint();
 		addETLStepNodeConstraint();
 	}
-	public static void changeNodeLabel(String key, String oldLabel, String newLabel) {
-//		match (n:attribute {key:'temporary.store.cityid'}) remove n:attribute set n:attribute_affected
-		Neo4jDB.submitNeo4jQuery("match (n:"
-				                + oldLabel 
-				                + "{key:"
-				                + "'" + key + "'"
-				                + "}) remove n:"
-				                + oldLabel
-				                + " set n:" 
-				                + newLabel);
-	}
+
 	public Boolean generateGraph() {
 		Log.logProgress("SchemaGraph.generateGraph()");
 		scip.setGraphResults(new GraphResults());
 		boolean status = true;		// Hope for the best
 		for (Schema schema: scip.getSchemas()) {	// There may not be any schemas so plan accordingly
 			try {
+				SchemaImpacts schemaImpacts = new SchemaImpacts();
 				schema.loadTables(scip.getHostName(), scip.getUserName(), scip.getPassword());
 				Tables tables = schema.getTables();
 				for (Table table: tables) {	// Get all the attributes from the tables
@@ -100,25 +95,65 @@ public class SchemaGraph {
 				for (ActionQuery ac: scip.getActionQuerys()) {
 					SchemaImpact schemaImpact = new SchemaImpact();
 					ActionQueryProcessor.processActionQuery(ac.getSql(), schemaImpact);
-					applyActionQuery(schemaImpact, schema);
+					applySchemaImpact(schemaImpact, schema);
+					schemaImpacts.addSchemaImpact(schemaImpact);
 				}
 				addNodesToGraph();	
-				ETLProcess.createGraph(scip);
+				ETLKTRFile.createGraph(scip);
 			} catch (Exception ex) {
 				Log.logError("SchemaGraph.generateGraph(): " + ex.getLocalizedMessage());
 				status = false;
 			}
 		}
+		// All the nodes and relationships are drawn, now let's figure out what nodes have been indirectly by the action query 
+		reflectSchemaImpacts();
+		Neo4jDB.submitNeo4jQuery("Match (n:etl_step) return n");
 		return status;
+	}
+	private void reflectSchemaImpacts() {
+		for (Schema schema: scip.getSchemas()) {	// There may not be any schemas so plan accordingly
+			for (Table table: schema.getTables()) {
+				for (TableAttribute ta: table.getTableAttributes()) {
+					if (ta.getAffectedByActionQuery() == true) {
+						// Find the ETL steps that reference this table attribute
+						for (ETLStep etlStep : scip.getETLKTRFile().getETLSteps()) {
+							if (Config.getConfig().compareTableNames(table.getTableName(), etlStep.getTableName())  ) {
+								for (ETLField etlField: etlStep.getETLFields()) {
+									if (Config.getConfig().compareAttributeNames(etlField.getColumnName(), ta.getAttributeName())){
+										etlField.setIndirectlyAffectedByActionQuery(true);
+										Neo4jDB.setNodeProperty(etlStepNodeLabel, etlStep.getKey(), tableAttributeNodePropertyIndirectlyAffectedBySQL, "changed");
+										// ToDo: Draw a relationship between this node and the table attribute
+									}
+								}
+							}
+						}
+						// Find the queries that reference this table attribute
+						for (QueryDefinition qd: schema.getQueryDefinitions()) {
+							for (QueryAttribute qa: qd.getQueryAttributes()) {
+								if (Config.getConfig().compareSchemaNames(schema.getSchemaName(), qa.getSchemaName())
+									&& Config.getConfig().compareTableNames(table.getTableName(), qa.getContainerName())
+									&& Config.getConfig().compareAttributeNames(ta.getAttributeName(), qa.getAttributeName())) {
+									qa.setIndirectlyAffectedByActionQuery(true);
+									Neo4jDB.setNodeProperty(viewNodeLabel, qd.getKey(), tableAttributeNodePropertyIndirectlyAffectedBySQL, "changed");
+									// ToDo: Draw a relationship between this node and the table attribute
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	/**
 	 * Apply an action query to the schema to see what views would be affected
 	 * @param actionQueryDefinition The action query
 	 */
 //	private void applyActionQuery(QueryDefinition actionQueryDefinition) {
-	private void applyActionQuery(SchemaImpact schemaImpact, Schema schema) {
-		Log.logProgress("SchemaGraph.ApplyActionQueryDefinition()");
-//		SchemaDiff schemaDiff = new SchemaDiff();
+	private void applySchemaImpact(SchemaImpact schemaImpact, Schema schema) {
+		Log.logProgress("SchemaGraph.applySchemaImpact()");
+		// Create a GraphNodeAnnotation object that can be copied into any attributes that have suffered a change
+		GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
+		graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 		try {
 			for (QueryDefinition qd: schema.getQueryDefinitions()) {	// All the views in this schema
 				for (QueryAttribute qa : qd.getQueryAttributes()) {	// All the attributes in the view
@@ -127,13 +162,11 @@ public class SchemaGraph {
 						qa.setAffectedByActionQuery(true);
 						qd.getQueryTables().setAffectedByActionQuery(qa, true);
 						schema.getTables().setAffectedByActionQuery(qa, true);
+						qa.setGraphNodeAnnotation(graphNodeAnnotation);
 						scip.getGraphResults().incrementTotalAffectedAttributes();
 					}
 				}
 			}
-			// Create a GraphNodeAnnotation object that can be copied into any attributes that have suffered a change
-			GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
-			graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 			for (Table table: schema.getTables()) {
 				for (TableAttribute tableAttribute : table.getTableAttributes()) 
 				if (schemaImpact.getTableAttributes().findAttributeByTableAndName(tableAttribute.getContainerName(), tableAttribute.getAttributeName()) != null) {
@@ -215,7 +248,7 @@ public class SchemaGraph {
         + "      (a:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(attributeSchemaName) 
      		                                                                + "." + Utils.cleanForGraph(attributeTableName) 
                                                                              + "." + Utils.cleanForGraph(attributeName), "\"") + "}) "
-	       + "MERGE (q)-[:" + viewToAttributeLabel +"]->(a)"); 
+	    + "MERGE (q)-[:" + viewToAttributeLabel +"]->(a)"); 
 /*		Neo4jDB.submitNeo4jQuery("MATCH "
 		           +       "(q:" + queryNodeLabel     + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(querySchemaName) + "." + Utils.cleanForGraph(queryName), "\"") + "}), "
 	               + "      (a:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(attributeSchemaName) 
@@ -391,13 +424,6 @@ public class SchemaGraph {
 	private static void addSchemaConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.schemaNodeLabel + ") ASSERT a.key IS UNIQUE");}
 	private static void addETLStepNodeConstraint() {Neo4jDB.submitNeo4jQuery("CREATE CONSTRAINT ON (a:" + SchemaGraph.etlStepNodeLabel + ") ASSERT a.key IS UNIQUE");}
 
-/*	public Schemas getSchemas() {
-		return scip.getSchemas();
-	}
-
-	public void setSchemas(Schemas schemas) {
-		this.schemas = schemas;
-	} */
 	public static String computeNodeLabel(GraphNodeAnnotation graphNodeAnnotation) {
 		String nodeLabel;
 		nodeLabel = SchemaGraph.attributeNodeLabel;
@@ -410,5 +436,4 @@ public class SchemaGraph {
 		}
 		return nodeLabel;
 	}
-	
 }

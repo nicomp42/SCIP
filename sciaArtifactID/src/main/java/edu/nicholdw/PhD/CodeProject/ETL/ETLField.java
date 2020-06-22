@@ -23,6 +23,13 @@ public class ETLField implements java.io.Serializable, Attributable {
 	private GraphNodeAnnotation graphNodeAnnotation;
 	private String tableName, schemaName;
 	private boolean affectedByActionQuery;
+	private boolean indirectlyAffectedByActionQuery;
+	private String key;
+	
+	public Boolean getIndirectlyAffectedByActionQuery() {return indirectlyAffectedByActionQuery;}
+	public void setIndirectlyAffectedByActionQuery(Boolean indirectlyAffectedByActionQuery) {
+		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
+	}
 
 	public ETLField(String columnName, String streamName) {
 		setColumnName(columnName);
@@ -125,5 +132,17 @@ public class ETLField implements java.io.Serializable, Attributable {
 	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
 		this.affectedByActionQuery = affectedByActionQuery;
 		
+	}
+	@Override
+	public String getKey() {
+		if (key == null || key.trim().length() == 0) {
+			return schemaName + "." + tableName + "." + columnName;
+		} else {
+			return key;
+		}
+	}
+	@Override
+	public void setKey(String key) {
+		this.key = key;
 	}
 }

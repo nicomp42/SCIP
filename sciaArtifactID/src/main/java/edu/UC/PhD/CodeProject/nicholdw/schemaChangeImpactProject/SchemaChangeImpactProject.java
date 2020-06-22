@@ -25,6 +25,7 @@ import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphConfig;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.GraphResults;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
 
 /**
@@ -46,6 +47,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private IdsDwh idsDwh;
 	private OpsIds opsIds;
 	private DwhQueries dwhQueries;
+	private ETLKTRFile etlKTRFile;	// TODO needs to go away and be subsumed in etlProcess
 	private ETLProcess etlProcess;
 	private Schemas schemas;
 	private DatabaseGraphConfig databaseGraphConfig;
@@ -150,12 +152,13 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		setIdsDwh(new IdsDwh());
 		setOpsIds(new OpsIds());
 		setDwhQueries(new DwhQueries());
-		setEtlProcess(new ETLProcess(null));
+		setETLKTRFile(new ETLKTRFile(null));
 		actionQueryDefinitions = new ActionQueryDefinitions();
 		actionQuerys = new ActionQuerys();
+		setEtlProcess(new ETLProcess());
 	}
 	public void loadETLTransformationFiles() {
-		etlProcess.loadETLTransformationFiles();
+		etlKTRFile.loadETLTransformationFiles();
 	}
 	/***
 	 * Get the path of the Neo4j project subdirectory
@@ -316,11 +319,11 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	public DwhQueries getDwhQueries() {return dwhQueries;}
 
 	public void setDwhQueries(DwhQueries dwhQueries) {this.dwhQueries = dwhQueries;}
-	public ETLProcess getEtlProcess() {
-		return etlProcess;
+	public ETLKTRFile getETLKTRFile() {
+		return etlKTRFile;
 	}
-	public void setEtlProcess(ETLProcess etlProcess) {
-		this.etlProcess = etlProcess;
+	public void setETLKTRFile(ETLKTRFile etlKTRFile) {
+		this.etlKTRFile = etlKTRFile;
 	}
 	public Schemas getSchemas() {
 		return schemas;
@@ -351,5 +354,13 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public ETLProcess getEtlProcess() {
+		return etlProcess;
+	}
+
+	public void setEtlProcess(ETLProcess etlProcess) {
+		this.etlProcess = etlProcess;
 	}
 }

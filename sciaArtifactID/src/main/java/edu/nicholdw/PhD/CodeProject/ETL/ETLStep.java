@@ -11,11 +11,13 @@ import javafx.scene.control.TableView;
 
 /***
  * A step in the ETL process. Abstracted, but modeled on Pentaho for now.
+ * Called a Transformation in Pentaho
  * @author nicomp
  *
  */
 public class ETLStep implements java.io.Serializable {
 	public static final String type_TableInput = "TableInput";
+//	private String key;
 	private String stepType;
 	private String stepName;
 	private String sql;
@@ -157,6 +159,7 @@ public class ETLStep implements java.io.Serializable {
 		this.schemaName = schemaName;
 	}
 	public String getKey() {return getFileName() + "." + getStepName();}
+//	public void setKey(String key) {this.key = key;}
 
 	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
 		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);

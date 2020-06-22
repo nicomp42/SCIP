@@ -629,7 +629,7 @@ public class Neo4jDB {
 	}
 	public static Boolean setNodeProperty(String label, String key, String property, String propertyValue) {
 		Boolean status = true;
-		String cypher = "MERGE (n:attribute" + 
+		String cypher = "MERGE (n:" + label + 
 						"{" +
 						"key: " +
 						Utils.quoteMeSingle(key) +
@@ -647,6 +647,17 @@ public class Neo4jDB {
 			status = false;
 		} finally {}
 		return status;
+	}
+	public static void changeNodeLabel(String key, String oldLabel, String newLabel) {
+//		match (n:attribute {key:'temporary.store.cityid'}) remove n:attribute set n:attribute_affected
+		Neo4jDB.submitNeo4jQuery("match (n:"
+				                + oldLabel 
+				                + "{key:"
+				                + "'" + key + "'"
+				                + "}) remove n:"
+				                + oldLabel
+				                + " set n:" 
+				                + newLabel);
 	}
 }
 

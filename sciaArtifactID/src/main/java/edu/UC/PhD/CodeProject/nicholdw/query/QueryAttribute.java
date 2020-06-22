@@ -32,10 +32,17 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	private String tableAliasName;		// If the attribute as it appeared in the query referenced a table alias, we will store it here
 	private String expression;
 	private String ID;
+	private String key;
 	private Boolean affectedByActionQuery;		// Defaults to false until an action query is applied to the query where this attribute lives
 	private ATTRIBUTE_DISPOSITION attributeDisposition;
 	public enum ATTRIBUTE_DISPOSITION {Select, Add, Drop, Alter};
 	private GraphNodeAnnotation graphNodeAnnotation;
+	private boolean indirectlyAffectedByActionQuery;
+	public Boolean getIndirectlyAffectedByActionQuery() {return indirectlyAffectedByActionQuery;}
+	public void setIndirectlyAffectedByActionQuery(Boolean indirectlyAffectedByActionQuery) {
+		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
+	}
+
 	public QueryAttribute(QueryAttribute qa) {
 		this.aliasNames = new AliasNamesOLD();
 		setSchemaName(qa.getSchemaName());
@@ -325,5 +332,12 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * @return A copy of the GraphNodeAnnotation for the current object
 	 */
 	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
-
+	@Override
+	public String getKey() {
+		return key;
+	}
+	@Override
+	public void setKey(String key) {
+		this.key = key;
+	}
 }
