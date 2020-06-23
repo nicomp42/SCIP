@@ -27,13 +27,13 @@ import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLKJBFile;
 
 /**
  * A schema change impact project
  * @author nicomp
  */
 public class SchemaChangeImpactProject implements java.io.Serializable {
-
 	private static final long serialVersionUID = 1L;
 	private String hostName, userName, password;
 	private String projectName;

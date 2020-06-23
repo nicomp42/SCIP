@@ -1,32 +1,24 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProjectComponent;
 
 public class ETLProcess extends SchemaChangeImpactProjectComponent {
-	private ETLKTRFiles etlKTRFiles;
-	private String fileName;
-	
+
+	private static final long serialVersionUID = -4444786651236261083L;
+
 	public ETLProcess() {
 		super("ETL Process");
-		etlKTRFiles = new ETLKTRFiles();
-		fileName = "";
 	}
-
-	public ETLKTRFiles getEtlKTRFiles() {
-		return etlKTRFiles;
+	public ETLKJBFiles getEtlKJBFiles() {
+		return etlKJBFiles;
 	}
-
-	public void setEtlKTRFiles(ETLKTRFiles etlKTRFiles) {
-		this.etlKTRFiles = etlKTRFiles;
+	public void setEtlKJBFiles(ETLKJBFiles etlKJBFiles) {
+		this.etlKJBFiles = etlKJBFiles;
 	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-	
+	private ETLKJBFiles etlKJBFiles;
 	
 }

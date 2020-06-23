@@ -30,8 +30,9 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 /***
- * Model an entire ETL Process consisting of steps and connections.
+ * Model an entire ETL Transformation consisting of steps and connections.
  * This is one .KTR file
+ * .KTR files are grouped together by a .KJB file
  * @author nicomp
  */
 public class ETLKTRFile implements java.io.Serializable{
