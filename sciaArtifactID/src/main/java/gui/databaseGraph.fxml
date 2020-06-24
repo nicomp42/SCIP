@@ -5,6 +5,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -82,7 +83,7 @@
        	                <TreeView id="tvSchemas" fx:id="tvSchemas" layoutX="557.0" layoutY="74.0" onMouseClicked="#tvSchemas_OnClicked" prefHeight="634.0" prefWidth="228.0" />
                            <Label fx:id="lblSchemaToProcess" layoutX="14.0" layoutY="154.0" text="Schemas to process" />
        	                <Label fx:id="lblContentsOfDatabaseHost" alignment="TOP_LEFT" layoutX="557.0" layoutY="11.0" prefHeight="25.0" prefWidth="173.0" text="Schemas in database host" />
-                           <Button id="btnProcessSchema" fx:id="btnProcessSchema" layoutX="188.0" layoutY="379.0" mnemonicParsing="false" onAction="#btnProcessSchema_OnClick" text="Go" textFill="TEAL" />
+                           <Button id="btnProcess" fx:id="btnProcess" layoutX="188.0" layoutY="379.0" mnemonicParsing="false" onAction="#btnProcess_OnClick" text="Go" textFill="TEAL" />
          <Label fx:id="lblResults" layoutX="14.0" layoutY="411.0" text="Results" />
          <CheckBox fx:id="cbClearDB" contentDisplay="RIGHT" layoutX="191.0" layoutY="183.0" mnemonicParsing="false" text="Clear graph before generating" />
          <CheckBox fx:id="cbIncludeSchemaNodes" contentDisplay="RIGHT" layoutX="191.0" layoutY="207.0" mnemonicParsing="false" text="Include schema node in graph" />
@@ -106,13 +107,25 @@
             </effect>
          </Label>
                         <ComboBox fx:id="cbSchema" layoutX="189.0" layoutY="149.0" prefWidth="150.0" />
-                        <Button fx:id="btnClearSchemaComboBox" layoutX="341.0" layoutY="149.0" mnemonicParsing="false" onAction="#btnClearSchemaComboBox_OnClck" text="Clear" />
+                        <Button fx:id="btnClearSchemaComboBox" layoutX="341.0" layoutY="149.0" mnemonicParsing="false" onAction="#btnClearSchemaComboBox_OnClick" text="Clear" />
                         <Label fx:id="lblDoubleClickPrompt" layoutX="557.0" layoutY="32.0" text="(double-click to select)" />
          </children>
               </AnchorPane>
             </content>
           </Tab>
-          <Tab fx:id="tabETL" closable="false" text="ETL">
+          <Tab fx:id="tabETL" text="ETL">
+            <content>
+              <AnchorPane fx:id="apETLAnchorPane" maxHeight="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="811.0">
+                <children>
+                    <Button fx:id="btnClearKJBListView" layoutX="11.0" layoutY="425.0" mnemonicParsing="false" onAction="#btnClearKJBListView_OnClick" text="Clear" />
+                    <ListView fx:id="lvKJBFiles" layoutX="10.0" layoutY="38.0" prefHeight="379.0" prefWidth="498.0" />
+                    <Label layoutX="10.0" layoutY="14.0" text="KJB Files" />
+                 	<Button fx:id="btnBrowseForKJBFile" layoutX="68.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnBrowseForKJBFile_OnClick" text="..." />
+              	</children>
+              </AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="tabETLTest" closable="false" text="ETL Test">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="698.0" prefWidth="773.0">
               <children>
@@ -310,6 +323,7 @@
               </AnchorPane>
             </content>
           </Tab>
+         
         </tabs>
       </TabPane>
    </children>

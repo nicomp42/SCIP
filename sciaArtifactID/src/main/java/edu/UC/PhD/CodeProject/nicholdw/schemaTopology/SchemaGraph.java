@@ -24,6 +24,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.ActionQueryProcessor;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLField;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLKJBFile;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
 
@@ -98,13 +99,19 @@ public class SchemaGraph {
 					applySchemaImpact(schemaImpact, schema);
 					schemaImpacts.addSchemaImpact(schemaImpact);
 				}
-				addNodesToGraph();	
-				ETLKTRFile.createGraph(scip);
+				addNodesToGraph();
 			} catch (Exception ex) {
 				Log.logError("SchemaGraph.generateGraph(): " + ex.getLocalizedMessage());
 				status = false;
 			}
 		}
+		// Add in the ETL steps, if any
+		for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
+			for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
+				etlKTRFile.createGraph(scip);
+			}
+		}
+		
 		// All the nodes and relationships are drawn, now let's figure out what nodes have been indirectly by the action query 
 		reflectSchemaImpacts();
 		Neo4jDB.submitNeo4jQuery("Match (n:etl_step) return n");
@@ -116,13 +123,17 @@ public class SchemaGraph {
 				for (TableAttribute ta: table.getTableAttributes()) {
 					if (ta.getAffectedByActionQuery() == true) {
 						// Find the ETL steps that reference this table attribute
-						for (ETLStep etlStep : scip.getETLKTRFile().getETLSteps()) {
-							if (Config.getConfig().compareTableNames(table.getTableName(), etlStep.getTableName())  ) {
-								for (ETLField etlField: etlStep.getETLFields()) {
-									if (Config.getConfig().compareAttributeNames(etlField.getColumnName(), ta.getAttributeName())){
-										etlField.setIndirectlyAffectedByActionQuery(true);
-										Neo4jDB.setNodeProperty(etlStepNodeLabel, etlStep.getKey(), tableAttributeNodePropertyIndirectlyAffectedBySQL, "changed");
-										// ToDo: Draw a relationship between this node and the table attribute
+						for (ETLKJBFile etlKJBFile: scip.getEtlProcess().getEtlKJBFiles()) {							
+							for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
+								for (ETLStep etlStep : etlKTRFile.getETLSteps()) {
+									if (Config.getConfig().compareTableNames(table.getTableName(), etlStep.getTableName())  ) {
+										for (ETLField etlField: etlStep.getETLFields()) {
+											if (Config.getConfig().compareAttributeNames(etlField.getColumnName(), ta.getAttributeName())){
+												etlField.setIndirectlyAffectedByActionQuery(true);
+												Neo4jDB.setNodeProperty(etlStepNodeLabel, etlStep.getKey(), tableAttributeNodePropertyIndirectlyAffectedBySQL, "changed");
+												// ToDo: Draw a relationship between this node and the table attribute
+											}
+										}
 									}
 								}
 							}

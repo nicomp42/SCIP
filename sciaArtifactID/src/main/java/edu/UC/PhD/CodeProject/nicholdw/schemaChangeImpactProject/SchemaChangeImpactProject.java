@@ -47,7 +47,6 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private IdsDwh idsDwh;
 	private OpsIds opsIds;
 	private DwhQueries dwhQueries;
-	private ETLKTRFile etlKTRFile;	// TODO needs to go away and be subsumed in etlProcess
 	private ETLProcess etlProcess;
 	private Schemas schemas;
 	private DatabaseGraphConfig databaseGraphConfig;
@@ -152,14 +151,13 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		setIdsDwh(new IdsDwh());
 		setOpsIds(new OpsIds());
 		setDwhQueries(new DwhQueries());
-		setETLKTRFile(new ETLKTRFile(null));
 		actionQueryDefinitions = new ActionQueryDefinitions();
 		actionQuerys = new ActionQuerys();
 		setEtlProcess(new ETLProcess());
 	}
-	public void loadETLTransformationFiles() {
+/*	public void loadETLTransformationFiles(ETLKTRFile etlKTRFile) {
 		etlKTRFile.loadETLTransformationFiles();
-	}
+	} */
 	/***
 	 * Get the path of the Neo4j project subdirectory
 	 * @return The full path, ending in a subdirectory, of the Neo4j database for this project
@@ -319,12 +317,6 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	public DwhQueries getDwhQueries() {return dwhQueries;}
 
 	public void setDwhQueries(DwhQueries dwhQueries) {this.dwhQueries = dwhQueries;}
-	public ETLKTRFile getETLKTRFile() {
-		return etlKTRFile;
-	}
-	public void setETLKTRFile(ETLKTRFile etlKTRFile) {
-		this.etlKTRFile = etlKTRFile;
-	}
 	public Schemas getSchemas() {
 		return schemas;
 	}

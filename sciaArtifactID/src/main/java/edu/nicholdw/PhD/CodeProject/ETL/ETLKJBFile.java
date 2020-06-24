@@ -16,12 +16,16 @@ public class ETLKJBFile extends SchemaChangeImpactProjectComponent {
 	private ETLHops etlHops;
 	private ETLJobs etlJobs;
 	
+	public ETLKJBFile(String fileName) {
+		super("ETL KJB File");
+		etlKTRFiles = new ETLKTRFiles();
+		setFileName(fileName);
+	}
 	public ETLKJBFile() {
 		super("ETL KJB File");
 		etlKTRFiles = new ETLKTRFiles();
 		fileName = "";
 	}
-
 	public boolean loadHops() throws Exception {
 		boolean status = true;
 		if (fileName.trim().length() > 0) {
@@ -36,6 +40,10 @@ public class ETLKJBFile extends SchemaChangeImpactProjectComponent {
 			throw new Exception("ETLKJBFile.loadHops(): no filename provided in the object");
 		}
 		return status;
+	}
+	public void readETLKTRFiles() {
+		XMLParser myXMLParser = new XMLParser();
+		
 	}
 	public boolean loadJobs() throws Exception {
 		boolean status = true;

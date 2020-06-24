@@ -470,6 +470,29 @@ public class XMLParser {
 			Log.logProgress("XMLParser.getStepNames(): " + ex.getLocalizedMessage());
 		}
 	}
+	
+	/***
+	 * Read the complete list of transformations in the .kjb file
+	 * @param xmlFilePath The location of the XML file, as exported from Pentaho
+	 */
+	public void getETLKTRFiles(String xmlFilePath, ETLKTRFiles etlKTRFiles) {
+		Log.logProgress("XMLParser.getETLKTRFiles(" + xmlFilePath + ")");
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+		try {
+			builder = factory.newDocumentBuilder();
+			doc = builder.parse(xmlFilePath);
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			ETLKTRFiles tmpETLKTRFiles;
+			tmpETLKTRFiles = getETLKTRFiles(xpath, doc);
+			for (ETLKTRFile etlKTRFile: tmpETLKTRFiles) {etlKTRFiles.addETLKTRFile(etlKTRFile);}
+		} catch (Exception ex) {
+			Log.logProgress("XMLParser.getETLKTRFiles(): " + ex.getLocalizedMessage());
+		}
+	}
 	/***
 	 * Read the complete list of jobs in the .kjb file
 	 * @param xmlFilePath The location of the XML file, as exported from Pentaho
@@ -576,6 +599,29 @@ public class XMLParser {
 		}
 		return etlHops;
 	}
+	private ETLKTRFiles getETLKTRFiles(XPath xpath, Document doc){
+		Log.logProgress("XMLParser.getETLJobs(" + xpath + ")");
+		ETLKTRFiles etlKTRFiles = new ETLKTRFiles();
+		try {		
+			XPathExpression expr = xpath.compile("/job/entries/entry");
+			NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+			for (int i = 0; i < nodes.getLength(); i++) {
+				Node nNode = nodes.item(i);
+//				System.out.println("\nCurrent Element :" + nNode.getNodeName());
+				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element eElement = (Element) nNode;
+					String filename, name;
+					filename = eElement.getElementsByTagName("filename").item(0).getTextContent();
+					name = eElement.getElementsByTagName("name").item(0).getTextContent();
+					etlKTRFiles.addETLKTRFile(new ETLKTRFile(name, filename));
+				}			
+			}
+		}catch (XPathExpressionException e) {
+			Log.logError("XMLParser.getJobNames(): " + e.getLocalizedMessage(), e.getStackTrace());
+		}
+		return etlKTRFiles;
+	}
+	
 	private ETLJobs getETLJobs(XPath xpath, Document doc){
 		Log.logProgress("XMLParser.getETLJobs(" + xpath + ")");
 		ETLJobs etljobs = new ETLJobs();

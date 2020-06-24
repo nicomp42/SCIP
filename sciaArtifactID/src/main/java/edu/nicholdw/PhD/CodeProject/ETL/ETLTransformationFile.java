@@ -65,12 +65,12 @@ public class ETLTransformationFile implements java.io.Serializable {
 	public void setEtlType(enumETLType etlType) {
 		this.etlType = etlType;
 	} */
-	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView, ETLKTRFile etlProcess) {
-        ObservableList<gui.GUIetlTransformationFile> data = tableView.getItems();
+	public static void loadTableViewWithTransformationFileNames(TableView<gui.GUIetlTransformationFile> tableView, ETLKTRFile etlKTRFile) {
+/*        ObservableList<gui.GUIetlTransformationFile> data = tableView.getItems();
         data.clear();
-        for (ETLTransformationFile etlTransformationFile : etlProcess.getEtlTransformationFiles()) {
+        for (ETLTransformationFile etlTransformationFile : etlKTRFile.getEtlTransformationFiles()) {
    	        data.add(new gui.GUIetlTransformationFile(etlTransformationFile.getFileName(), etlTransformationFile.getEtlStage() ));
-   		}
+   		} */
 	}
 	public String getEtlStage() {
 		return etlStageList[etlStageNumber];

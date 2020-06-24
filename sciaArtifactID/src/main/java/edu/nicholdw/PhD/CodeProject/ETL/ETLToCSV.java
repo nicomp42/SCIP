@@ -17,6 +17,7 @@ import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
+import edu.UC.PhD.CodeProject.nicholdw.exception.NotImplementedException;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 
@@ -34,7 +35,8 @@ public class ETLToCSV {
 	 */
 	public void convertETLToCSV(SchemaChangeImpactProject scip) throws Exception {
 		Log.logProgress("ETLToCSV.convertETLToCSV(): scip project = " + scip.getProjectName());
-		String csv_path;
+		throw new NotImplementedException("convertETLToCSV");
+/*		String csv_path;
 		pentahoProjectDirectoryFullPath= Utils.formatPath(scip.getFilePath()) + scip.getPentahoProjectDirectory();
 		scip.loadETLTransformationFiles();
 		//This is the location where csv files will be generated
@@ -46,7 +48,7 @@ public class ETLToCSV {
 		csv_path = Utils.formatPath(Utils.formatPath(scip.getFullProjectPath()) + SchemaChangeImpactProject.idsDwhSubdirectory); 				// "C:\\Users\\usplib\\workspace\\ImpactAssessmentProject\\csvfiles\\ids-dwh\\";
 		deleteCSVFiles(csv_path);
 		generateCsvData(csv_path, scip);
-		generateDimensionLookupUpdateStepCsvData(csv_path + "dimlookupupdate_steps.csv", scip);
+		generateDimensionLookupUpdateStepCsvData(csv_path + "dimlookupupdate_steps.csv", scip); */
 	}
 	public void deleteCSVFiles(String foldername) {
 		File folder = new File(foldername);
@@ -61,21 +63,27 @@ public class ETLToCSV {
 	}
 	// Contains method calls for parsing the ETL XML files and generating CSV. A separate CSV file is generated for each step type.
 	public void generateCsvData(String csv_path, SchemaChangeImpactProject scip) {
-		generateOutputStepsCsvData(                Utils.formatPath(csv_path) + "output_steps.csv",			  scip);
-		generateInputStepsCsvData(                 Utils.formatPath(csv_path) + "input_steps.csv",			  scip);
-		generateDBLookupStepCsvData(               Utils.formatPath(csv_path) + "dblookup_steps.csv",		  scip);
-		generateDBJoinStepCsvData(                 Utils.formatPath(csv_path) + "dbjoin_steps.csv",			  scip);
-		generateDimensionLookupUpdateStepCsvData(  Utils.formatPath(csv_path) + "dimlookupupdate_steps.csv",  scip);
-		generateCombinationLookupUpdateStepCsvData(Utils.formatPath(csv_path) + "comblookupupdate_steps.csv", scip);
-		generateExecuteSQLScriptCsvData(Utils.formatPath(csv_path) + "executeSQLScript_steps.csv", scip);
-		generateExecuteSQLScriptAttributesCsvData(Utils.formatPath(csv_path) + "executeSQLScript_attributes.csv", scip);
-		
+		try {
+			generateOutputStepsCsvData(                Utils.formatPath(csv_path) + "output_steps.csv",			  scip);
+			generateInputStepsCsvData(                 Utils.formatPath(csv_path) + "input_steps.csv",			  scip);
+			generateDBLookupStepCsvData(               Utils.formatPath(csv_path) + "dblookup_steps.csv",		  scip);
+			generateDBJoinStepCsvData(                 Utils.formatPath(csv_path) + "dbjoin_steps.csv",			  scip);
+			generateDimensionLookupUpdateStepCsvData(  Utils.formatPath(csv_path) + "dimlookupupdate_steps.csv",  scip);
+			generateCombinationLookupUpdateStepCsvData(Utils.formatPath(csv_path) + "comblookupupdate_steps.csv", scip);
+			generateExecuteSQLScriptCsvData(Utils.formatPath(csv_path) + "executeSQLScript_steps.csv", scip);
+			generateExecuteSQLScriptAttributesCsvData(Utils.formatPath(csv_path) + "executeSQLScript_attributes.csv", scip);
+		} catch (Exception ex) {
+			Log.logError("ETLToCSV.generateCsvData(): " , ex);
+		}
 	}
 	/***
 	 * Parses XML and generate CSV for Output step types - Insert/Update and TableOutput.
 	 * @param csvPath Where to put the CSV files
+	 * @throws NotImplementedException 
 	 */
-	public void generateOutputStepsCsvData(String csvPath, SchemaChangeImpactProject scip){
+	public void generateOutputStepsCsvData(String csvPath, SchemaChangeImpactProject scip) throws NotImplementedException{
+		throw new NotImplementedException("generateOutputStepsCsvData");
+/*
 		XMLParser xmlParser = new XMLParser();
 		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
@@ -84,7 +92,7 @@ public class ETLToCSV {
 			xmlParser.parseXMLForTableOutputSteps(etlTransformationFile, outputSteps);
 			ETLExcelExporter.generateOutputStepsCsvFile(csvPath, outputSteps);
 		}
-	}
+*/	}
 //	/***
 //	 * Generate CSV files from Pentaho Project XML files. You don't need a Pentaho project, just the location of the XML files
 //	 * Parses XML and generate CSV for Output step types - Insert/Update and TableOutput.
@@ -104,8 +112,9 @@ public class ETLToCSV {
 			}
 		}
 	} */
-	public void generateInputStepsCsvData(String csvPath, SchemaChangeImpactProject scip){
-		XMLParser xmlParser=new XMLParser();
+	public void generateInputStepsCsvData(String csvPath, SchemaChangeImpactProject scip) throws NotImplementedException{
+		throw new NotImplementedException("generateInputStepsCsvData");
+/*		XMLParser xmlParser=new XMLParser();
 		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateOutputStepsCsvData(): File = " + etlTransformationFile.getFileName());
@@ -113,7 +122,7 @@ public class ETLToCSV {
 			xmlParser.parseXMLForTableInputSteps(etlTransformationFile, tableInputSteps);
 			//.parseXMLForInputSteps(etlTransformationFile, tableInputSteps);
 			ETLExcelExporter.generateInputStepsCsvFile(csvPath, tableInputSteps);
-		}
+		} */
 	}
 	public void generateInputStepsCsvData(String csvPath){
 		XMLParser xmlparser=new XMLParser();
@@ -128,8 +137,9 @@ public class ETLToCSV {
 			}
 		}
 	}
-	public void generateDBLookupStepCsvData(String csvPath, SchemaChangeImpactProject scip) {
-		XMLParser xmlParser=new XMLParser();
+	public void generateDBLookupStepCsvData(String csvPath, SchemaChangeImpactProject scip) throws Exception {
+		throw new NotImplementedException("generateDBLookupStepCsvData");
+/*		XMLParser xmlParser=new XMLParser();
 		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateDBLookupStepCsvData(): File = " + etlTransformationFile.getFileName());
@@ -137,20 +147,22 @@ public class ETLToCSV {
 			List<DBLookupStep> dbLookupSteps = new ArrayList<DBLookupStep>(); 
 			dbLookupSteps = xmlParser.parseXMLForDBLookupSteps(etlTransformationFile, dbLookupSteps);
 			ETLExcelExporter.generateDBLookupCsvFile(csvPath, dbLookupSteps, etlTransformationFile.getEtlStage());
-		}
+		} */
 	}
-	public void generateDimensionLookupUpdateStepCsvData(String csvPath, SchemaChangeImpactProject scip){
-		XMLParser xmlParser=new XMLParser();
+	public void generateDimensionLookupUpdateStepCsvData(String csvPath, SchemaChangeImpactProject scip) throws Exception{
+		throw new NotImplementedException("generateDimensionLookupUpdateStepCsvData");
+/*		XMLParser xmlParser=new XMLParser();
 		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateDimensionLookupUpdateStepCsvData(): File = " + etlTransformationFile.getFileName());
 			List<DimLookupUpdateStep> dimLookupUpdateSteps = new ArrayList<DimLookupUpdateStep>();
 			xmlParser.parseXMLForDimLookupUpdateSteps(etlTransformationFile, dimLookupUpdateSteps);
 			ETLExcelExporter.generateDimLookupUpdateCsvFile(csvPath, dimLookupUpdateSteps);
-		}
+		} */
 	}
-	public void generateCombinationLookupUpdateStepCsvData(String csvPath, SchemaChangeImpactProject scip){
-		XMLParser xmlParser=new XMLParser();
+	public void generateCombinationLookupUpdateStepCsvData(String csvPath, SchemaChangeImpactProject scip) throws Exception{
+		throw new NotImplementedException("generateCombinationLookupUpdateStepCsvData");
+/*		XMLParser xmlParser=new XMLParser();
 		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateCombinationLookupUpdateStepCsvData(): File = " + etlTransformationFile.getFileName());
@@ -158,10 +170,11 @@ public class ETLToCSV {
 					xmlParser.parseXMLForCombinationLookupUpdateSteps(pentahoProjectDirectoryFullPath + "/" + etlTransformationFile.getFileName());
 			ETLExcelExporter.generateCombLookupUpdateCsvFile(csvPath, combinationlookupupdatesteps);
 
-		}
+		} */
 	}
-	public void generateDBJoinStepCsvData(String csvPath, SchemaChangeImpactProject scip){
-		XMLParser xmlParser=new XMLParser();
+	public void generateDBJoinStepCsvData(String csvPath, SchemaChangeImpactProject scip) throws Exception{
+		throw new NotImplementedException("generateDBJoinStepCsvData");
+/*		XMLParser xmlParser=new XMLParser();
 		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateDBJoinStepCsvData(): File = " + etlTransformationFile.getFileName());
@@ -169,15 +182,17 @@ public class ETLToCSV {
 			//One transformation can be reading from multiple data sources
 			xmlParser.parseXMLForDBJoinSteps(etlTransformationFile, dbJoinSteps);
 			ETLExcelExporter.generateDBJoinCsvFile(csvPath, dbJoinSteps);
-		}
+		} */
 	}
 	/**
 	 * Process the attributes referenced in an ETL Step that contains a SQL script
 	 * @param csvPath Where to put the attributes
 	 * @param scip Project to process
+	 * @throws Exception 
 	 */
-	public void generateExecuteSQLScriptAttributesCsvData(String csvPath, SchemaChangeImpactProject scip) {
-		XMLParser xmlParser=new XMLParser();
+	public void generateExecuteSQLScriptAttributesCsvData(String csvPath, SchemaChangeImpactProject scip) throws Exception {
+		throw new NotImplementedException("generateExecuteSQLScriptAttributesCsvData");
+/*		XMLParser xmlParser=new XMLParser();
 		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateExecuteSQLScriptCsvData(): File = " + etlTransformationFile.getFileName());
@@ -185,10 +200,11 @@ public class ETLToCSV {
 			//One transformation can be reading from multiple data sources
 			xmlParser.parseXMLForExecuteSQLScriptSteps(etlTransformationFile, executeSQLScriptSteps);
 			ETLExcelExporter.generateExecuteSQLScriptAttributesCsvFile(csvPath, executeSQLScriptSteps);
-		}
+		} */
 	}
-	public void generateExecuteSQLScriptCsvData(String csvPath, SchemaChangeImpactProject scip) {
-		XMLParser xmlParser=new XMLParser();
+	public void generateExecuteSQLScriptCsvData(String csvPath, SchemaChangeImpactProject scip) throws Exception {
+		throw new NotImplementedException("generateExecuteSQLScriptCsvData");
+/*		XMLParser xmlParser=new XMLParser();
 		xmlParser.setxmlDirectory(scip.getETLKTRFile().getTransformationFileDirectory());
 		for (ETLTransformationFile etlTransformationFile : scip.getETLKTRFile().getEtlTransformationFiles()) {
 			Log.logProgress("ETLToCSV.generateExecuteSQLScriptCsvData(): File = " + etlTransformationFile.getFileName());
@@ -196,6 +212,6 @@ public class ETLToCSV {
 			//One transformation can be reading from multiple data sources
 			xmlParser.parseXMLForExecuteSQLScriptSteps(etlTransformationFile, executeSQLScriptSteps);
 			ETLExcelExporter.generateExecuteSQLScriptCsvFile(csvPath, executeSQLScriptSteps);
-		}
+		} */
 	}
 }

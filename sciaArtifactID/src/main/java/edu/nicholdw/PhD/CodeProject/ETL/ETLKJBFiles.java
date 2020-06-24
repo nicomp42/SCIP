@@ -16,6 +16,7 @@ public class ETLKJBFiles extends SchemaChangeImpactProjectComponent implements S
 	
 	public ETLKJBFiles() {
 		super("ETL KJB Files");
+		etlKJBFiles = new ArrayList<ETLKJBFile>();
 	}
 
 	public ArrayList<ETLKJBFile> getEtlKJBFiles() {
@@ -32,5 +33,11 @@ public class ETLKJBFiles extends SchemaChangeImpactProjectComponent implements S
 	}
 	public void add(ETLKJBFile etlKJBFile) {
 		etlKJBFiles.add(etlKJBFile);
+	}
+	/***
+	 * Permanently erase any KJB Files currently in the object
+	 */
+	public void clear() {
+		etlKJBFiles.clear();
 	}
 }

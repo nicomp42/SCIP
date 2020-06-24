@@ -38,47 +38,50 @@ import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
 public class ETLKTRFile implements java.io.Serializable{
 	private static final long serialVersionUID = 2729702901520146865L;
 	private String name;
+	private String fileName;
 	private String description;
 	private ETLSteps etlSteps;
 	private ETLConnections etlConnections;
-	private ETLTransformationFiles etlTransformationFiles;
+//	private ETLTransformationFiles etlTransformationFiles;
 	private ETLHops etlHops;
 	private String transformationFileDirectory;	// Where all the Pentaho transformation XML files are. See etlTransformationFiles object herein.
 
-	public ETLKTRFile(String transformationFileDirectory) {
+	public ETLKTRFile(String fileName, String name) {
+		setName(name);
+		setFileName(name);
 		etlSteps = new ETLSteps();
 		etlConnections = new ETLConnections();
-		etlTransformationFiles = new ETLTransformationFiles();
+//		etlTransformationFiles = new ETLTransformationFiles();
 		etlHops = new ETLHops();
-		this.transformationFileDirectory = transformationFileDirectory;
+/*		this.transformationFileDirectory = transformationFileDirectory;
 		try {
 			if (this.transformationFileDirectory != null) {
-				etlTransformationFiles.loadETLTransformationFileNames(this.transformationFileDirectory);
+				etlTransformationFiles.loadETLTransformationFileNames(filename);
 			}
 		} catch (Exception ex) {
-			Log.logError("ETLProcess.ETLProcess: " + ex.getLocalizedMessage());
-		}
+			Log.logError("ETLKTRFile.ETLKTRFile: " + ex.getLocalizedMessage());
+		} */
 	}
 	/***
 	 * Traverse the ETL Process for a particular query attribute 
 	 * @param etlStep The step to start with
 	 * @param qa The query attribute in question
 	 */
-	public static void traverseFromAttribute(ETLKTRFile etlProcess, ETLStep etlStep, Attributable qa) {
-		System.out.println("ETLProcess.traverseFromAttribute(): Starting step = " + etlStep.toString() + ", attribute = " + qa.toString());
-		Log.logProgress("ETLProcess.traverseFromAttribute(): " + etlProcess.toString() + ", " + etlStep.toString() + ", " + qa.toString());
+	public void traverseFromAttribute(ETLStep etlStep, Attributable qa) {
+		System.out.println("ETLKTRFile.traverseFromAttribute(): Starting step = " + etlStep.toString() + ", attribute = " + qa.toString());
+		Log.logProgress("ETLKTRFile.traverseFromAttribute(): " + ", " + etlStep.toString() + ", " + qa.toString());
 		String fileName = etlStep.getFileName();
-		ETLHop etlHopStart = etlProcess.getEtlHops().getETLHopWithStartStep(etlStep);
+		ETLHop etlHopStart = getEtlHops().getETLHopWithStartStep(etlStep);
 		if (etlHopStart != null) {
 			while (etlHopStart != null) {
-				System.out.println("ETLProcess.traverseFromAttribute(): Hop Start = " + etlHopStart.toString());
-				Log.logProgress("ETLProcess.traverseFromAttribute(): Hop Start = " + etlHopStart.toString());
-				ETLSteps etlSteps; etlSteps = etlProcess.getETLSteps();
+				System.out.println("ETLKTRFile.traverseFromAttribute(): Hop Start = " + etlHopStart.toString());
+				Log.logProgress("ETLKTRFile.traverseFromAttribute(): Hop Start = " + etlHopStart.toString());
+				ETLSteps etlSteps; etlSteps = getETLSteps();
 				String toStepName; toStepName = etlHopStart.getToStepName();
 				ETLStep etlStepNext; etlStepNext = etlSteps.getETLStep(toStepName, fileName);
 //              .getETLStep(etlProcess.getEtlHops().getETLHop(etlHopStart.getToStepName()).getToStepName(), fileName);
-				System.out.println("ETLProcess.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
-				Log.logProgress("ETLProcess.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
+				System.out.println("ETLKTRFile.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
+				Log.logProgress("ETLKTRFile.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
 				QueryAttribute attributeFoundInAttributeCollection; ETLField attributeFoundInETLFieldCollection;
 				attributeFoundInAttributeCollection = null; attributeFoundInETLFieldCollection = null;
 				try {
@@ -86,42 +89,42 @@ public class ETLKTRFile implements java.io.Serializable{
 					QueryAttributes qas = qd.getQueryAttributes();
 					attributeFoundInAttributeCollection = qas.findAttributeByNameOnly(qa);
 				} catch (Exception ex) {
-					Log.logError("ETLProcess.traverseFromAttribute(): checking for queryAttribute " , ex);
+					Log.logError("ETLKTRFile.traverseFromAttribute(): checking for queryAttribute " , ex);
 				}	// There may not be any attributes, that's OK
 				try {
 					attributeFoundInETLFieldCollection = etlStepNext.getETLFields().findETLFieldByColumnName(qa.getAttributeName());
 				} catch (Exception ex) {}	// There may not be any attributes, that's OK
 				if (attributeFoundInAttributeCollection != null) {
-					System.out.println("ETLProcess.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
-					Log.logProgress("ETLProcess.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
+					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
+					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
 					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
 					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 					attributeFoundInAttributeCollection.setGraphNodeAnnotation(graphNodeAnnotation);
 				} else {
-					System.out.println("ETLProcess.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
-					Log.logProgress("ETLProcess.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
+					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
+					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
 				}
 				if (attributeFoundInETLFieldCollection != null) {
-					System.out.println("ETLProcess.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
-					Log.logProgress("ETLProcess.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
+					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
+					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
 					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
 					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 					attributeFoundInETLFieldCollection.setGraphNodeAnnotation(graphNodeAnnotation);					
 				} else {
-					System.out.println("ETLProcess.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
-					Log.logProgress("ETLProcess.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
+					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
+					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
 				}
-				etlHopStart = etlProcess.getEtlHops().getETLHopWithStartStep(etlStepNext);
+				etlHopStart = getEtlHops().getETLHopWithStartStep(etlStepNext);
 			}
 		} else {
-			Log.logProgress("ETLProcess.traverseFromAttribute(): No initial Hop Start found with this ETL step.");			
+			Log.logProgress("ETLKTRFile.traverseFromAttribute(): No initial Hop Start found with this ETL step.");			
 		}
 	}
-	public void loadETLTransformationFiles() {
+/*	public void loadETLTransformationFiles() {
 		if (this.transformationFileDirectory != null) {
 			etlTransformationFiles.loadETLTransformationFileNames(this.transformationFileDirectory);
 		}
-	}
+	} */
 	public void processTableInputStepQueries() {
 		for (ETLStep etlStep : etlSteps) {
 			if (etlStep.getStepType().equals("TableInput")) {
@@ -141,7 +144,7 @@ public class ETLKTRFile implements java.io.Serializable{
 	 */
 	public void processTableOutputStepsFields() {
 		for (ETLStep etlStep : etlSteps) {
-			Log.logProgress("ETLProcess.processTableOutputStepsFields(): ETL Step Name = " + etlStep.getStepName() + ", ETL Step Type = " + etlStep.getStepType());
+			Log.logProgress("ETLKTRFile.processTableOutputStepsFields(): ETL Step Name = " + etlStep.getStepName() + ", ETL Step Type = " + etlStep.getStepType());
 			if (etlStep.getStepType().equals("TableOutput")) {
 				processTableOutputStepFields(transformationFileDirectory, etlStep);
 			} else if (etlStep.getStepType().equals("InsertUpdate")) {
@@ -172,7 +175,7 @@ public class ETLKTRFile implements java.io.Serializable{
 			etlFields = myXMLParser.getETLFieldsForInsertUpdateStep(xpath, doc, etlStep.getStepName());
 			etlStep.addETLFields(etlFields);
 		} catch (Exception ex) {		
-			Log.logError("ETLProcess.processTableOutputStepFields(): " + ex.getLocalizedMessage());
+			Log.logError("ETLKTRFile.processTableOutputStepFields(): " + ex.getLocalizedMessage());
 		}
 	}
 	/**
@@ -198,7 +201,7 @@ public class ETLKTRFile implements java.io.Serializable{
 			etlFields = myXMLParser.getETLFields(xpath, doc, etlStep.getStepName());
 			etlStep.addETLFields(etlFields);
 		} catch (Exception ex) {		
-			Log.logError("ETLProcess.processTableOutputStepFields(): " + ex.getLocalizedMessage());
+			Log.logError("ETLKTRFile.processTableOutputStepFields(): " + ex.getLocalizedMessage());
 		}
 	}
 	public void processTableInputStepQuery(ETLStep etlStep) {
@@ -258,11 +261,11 @@ public class ETLKTRFile implements java.io.Serializable{
 	public void setEtlConnections(ETLConnections etlConnections) {
 		this.etlConnections = etlConnections;
 	}
-	public static void createGraph(SchemaChangeImpactProject scip) {
+	public void createGraph(SchemaChangeImpactProject scip) {
 		try {
-			ETLKTRFile etlProcess = scip.getETLKTRFile();
+//			ETLKTRFile etlProcess = scip.getETLKTRFile();
 			SchemaGraph.addAllConstraints();	// Force keys to be unique as the graph is drawn
-			for (ETLStep etlStep : etlProcess.getETLSteps()) {
+			for (ETLStep etlStep : getETLSteps()) {
 				Log.logProgress("ETLParser.createGraph(): ETL Step Type = " + etlStep.getStepType());
 				// CREATE (n:Person { name: 'Andy', title: 'Developer' })
 				if (etlStep.getStepType().equals("DBProc")) {
@@ -302,7 +305,7 @@ public class ETLKTRFile implements java.io.Serializable{
 							  + "." + Utils.cleanForGraph(qa.getContainerName()) 
 							  + "." + Utils.cleanForGraph(qa.getAttributeName());
 						if (applyActionQuerys(scip, qa)) {
-							ETLKTRFile.traverseFromAttribute(etlProcess, etlStep, qa);
+							traverseFromAttribute(etlStep, qa);
 						}
 						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(qa.getGraphNodeAnnotation());
 						Neo4jDB.submitNeo4jQuery("CREATE (A:"
@@ -336,7 +339,7 @@ public class ETLKTRFile implements java.io.Serializable{
 						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(etlField.getGraphNodeAnnotation());
 	//					key = Utils.cleanForGraph(etlStep.getStepName()) + "." + Utils.cleanForGraph(etlField.getStreamName())	+ "." + Utils.cleanForGraph(etlField.getColumnName());
 						if (applyActionQuerys(scip, etlField)) {
-							ETLKTRFile.traverseFromAttribute(etlProcess, etlStep, etlField);
+							traverseFromAttribute(etlStep, etlField);
 						}
 						Neo4jDB.submitNeo4jQuery("CREATE (A:" + nodeLabel + 
 		                                         " { FieldName: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
@@ -367,7 +370,7 @@ public class ETLKTRFile implements java.io.Serializable{
 							  + "." + Utils.cleanForGraph(qa.getContainerName()) 
 							  + "." + Utils.cleanForGraph(qa.getAttributeName());
 						if (applyActionQuerys(scip, qa)) {
-							ETLKTRFile.traverseFromAttribute(etlProcess, etlStep, qa);
+							traverseFromAttribute(etlStep, qa);
 						}
 						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(qa.getGraphNodeAnnotation());						
 						Neo4jDB.submitNeo4jQuery("CREATE (A:"
@@ -403,7 +406,7 @@ public class ETLKTRFile implements java.io.Serializable{
 	                    + "})");
 			} */
 			/* Draw the hops as connections between steps */
-			for (ETLHop etlHop: etlProcess.getEtlHops()) {
+			for (ETLHop etlHop: getEtlHops()) {
 				Neo4jDB.submitNeo4jQuery("MATCH "
 						               + "(t:" + SchemaGraph.etlStepNodeLabel +")"
 	                                   + "," 
@@ -420,7 +423,7 @@ public class ETLKTRFile implements java.io.Serializable{
 //		                   + "CREATE (s)-[:" + schemaToTableLabel + "{key:\"" + relationshipKey + "\"}]->(t)");
 			}
 		} catch (Exception ex) {
-			Log.logError("ETLProcess.createGraph(): " + ex.getLocalizedMessage());
+			Log.logError("ETLKTRFile.createGraph(): " + ex.getLocalizedMessage());
 		}
 	}
 	public static String buildAnnotationInfo(GraphNodeAnnotation graphNodeAnnotation) {
@@ -447,10 +450,10 @@ public class ETLKTRFile implements java.io.Serializable{
 			// ToDo: Make it work
 			Object myQueryType = aqd.getQueryType();
 			if (myQueryType instanceof QueryTypeAlterTable) {
-				Log.logProgress("ETLProcessController.applyActionQueries(): It's an alter table query");
+				Log.logProgress("ETLKTRFile.applyActionQueries(): It's an alter table query");
 //				for (QueryAttribute aqa: aqd.getQueryAttributes()) {
 					// find the same query in the original QueryDefintion and change the GraphNodeAnnotation
-//					Log.logProgress("ETLProcessController.applyActionQueries: changing GraphNodeAttribute for " + aqa.toString());
+//					Log.logProgress("ETLKTRFileController.applyActionQueries: changing GraphNodeAttribute for " + aqa.toString());
 //					if (aqd.getQueryAttributes().contains(qa, true)) {
 					if (aqd.getQueryAttributes().contains(attribute, false)) {
 						attribute.setGraphNodeAnnotation(graphNodeAnnotation);
@@ -459,16 +462,16 @@ public class ETLKTRFile implements java.io.Serializable{
 					}
 //				}
 			} else if (myQueryType instanceof QueryTypeDropTable ) {
-				Log.logProgress("ETLProcessController.applyActionQueries(): It's a drop table query");
+				Log.logProgress("ETLKTRFile.applyActionQueries(): It's a drop table query");
 				// We need to get all the attributes in the table and then change each one that appears in the QueryAttributes collection
 				
 			} else if (myQueryType instanceof QueryTypeAlterView ) {
-				Log.logProgress("ETLProcessController.applyActionQueries(): It's an alter view query");
+				Log.logProgress("ETLKTRFile.applyActionQueries(): It's an alter view query");
 				
 			} else if (myQueryType instanceof QueryTypeRenameTable ) {
-				Log.logProgress("ETLProcessController.applyActionQueries(): It's a rename table query");
+				Log.logProgress("ETLKTRFile.applyActionQueries(): It's a rename table query");
 			} else {
-				Log.logError("ETLProcessController.applyActionQueries(): query type not recognized: " + myQueryType.toString() );
+				Log.logError("ETLKTRFile.applyActionQueries(): query type not recognized: " + myQueryType.toString() );
 			}
 		}
 		return attributeAffected;
@@ -478,9 +481,9 @@ public class ETLKTRFile implements java.io.Serializable{
 	 * 
 	 * @return A reference to the ETL Transformation files collection
 	 */
-	public ETLTransformationFiles getEtlTransformationFiles() {
+/*	public ETLTransformationFiles getEtlTransformationFiles() {
 		return etlTransformationFiles;
-	}
+	} */
 /*	public void setEtlTransformationFiles(ETLTransformationFiles etlTransformationFiles) {
 		this.etlTransformationFiles = etlTransformationFiles;
 	} */
@@ -495,5 +498,11 @@ public class ETLKTRFile implements java.io.Serializable{
 	}
 	public void setEtlHops(ETLHops etlHops) {
 		this.etlHops.clone(etlHops);
+	}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }
