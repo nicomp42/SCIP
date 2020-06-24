@@ -103,8 +103,7 @@ public class Main extends Application {
 	@FXML void mnuEditDebug_OnAction(ActionEvent event) {openDebugWindow();}
 	@FXML void mnuFileExit_OnAction(ActionEvent event) {Platform.exit();}
 	@FXML void mnuEditClearNeo4jDB_OnAction(ActionEvent event) {clearNeo4jDB();}
-	@FXML void mnuToolsGenerateSchemaTopology_OnClick(ActionEvent event) {
-		openDatabaseGraphWindow();}
+	@FXML void mnuToolsGenerateSchemaTopology_OnClick(ActionEvent event) {openDatabaseGraphWindow();}
 	@FXML void mnuEditSubmitSQL_OnAction(ActionEvent event) {openSubmitSQLWindow();}
 	@FXML void mnuEditProjectManager_OnAction(ActionEvent event) {openProjectManagerWindow();}
 	@FXML void mnuEditReadDBLog_OnAction(ActionEvent event) {openTransactionLogFileReaderWindow();}
@@ -750,8 +749,8 @@ public class Main extends Application {
 	        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {public void handle(WindowEvent we) {}});
 			stage.setScene(scene);
 			DatabaseGraphController stc = fxmlLoader.getController();
-			stc.setScene(scene);
 			stc.setStage(stage);
+			stc.setScene(scene);
 			stage.show();
 		} catch (Exception ex) {
 			Log.logError("Main.openDatabaseGraphWindow():" + ex.getLocalizedMessage());

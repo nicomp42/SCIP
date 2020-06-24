@@ -11,12 +11,9 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeView?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -115,211 +112,13 @@
           </Tab>
           <Tab fx:id="tabETL" text="ETL">
             <content>
-              <AnchorPane fx:id="apETLAnchorPane" maxHeight="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="811.0">
+              <AnchorPane fx:id="apETLAnchorPane" maxHeight="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="800.0" prefWidth="900.0">
                 <children>
                     <Button fx:id="btnClearKJBListView" layoutX="11.0" layoutY="425.0" mnemonicParsing="false" onAction="#btnClearKJBListView_OnClick" text="Clear" />
-                    <ListView fx:id="lvKJBFiles" layoutX="10.0" layoutY="38.0" prefHeight="379.0" prefWidth="498.0" />
+                    <ListView fx:id="lvKJBFiles" layoutX="10.0" layoutY="38.0" prefHeight="379.0" prefWidth="682.0" />
                     <Label layoutX="10.0" layoutY="14.0" text="KJB Files" />
                  	<Button fx:id="btnBrowseForKJBFile" layoutX="68.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnBrowseForKJBFile_OnClick" text="..." />
               	</children>
-              </AnchorPane>
-            </content>
-          </Tab>
-          <Tab fx:id="tabETLTest" closable="false" text="ETL Test">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="698.0" prefWidth="773.0">
-              <children>
-    	<TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
-        	<tabs>
-          		<Tab text="Read and Process ETL">
-            		<content>
-              			<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-              				<children>
-                  				<Pane fx:id="pneETLLoad" layoutX="1.0" layoutY="1.0" prefHeight="110.0" prefWidth="780.0">
-                    				<children>
-   				      					<Label layoutX="17.0" layoutY="4.0" prefHeight="17.0" prefWidth="212.0" text="Location of ETL Transformation Files" />
-										<Button fx:id="btnETLBrowse" layoutX="717.0" layoutY="23.0" mnemonicParsing="false" onAction="#btnETLBrowse_OnClick" prefHeight="25.0" prefWidth="51.0" text="..." />
-										<TextArea fx:id="txaETLFilePath" layoutX="17.0" layoutY="23.0" onMouseClicked="#txaETLFilePath_OnClick" prefHeight="27.0" prefWidth="689.0" />
-										<Button fx:id="btnETLSubmit" layoutX="17.0" layoutY="63.0" mnemonicParsing="false" onAction="#btnETLSubmit_OnClick" text="Submit" />
-							            <Label fx:id="lblWorkingOnETL" layoutX="328.0" layoutY="423.0" rotate="-45.0" text="Working..." visible="false">
-	            							<font><Font size="36.0" /></font>
-	            						</Label>
-									</children>
-								</Pane>
-								<Pane fx:id="pneFiles" layoutX="10.0" layoutY="105.0" prefHeight="281.0" prefWidth="780.0">
-                           <children>
-                              <Label layoutX="74.0" layoutY="3.0" prefHeight="23.0" prefWidth="171.0" text="Double-click to toggle stage" />
-                              <Button fx:id="btnClearTransformationTable" layoutX="474.0" layoutY="2.0" mnemonicParsing="false" onAction="#btnClearTransformationTable_OnClick" text="Clear Table" />
-                              <TableView fx:id="tvETLTransformationFiles" layoutY="30.0" onMouseClicked="#tvETLTransformationFiles_OnClick" prefHeight="247.0" prefWidth="780.0">
-                                <columns>
-                                  <TableColumn editable="false" prefWidth="75.0" text="File Name">
-	   								<cellValueFactory>
-	                                	<PropertyValueFactory property="fileName" />
-	                                </cellValueFactory>
-                                  </TableColumn>
-                                  <TableColumn editable="false" prefWidth="75.0" text="ETL Stage">
-	   								<cellValueFactory>
-	                                	<PropertyValueFactory property="etlStage" />
-	                                </cellValueFactory>
-                                  </TableColumn>
-                                </columns>
-                              </TableView>
-                           </children>
-                              </Pane>
-                        <Button fx:id="btnProcessETLTransformationFiles" layoutX="10.0" layoutY="400.0" mnemonicParsing="false" onAction="#btnProcessETLTransformationFiles_OnClick" text="Test Process ETL Transformation Files" />
-							</children>
-						</AnchorPane>
-					</content>
-				</Tab>
-				<Tab text="Contents of ETL Transformations">
-	            	<content>
-						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-							<children>
-								<Pane fx:id="pneETLResults" layoutX="1.0" layoutY="5.0" prefHeight="384.0" prefWidth="780.0">
-									<children>
-										<Label fx:id="lblContentsOfETL" layoutX="17.0" layoutY="5.0" text="Contents of ETL File" />
-										<TabPane prefHeight="837.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
-											<tabs>
-												<Tab text="Steps">
-													<content>
-														<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="600">
-	                 										<children>
-	      		   			      				<TableView fx:id="tvETLSteps" layoutX="5.0" layoutY="5.0" prefHeight="400.0" prefWidth="793.0">  
-	   										     <columns>
-	   										          <TableColumn prefWidth="113.0" text="Step Name">
-	   												     <cellValueFactory>
-	                                                            <PropertyValueFactory property="stepName" />
-	   												     </cellValueFactory>
-	   												  </TableColumn>
-	   										          <TableColumn prefWidth="137.0" text="Step Type">
-	   												     <cellValueFactory>
-	                                                            <PropertyValueFactory property="stepType" />
-	   												     </cellValueFactory>
-	   										          </TableColumn>
-	   										          <TableColumn prefWidth="137.0" text="SQL">
-	   												     <cellValueFactory>
-	                                                            <PropertyValueFactory property="sql" />
-	   												     </cellValueFactory>
-	   										          </TableColumn>
-	   										          <TableColumn prefWidth="137.0" text="Table">
-	   												     <cellValueFactory>
-	                                                            <PropertyValueFactory property="table" />
-	   												     </cellValueFactory>
-	   										          </TableColumn>
-	   										          <TableColumn prefWidth="137.0" text="Connection">
-	   												     <cellValueFactory>
-	                                                            <PropertyValueFactory property="connection" />
-	   												     </cellValueFactory>
-	   										          </TableColumn>
-	   										     </columns>       		   			      				
-	        									</TableView>
-	                 						</children>
-	   		   			      			</AnchorPane>
-	   		   			      		</content>
-			   			      	</Tab>
-	          					<Tab text="Step Names">
-						            <content>
-	              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
-	                 						<children>
-	      		   			      				<TextArea fx:id="txaStepNamesResults" layoutX="5.0" layoutY="5.0" prefWidth="800" />
-	                 						</children>
-	   		   			      			</AnchorPane>
-	   		   			      		</content>
-			   			      	</Tab>
-	          					<Tab text="Output Steps">
-						            <content>
-	              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
-	                 					<children>
-	      		   			    	  		<TextArea fx:id="txaOutputStepResults" layoutX="5.0" layoutY="5.0" prefWidth="800" />
-	                 					</children>
-	   		   			      			</AnchorPane>
-	   		   			      		</content>
-			   			      	</Tab>
-	          					<Tab text="Input Steps">
-						            <content>
-	              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
-	                 						<children>
-	      		   			      				<TextArea fx:id="txaInputStepResults" layoutX="5.0" layoutY="5.0" prefWidth="800" />
-	                 						</children>
-	   		   			      			</AnchorPane>
-	   		   			      		</content>
-			   			      	</Tab>
-	          					<Tab text="Join Steps">
-						            <content>
-	              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
-	                 						<children>
-	      		   			      				<TextArea fx:id="txaJoinStepResults" layoutX="5.0" layoutY="5.0" prefWidth="800" />
-	                 						</children>
-	   		   			      			</AnchorPane>
-	   		   			      		</content>
-			   			      	</Tab>
-	          					<Tab text="Jobs">
-						            <content>
-	              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
-	                 						<children>
-	      		   			      				<TextArea fx:id="txaETLJobs" layoutX="5.0" layoutY="5.0" prefWidth="800" />
-	               			 				</children>
-	   		   			      			</AnchorPane>
-	   		   			      		</content>
-		      					</Tab>
-	          					<Tab text="DBProcs">
-						            <content>
-	              						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="780">
-	                 						<children>
-	      		   			      				<TextArea fx:id="txaDBProcStepResults" layoutX="5.0" layoutY="5.0" prefWidth="800" />
-	               			 				</children>
-	   		   			      			</AnchorPane>
-	   		   			      		</content>
-		      					</Tab>
-	             				<Tab text="Connections">
-	   					            <content>
-	             						<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300" prefWidth="600">
-	                						<children>
-	     		   			      				<TableView fx:id="tvETLConnections" layoutX="5.0" layoutY="5.0" prefHeight="400.0" prefWidth="793.0">  
-	  										     <columns>
-	  										          <TableColumn prefWidth="113.0" text="Connection Name">
-	  												     <cellValueFactory>
-	                                                           <PropertyValueFactory property="name" />
-	  												     </cellValueFactory>
-	  												  </TableColumn>
-	  										          <TableColumn prefWidth="137.0" text="Server">
-	  												     <cellValueFactory>
-	                                                           <PropertyValueFactory property="server" />
-	  												     </cellValueFactory>
-	  										          </TableColumn>
-	  										          <TableColumn prefWidth="137.0" text="Database">
-	  												     <cellValueFactory>
-	                                                           <PropertyValueFactory property="database" />
-	  												     </cellValueFactory>
-	  										          </TableColumn>
-	  										          <TableColumn prefWidth="137.0" text="User name">
-	  												     <cellValueFactory>
-	                                                           <PropertyValueFactory property="userName" />
-	  												     </cellValueFactory>
-	  										          </TableColumn>
-	  										          <TableColumn prefWidth="137.0" text="Type">
-	  												     <cellValueFactory>
-	                                                           <PropertyValueFactory property="type" />
-	  												     </cellValueFactory>
-	  										          </TableColumn>
-	  										     </columns>       		   			      				
-	       									</TableView>
-	                						</children>
-	  		   			      			</AnchorPane>
-	      		   			      	</content>
-	   		   			      	</Tab>
-							</tabs>
-	   			      	</TabPane>
-					</children>
-	              </Pane>
-	          </children>
-	        </AnchorPane>
-	      </content>
-		</Tab>
-	</tabs>
-</TabPane>
-              
-              </children>
               </AnchorPane>
             </content>
           </Tab>

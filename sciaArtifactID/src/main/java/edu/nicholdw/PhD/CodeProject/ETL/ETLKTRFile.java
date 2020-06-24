@@ -4,6 +4,8 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import java.util.ArrayList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -13,7 +15,12 @@ import org.w3c.dom.Document;
 
 import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
+import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStep;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
+import edu.UC.PhD.CodeProject.nicholdw.StepName;
+import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
+import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
@@ -505,4 +512,106 @@ public class ETLKTRFile implements java.io.Serializable{
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-}
+	public String getEtlStage() {return "Unknown";}	// We're not using this
+	
+/*********************************************************************************************/
+	/**
+	 * Take apart all the select transformation files
+	 */
+	private Boolean resolveSchemaNamesForETLSteps() {
+		Boolean status = true;// Hope for the best
+		try {
+			for (ETLStep etlStep : getETLSteps()) {
+				String schemaName, connection;
+				connection = etlStep.getConnection();
+				schemaName = getETLConnections().getConnection(connection).getDatabase();
+				etlStep.setSchemaName(schemaName);
+			}
+		} catch (Exception ex) {
+			Log.logError("DatabaseGraphController.resolveSchemaNamesForETLSteps: " + ex.getLocalizedMessage());
+			status = false;
+		}
+		return status;
+	}
+	public void processETLKTRFile() {
+		Log.logProgress("ETLKTRFile.processETLKTRFile() " + fileName);
+		ArrayList<TableOutputStep> tableOutputSteps = new ArrayList<TableOutputStep>();
+		ArrayList<TableInputStep> tableInputSteps = new ArrayList<TableInputStep>();
+		ArrayList<DBJoinStep> dbJoinSteps = new ArrayList<DBJoinStep>();
+		ArrayList<StepName> stepNames = new ArrayList<StepName>();
+		ArrayList<String> connectionNames = new ArrayList<String>();
+		ArrayList<DBProcStep> dbProcSteps = new ArrayList<DBProcStep>();
+		ArrayList<ExecuteSQLScriptStep> executeSQLScriptSteps = new ArrayList<ExecuteSQLScriptStep>();
+		ETLHops etlHops = new ETLHops();
+		XMLParser myXMLParser = new XMLParser();
+		myXMLParser.getStepNames(this, stepNames);
+		myXMLParser.getConnectionNames(this, connectionNames);
+		myXMLParser.parseXMLForTableOutputSteps(this, tableOutputSteps);
+		myXMLParser.parseXMLForTableInputSteps(this, tableInputSteps);
+		myXMLParser.parseXMLForDBJoinSteps(this, dbJoinSteps);
+		myXMLParser.parseXMLForDBProcSteps(this, dbProcSteps);
+		myXMLParser.parseXMLForHops(this, etlHops);
+		myXMLParser.parseXMLForExecuteSQLScriptSteps(this, executeSQLScriptSteps);
+
+//		ETLJobs tmpETLJobs = new ETLJobs();
+//		myXMLParser.getETLJobs(myXMLParser.getXMLFilePathPrefix() + myXMLFileName, tmpETLJobs);
+//		for (ETLJob etlJob : tmpETLJobs) {
+//			Log.logProgress("DatabaseGraphController.loadETL().Task.processETLFile(): parsing XML JOB file at " + etlJob.getFilename());
+//			processETLFile(myXMLParser, etlJob.getFilenameWithoutPenthoPrefix());
+//		}
+//		etlJobs.addETLJobs(tmpETLJobs);
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		Document doc = null;
+		XPath xpath = null;
+		try {
+			for (StepName stepName: stepNames) {
+				builder = factory.newDocumentBuilder();
+				doc = builder.parse(stepName.getFileName());
+				XPathFactory xpathFactory = XPathFactory.newInstance();
+				xpath = xpathFactory.newXPath();
+				String tmp, stepType, sql, table, connectionName, schemaName;
+				tmp = "";
+				// Not all the types of steps will have all these artifacts.
+				stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
+				sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());
+				table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "lookup/table");
+				if (table == "") {table = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "table");}
+				connectionName = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "connection");
+				// We will add schemaName later after we've read all the connection objects from the XML
+				String procedure;
+				procedure = myXMLParser.getSomethingInAStep(xpath, doc, stepName.getStepName(), "procedure");
+				// Add this new step to the collection of steps. We don't know the schema name, yet.
+				getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connectionName, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), "SchemaUnknown"));
+				//for (String connectionName: connectionNames) {
+				getETLConnections()
+				    .addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
+						                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
+						                                // "database" is the schema in MySQL. 
+						                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
+						                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
+						                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
+						                                ));
+				
+			}
+			// Resolve the schema name for all the ETL steps we just added
+			resolveSchemaNamesForETLSteps();
+			// Does the file reference other jobs?
+//				for (ETLJob etlJob : etlJobs) {
+//					txaETLJobs.appendText(etlJob.toString() + System.getProperty("line.separator"));
+//				}
+			// OK, the ETLProcess object is loaded up with ETL Steps and Connections and stuff
+			// We should be able to parse the queries in the steps that have queries
+			processTableInputStepQueries();
+			processTableOutputStepsFields();
+			setEtlHops(etlHops);
+			processExecuteSQLStepQueries();
+		} catch (Exception ex) {
+			Log.logError("DatabaseGraphController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
+		}
+    }
+}	
+	
+	
+

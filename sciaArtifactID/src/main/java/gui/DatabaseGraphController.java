@@ -16,56 +16,28 @@
 package gui;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import org.w3c.dom.Document;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import edu.UC.PhD.CodeProject.nicholdw.ActionQuery;
 import edu.UC.PhD.CodeProject.nicholdw.ActionQuerys;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
-import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
-import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStep;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Schemas;
-import edu.UC.PhD.CodeProject.nicholdw.StepName;
-import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
-import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
-import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
-import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLConnection;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLConnections;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLHops;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLKJBFile;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLKJBFiles;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLStep;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLSteps;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFile;
-import edu.nicholdw.PhD.CodeProject.ETL.XMLParser;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphConfig;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.GraphResults;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -74,8 +46,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
@@ -86,9 +56,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -113,11 +81,13 @@ public class DatabaseGraphController {
 	@FXML	void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {openBrowserWindow();}
 	@FXML	void btnBrowseForActionQueryFile_OnClick(ActionEvent event) {browseForActionQueryFile();}
 	@FXML	void btnClearSchemaComboBox_OnClick(ActionEvent event) {clearSchemaComboBox();}
+	@FXML	private void btnBrowseForKJBFile_OnClick(ActionEvent event) {browseForKJBFile();}
+	@FXML	private	void btnClearKJBListView_OnClick(ActionEvent event) {clearKJBListView(); } 
 	@FXML
 	private void initialize() { // Automagically called by JavaFX
 		Log.logProgress("DatabaseGraphController.Initialize() starting...");
 		try {
-			setTheScene();
+//			setTheScene();		// Called from setTheStage()
 		} catch (Exception e) {
 			Log.logError("DatabaseGraphController.Initialize(): " + e.getLocalizedMessage());
 		}
@@ -156,15 +126,24 @@ public class DatabaseGraphController {
 		showContentsOfDatabaseHostControls(false);
 		showResultsControls(false);
 		displayWorkingMessage(false);
-		displayWorkingOnETLMessage(false);
+//		displayWorkingOnETLMessage(false);
 		showFilters(false);
 		scip = Config.getConfig().getCurrentSchemaChangeImpactProject();	
 		scatter(scip);
+		lvKJBFiles.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		    @Override
+		    public void handle(MouseEvent event) {
+		        if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+		        	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho\\JobFile.kjb");    
+		        }
+		    }
+		});	
 		myStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
             	checkToCloseWindow(we);
             }
         });
+
 	}
     private void checkToCloseWindow(WindowEvent event) {
 		if (checkToDiscardData()) {
@@ -393,11 +372,11 @@ public class DatabaseGraphController {
 	 * Tell the user to be patient: the data is being processed.
 	 * @param status true to display the message, false otherwise.
 	 */
-	private void displayWorkingOnETLMessage(boolean status) {
+//	private void displayWorkingOnETLMessage(boolean status) {
 //		lblWorking.setDisable(!status);
-		lblWorkingOnETL.setVisible(status);
-		lblWorkingOnETL.setStyle("-fx-opacity: 1.0;");
-	}
+//		lblWorkingOnETL.setVisible(status);
+//		lblWorkingOnETL.setStyle("-fx-opacity: 1.0;");
+//	}
 	private void showResultsControls(boolean status) {
 		taResults.setVisible(status);
 		lblResults.setVisible(status);
@@ -419,7 +398,7 @@ public class DatabaseGraphController {
 	public void setScene(Scene scene) {this.myScene = scene;}
 	public Scene getScene() {return this.myScene;}
 	public Stage getStage() {return myStage;}
-	public void setStage(Stage myStage) {this.myStage = myStage;}
+	public void setStage(Stage myStage) {this.myStage = myStage; setTheScene();}
 
 	public void disableEverything(boolean status) {
 		try {
@@ -521,10 +500,6 @@ public class DatabaseGraphController {
 //	scip.getETLKTRFile().setTransformationFileDirectory(Utils.formatPath(txaETLFilePath.getText().trim())); 
 //	processETLTransformationFiles();
 //}
-////@FXML	private void txaETLFilePath_DoubleClick(ActionEvent event) {txaETLFilePath.setText("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho");}
-//@FXML	private void btnClearTransformationTable_OnClick(ActionEvent event) {clearTransformationFileTable();}
-//@FXML	private void btnBrowseForKJBFile_OnClick(ActionEvent event) {browseForKJBFile();}
-//@FXML	private	void btnClearKJBListView_OnClick(ActionEvent event) {clearKJBListView(); } 
 
 
 

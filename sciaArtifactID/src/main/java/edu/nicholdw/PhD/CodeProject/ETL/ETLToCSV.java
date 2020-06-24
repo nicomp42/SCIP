@@ -124,8 +124,9 @@ public class ETLToCSV {
 			ETLExcelExporter.generateInputStepsCsvFile(csvPath, tableInputSteps);
 		} */
 	}
-	public void generateInputStepsCsvData(String csvPath){
-		XMLParser xmlparser=new XMLParser();
+	public void generateInputStepsCsvData(String csvPath) throws NotImplementedException{
+		throw new NotImplementedException("generateInputStepsCsvData");
+/*		XMLParser xmlparser=new XMLParser();
 		File folder = new File(pentahoProjectDirectoryFullPath);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
@@ -135,7 +136,7 @@ public class ETLToCSV {
 				List<TableInputStep> inputSteps = xmlparser.parseXMLForInputSteps(pentahoProjectDirectoryFullPath+"/" , listOfFiles[i].getName());
 				ETLExcelExporter.generateInputStepsCsvFile(csvPath, inputSteps);
 			}
-		}
+		} */
 	}
 	public void generateDBLookupStepCsvData(String csvPath, SchemaChangeImpactProject scip) throws Exception {
 		throw new NotImplementedException("generateDBLookupStepCsvData");

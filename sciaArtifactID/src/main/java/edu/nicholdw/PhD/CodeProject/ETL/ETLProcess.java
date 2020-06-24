@@ -4,6 +4,7 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProjectComponent;
 
 public class ETLProcess extends SchemaChangeImpactProjectComponent {
@@ -22,10 +23,15 @@ public class ETLProcess extends SchemaChangeImpactProjectComponent {
 		this.etlKJBFiles = etlKJBFiles;
 	}
 
-	public void process() {
+	public void process(SchemaChangeImpactProject scip) {
 		// Read the Transformation files for each Job file
 		for (ETLKJBFile etlKJBFile: etlKJBFiles) {
 			etlKJBFile.readETLKTRFiles();
+			for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
+//				etlKTRFile.getETLSteps().
+				etlKTRFile.createGraph(scip);
+				
+			}
 		}
 	}
 

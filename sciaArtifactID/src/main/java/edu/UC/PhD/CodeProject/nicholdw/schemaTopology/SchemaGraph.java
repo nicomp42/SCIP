@@ -105,12 +105,7 @@ public class SchemaGraph {
 				status = false;
 			}
 		}
-		// Add in the ETL steps, if any
-		for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
-			for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
-				etlKTRFile.createGraph(scip);
-			}
-		}
+		scip.getEtlProcess().process(scip);
 		
 		// All the nodes and relationships are drawn, now let's figure out what nodes have been indirectly by the action query 
 		reflectSchemaImpacts();

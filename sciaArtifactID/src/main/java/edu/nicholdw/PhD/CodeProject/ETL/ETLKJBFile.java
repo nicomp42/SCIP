@@ -4,8 +4,8 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProjectComponent;
 
 /***
- * A collection of Pentaho .kjb files.
- * A .kjb file is a set of .ktr files
+ * A Pentaho .kjb file.
+ * A .kjb file is a set of .ktr files and a path through them.
  * @author nicomp
  *
  */
@@ -43,7 +43,7 @@ public class ETLKJBFile extends SchemaChangeImpactProjectComponent {
 	}
 	public void readETLKTRFiles() {
 		XMLParser myXMLParser = new XMLParser();
-		
+		myXMLParser.getETLKTRFiles(fileName, etlKTRFiles);		
 	}
 	public boolean loadJobs() throws Exception {
 		boolean status = true;

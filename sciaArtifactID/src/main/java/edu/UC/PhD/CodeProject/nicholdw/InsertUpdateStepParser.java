@@ -16,7 +16,7 @@ import org.w3c.dom.NodeList;
 
 public class InsertUpdateStepParser {
 
-	public static TableOutputStep parseXMLForInsertUpdateStep(Document doc, XPath xpath, String step, String xmlFilePath, String fileName, String etlStage) {
+	public static TableOutputStep parseXMLForInsertUpdateStep(Document doc, XPath xpath, String step, String fileName, String etlStage) {
 		TableOutputStep stepObject = null;
 		String transName = getTransformationName(doc, xpath);
 		String dbName = getDatabaseName(doc, xpath, step);
@@ -24,7 +24,7 @@ public class InsertUpdateStepParser {
 		String schemaName = getSchemaName(doc, xpath, step);
 		String connectionName = getConnectionName(doc, xpath, step);
 		List<String> fieldNames = getDatabaseFieldNames(doc, xpath, step);
-		stepObject = new TableOutputStep(transName, step, "Insert/Update", dbName, tableName, fieldNames, xmlFilePath, fileName, etlStage, schemaName, connectionName);
+		stepObject = new TableOutputStep(transName, step, "Insert/Update", dbName, tableName, fieldNames, "", fileName, etlStage, schemaName, connectionName);
 		return stepObject;
 	}
 	private static String getDatabaseName(Document doc, XPath xpath, String stepname) {
