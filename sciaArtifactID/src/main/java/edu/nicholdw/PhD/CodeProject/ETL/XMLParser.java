@@ -614,7 +614,7 @@ public class XMLParser {
 					try {
 						filename = eElement.getElementsByTagName("filename").item(0).getTextContent();
 						name = eElement.getElementsByTagName("name").item(0).getTextContent();
-						etlKTRFiles.addETLKTRFile(new ETLKTRFile(name, filename));
+						etlKTRFiles.addETLKTRFile(new ETLKTRFile(filename, name));
 					} catch (Exception ex) {
 						// Eat it, for now.
 					}

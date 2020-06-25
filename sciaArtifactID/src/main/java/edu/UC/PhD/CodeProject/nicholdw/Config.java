@@ -69,11 +69,13 @@ public class Config implements Serializable {
 		try {
 			setDatabaseEngine(DatabaseEngineFactory.createDatabaseEngine(DATABASE_ENGINE_TYPE.MySQL));	// MySQL, etc.
 			adjustNodeLabelAsNodeIsAdded = false;
+			replaceBackslashInNeo4jQuery = true;
 		} catch (Exception ex) {
 			System.out.println("Config.Config(): Unable to create database engine.");
 			Log.logError("Config.Config(): Unable to create database engine.");
 		}
 	}
+	private boolean replaceBackslashInNeo4jQuery;
 	private boolean adjustNodeLabelAsNodeIsAdded;	// We probably won't ever set this to true. 
 	private DatabaseEngine databaseEngine;
 	private final String version = "0.06";
@@ -566,6 +568,12 @@ public class Config implements Serializable {
 	}
 	public void setAdjustNodeLabelAsNodeIsAdded(boolean adjustNodeLabelAsNodeIsAdded) {
 		this.adjustNodeLabelAsNodeIsAdded = adjustNodeLabelAsNodeIsAdded;
+	}
+	public boolean isReplaceBackslashInNeo4jQuery() {
+		return replaceBackslashInNeo4jQuery;
+	}
+	public void setReplaceBackslashInNeo4jQuery(boolean replaceBackslashInNeo4jQuery) {
+		this.replaceBackslashInNeo4jQuery = replaceBackslashInNeo4jQuery;
 	}
 }
 // List the fields that should be serialized. In this class, that's all of them that are not marked final.

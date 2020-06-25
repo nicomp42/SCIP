@@ -502,6 +502,9 @@ public class Neo4jDB {
 		boolean status = true;		// Hope for the best
 		try {
 			Neo4jDB.getDriver();
+			if (Config.getConfig().isReplaceBackslashInNeo4jQuery()) {
+				query = query.replace("\\", "/");
+			}
 			if (Config.getConfig().getConvertNeo4jQueriesToLowerCase()) {
 				Neo4jDB.ExecActionQuery(query.toLowerCase());
 			} else {

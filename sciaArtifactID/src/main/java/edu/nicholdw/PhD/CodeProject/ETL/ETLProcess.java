@@ -28,7 +28,7 @@ public class ETLProcess extends SchemaChangeImpactProjectComponent {
 		for (ETLKJBFile etlKJBFile: etlKJBFiles) {
 			etlKJBFile.readETLKTRFiles();
 			for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
-//				etlKTRFile.getETLSteps().
+				etlKTRFile.processETLKTRFile();
 				etlKTRFile.createGraph(scip);
 				
 			}
