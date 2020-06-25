@@ -84,21 +84,25 @@ public class SchemaGraph {
 		Log.logProgress("SchemaGraph.generateGraph()");
 		scip.setGraphResults(new GraphResults());
 		boolean status = true;		// Hope for the best
+		scip.parseAllActionQuerys();
+		SchemaImpacts schemaImpacts = new SchemaImpacts();
+		scip.setSchemaImpacts(schemaImpacts);
+		// Figure out all the impacts of all the action queries before we do anything else.
+		//  We don't need to know what schemas we are processing!
+		for (ActionQuery ac: scip.getActionQuerys()) {
+			SchemaImpact schemaImpact = new SchemaImpact();
+			ActionQueryProcessor.processActionQuery(ac.getSql(), schemaImpact);
+			schemaImpacts.addSchemaImpact(schemaImpact);
+		}
 		for (Schema schema: scip.getSchemas()) {	// There may not be any schemas so plan accordingly
 			try {
-				SchemaImpacts schemaImpacts = new SchemaImpacts();
 				schema.loadTables(scip.getHostName(), scip.getUserName(), scip.getPassword());
 				Tables tables = schema.getTables();
 				for (Table table: tables) {	// Get all the attributes from the tables
 					table.setAttributes(Table.readAttributesFromTableDefinition(table.getTableName(), schema.getSchemaName()));
 				}
 				loadQueryDefinitions(schema);
-				for (ActionQuery ac: scip.getActionQuerys()) {
-					SchemaImpact schemaImpact = new SchemaImpact();
-					ActionQueryProcessor.processActionQuery(ac.getSql(), schemaImpact);
-					applySchemaImpact(schemaImpact, schema);
-					schemaImpacts.addSchemaImpact(schemaImpact);
-				}
+				applySchemaImpacts(schemaImpacts, schema);
 				addNodesToGraph();
 			} catch (Exception ex) {
 				Log.logError("SchemaGraph.generateGraph(): " + ex.getLocalizedMessage());
@@ -107,7 +111,7 @@ public class SchemaGraph {
 		}
 		scip.getEtlProcess().process(scip);
 		
-		// All the nodes and relationships are drawn, now let's figure out what nodes have been indirectly by the action query 
+		// All the nodes and relationships are drawn, now let's figure out what nodes have been indirectly impacted by the action query 
 		reflectSchemaImpacts();
 		Neo4jDB.submitNeo4jQuery("Match (n:etl_step) return n");
 		return status;
@@ -155,6 +159,11 @@ public class SchemaGraph {
 	 * @param actionQueryDefinition The action query
 	 */
 //	private void applyActionQuery(QueryDefinition actionQueryDefinition) {
+	private void applySchemaImpacts(SchemaImpacts schemaImpacts, Schema schema) {
+		for (SchemaImpact schemaImpact: schemaImpacts) {
+			applySchemaImpact(schemaImpact, schema);
+		}
+	}
 	private void applySchemaImpact(SchemaImpact schemaImpact, Schema schema) {
 		Log.logProgress("SchemaGraph.applySchemaImpact()");
 		// Create a GraphNodeAnnotation object that can be copied into any attributes that have suffered a change

@@ -307,9 +307,9 @@ public class ETLKTRFile implements java.io.Serializable{
 						key = Utils.cleanForGraph(qa.getSchemaName()) 
 							  + "." + Utils.cleanForGraph(qa.getContainerName()) 
 							  + "." + Utils.cleanForGraph(qa.getAttributeName());
-						if (applyActionQuerys(scip, qa)) {
+/*						if (applyActionQuerys(scip, qa)) {
 							traverseFromAttribute(etlStep, qa);
-						}
+						} */
 						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(qa.getGraphNodeAnnotation());
 						Neo4jDB.submitNeo4jQuery("CREATE (A:"
 						                         + nodeLabel
@@ -341,9 +341,9 @@ public class ETLKTRFile implements java.io.Serializable{
 							  + "." + Utils.cleanForGraph(etlField.getColumnName());
 						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(etlField.getGraphNodeAnnotation());
 	//					key = Utils.cleanForGraph(etlStep.getStepName()) + "." + Utils.cleanForGraph(etlField.getStreamName())	+ "." + Utils.cleanForGraph(etlField.getColumnName());
-						if (applyActionQuerys(scip, etlField)) {
+/*						if (applyActionQuerys(scip, etlField)) {
 							traverseFromAttribute(etlStep, etlField);
-						}
+						} */
 						Neo4jDB.submitNeo4jQuery("CREATE (A:" + nodeLabel + 
 		                                         " { fieldname: " + "'" + etlField.getStreamName() + ":" + etlField.getColumnName() + "'" + 
 		                                         ",	key:'" + key + "'" +
@@ -372,9 +372,9 @@ public class ETLKTRFile implements java.io.Serializable{
 						key = Utils.cleanForGraph(qa.getSchemaName()) 
 							  + "." + Utils.cleanForGraph(qa.getContainerName()) 
 							  + "." + Utils.cleanForGraph(qa.getAttributeName());
-						if (applyActionQuerys(scip, qa)) {
+/*						if (applyActionQuerys(scip, qa)) {
 							traverseFromAttribute(etlStep, qa);
-						}
+						}*/
 						String nodeLabel; nodeLabel = SchemaGraph.computeNodeLabel(qa.getGraphNodeAnnotation());						
 						Neo4jDB.submitNeo4jQuery("CREATE (A:"
 						                         + nodeLabel		/* SchemaGraph.attributeNodeLabel */

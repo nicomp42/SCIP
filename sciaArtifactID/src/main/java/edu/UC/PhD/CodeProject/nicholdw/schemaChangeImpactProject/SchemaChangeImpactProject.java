@@ -1,33 +1,31 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
 
+import edu.UC.PhD.CodeProject.nicholdw.ActionQuery;
 import edu.UC.PhD.CodeProject.nicholdw.ActionQuerys;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
-import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
+import edu.UC.PhD.CodeProject.nicholdw.SchemaImpacts;
 import edu.UC.PhD.CodeProject.nicholdw.Schemas;
-import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
-import edu.UC.PhD.CodeProject.nicholdw.StepName;
-import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.ActionQueryDefinitions;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.DatabaseGraphConfig;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.GraphResults;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
-import edu.nicholdw.PhD.CodeProject.ETL.DBProcStep;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLProcess;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLKJBFile;
 
 /**
  * A schema change impact project
@@ -52,6 +50,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	private DatabaseGraphConfig databaseGraphConfig;
 	private ActionQuerys actionQuerys;
 	private ActionQueryDefinitions actionQueryDefinitions;
+	private SchemaImpacts schemaImpacts;
 //	private GraphTopology schemaTolopogy;
 	private GraphResults graphResults;
 	private static final String defaultProjectName = "[No project loaded]";	// Until the user provides a project name
@@ -73,7 +72,32 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		init();
 		try {setProjectName(defaultProjectName);} catch (Exception ex){}		// OK to eat this exception.
 	}
-	
+	/***
+	 * The action query SQL statements are parsed into QueryDefinition objects
+	 * @return True if no errors were caught, false otherwise
+	 */
+	public Boolean parseAllActionQuerys() {
+		Log.logProgress("SchemaChangeImpactProject.parseAllActionQuerys()");
+		Boolean status = true;	// Hope for the best
+		try {
+			actionQueryDefinitions.clear();
+			for (ActionQuery actionQuery: getActionQuerys()) {
+				QueryDefinition qd = new QueryDefinition(getHostName(), 
+						                                 getUserName(), 
+						                                 getPassword(), 
+						                                 new QueryTypeUnknown(), 
+						                                 "", 
+						                                 actionQuery.getSql(), 
+						                                 "" );
+				qd.crunchIt();
+				actionQueryDefinitions.addActionQueryDefinition(qd);
+			}
+		} catch (Exception ex) {
+			Log.logError("SchemaChangeImpactProject.parseAllActionQuerys(): " + ex.getLocalizedMessage());
+			status = false;
+		}
+		return status;
+	}
 	/***
 	 * Populates graphResults object in this object.
 	 * call getGraphResults();
@@ -154,6 +178,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 		actionQueryDefinitions = new ActionQueryDefinitions();
 		actionQuerys = new ActionQuerys();
 		setEtlProcess(new ETLProcess());
+		setSchemaImpacts(new SchemaImpacts());
 	}
 /*	public void loadETLTransformationFiles(ETLKTRFile etlKTRFile) {
 		etlKTRFile.loadETLTransformationFiles();
@@ -354,5 +379,11 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 
 	public void setEtlProcess(ETLProcess etlProcess) {
 		this.etlProcess = etlProcess;
+	}
+	public SchemaImpacts getSchemaImpacts() {
+		return schemaImpacts;
+	}
+	public void setSchemaImpacts(SchemaImpacts schemaImpacts) {
+		this.schemaImpacts = schemaImpacts;
 	}
 }

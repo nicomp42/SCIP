@@ -28,4 +28,7 @@ public class ActionQueryDefinitions implements Iterable<QueryDefinition>, java.i
 	public ActionQueryDefinitions() {
 		actionQueryDefinitions = new ArrayList<QueryDefinition>();
 	}
+	public void clear() {
+		actionQueryDefinitions.clear();
+	}
 }
