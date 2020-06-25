@@ -7,7 +7,6 @@ package edu.UC.PhD.CodeProject.nicholdw;
 import java.sql.SQLException;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.query.AliasNameClassOLD;
 import lib.MySQL;
 
 /***
@@ -15,7 +14,7 @@ import lib.MySQL;
  * @author nicomp
  *
  */
-public class Table {
+public class Table implements Attributable {
 
 	protected String tableName;
 	private Indexes indexList;
@@ -27,7 +26,10 @@ public class Table {
 	private final String auto_increment = "1";	// http://dev.mysql.com/doc/refman/5.7/en/example-auto-increment.html
 	private boolean alreadyHasSurrogateKey;
 	private String dBInstanceName;
-
+	private GraphNodeAnnotation graphNodeAnnotation;
+	private String key;
+	private Boolean affectedByActionQuery;
+	private Boolean indirectlyAffectedByActionQuery;
 	/**
 	 * Test some stuff
 	 * @param args
@@ -152,6 +154,11 @@ public class Table {
 		tableAttributes = new TableAttributes();
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
+		setKey("");
+		setGraphNodeAnnotation(new GraphNodeAnnotation());
+		affectedByActionQuery = false;
+		indirectlyAffectedByActionQuery = false;
+
 	}
 	/***
 	 * Constructor
@@ -167,6 +174,8 @@ public class Table {
 		this.tableAttributes = attributeList;
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
+		setKey("");
+		setGraphNodeAnnotation(new GraphNodeAnnotation());
 	}
 	/***
 	 * Constructor
@@ -181,6 +190,8 @@ public class Table {
 		tableAttributes = new TableAttributes();
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
+		setKey("");
+		setGraphNodeAnnotation(new GraphNodeAnnotation());
 	}
 	/***
 	 * Constructor
@@ -195,6 +206,8 @@ public class Table {
 		indexList = new Indexes();
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");
+		setKey("");
+		setGraphNodeAnnotation(new GraphNodeAnnotation());
 	}
 	public TableAttributes getTableAttributes() {return tableAttributes;}
 	public void setAttributes(TableAttributes attributes) {this.tableAttributes = attributes;}
@@ -365,6 +378,58 @@ public class Table {
 
 	public String toString() {
 		return schemaName + "." + tableName;
+	}
+	@Override
+	public String getContainerName() {
+		return schemaName;
+	}
+	@Override
+	public String getAttributeName() {
+		return tableName;
+	}
+	@Override
+	public String getKey() {
+		return key;	
+	}
+	@Override
+	public void setKey(String key) {
+		this.key = key;
+	}
+	@Override
+	public void setContainerName(String containerName) {
+		this.schemaName = containerName;
+		
+	}
+	@Override
+	public void setAttributeName(String attributeName) {
+		this.tableName = attributeName;
+		
+	}
+	@Override
+	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
+		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);
+		
+	}
+	@Override
+	public GraphNodeAnnotation getGraphNodeAnnotation() {
+		return graphNodeAnnotation;
+	}
+	@Override
+	public Boolean getAffectedByActionQuery() {
+		return affectedByActionQuery;
+	}
+	@Override
+	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
+		this.affectedByActionQuery = affectedByActionQuery;
+		
+	}
+	@Override
+	public Boolean getIndirectlyAffectedByActionQuery() {
+		return indirectlyAffectedByActionQuery;
+	}
+	@Override
+	public void setIndirectlyAffectedByActionQuery(Boolean indirectlyAffectedByActionQuery) {
+		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
 	}
 }
 

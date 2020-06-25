@@ -58,7 +58,8 @@ public class QueryGraphVersion01 {
 		HashMap<String, QueryAttribute> queryAttributes = qd.getUniqueQueryAttributes(false);
 		Log.logProgress("QueryDefinitionFileProcessing.createGraph(): writing query attributes");
 		for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
-			SchemaGraph.addQueryAttribute(queryAttribute.getSchemaName(), 
+			SchemaGraph.addQueryAttribute(queryAttribute,
+										  queryAttribute.getSchemaName(), 
 					                      queryAttribute.getContainerName(), 
 					                      queryAttribute.getAttributeName(), 
 					                      qd.getQueryAttributeDataType(queryAttribute));

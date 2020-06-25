@@ -60,7 +60,8 @@ public class QueryGraph {
 //		for (QueryAttribute queryAttribute : queryAttributes.values()) {		// https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
 		QueryAttributes queryAttributes = qd.getQueryAttributes();
 		for (QueryAttribute queryAttribute : queryAttributes) {
-			SchemaGraph.addQueryAttribute(queryAttribute.getSchemaName(), 
+			SchemaGraph.addQueryAttribute(queryAttribute, 
+					                      queryAttribute.getSchemaName(), 
 					                      qd.getQueryName(),			/* queryAttribute.getTableName(), */ 
 					                      queryAttribute.getFirstAlias(),	/* queryAttribute.getAttributeName(),*/ 
 					                      qd.getQueryAttributeDataType(queryAttribute));
@@ -85,7 +86,8 @@ public class QueryGraph {
 				if (count > 1) {		// Skip the first node because we added it above
 					String attributeName;
 					attributeName = queryTable.getQueryAttributeProvenance().getAttributeName();
-					SchemaGraph.addQueryAttribute(queryTable.getSchemaName(), 
+					SchemaGraph.addQueryAttribute(null, 
+							                      queryTable.getSchemaName(), 
 							                      queryTable.getTableName(), 
 							                      queryTable.getQueryAttributeProvenance().getAttributeNameOrAliasName(),
 							                      queryTable.getAttributeDataType(attributeName));
