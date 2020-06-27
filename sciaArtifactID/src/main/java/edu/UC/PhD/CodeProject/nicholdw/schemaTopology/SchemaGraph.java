@@ -176,7 +176,7 @@ public class SchemaGraph {
 		}
 	}
 	private void applySchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact) {
-		for (TableAttribute ta : schemaImpact.getTableAttributes()) {
+ 		for (TableAttribute ta : schemaImpact.getTableAttributes()) {
 			ta.setAddtoImpactGraph(true);	// it's impacted, it goes on the graph!
 			for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
 				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
@@ -279,11 +279,24 @@ public class SchemaGraph {
 			                         ",	etlstage:'" + etlStep.getEtlStage()	+ "'" +
 			                         ", transformationfilename:'" + etlStep.getFileName() + "'" +
 			                         "})");
+							// ToDo need to add relationships, if any
 						}
 					}
 				}
 			}
-			
+			for (Schema schema: scip.getSchemas()) {
+				for (Table table: schema.getTables()) {
+					if (table.getAddtoImpactGraph()) {
+						addTableNode(table, table.getSchemaName(), table.getTableName());
+					}
+					for (TableAttribute ta: table.getTableAttributes()) {
+						if (ta.getAddtoImpactGraph() == true) {
+							addTableAttributeNode(ta);
+							// ToDo need to add relationships, if any
+						}
+					}
+				}
+			}
 		} catch (Exception ex) {
 			Log.logError("SchemaGraph.addNodesToImpactGraphOnly()", ex);
 			status = false;
@@ -439,34 +452,10 @@ public class SchemaGraph {
 		for (Table table : tables) {
 			for (TableAttribute attribute: table.getTableAttributes()) {
 				scip.getGraphResults().incrementTotalAttributes();
-				String nodeLabel;
-				String key;
-				key = Utils.cleanForGraph(schema.getSchemaName())
-		                + "." 
-		                + Utils.cleanForGraph(table.getTableName())
-		                + "." 
-		                + Utils.cleanForGraph(attribute.getAttributeName());
-		        attribute.setKey(key);
-				nodeLabel = SchemaGraph.computeNodeLabel(attribute.getGraphNodeAnnotation());						
+//				String nodeLabel;
+//				nodeLabel = SchemaGraph.attributeNodeLabel;	// SchemaGraph.computeNodeLabel(attribute.getGraphNodeAnnotation());						
 				//if (attribute.getAffectedByActionQuery() == true) {nodeLabel = affectedAttributeNodeLabel;}
-				Neo4jDB.submitNeo4jQuery("CREATE (" + 
-						                 Utils.cleanForGraph(attribute.getAttributeName()) + 
-				                         ":" + 
-				                         nodeLabel + 
-				                         " {key:" 
-						                 + "\""
-				                         + key
-						                 + "\""
-				                         + ", name:" 
-						                 + "\"" 
-				                         + Utils.cleanForGraph(attribute.getAttributeName())
-						                 + "\"" 
-				                         + ", table:"
-						                 + "\"" 
-				                         + Utils.cleanForGraph(attribute.getContainerName())
-						                 + "\"" 
-				                         + "}"
-				                         + ")");
+				addTableAttributeNode(attribute);
 				// Add the relationship between the table and the attribute now because we have everything we need.
 				String key1, key2, relationshipKey;
 				key1 = Utils.cleanForGraph(schema.getSchemaName()) + "." + Utils.cleanForGraph(table.getTableName());
@@ -478,7 +467,7 @@ public class SchemaGraph {
 						               + key1 
 						               + "\"" 
 						               + "}), "
-				                       + " (a:" + nodeLabel 
+				                       + " (a:" + SchemaGraph.attributeNodeLabel 
 				                       + "{key:" 
 						               + "\"" 
 				                       + key2
@@ -486,10 +475,30 @@ public class SchemaGraph {
 				                       + "}) "
 						               + "MERGE (t)-[:" + tableToAttributeLabel + " {key:\"" + relationshipKey + "\"}]->(a)");
 				if (attribute.getGraphNodeAnnotation().getGraphNodeAnnotation() == GRAPH_NODE_ANNOTATION.Changed) {
-					Neo4jDB.setNodeProperty(nodeLabel, attribute.getKey(), nodePropertyAffectedBySQL, "changed");
+					Neo4jDB.setNodeProperty(SchemaGraph.attributeNodeLabel, attribute.getKey(), nodePropertyAffectedBySQL, "changed");
 				}
 			}
 		}
+	}
+	public void addTableAttributeNode(TableAttribute attribute) {
+		Neo4jDB.submitNeo4jQuery("CREATE (" + 
+                Utils.cleanForGraph(attribute.getAttributeName()) + 
+                ":" + 
+                SchemaGraph.attributeNodeLabel + 
+                " {key:" 
+                + "\""
+                + attribute.getKey()
+                + "\""
+                + ", name:" 
+                + "\"" 
+                + Utils.cleanForGraph(attribute.getAttributeName())
+                + "\"" 
+                + ", table:"
+                + "\"" 
+                + Utils.cleanForGraph(attribute.getContainerName())
+                + "\"" 
+                + "}"
+                + ")");
 	}
 	private void addQueryToAttributeRelationships(Schema schema) {
 		for (QueryDefinition queryDefinition : schema.getQueryDefinitions()) {

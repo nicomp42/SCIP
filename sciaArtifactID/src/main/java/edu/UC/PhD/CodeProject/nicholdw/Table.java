@@ -389,6 +389,8 @@ public class Table extends ImpactGraphNode implements Attributable {
 	}
 	@Override
 	public String getKey() {
+		if (key.trim().length() == 0)
+		setKey(schemaName + "." + tableName);
 		return key;	
 	}
 	@Override

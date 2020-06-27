@@ -180,7 +180,7 @@ public class ETLKTRFile implements java.io.Serializable{
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			ETLFields etlFields;
-			etlFields = myXMLParser.getETLFieldsForInsertUpdateStep(xpath, doc, etlStep.getStepName());
+			etlFields = myXMLParser.getETLFieldsForInsertUpdateStep(xpath, doc, etlStep, etlConnection);
 			etlStep.addETLFields(etlFields);
 		} catch (Exception ex) {		
 			Log.logError("ETLKTRFile.processTableOutputStepFields(): " + ex.getLocalizedMessage());
@@ -206,7 +206,7 @@ public class ETLKTRFile implements java.io.Serializable{
 			XPathFactory xpathFactory = XPathFactory.newInstance();
 			XPath xpath = xpathFactory.newXPath();
 			ETLFields etlFields;
-			etlFields = myXMLParser.getETLFields(xpath, doc, etlStep.getStepName());
+			etlFields = myXMLParser.getETLFields(xpath, doc, etlStep, etlConnection.getDatabase());
 			etlStep.addETLFields(etlFields);
 		} catch (Exception ex) {		
 			Log.logError("ETLKTRFile.processTableOutputStepFields(): " + ex.getLocalizedMessage());

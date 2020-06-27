@@ -100,15 +100,17 @@ public class ActionQueryProcessor {
 	private static void processQueryTypeAlterTableDropColumn(SchemaImpact schemaImpact) {
 		Log.logProgress("ActionQueryProcessor.processQueryTypeAlterTableDropColumn()");
 		for (QueryAttribute queryAttribute : schemaImpact.getQueryDefinition().getQueryAttributes()) {
-			schemaImpact.getTableAttributes().addAttribute(new TableAttribute(queryAttribute.getContainerName(), 
-														   queryAttribute.getAttributeName()));
+			schemaImpact.getTableAttributes().addAttribute(new TableAttribute(queryAttribute.getSchemaName(),
+					  queryAttribute.getContainerName(), 
+					  queryAttribute.getAttributeName()));
 		}
 	}
 	private static void processQueryTypeAlterTableChangeColumn(SchemaImpact schemaImpact) {
 		Log.logProgress("ActionQueryProcessor.processQueryTypeAlterTableChangeColumn()");
 		for (QueryAttribute queryAttribute : schemaImpact.getQueryDefinition().getQueryAttributes()) {
-			schemaImpact.getTableAttributes().addAttribute(new TableAttribute(queryAttribute.getContainerName(), 
-					                                  	   queryAttribute.getAttributeName()));
+			schemaImpact.getTableAttributes().addAttribute(new TableAttribute(queryAttribute.getSchemaName(),
+																			  queryAttribute.getContainerName(), 
+																			  queryAttribute.getAttributeName()));
 		}
 	}
 	private static void processQueryTypeAlterTable(SchemaImpact schemaImpact) {

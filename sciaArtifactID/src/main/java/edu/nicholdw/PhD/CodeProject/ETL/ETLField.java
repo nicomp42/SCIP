@@ -33,9 +33,11 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
 	}
 
-	public ETLField(String columnName, String streamName) {
+	public ETLField(String schemaName, String tableName, String columnName, String streamName) {
 		setColumnName(columnName);
 		setStreamName(streamName);
+		setSchemaName(schemaName);
+		setContainerName(tableName);
 		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
 	/**
@@ -45,6 +47,8 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 	public ETLField(ETLField etlField) {
 		this.setColumnName(etlField.getColumnName());
 		this.setStreamName(etlField.getStreamName());
+		setContainerName(etlField.getContainerName());
+		setSchemaName(etlField.getSchemaName());
 		this.setGraphNodeAnnotation(etlField.getGraphNodeAnnotation());
 	}
 	/**

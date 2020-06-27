@@ -44,12 +44,15 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 		setConnection(etlStep.getConnection());
 		setProcedure(etlStep.getProcedure());
 		setETLStageNumber(etlStep.getETLStageNumber());
-		etlFields = new ETLFields();
+		setETLFields(new ETLFields());
 		setFileName(etlStep.getFileName());
 		setSchemaName(etlStep.getSchemaName());
 		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
-/*	public ETLStep(String stepName, String stepType, String sql, String table, String connection) {
+	private void setETLFields(ETLFields etlFields) {
+		this.etlFields = etlFields;
+	}
+	/*	public ETLStep(String stepName, String stepType, String sql, String table, String connection) {
 		setStepName(stepName);
 		setStepType(stepType);
 		setSql(sql);

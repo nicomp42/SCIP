@@ -72,6 +72,17 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 		this.tableName = tableName;
 	}
 	/***
+	 * We use this when we only need the attribute name -- lots of defaults are assumed.
+	 * @param tableName Table Name
+	 * @param attributeName Attribute Name
+	 */
+	public TableAttribute(String schemaName, String tableName, String attributeName) {
+		this.shotgunTheDefaults();
+		this.attributeName = attributeName;
+		this.tableName = tableName;
+		this.schemaName = schemaName;
+	}
+	/***
 	 * If we are  creating an attribute with limited information, use this to default everything first.
 	 */
 	private void shotgunTheDefaults() {
@@ -100,7 +111,9 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 	 * @param theDefault default
 	 * @param extra extra
 	 */
-	public TableAttribute(String name, String tableName, Boolean isPrimaryKey, String type, String nullable, String key, String theDefault, String extra, int length, Aliases aliases, String schemaName ) {
+	public TableAttribute(String name, String tableName, Boolean isPrimaryKey, 
+			             String type, String nullable, String key, String theDefault, 
+			             String extra, int length, Aliases aliases, String schemaName ) {
 		this.attributeName = name;
 		this.type = type;
 		this.nullable = nullable;
@@ -231,6 +244,13 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 	 */
 	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
 	public String getKey() {
+		if (key.trim().length() == 0) {
+			setKey(Utils.cleanForGraph(getSchemaName())
+	                + "." 
+	                + Utils.cleanForGraph(getContainerName())
+	                + "." 
+	                + Utils.cleanForGraph(getAttributeName()));
+		}
 		return key;
 	}
 	public void setKey(String key) {

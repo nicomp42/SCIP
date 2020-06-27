@@ -136,7 +136,8 @@ public class DatabaseGraphController {
 		    @Override
 		    public void handle(MouseEvent event) {
 		        if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-		        	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho\\JobFile.kjb");    
+//		        	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho\\JobFile.kjb");    
+		        	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");    
 		        }
 		    }
 		});	
