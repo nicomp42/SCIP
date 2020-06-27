@@ -80,9 +80,8 @@ public class SchemaGraph {
 		addSchemaConstraint();
 		addETLStepNodeConstraint();
 	}
-
-	public Boolean generateGraph() {
-		Log.logProgress("SchemaGraph.generateGraph()");
+	private Boolean processData() {
+		Log.logProgress("SchemaGraph.processData()");
 		scip.setGraphResults(new GraphResults());
 		boolean status = true;		// Hope for the best
 		scip.parseAllActionQuerys();
@@ -104,18 +103,19 @@ public class SchemaGraph {
 				}
 				loadQueryDefinitions(schema);
 				applySchemaImpacts(schemaImpacts, schema);
-				addNodesToGraph();
 			} catch (Exception ex) {
-				Log.logError("SchemaGraph.generateGraph(): " + ex.getLocalizedMessage());
+				Log.logError("SchemaGraph.processData(): " + ex.getLocalizedMessage());
 				status = false;
 			}
 		}
-		scip.getEtlProcess().process(scip);
-		
-		// All the nodes and relationships are drawn, now let's figure out what nodes have been indirectly impacted by the action query 
-		reflectSchemaImpacts();
-//		Neo4jDB.submitNeo4jQuery("Match (n:etl_step) return n");
-		return status;
+		scip.getEtlProcess().processData(scip);
+		return status;		
+	}
+	public Boolean processDataAndGenerateGraph() {
+		Log.logProgress("SchemaGraph.processDataAndGenerateGraph()");
+		Boolean status1 = processData();
+		Boolean status2 = addNodesToGraph();
+		return status1 && status2;
 	}
 	private void reflectSchemaImpacts() {
 		// Create a GraphNodeAnnotation object that can be copied into any attributes that have suffered a change
@@ -189,6 +189,14 @@ public class SchemaGraph {
 				}
 			}
 			for (Table table: schema.getTables()) {
+				// See if the table has been dropped, renamed
+				for (Table impactedTable: schemaImpact.getTables()) {
+					if (Config.getConfig().compareTableNames(impactedTable.getTableName(), table.getTableName()) && 
+						Config.getConfig().compareSchemaNames(impactedTable.getSchemaName(),  table.getSchemaName())) {
+						table.setAffectedByActionQuery(true);
+						table.setGraphNodeAnnotation(graphNodeAnnotation);
+					}
+				}
 				for (TableAttribute tableAttribute : table.getTableAttributes()) 
 				if (schemaImpact.getTableAttributes().findAttributeByTableAndName(tableAttribute.getContainerName(), tableAttribute.getAttributeName()) != null) {
 					// The table attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
@@ -223,16 +231,26 @@ public class SchemaGraph {
 	/**
 	 * Actually put nodes and edges on the graph. Finally.
 	 */
-	private void addNodesToGraph() {
+	private Boolean addNodesToGraph() {
 		Log.logProgress("SchemaGraph.addNodesToGraph()");
-		addAllConstraints();
-		for (Schema schema: scip.getSchemas()) {
-			addSchemaNode(schema);
-			addQueryNodes(schema);
-			addTableNodes(schema);
-			addTableAttributeNodes(schema);
-			addQueryToAttributeRelationships(schema);	// At this point we have the queries and the table attributes
+		Boolean status = true;
+		try {
+			addAllConstraints();
+			for (Schema schema: scip.getSchemas()) {
+				addSchemaNode(schema);
+				addQueryNodes(schema);
+				addTableNodes(schema);
+				addTableAttributeNodes(schema);
+				addQueryToAttributeRelationships(schema);	// At this point we have the queries and the table attributes
+			}
+			scip.getEtlProcess().addNodesToGraph(scip);
+//			All the nodes and relationships are drawn, now let's figure out what nodes have been indirectly impacted by the action query 
+			reflectSchemaImpacts();
+		} catch (Exception ex) {
+			Log.logProgress("SchemaGraph.addNodesToGraph()");
+			status = false;
 		}
+		return status;
 	}
 	private void addSchemaNode(Schema schema) {
 		if (scip.getDatabaseGraphConfig().getIncludeSchemaNodeInGraph() == true) {

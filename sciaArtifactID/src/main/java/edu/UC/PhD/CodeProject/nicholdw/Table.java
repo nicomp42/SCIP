@@ -150,7 +150,7 @@ public class Table implements Attributable {
 		// ToDo: The order of the parameters should be schema name first, then table name. 
 		setTableName(tableName);
 		indexList = new Indexes();
-		this.schemaName = schemaName;
+		setSchemaName(schemaName);
 		tableAttributes = new TableAttributes();
 		this.setAlreadyHasSurrogateKey(false);
 		setDBInstanceName("");

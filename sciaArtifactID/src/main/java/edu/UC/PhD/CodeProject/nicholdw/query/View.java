@@ -5,7 +5,7 @@
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
 /***
- * The schema and name of a view in a MySQL instance
+ * The schema name and view name of a view in a MySQL instance
  * @author nicomp
  *
  */

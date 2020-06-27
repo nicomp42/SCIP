@@ -105,7 +105,7 @@ public class SchemaChangeImpactProject implements java.io.Serializable {
 	public void generateGraph() {
 		// Everything we need should already be in the current scip object
 		SchemaGraph schemaGraph = new SchemaGraph(this);
-		schemaGraph.generateGraph();
+		schemaGraph.processDataAndGenerateGraph();
 	}
 	public GraphResults getGraphResults() {return graphResults;}
 	public void setGraphResults(GraphResults graphResults) {this.graphResults = graphResults;}

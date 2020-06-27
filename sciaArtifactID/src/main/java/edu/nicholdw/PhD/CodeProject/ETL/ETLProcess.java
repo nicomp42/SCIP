@@ -22,17 +22,27 @@ public class ETLProcess extends SchemaChangeImpactProjectComponent {
 	public void setEtlKJBFiles(ETLKJBFiles etlKJBFiles) {
 		this.etlKJBFiles = etlKJBFiles;
 	}
-
-	public void process(SchemaChangeImpactProject scip) {
+	public void processData(SchemaChangeImpactProject scip) {
 		// Read the Transformation files for each Job file
 		for (ETLKJBFile etlKJBFile: etlKJBFiles) {
 			etlKJBFile.readETLKTRFiles();
 			for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
 				etlKTRFile.processETLKTRFile();
-				etlKTRFile.createGraph(scip);
-				
 			}
 		}
 	}
-
+	public void addNodesToGraph(SchemaChangeImpactProject scip) {
+		// Read the Transformation files for each Job file
+		for (ETLKJBFile etlKJBFile: etlKJBFiles) {
+			etlKJBFile.readETLKTRFiles();
+			for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
+				etlKTRFile.createGraph(scip);
+			}
+		}
+	}
+/*	public void processDataAndGenerateGraph(SchemaChangeImpactProject scip) {
+		processData(scip);
+		addNodesToGraph(scip);
+	}
+*/
 }
