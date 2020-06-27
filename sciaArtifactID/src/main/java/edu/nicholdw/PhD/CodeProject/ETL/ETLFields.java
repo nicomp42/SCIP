@@ -32,6 +32,14 @@ public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
 			etlFields.add(new ETLField(etlFieldToAdd));
 		}
 	}
+	public Boolean containsBySchemaTableAttribute(String schemaName, String tableName, String attributeName) {
+		Boolean foundIt = false;
+		for (ETLField etlField : etlFields) {
+			if (etlField.compareBySchemaTableAttribute(schemaName, tableName, attributeName) == true) {foundIt = true; break;}
+		}
+		return foundIt;
+		
+	}
 	public Boolean contains(ETLField etlFieldToLookFor) {
 		Boolean foundIt = false;
 		for (ETLField etlField : etlFields) {

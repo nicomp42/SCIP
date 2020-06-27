@@ -113,9 +113,15 @@ public class SchemaGraph {
 	}
 	public Boolean processDataAndGenerateGraph() {
 		Log.logProgress("SchemaGraph.processDataAndGenerateGraph()");
-		Boolean status1 = processData();
-		Boolean status2 = addNodesToGraph();
-		return status1 && status2;
+		Boolean addNodesToGraphStatus = false;
+		Boolean processDataStatus = processData();
+		if (scip.getDatabaseGraphConfig().isBuildImpactGraphOnly()) {
+			addNodesToGraphStatus = addNodesToGraphForImpactGraphOnly();			
+		} else {
+			addNodesToGraphStatus = addNodesToGraph();
+		}
+		Log.logProgress("SchemaGraph.processDataAndGenerateGraph(): processDataStatus = " + processDataStatus + " addNodesToGraphStatus = " + addNodesToGraphStatus  );
+		return processDataStatus && addNodesToGraphStatus;
 	}
 	private void reflectSchemaImpacts() {
 		// Create a GraphNodeAnnotation object that can be copied into any attributes that have suffered a change
@@ -164,7 +170,31 @@ public class SchemaGraph {
 	 * Apply an action query to the schema to see what views would be affected
 	 * @param actionQueryDefinition The action query
 	 */
-//	private void applyActionQuery(QueryDefinition actionQueryDefinition) {
+	private void applySchemaImpactsForImpactGraphOnly(SchemaImpacts schemaImpacts) {
+		for (SchemaImpact schemaImpact: schemaImpacts) {
+			applySchemaImpactForImpactGraphOnly(schemaImpact);
+		}
+	}
+	private void applySchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact) {
+		for (TableAttribute ta : schemaImpact.getTableAttributes()) {
+			ta.setAddtoImpactGraph(true);	// it's impacted, it goes on the graph!
+			for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
+				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
+					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
+						if (etlStep.getETLFields().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
+							// This step is affected by the table attribute in question
+							etlStep.setAddtoImpactGraph(true);
+							etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
+						}
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Apply an action query to the schema to see what views would be affected
+	 * @param actionQueryDefinition The action query
+	 */
 	private void applySchemaImpacts(SchemaImpacts schemaImpacts, Schema schema) {
 		for (SchemaImpact schemaImpact: schemaImpacts) {
 			applySchemaImpact(schemaImpact, schema);
@@ -229,6 +259,38 @@ public class SchemaGraph {
 		}
 	}
 	/**
+	 * Actually put nodes and edges on the impact graph only. Finally.
+	 */
+	private Boolean addNodesToGraphForImpactGraphOnly() {
+		Log.logProgress("SchemaGraph.addNodesToImpactGraphOnly()");
+		Boolean status = true;
+		try {
+			applySchemaImpactsForImpactGraphOnly(scip.getSchemaImpacts());
+			// Look at every node in every container in the scip object. Add nodes that are impacted and the relationships between them. Oh my goodness
+			addAllConstraints();
+			for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
+				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
+					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
+						if (etlStep.getAddtoImpactGraph() == true) {
+							Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
+			                         " { stepname: " + "'" + etlStep.getStepName() + "'" + 
+			                         ",	steptype:'" + etlStep.getStepType()	+ "'" +
+			                         ",	key:'" + etlStep.getKey()	+ "'" +
+			                         ",	etlstage:'" + etlStep.getEtlStage()	+ "'" +
+			                         ", transformationfilename:'" + etlStep.getFileName() + "'" +
+			                         "})");
+						}
+					}
+				}
+			}
+			
+		} catch (Exception ex) {
+			Log.logError("SchemaGraph.addNodesToImpactGraphOnly()", ex);
+			status = false;
+		}
+		return status;
+	}
+	/**
 	 * Actually put nodes and edges on the graph. Finally.
 	 */
 	private Boolean addNodesToGraph() {
@@ -247,7 +309,7 @@ public class SchemaGraph {
 //			All the nodes and relationships are drawn, now let's figure out what nodes have been indirectly impacted by the action query 
 			reflectSchemaImpacts();
 		} catch (Exception ex) {
-			Log.logProgress("SchemaGraph.addNodesToGraph()");
+			Log.logError("SchemaGraph.addNodesToGraph()", ex);
 			status = false;
 		}
 		return status;

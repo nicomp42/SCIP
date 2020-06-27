@@ -16,7 +16,7 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
  * @author nicomp
  *
  */
-public class TableAttribute implements Attributable, java.io.Serializable  {
+public class TableAttribute extends ImpactGraphNode implements Attributable, java.io.Serializable  {
 
 	/**
 	 * An attribute that is nullable according to the table definition may not have any null values in the table.

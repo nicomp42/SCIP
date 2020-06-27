@@ -21,7 +21,7 @@ import lib.MySQL;
  * @author nicomp
  *
  */
-public class Schema {
+public class Schema extends ImpactGraphNode implements Attributable {
 	private static final String qQueriesBySchemaName = "SELECT table_name, table_schema AS schema_name from information_schema.tables "
             										    + "WHERE table_schema = '#' "
             											+ "AND table_type = 'VIEW'";
@@ -33,7 +33,11 @@ public class Schema {
 	private QueryDefinitions queryDefinitions;	// Queries in this schema
 	private TableAttributes tableAttributes;		// A big jumble of all the attributes in all the tables in the schema. See OperationalSchemaQueries.qAttributesbySchema
 	private ForeignKeys foreignKeys;	// A big jumble of all the foreign keys in all the tables in the schema. See OperationalSchemaQueries.qForeignKeysbySchema
-//	private java.sql.Connection connection;
+	private String key;					// Defaults to the Schema Name but can be redefined as needed
+	private String containerName;
+	private GraphNodeAnnotation graphNodeAnnotation;
+	private Boolean affectedByActionQuery, indirectlyAffectedByActionQuery;
+	//	private java.sql.Connection connection;
 	
 	/**
 	 * Load all the query/view definitions in this schema into our collection
@@ -118,6 +122,10 @@ public class Schema {
 		foreignKeys = new ForeignKeys();
 //		connection = null;
 		setQueryDefinitions(new QueryDefinitions());
+		setKey(schemaName);
+		setGraphNodeAnnotation(new GraphNodeAnnotation());
+		affectedByActionQuery = false;
+		indirectlyAffectedByActionQuery = false;
 	}
 	/**
 	 * Read a query/view definition from the schema
@@ -380,4 +388,53 @@ public class Schema {
         }
 	}
 */
+	@Override
+	public String getContainerName() {
+		return containerName;	// A schema has no container but we'll play along
+	}
+	@Override
+	public String getAttributeName() {
+		return schemaName;
+	}
+	@Override
+	public String getKey() {
+		return key;
+	}
+	@Override
+	public void setKey(String key) {
+		this.key = key;
+		
+	}
+	@Override
+	public void setContainerName(String containerName) {
+		return;		
+	}
+	@Override
+	public void setAttributeName(String AttributeName) {
+		setSchemaName(AttributeName);
+	}
+	@Override
+	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
+		graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);
+	}
+	@Override
+	public GraphNodeAnnotation getGraphNodeAnnotation() {
+		return graphNodeAnnotation;
+	}
+	@Override
+	public Boolean getAffectedByActionQuery() {
+		return affectedByActionQuery;
+	}
+	@Override
+	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
+		this.affectedByActionQuery = affectedByActionQuery;
+	}
+	@Override
+	public Boolean getIndirectlyAffectedByActionQuery() {
+		return indirectlyAffectedByActionQuery;
+	}
+	@Override
+	public void setIndirectlyAffectedByActionQuery(Boolean indirectlyAffectedByActionQuery) {
+		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
+	}
 }

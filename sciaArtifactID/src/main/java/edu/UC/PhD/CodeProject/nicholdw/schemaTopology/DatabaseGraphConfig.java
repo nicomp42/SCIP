@@ -3,7 +3,7 @@ package edu.UC.PhD.CodeProject.nicholdw.schemaTopology;
 public class DatabaseGraphConfig {
 	private boolean includeSchemaNodeInGraph;	// if false, don't include the schema node or the relationships to that node. It does clutter the graph.
 	private boolean useFriendlyNameAsDisplayName;	// If true, use the local name of the table/query rathe than a fully qualified name that includes the schema name, etc.
-
+	private boolean buildImpactGraphOnly;		// If true, only graph the artifacts that are impacted
 	/**
 	 * If false, don't include the schema node or the relationships to that node. It does clutter the graph.
 	 * @return the value of include schema in graph
@@ -33,5 +33,13 @@ public class DatabaseGraphConfig {
 	 */
 	public void setUseFriendlyNameAsDisplayName(boolean useFriendlyNameAsDisplayName) {
 		this.useFriendlyNameAsDisplayName = useFriendlyNameAsDisplayName;
+	}
+
+	public boolean isBuildImpactGraphOnly() {
+		return buildImpactGraphOnly;
+	}
+
+	public void setBuildImpactGraphOnly(boolean buildImpactGraphOnly) {
+		this.buildImpactGraphOnly = buildImpactGraphOnly;
 	}
 }

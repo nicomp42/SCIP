@@ -14,7 +14,7 @@ import lib.MySQL;
  * @author nicomp
  *
  */
-public class Table implements Attributable {
+public class Table extends ImpactGraphNode implements Attributable {
 
 	protected String tableName;
 	private Indexes indexList;

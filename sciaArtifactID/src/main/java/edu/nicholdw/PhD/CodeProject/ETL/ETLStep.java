@@ -5,6 +5,7 @@
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
+import edu.UC.PhD.CodeProject.nicholdw.ImpactGraphNode;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
@@ -15,7 +16,7 @@ import javafx.scene.control.TableView;
  * @author nicomp
  *
  */
-public class ETLStep implements java.io.Serializable {
+public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 	public static final String type_TableInput = "TableInput";
 //	private String key;
 	private String stepType;

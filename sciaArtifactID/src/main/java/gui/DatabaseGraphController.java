@@ -77,7 +77,8 @@ public class DatabaseGraphController {
 	@FXML	private Label lblSchemaToProcess, lblContentsOfDatabaseHost;
 	@FXML	private Label lblDoubleClickPrompt, lblResults, lblWorking, lblActionQuery, lblWorkingOnETL;
 	@FXML	private TextArea taResults;
-	@FXML	private CheckBox cbClearDB, cbIncludeSchemaNodes, cbOpenInBrowser, cbDisplayAttributes, cbDisplayTables, cbDisplayQuerys;
+	@FXML	private CheckBox cbClearDB, cbIncludeSchemaNodes, cbOpenInBrowser;
+	@FXML	private CheckBox cbBuildImpactGraphOnly, cbDisplayAttributes, cbDisplayTables, cbDisplayQuerys;
 	@FXML	void mnuEditOpenBrowserWindow_OnAction(ActionEvent event) {openBrowserWindow();}
 	@FXML	void btnBrowseForActionQueryFile_OnClick(ActionEvent event) {browseForActionQueryFile();}
 	@FXML	void btnClearSchemaComboBox_OnClick(ActionEvent event) {clearSchemaComboBox();}
@@ -128,6 +129,7 @@ public class DatabaseGraphController {
 		displayWorkingMessage(false);
 //		displayWorkingOnETLMessage(false);
 		showFilters(false);
+		cbBuildImpactGraphOnly.setSelected(true);
 		scip = Config.getConfig().getCurrentSchemaChangeImpactProject();	
 		scatter(scip);
 		lvKJBFiles.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -298,6 +300,7 @@ public class DatabaseGraphController {
 					if (cbClearDB.isSelected()) {Neo4jDB.clearDB();}
 					databaseGraphConfig.setIncludeSchemaNodeInGraph(cbIncludeSchemaNodes.isSelected());
 					databaseGraphConfig.setUseFriendlyNameAsDisplayName(true);
+					databaseGraphConfig.setBuildImpactGraphOnly(cbBuildImpactGraphOnly.isSelected());
 					Schemas schemas = new Schemas();
 					for (Object schemaNameObject: cbSchema.getItems()) {schemas.addSchema(new Schema((String)schemaNameObject));}
 					scip.setSchemas(schemas);

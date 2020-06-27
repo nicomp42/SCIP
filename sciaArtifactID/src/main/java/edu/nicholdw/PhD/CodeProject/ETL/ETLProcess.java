@@ -22,6 +22,10 @@ public class ETLProcess extends SchemaChangeImpactProjectComponent {
 	public void setEtlKJBFiles(ETLKJBFiles etlKJBFiles) {
 		this.etlKJBFiles = etlKJBFiles;
 	}
+	/**
+	 * Crunch the ETL steps into something that can be graphed.
+	 * @param scip The Schema Change Impact project to be dealt with
+	 */
 	public void processData(SchemaChangeImpactProject scip) {
 		// Read the Transformation files for each Job file
 		for (ETLKJBFile etlKJBFile: etlKJBFiles) {
@@ -31,6 +35,10 @@ public class ETLProcess extends SchemaChangeImpactProjectComponent {
 			}
 		}
 	}
+	/**
+	 * Hopefully ETLProcess.processData() has already been called. 
+	 * @param scip The Schema Change Impact project to be dealt with
+	 */
 	public void addNodesToGraph(SchemaChangeImpactProject scip) {
 		// Read the Transformation files for each Job file
 		for (ETLKJBFile etlKJBFile: etlKJBFiles) {

@@ -5,7 +5,9 @@
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import edu.UC.PhD.CodeProject.nicholdw.Attributable;
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
+import edu.UC.PhD.CodeProject.nicholdw.ImpactGraphNode;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 
 /**
@@ -13,7 +15,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
  * @author nicomp
  *
  */
-public class ETLField implements java.io.Serializable, Attributable {
+public class ETLField extends ImpactGraphNode implements java.io.Serializable, Attributable {
 	/**
 	 * 
 	 */
@@ -91,6 +93,15 @@ public class ETLField implements java.io.Serializable, Attributable {
 		} else {
 			return false;
 		}
+	}
+	public Boolean compareBySchemaTableAttribute(String schemaName, String tableName, String attributeName) {
+		Boolean status = false;
+		if (Config.getConfig().compareSchemaNames(this.schemaName, schemaName) &&
+			Config.getConfig().compareTableNames(this.tableName, tableName)	   &&
+			Config.getConfig().compareAttributeNames(this.getAttributeName(), attributeName)) {
+			status = true;
+		}
+		return status;
 	}
 	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
 		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);

@@ -4,6 +4,7 @@
  */
 package edu.UC.PhD.CodeProject.nicholdw.query;
 
+import edu.UC.PhD.CodeProject.nicholdw.ImpactGraphNode;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 
 /**
@@ -12,7 +13,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Utils;
  * @author nicomp
  *
  */
-public class Query {
+public class Query extends ImpactGraphNode {
 
 	private String queryLabel;
 	private String attribute;
