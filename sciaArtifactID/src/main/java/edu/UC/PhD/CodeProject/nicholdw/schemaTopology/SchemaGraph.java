@@ -182,16 +182,20 @@ public class SchemaGraph {
 				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
 					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
 						// Look in the list of fields, if any
-						if (etlStep.getETLFields().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
-							// This step is affected by the table attribute in question
-							etlStep.setAddtoImpactGraph(true);
-							etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
+						if (etlStep.getETLFields() != null) {
+							if (etlStep.getETLFields().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
+								// This step is affected by the table attribute in question
+								etlStep.setAddtoImpactGraph(true);
+								etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
+							}
 						}
 						// Look in the list of query attributes, if any
-						if (etlStep.getQueryDefinition().getQueryAttributes().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
-							// This step is affected by the table attribute in question
-							etlStep.setAddtoImpactGraph(true);
-							etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
+						if (etlStep.getQueryDefinition() != null) {
+							if (etlStep.getQueryDefinition().getQueryAttributes().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
+								// This step is affected by the table attribute in question
+								etlStep.setAddtoImpactGraph(true);
+								etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
+							}
 						}
 					}
 				}

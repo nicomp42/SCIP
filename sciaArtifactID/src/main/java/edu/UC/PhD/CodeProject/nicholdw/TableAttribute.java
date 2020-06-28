@@ -233,7 +233,7 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 		this.affectedByActionQuery = affectedByActionQuery;
 	}
 	public String toString() {
-		return tableName + "." + attributeName;
+		return ((schemaName.trim().length()>0)?schemaName + ".":"") + tableName + "." + attributeName;
 	}
 	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
 		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);

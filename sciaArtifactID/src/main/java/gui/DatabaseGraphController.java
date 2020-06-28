@@ -140,7 +140,11 @@ public class DatabaseGraphController {
 		    public void handle(MouseEvent event) {
 		        if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
 //		        	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 01\\Pentaho\\JobFile.kjb");    
-		        	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");    
+//		        	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");    
+					try {
+			            final int selectedIdx = lvKJBFiles.getSelectionModel().getSelectedIndex();
+						lvKJBFiles.getItems().remove(selectedIdx);
+					} catch (Exception ex) {}
 		        }
 		    }
 		});	
@@ -149,7 +153,14 @@ public class DatabaseGraphController {
             	checkToCloseWindow(we);
             }
         });
-
+		cheat();
+	}
+	private void cheat() {
+		taActionQuery.setText("ALTER TABLE `sakila_ids`.`actor` CHANGE COLUMN `first_name` `first_nameX` VARCHAR(45) NOT NULL ;");
+		lvKJBFiles.getItems().clear();
+    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");    
+    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\load_dim_actor.kjb");    
+		
 	}
     private void checkToCloseWindow(WindowEvent event) {
 		if (checkToDiscardData()) {
@@ -188,6 +199,8 @@ public class DatabaseGraphController {
 	private void showArtifacts(boolean status) {
 
 	}
+	
+	
 	private void showFilters(boolean status) {
 		pneFilter.setVisible(status);
 		pneQuickGraphs.setVisible(status);
@@ -237,6 +250,15 @@ public class DatabaseGraphController {
 		Stage stage = (Stage) this.btnLoadSchemaNames.getScene().getWindow(); // I picked some arbitrary control to look up the scene.
 		stage.close();
 	}
+/*	@FXML
+	void lvKJBFiles_OnClicked(MouseEvent event) {
+		if (event.getClickCount() == 2) {
+			try {
+	            final int selectedIdx = lvKJBFiles.getSelectionModel().getSelectedIndex();
+				lvKJBFiles.getItems().remove(selectedIdx);
+			} catch (Exception ex) {}
+		}
+	} */
 	@FXML
 	void tvSchemas_OnClicked(MouseEvent event) {
 		if (event.getClickCount() == 2) {

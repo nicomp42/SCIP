@@ -83,7 +83,7 @@
                            <Button id="btnProcess" fx:id="btnProcess" layoutX="188.0" layoutY="379.0" mnemonicParsing="false" onAction="#btnProcess_OnClick" text="Go" textFill="TEAL" />
          <Label fx:id="lblResults" layoutX="14.0" layoutY="411.0" text="Results" />
          <CheckBox fx:id="cbClearDB" contentDisplay="RIGHT" layoutX="191.0" layoutY="163.0" mnemonicParsing="false" text="Clear graph before generating" />
-         <CheckBox fx:id="cbIncludeSchemaNodes" contentDisplay="RIGHT" layoutX="191.0" layoutY="185.0" mnemonicParsing="false" text="Include schema node in graph" />
+         <CheckBox fx:id="cbIncludeSchemaNodes" contentDisplay="RIGHT" layoutX="191.0" layoutY="185.0" mnemonicParsing="false" text="Include schema node(s) in graph" />
          <TextArea fx:id="taResults" layoutX="188.0" layoutY="411.0" prefHeight="145.0" prefWidth="365.0" wrapText="true" />
          <CheckBox fx:id="cbOpenInBrowser" contentDisplay="RIGHT" layoutX="191.0" layoutY="207.0" mnemonicParsing="false" text="Open graph in browser after processing" />
          <Pane fx:id="pneActionQuery" layoutX="5.0" layoutY="230.0" prefHeight="140.0" prefWidth="548.0" style="-fx-background-color: #D3D3D3;">

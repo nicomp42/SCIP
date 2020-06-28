@@ -607,6 +607,13 @@ public class ETLKTRFile implements java.io.Serializable{
 			Log.logError("DatabaseGraphController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
 		}
     }
+	public String toString() {
+		String myString = "";
+		try {
+			myString = getFileName();
+		} catch (Exception ex) {}
+		return myString;
+	}
 }	
 	
 	

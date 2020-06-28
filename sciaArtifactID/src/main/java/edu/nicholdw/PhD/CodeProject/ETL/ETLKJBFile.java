@@ -100,5 +100,12 @@ public class ETLKJBFile extends SchemaChangeImpactProjectComponent {
 		this.etlJobs = etlJobs;
 	}
 	
-	
+	public String toString() {
+		String myString = "";
+		try {
+			myString = getFileName();
+		} catch (Exception ex) {}
+		return myString;
+	}
+
 }
