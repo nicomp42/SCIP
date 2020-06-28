@@ -19,6 +19,22 @@ import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 
 public class Utils {
+	public static String buildKey(String schemaName, String tableOrViewName, String attributeName) {
+		String key = "";
+		try {
+			key = Utils.cleanForGraph(attributeName);
+			if (tableOrViewName != null && tableOrViewName.trim().length() > 0) {
+				key = Utils.cleanForGraph(tableOrViewName).trim() + "." + key;
+				if (schemaName != null && schemaName.trim().length() > 0) {
+					key = Utils.cleanForGraph(schemaName).trim() + "." + key;
+				}
+			}
+		} catch (Exception ex) {
+			key = "KeyError";
+			Log.logError("Utils.buildKey(): ", ex);
+		}
+		return key;
+	}
 	/**
 	 * Chop off the prefix of the filename where the job is stored.
 	 * @return Just the filename with the prefix removed. 

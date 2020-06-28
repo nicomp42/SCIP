@@ -5,6 +5,8 @@ package edu.UC.PhD.CodeProject.nicholdw.schemaTopology;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
 import edu.UC.PhD.CodeProject.nicholdw.ActionQuery;
 import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
@@ -53,6 +55,7 @@ public class SchemaGraph {
 	public  static final String etlFieldToETLStepLabel = "etl_field_to_etl_step";
 	public	static final String nodePropertyAffectedBySQL = "impacted";
 	public	static final String nodePropertyIndirectlyAffectedBySQL = "indirectly_impacted";
+	public	static final String impacts = "impacts";
 //	public  static final String etlDBProcNodeLabel = "DBProc";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
 	public	static final String etlHopLabel = "hop";
 //	public	static final String etlMergeJoinLabel = "MergeJoin";	Don't use this, just use the generic etlStepNodeLabel so all the nodes are the same type.
@@ -116,14 +119,15 @@ public class SchemaGraph {
 	}
 	public Boolean processDataAndGenerateGraph() {
 		Log.logProgress("SchemaGraph.processDataAndGenerateGraph()");
-		Boolean addNodesToGraphStatus = false;
+		Boolean addNodesToGraphStatus = false, addEdgesToGraphStatus = false;
 		Boolean processDataStatus = processData();
 		if (scip.getDatabaseGraphConfig().isBuildImpactGraphOnly()) {
-			addNodesToGraphStatus = addNodesToGraphForImpactGraphOnly();			
+			addNodesToGraphStatus = addNodesToGraphForImpactGraphOnly();	
+			addEdgesToGraphStatus = addEdgesToGraphForImpactGraphOnly();
 		} else {
 			addNodesToGraphStatus = addNodesToGraph();
 		}
-		Log.logProgress("SchemaGraph.processDataAndGenerateGraph(): processDataStatus = " + processDataStatus + " addNodesToGraphStatus = " + addNodesToGraphStatus  );
+		Log.logProgress("SchemaGraph.processDataAndGenerateGraph(): processDataStatus = " + processDataStatus + " addNodesToGraphStatus = " + addNodesToGraphStatus + " addEdgesToGraphStatus= " + addEdgesToGraphStatus );
 		return processDataStatus && addNodesToGraphStatus;
 	}
 	private void reflectSchemaImpacts() {
@@ -180,7 +184,7 @@ public class SchemaGraph {
 	}
 	private void applySchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact) {
  		for (TableAttribute ta : schemaImpact.getTableAttributes()) {
-			ta.setAddtoImpactGraph(true);	// it's impacted, it goes on the graph!
+			ta.setAddToImpactGraph(true);	// it's impacted, it goes on the graph!
 			for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
 				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
 					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
@@ -188,7 +192,7 @@ public class SchemaGraph {
 						if (etlStep.getETLFields() != null) {
 							if (etlStep.getETLFields().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
 								// This step is affected by the table attribute in question
-								etlStep.setAddtoImpactGraph(true);
+								etlStep.setAddToImpactGraph(true);
 								etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
 								// This step is broken. What steps does it hop to?
 								etlKTRFile.traverseFromAttribute(etlStep, ta);
@@ -198,7 +202,7 @@ public class SchemaGraph {
 						if (etlStep.getQueryDefinition() != null) {
 							if (etlStep.getQueryDefinition().getQueryAttributes().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
 								// This step is affected by the table attribute in question
-								etlStep.setAddtoImpactGraph(true);
+								etlStep.setAddToImpactGraph(true);
 								etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
 								// This step is broken. What steps does it hop to?
 								etlKTRFile.traverseFromAttribute(etlStep, ta);
@@ -226,7 +230,7 @@ public class SchemaGraph {
 		try {
 			for (QueryDefinition qd: schema.getQueryDefinitions()) {	// All the views in this schema
 				if (schemaImpact.getViews().findViewBySchemaNameAndViewName(qd.getSchemaName(), qd.getQueryName()) != null) {
-					qd.setAddtoImpactGraph(true);
+					qd.setAddToImpactGraph(true);
 				}
 				// Look for an impacted query attribute that the query uses
 				for (QueryAttribute qa : qd.getQueryAttributes()) {	// All the attributes in the view
@@ -237,19 +241,23 @@ public class SchemaGraph {
 						schema.getTables().setAffectedByActionQuery(qa, true);
 						qa.setGraphNodeAnnotation(graphNodeAnnotation);
 						scip.getGraphResults().incrementTotalAffectedAttributes();
-						qd.setAddtoImpactGraph(true);
+						qd.setAddToImpactGraph(true);
 						qd.setAffectedByActionQuery(true);
 					}
 				}
-				// Look for an impacted table attribute that the query uses. This will break the query
+				// Look for an impacted table attribute that the query (view) uses. This will break the query
 				for (QueryAttribute qa : qd.getQueryAttributes()) {	// All the attributes in the view
 					if (schemaImpact.getTableAttributes().findAttributeBySchemaAndTableAndName(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName()) != null) {
 						// The query attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
 						qa.setAffectedByActionQuery(true);
 						qa.setGraphNodeAnnotation(graphNodeAnnotation);
 						scip.getGraphResults().incrementTotalAffectedAttributes();
-						qd.setAddtoImpactGraph(true);
+						qd.setAddToImpactGraph(true);
 						qd.setAffectedByActionQuery(true);
+						// we're gonna need to draw a relationship between the attribute and the affected view
+						String keyAndValue;
+						keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
+						qd.getRelationshipKeys().put(keyAndValue, keyAndValue);
 					}
 				}
 			}
@@ -270,7 +278,7 @@ public class SchemaGraph {
 						scip.getGraphResults().incrementTotalAffectedAttributes();
 						tableAttribute.setAffectedByActionQuery(true);
 						tableAttribute.setGraphNodeAnnotation(graphNodeAnnotation);
-						tableAttribute.setAddtoImpactGraph(true);
+						tableAttribute.setAddToImpactGraph(true);
 					}
 //					table.setAffectedByActionQuery(tableAttribute, true);
 //					schema.getTables().setAffectedByActionQuery(tableAttribute, true);
@@ -296,18 +304,50 @@ public class SchemaGraph {
 		}
 	}
 	/**
+	 * Call this after calling addNodesToGraphForImpactGraphOnly() 'cause there won't be no nodes to connect
+	 * @return
+	 */
+	private Boolean addEdgesToGraphForImpactGraphOnly() {
+		Log.logProgress("SchemaGraph.addNodesToImpactGraphOnly()");
+		Boolean status = true;
+		addAllConstraints();
+		try {
+			// Look at every node in every container in the scip object. Add edges as indicated. Oh my goodness
+			for (Schema schema: scip.getSchemas()) {
+				for (QueryDefinition qd: schema.getQueryDefinitions()) {
+					for (Map.Entry<String, String> key: qd.getRelationshipKeys().entrySet()) {
+						// Draw the relationship between the ETL step and the attribute
+						Neo4jDB.submitNeo4jQuery("MATCH "
+						        +       "(f:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(key.getKey(), "\"") + "}),"
+						        + "      (t:" + viewNodeLabel + "{key:" + Utils.wrapInDelimiter(qd.getKey(), "\"") + "}) "
+							    + "MERGE (f)-[:" + impacts +"]->(t)"); 
+					}
+				}
+			}
+			
+		} catch (Exception ex) {
+			status = false;
+		}
+		return status;
+	}
+	/**
 	 * Actually put nodes and edges on the impact graph only. Finally.
 	 */
 	private Boolean addNodesToGraphForImpactGraphOnly() {
 		Log.logProgress("SchemaGraph.addNodesToImpactGraphOnly()");
 		Boolean status = true;
+		addAllConstraints();
 		try {
 			// Look at every node in every container in the scip object. Add nodes that are impacted and the relationships between them. Oh my goodness
-			addAllConstraints();
+			for (Schema schema: scip.getSchemas()) {
+				for (QueryDefinition qd: schema.getQueryDefinitions()) {
+					
+				}
+			}
 			for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
 				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
 					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
-						if (etlStep.getAddtoImpactGraph() == true) {
+						if (etlStep.getAddToImpactGraph() == true) {
 							Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
 			                         " { stepname: " + "'" + etlStep.getStepName() + "'" + 
 			                         ",	steptype:'" + etlStep.getStepType()	+ "'" +
@@ -316,24 +356,53 @@ public class SchemaGraph {
 			                         ", transformationfilename:'" + etlStep.getFileName() + "'" +
 			                         "})");
 							// ToDo need to add relationships, if any
+							if (etlStep.getAddAllETLFieldsTableFieldsToImpactGraph()) {
+								for (ETLField etlField : etlStep.getETLFields()) {
+									String attributeKey;
+									attributeKey = Utils.cleanForGraph(etlStep.getSchemaName()) + "." + Utils.cleanForGraph(etlStep.getTableName()) + "." + Utils.cleanForGraph(etlField.getColumnName());
+									Neo4jDB.submitNeo4jQuery("CREATE (" + 
+											Utils.wrapInDelimiter(Utils.cleanForGraph(etlField.getColumnName()), "`") + 
+							                ":" + 
+											attributeNodeLabel + 
+							                " { key: " 
+							                + "\"" 
+							                + attributeKey 
+							                + "\"" 
+							                + ", name:" 
+							                + "\"" 
+							                + Utils.cleanForGraph(etlField.getColumnName())
+							                + "\"" 
+							                + ", table:"
+							                + "\"" 
+							                + Utils.cleanForGraph(etlStep.getTableName())
+							                + "\""
+							                + "}"
+							                + ")");
+									// Draw the relationship between the ETL step and the attribute
+									Neo4jDB.submitNeo4jQuery("MATCH "
+									        +       "(f:" + etlStepNodeLabel + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(etlStep.getKey()), "\"") + "}),"
+									        + "      (t:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(attributeKey, "\"") + "}) "
+										    + "MERGE (f)-[:" + impacts +"]->(t)"); 
+								}
+							}
 						}
 					}
 				}
 			}
 			for (Schema schema: scip.getSchemas()) {
 				for (Table table: schema.getTables()) {
-					if (table.getAddtoImpactGraph()) {
+					if (table.getAddToImpactGraph()) {
 						addTableNode(table, table.getSchemaName(), table.getTableName());
 					}
 					for (TableAttribute ta: table.getTableAttributes()) {
-						if (ta.getAddtoImpactGraph() == true) {
+						if (ta.getAddToImpactGraph() == true) {
 							addTableAttributeNode(ta);
 							// ToDo need to add relationships, if any
 						}
 					}
 				}
 				for (QueryDefinition qd: schema.getQueryDefinitions()) {
-					if (qd.getAddtoImpactGraph() == true) {
+					if (qd.getAddToImpactGraph() == true) {
 						addQueryNode(qd.getSchemaName(), qd.getQueryName());
 					}
 				}
@@ -397,6 +466,7 @@ public class SchemaGraph {
 			    + "MERGE (f)-[:" + attributeToAttributeLabel +"]->(t)"); 
 	}
 	public static void connectQueryNodeToAttributeNode(String querySchemaName, String queryName,
+			
                                                        String attributeSchemaName, String attributeTableName, String attributeName) {
 		Neo4jDB.submitNeo4jQuery("MATCH "
         +       "(q:" + viewNodeLabel     + "{key:" + Utils.wrapInDelimiter(Utils.cleanForGraph(querySchemaName) + "." + Utils.cleanForGraph(queryName), "\"") + "}), "

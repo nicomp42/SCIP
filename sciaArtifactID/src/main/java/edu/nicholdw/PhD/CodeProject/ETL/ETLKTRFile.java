@@ -108,7 +108,7 @@ public class ETLKTRFile implements java.io.Serializable{
 					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
 					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 					attributeFoundInAttributeCollection.setGraphNodeAnnotation(graphNodeAnnotation);
-					etlStepNext.setAddtoImpactGraph(true);
+					etlStepNext.setAddToImpactGraph(true);
 				} else {
 					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
 					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
@@ -119,7 +119,8 @@ public class ETLKTRFile implements java.io.Serializable{
 					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
 					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 					attributeFoundInETLFieldCollection.setGraphNodeAnnotation(graphNodeAnnotation);					
-					etlStepNext.setAddtoImpactGraph(true);
+					etlStepNext.setAddToImpactGraph(true);
+					etlStepNext.setAddAllETLFieldsTableFieldsToImpactGraph(true);
 				} else {
 					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
 					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");

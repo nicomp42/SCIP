@@ -153,6 +153,7 @@ public class DatabaseGraphController {
             	checkToCloseWindow(we);
             }
         });
+		loadSchemaNames();
 		cheat();
 	}
 	private void cheat() {
@@ -271,13 +272,18 @@ public class DatabaseGraphController {
 		// We don't know what was clicked: this could throw an error. If a query was clicked, we're good to go.
 		try {
 			String newSchema = tvSchemas.getSelectionModel().getSelectedItem().getValue();
-			cbSchema.getItems().add(newSchema);
-			cbSchema.setValue(newSchema);
-			showProcessSchemaControls(true);
-			taResults.setText("");
+			if (!cbSchema.getItems().contains(newSchema)) {
+				cbSchema.getItems().add(newSchema);
+				cbSchema.setValue(newSchema);
+				showProcessSchemaControls(true);
+				taResults.setText("");
+			}
 		} catch (Exception ex) {
 			Log.logError("DatabaseGraphController.processSelectedQueryInTreeView() : " + ex.getLocalizedMessage());
 		}
+		if (cbSchema.getItems().size() > 0) {
+			showProcessSchemaControls(true);
+		}		
 	}
 	private void showProcessSchemaControls(Boolean visible) {
 		btnProcess.setVisible(visible);
