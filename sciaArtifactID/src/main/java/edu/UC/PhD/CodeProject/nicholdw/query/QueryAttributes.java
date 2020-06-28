@@ -146,6 +146,23 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 	}
 	/***
 	 * Search for a query attribute by schema, table, and attribute name
+	 * @return True if found
+	 */
+	public Boolean containsBySchemaTableAttribute(String schemaName, String tableName, String attributeName) {
+		// TODO This seems to be the same as contains() in this class. 
+		Boolean queryFound = false;
+		for (QueryAttribute qa : queryAttributes) {
+			if (Config.getConfig().compareSchemaNames(qa.getSchemaName(), schemaName) &&
+				Config.getConfig().compareTableNames(qa.getContainerName(), tableName) &&	
+				Config.getConfig().compareAttributeNames(qa.getAttributeName(), attributeName)) {
+				queryFound = true;
+				break;
+			}
+		}
+		return queryFound;
+	}
+	/***
+	 * Search for a query attribute by schema, table, and attribute name
 	 * @param queryAttribute The query attribute to search for
 	 * @return True if found
 	 */

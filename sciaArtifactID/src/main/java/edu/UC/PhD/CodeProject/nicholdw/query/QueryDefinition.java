@@ -9,7 +9,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttributes;
+import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
+import edu.UC.PhD.CodeProject.nicholdw.ImpactGraphNode;
 import edu.UC.PhD.CodeProject.nicholdw.OperationalSchemaQueries;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
@@ -31,7 +34,7 @@ import lib.MySQL;
  * @author nicomp
  *  
  */
-public class QueryDefinition implements java.io.Serializable {
+public class QueryDefinition extends ImpactGraphNode implements java.io.Serializable, Attributable {
 	/**
 	 * 
 	 */
@@ -60,6 +63,10 @@ public class QueryDefinition implements java.io.Serializable {
 	private String selectStatementToCreateOrReplace;
 	private View viewToDrop;
 	private String key;
+	private GraphNodeAnnotation graphNodeAnnotation;
+	private Boolean indirectlyAffectedByActionQuery;
+	private Boolean affectedByActionQuery;
+
 	// This is irrelevant in MySQL stored views. Attribute lists are frozen when the view is created. See https://dev.mysql.com/doc/refman/8.0/en/create-view.html
 	// However, a wildcard can appear in an ad-hoc query that shows up in the transaction log!
 	private Boolean selectIsWildcard;		 
@@ -807,5 +814,45 @@ public class QueryDefinition implements java.io.Serializable {
 	}
 	public void setKey(String key) {
 		this.key = key;
+	}
+	@Override
+	public String getContainerName() {
+		return getSchemaName();
+	}
+	@Override
+	public String getAttributeName() {
+		return getQueryName();
+	}
+	@Override
+	public void setContainerName(String containerName) {
+		setSchemaName(containerName);
+	}
+	@Override
+	public void setAttributeName(String attributeName) {
+		setQueryName(attributeName);
+	}
+	@Override
+	public void setGraphNodeAnnotation(GraphNodeAnnotation graphNodeAnnotation) {
+		this.graphNodeAnnotation = new GraphNodeAnnotation(graphNodeAnnotation);
+	}
+	@Override
+	public GraphNodeAnnotation getGraphNodeAnnotation() {
+		return (graphNodeAnnotation);
+	}
+	@Override
+	public Boolean getAffectedByActionQuery() {
+		return affectedByActionQuery;
+	}
+	@Override
+	public void setAffectedByActionQuery(Boolean affectedByActionQuery) {
+		this.affectedByActionQuery = affectedByActionQuery;
+	}
+	@Override
+	public Boolean getIndirectlyAffectedByActionQuery() {
+		return indirectlyAffectedByActionQuery;
+	}
+	@Override
+	public void setIndirectlyAffectedByActionQuery(Boolean indirectlyAffectedByActionQuery) {
+		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
 	}
 }

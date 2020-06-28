@@ -119,6 +119,9 @@ public class DatabaseGraphController {
 		cbSchema.getItems().clear();
 	}
 	private void setTheScene() {
+		cbClearDB.setSelected(true);
+		cbIncludeSchemaNodes.setSelected(true);
+		cbOpenInBrowser.setSelected(true);;
 		txtHostName.setText(Config.getConfig().getMySQLDefaultHostname());
 		txtLoginName.setText(Config.getConfig().getMySQLDefaultLoginName());
 		txtPassword.setText(Config.getConfig().getMySQLDefaultPassword());

@@ -6,6 +6,7 @@ package edu.UC.PhD.CodeProject.nicholdw;
 
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
+import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinitions;
 import edu.UC.PhD.CodeProject.nicholdw.query.Views;
 
 /**
@@ -14,6 +15,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.Views;
  */
 public class SchemaImpact {
 	private QueryDefinition queryDefinition;
+	private QueryDefinitions queryDefinitions;
 	private TableAttributes tableAttributes;
 	private QueryAttributes queryAttributes;
 	private Tables tables;
@@ -26,6 +28,7 @@ public class SchemaImpact {
 		setTables(new Tables());
 		setSchemas(new Schemas());
 		setViews(new Views());
+		setQueryDefinitions(new QueryDefinitions());
 	}
 
 	public TableAttributes getTableAttributes() {
@@ -43,11 +46,17 @@ public class SchemaImpact {
 	public void setQueryAttributes(QueryAttributes queryAttributes) {
 		this.queryAttributes = queryAttributes;
 	}
-
+	/**
+	 * Get the action query for this SchemaImpact object
+	 * @return The action query for this SchemaImpact object
+	 */
 	public QueryDefinition getQueryDefinition() {
 		return queryDefinition;
 	}
-
+	/**
+	 * Define the action query for this SchemaImpact object
+	 * @param queryDefinition The action query for this SchemaImpact object
+	 */
 	public void setQueryDefinition(QueryDefinition queryDefinition) {
 		this.queryDefinition = queryDefinition;
 	}
@@ -74,5 +83,19 @@ public class SchemaImpact {
 
 	public void setViews(Views views) {
 		this.views = views;
+	}
+	/**
+	 * The querys affected by this action query, if any
+	 * @return
+	 */
+	public QueryDefinitions getQueryDefinitions() {
+		return queryDefinitions;
+	}
+	/**
+	 * The querys affected by this action query, if any
+	 * @param queryDefinitions
+	 */
+	public void setQueryDefinitions(QueryDefinitions queryDefinitions) {
+		this.queryDefinitions = queryDefinitions;
 	}
 }

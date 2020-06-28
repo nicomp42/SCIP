@@ -73,6 +73,42 @@ public class TableAttributes implements Iterable<TableAttribute> {
 	 * @param tableName the table name to search for
 	 * @return The Attribute object corresponding to tableName.attributeName
 	 */
+	public TableAttribute findAttributeBySchemaAndTableAndName(String schemaName, String tableName, String attributeName) {
+		TableAttribute tmp = null;
+		for (TableAttribute attribute: tableAttributes) {
+			if (Config.getConfig().compareAttributeNames(attribute.getAttributeName(), attributeName) &&
+				Config.getConfig().compareTableNames(attribute.getContainerName(), tableName) &&
+				Config.getConfig().compareSchemaNames(attribute.getSchemaName(), schemaName)) {
+				tmp = attribute;
+				break;
+			}
+		}
+		return tmp;
+	}
+	/**
+	 * Search the list of attributes by attribute name and table name
+	 * @param attributeName The attribute name to search for
+	 * @param tableName the table name to search for
+	 * @return The Attribute object corresponding to tableName.attributeName
+	 */
+	public TableAttribute findAttribute(TableAttribute targetTableAttribute) {
+		TableAttribute tmp = null;
+		for (TableAttribute tableAttribute: tableAttributes) {
+			if ((Config.getConfig().compareAttributeNames(tableAttribute.getAttributeName(), targetTableAttribute.getAttributeName())) &&
+				(Config.getConfig().compareTableNames(tableAttribute.getContainerName(), targetTableAttribute.getContainerName())) &&
+				(Config.getConfig().compareSchemaNames(tableAttribute.getSchemaName(), targetTableAttribute.getSchemaName()))) {
+				tmp = tableAttribute;
+				break;
+			}
+		}
+		return tmp;
+	}
+	/**
+	 * Search the list of attributes by attribute name and table name
+	 * @param attributeName The attribute name to search for
+	 * @param tableName the table name to search for
+	 * @return The Attribute object corresponding to tableName.attributeName
+	 */
 	public TableAttribute findAttributeByTableAndName( String tableName, String attributeName) {
 		TableAttribute tmp = null;
 		for (TableAttribute attribute: tableAttributes) {

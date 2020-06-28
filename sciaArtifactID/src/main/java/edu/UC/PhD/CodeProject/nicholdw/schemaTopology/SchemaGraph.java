@@ -181,7 +181,14 @@ public class SchemaGraph {
 			for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
 				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
 					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
+						// Look in the list of fields, if any
 						if (etlStep.getETLFields().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
+							// This step is affected by the table attribute in question
+							etlStep.setAddtoImpactGraph(true);
+							etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
+						}
+						// Look in the list of query attributes, if any
+						if (etlStep.getQueryDefinition().getQueryAttributes().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
 							// This step is affected by the table attribute in question
 							etlStep.setAddtoImpactGraph(true);
 							etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
@@ -207,6 +214,10 @@ public class SchemaGraph {
 		graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 		try {
 			for (QueryDefinition qd: schema.getQueryDefinitions()) {	// All the views in this schema
+				if (schemaImpact.getViews().findViewBySchemaNameAndViewName(qd.getSchemaName(), qd.getQueryName()) != null) {
+					qd.setAddtoImpactGraph(true);
+				}
+				// Look for an impacted query attribute that the query uses
 				for (QueryAttribute qa : qd.getQueryAttributes()) {	// All the attributes in the view
 					if (schemaImpact.getQueryAttributes().findAttribute(qa)) {
 						// The query attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
@@ -215,6 +226,19 @@ public class SchemaGraph {
 						schema.getTables().setAffectedByActionQuery(qa, true);
 						qa.setGraphNodeAnnotation(graphNodeAnnotation);
 						scip.getGraphResults().incrementTotalAffectedAttributes();
+						qd.setAddtoImpactGraph(true);
+						qd.setAffectedByActionQuery(true);
+					}
+				}
+				// Look for an impacted table attribute that the query uses. This will break the query
+				for (QueryAttribute qa : qd.getQueryAttributes()) {	// All the attributes in the view
+					if (schemaImpact.getTableAttributes().findAttributeBySchemaAndTableAndName(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName()) != null) {
+						// The query attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
+						qa.setAffectedByActionQuery(true);
+						qa.setGraphNodeAnnotation(graphNodeAnnotation);
+						scip.getGraphResults().incrementTotalAffectedAttributes();
+						qd.setAddtoImpactGraph(true);
+						qd.setAffectedByActionQuery(true);
 					}
 				}
 			}
@@ -227,13 +251,15 @@ public class SchemaGraph {
 						table.setGraphNodeAnnotation(graphNodeAnnotation);
 					}
 				}
-				for (TableAttribute tableAttribute : table.getTableAttributes()) 
-				if (schemaImpact.getTableAttributes().findAttributeByTableAndName(tableAttribute.getContainerName(), tableAttribute.getAttributeName()) != null) {
-					// The table attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
-					if (tableAttribute.getAffectedByActionQuery() == false) {
+			}
+			for (Table table: schema.getTables()) {				
+				for (TableAttribute tableAttribute : table.getTableAttributes()) {
+					if (schemaImpact.getTableAttributes().findAttribute(tableAttribute) != null) {
+						// The table attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
 						scip.getGraphResults().incrementTotalAffectedAttributes();
 						tableAttribute.setAffectedByActionQuery(true);
 						tableAttribute.setGraphNodeAnnotation(graphNodeAnnotation);
+						tableAttribute.setAddtoImpactGraph(true);
 					}
 //					table.setAffectedByActionQuery(tableAttribute, true);
 //					schema.getTables().setAffectedByActionQuery(tableAttribute, true);
@@ -294,6 +320,11 @@ public class SchemaGraph {
 							addTableAttributeNode(ta);
 							// ToDo need to add relationships, if any
 						}
+					}
+				}
+				for (QueryDefinition qd: schema.getQueryDefinitions()) {
+					if (qd.getAddtoImpactGraph() == true) {
+						addQueryNode(qd.getSchemaName(), qd.getQueryName());
 					}
 				}
 			}
