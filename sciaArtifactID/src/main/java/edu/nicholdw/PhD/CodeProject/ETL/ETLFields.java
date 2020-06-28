@@ -7,6 +7,8 @@ package edu.nicholdw.PhD.CodeProject.ETL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
+
 /**
  * A collection of fields that belong to an ETL TableOutput step
  * @author nicomp
@@ -46,6 +48,19 @@ public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
 			if (ETLField.compare(etlFieldToLookFor, etlField) == true) {foundIt = true; break;}
 		}
 		return foundIt;
+	}
+	/**
+	 * Search for an ETL Field by stream name only (Case-insensitive)
+	 * @param etlColumnName The column name to search for
+	 * @return a reference to the ETLField object if found, null otherwise
+	 */
+	public ETLField findETLFieldByStreamName(String etlStreamName) {
+		ETLField etlFieldFound = null;
+		for (ETLField etlField : etlFields) {
+			// ToDo: We are doing a case-insensitive comparison here. 
+			if (Config.getConfig().compareAttributeNames(etlField.getStreamName(), etlStreamName)) {etlFieldFound = etlField; break;}
+		}
+		return etlFieldFound;
 	}
 	/**
 	 * Search for an ETL Field by column name only (Case-insensitive)

@@ -19,8 +19,18 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 	 * 
 	 */
 	private static final long serialVersionUID = 8544741338416810657L;
-	private String streamName;		// The name of the field in the ETL that will be written the DBMS table. 
-	private String columnName;		// The destination of the stream field. Called "Table Field" in the Pentaho/Spoon UI. Called "column_name" in the XML file 
+	// In the Input/Output Step XML:
+	// 		TableField is in the target table of this step, called "Name" in the XML
+	// 		StreamField is what's supplied from the previous hop. Called "rename"
+	
+	// The name of the field in the ETL that comes from the previous ETL Step.
+	private String streamName; 
+
+	// The destination of the stream field. 
+	// Must be a column name in the DBMS table.
+	// Called "Table Field" in the Pentaho/Spoon UI. Called "column_name" or "name" in the XML file
+	private String columnName;		
+	
 	private GraphNodeAnnotation graphNodeAnnotation;
 	private String tableName, schemaName;
 	private boolean affectedByActionQuery;

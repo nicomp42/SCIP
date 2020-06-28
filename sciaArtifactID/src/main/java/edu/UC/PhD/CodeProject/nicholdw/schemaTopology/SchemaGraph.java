@@ -109,6 +109,9 @@ public class SchemaGraph {
 			}
 		}
 		scip.getEtlProcess().processData(scip);
+		if (scip.getDatabaseGraphConfig().isBuildImpactGraphOnly()) {
+			applySchemaImpactsForImpactGraphOnly(scip.getSchemaImpacts());
+		}
 		return status;		
 	}
 	public Boolean processDataAndGenerateGraph() {
@@ -187,6 +190,8 @@ public class SchemaGraph {
 								// This step is affected by the table attribute in question
 								etlStep.setAddtoImpactGraph(true);
 								etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
+								// This step is broken. What steps does it hop to?
+								etlKTRFile.traverseFromAttribute(etlStep, ta);
 							}
 						}
 						// Look in the list of query attributes, if any
@@ -195,6 +200,8 @@ public class SchemaGraph {
 								// This step is affected by the table attribute in question
 								etlStep.setAddtoImpactGraph(true);
 								etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
+								// This step is broken. What steps does it hop to?
+								etlKTRFile.traverseFromAttribute(etlStep, ta);
 							}
 						}
 					}
@@ -295,7 +302,6 @@ public class SchemaGraph {
 		Log.logProgress("SchemaGraph.addNodesToImpactGraphOnly()");
 		Boolean status = true;
 		try {
-			applySchemaImpactsForImpactGraphOnly(scip.getSchemaImpacts());
 			// Look at every node in every container in the scip object. Add nodes that are impacted and the relationships between them. Oh my goodness
 			addAllConstraints();
 			for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {

@@ -657,6 +657,8 @@ public class XMLParser {
 	 * @return
 	 */
 	public ETLFields getETLFieldsForInsertUpdateStep(XPath xpath, Document doc, ETLStep etlStep, ETLConnection etlConnection){
+		// In the XML: TableField is in the target table called "Name"
+		//             StreamField is what's supplied from the previous hop. Called "rename"
 		Log.logProgress("XMLParser.getFields(" + xpath + ")");
 		String cleanStepName= etlStep.getStepName().replace("'", "");
 		ETLFields etlFields = new ETLFields();
