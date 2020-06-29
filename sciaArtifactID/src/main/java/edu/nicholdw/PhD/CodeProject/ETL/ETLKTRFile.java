@@ -36,6 +36,7 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeRenameTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.SchemaChangeImpactProject;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLField.ETLFIELDTYPE;
 /***
  * Model an entire ETL Transformation consisting of steps and connections.
  * This is one .KTR file
@@ -237,6 +238,13 @@ public class ETLKTRFile implements java.io.Serializable{
 				                                       etlStep.getSql(),
 				                                       etlConnection.getDatabase()));
 		etlStep.getQueryDefinition().crunchIt();
+		QueryDefinition qd = etlStep.getQueryDefinition();
+		for (QueryAttribute qa: qd.getQueryAttributes()) {
+			etlStep.getETLFields().addETLField(new ETLField(ETLFIELDTYPE.FromSQLSelect, 
+					                           qa.getSchemaName(), 
+					                           qa.getContainerName(), qa.getAttributeName(), 
+					                           "" ));
+		}
 	}
 	public String getName() {
 		return name;

@@ -8,13 +8,23 @@ import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.ImpactGraphNode;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLField.ETLFIELDTYPE;
 
 /**
- * A field in an ETL TableOutput Step
+ * A field in an ETL TableOutput Step or some other kind of step
  * @author nicomp
  *
  */
 public class ETLField extends ImpactGraphNode implements java.io.Serializable, Attributable {
+	/*
+	 * 					                    --------- ETLFieldType from ----------	
+	 * Step Type		SQL SELECT			Stream		Destination Table
+	 * ----------------------------------------------------------------------------------------
+	 * Table Input			Yes				No			No
+	 * Insert/Update		No				Yes			Yes
+	 * Database Lookup
+	 * 
+	 */
 	/**
 	 * 
 	 */
@@ -23,13 +33,16 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 	// 		TableField is in the target table of this step, called "Name" in the XML
 	// 		StreamField is what's supplied from the previous hop. Called "rename"
 	
+	public enum ETLFIELDTYPE {Unknown, FromSQLSelect, StreamAndDestinationTable};
+	
 	// The name of the field in the ETL that comes from the previous ETL Step.
 	private String streamName; 
 
-	// The destination of the stream field. 
+	// The destination of the stream field, if applicable. 
 	// Must be a column name in the DBMS table.
 	// Called "Table Field" in the Pentaho/Spoon UI. Called "column_name" or "name" in the XML file
 	private String columnName;		
+	private ETLFIELDTYPE etlFieldType;
 	
 	private GraphNodeAnnotation graphNodeAnnotation;
 	private String tableName, schemaName;
@@ -42,12 +55,13 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
 	}
 
-	public ETLField(String schemaName, String tableName, String columnName, String streamName) {
+	public ETLField(ETLFIELDTYPE etlFieldType, String schemaName, String tableName, String columnName, String streamName) {
 		setColumnName(columnName);
 		setStreamName(streamName);
 		setSchemaName(schemaName);
 		setContainerName(tableName);
 		graphNodeAnnotation = new GraphNodeAnnotation();
+		setEtlFieldType(etlFieldType);
 	}
 	/**
 	 * Copy Constructor
@@ -59,6 +73,7 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 		setContainerName(etlField.getContainerName());
 		setSchemaName(etlField.getSchemaName());
 		this.setGraphNodeAnnotation(etlField.getGraphNodeAnnotation());
+		setEtlFieldType(etlField.getEtlFieldType());
 	}
 	/**
 	 * 
@@ -76,14 +91,14 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 	}
 	/**
 	 * 
-	 * @return The name of the field created in the ETL job
+	 * @return The name of the field created in the the previous ETL step
 	 */
 	public String getStreamName() {
 		return streamName;
 	}
 	/**
 	 * 
-	 * @param streamName The name of the field created in the ETL job
+	 * @param streamName  The name of the field created in the the previous ETL step
 	 */
 	public void setStreamName(String streamName) {
 		this.streamName = streamName;
@@ -91,7 +106,7 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 	/**
 	 * @return A string representation of the object
 	 */
-	public String toString() {return getColumnName() + ":" + getStreamName();}
+	public String toString() {return etlFieldType.toString() + ": " + getColumnName() + ":" + getStreamName();}
 	
 	/**
 	 * Compare two ETLField objects
@@ -109,10 +124,13 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 	}
 	public Boolean compareBySchemaTableAttribute(String schemaName, String tableName, String attributeName) {
 		Boolean status = false;
-		if (Config.getConfig().compareSchemaNames(this.schemaName, schemaName) &&
-			Config.getConfig().compareTableNames(this.tableName, tableName)	   &&
-			Config.getConfig().compareAttributeNames(this.getAttributeName(), attributeName)) {
-			status = true;
+		// Does this ETLField object even have an attribute?
+		if (this.getEtlFieldType() == ETLFIELDTYPE.FromSQLSelect) {
+			if (Config.getConfig().compareSchemaNames(this.schemaName, schemaName) &&
+				Config.getConfig().compareTableNames(this.tableName, tableName)	   &&
+				Config.getConfig().compareAttributeNames(this.getAttributeName(), attributeName)) {
+				status = true;
+			}
 		}
 		return status;
 	}
@@ -168,5 +186,11 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 	@Override
 	public void setKey(String key) {
 		this.key = key;
+	}
+	public ETLFIELDTYPE getEtlFieldType() {
+		return etlFieldType;
+	}
+	public void setEtlFieldType(ETLFIELDTYPE etlFieldType) {
+		this.etlFieldType = etlFieldType;
 	}
 }

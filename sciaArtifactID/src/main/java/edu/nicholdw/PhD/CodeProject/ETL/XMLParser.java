@@ -40,6 +40,8 @@ import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStepParser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLField.ETLFIELDTYPE;
+
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.*;
@@ -681,7 +683,7 @@ public class XMLParser {
 						streamName = children.item(k).getTextContent();
 					}
 				}
-				etlFields.addETLField(new ETLField(etlConnection.getDatabase(), etlStep.getTableName(), columnName, streamName));						
+				etlFields.addETLField(new ETLField(ETLFIELDTYPE.StreamAndDestinationTable, etlConnection.getDatabase(), etlStep.getTableName(), columnName, streamName));						
 			}
 		}catch (Exception e) {
 			Log.logError("XMLParser.getETLFields(): " + e.getLocalizedMessage(), e.getStackTrace());
@@ -729,7 +731,7 @@ public class XMLParser {
 						streamName = children.item(k).getTextContent();
 					}
 				}
-				etlFields.addETLField(new ETLField(schemaName, etlStep.getTableName(), columnName, streamName));						
+				etlFields.addETLField(new ETLField(ETLFIELDTYPE.StreamAndDestinationTable, schemaName, etlStep.getTableName(), columnName, streamName));						
 			}
 		}catch (Exception e) {
 			Log.logError("XMLParser.getETLFields(): " + e.getLocalizedMessage(), e.getStackTrace());

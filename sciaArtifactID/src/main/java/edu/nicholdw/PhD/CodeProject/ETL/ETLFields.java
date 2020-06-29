@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
+import edu.nicholdw.PhD.CodeProject.ETL.ETLField.ETLFIELDTYPE;
 
 /**
- * A collection of fields that belong to an ETL TableOutput step
+ * A collection of fields that belong to an ETL step
  * @author nicomp
  *
  */
@@ -56,8 +57,7 @@ public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
 	 */
 	public ETLField findETLFieldByStreamName(String etlStreamName) {
 		ETLField etlFieldFound = null;
-		for (ETLField etlField : etlFields) {
-			// ToDo: We are doing a case-insensitive comparison here. 
+		for (ETLField etlField : etlFields) { 
 			if (Config.getConfig().compareAttributeNames(etlField.getStreamName(), etlStreamName)) {etlFieldFound = etlField; break;}
 		}
 		return etlFieldFound;
@@ -70,7 +70,6 @@ public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
 	public ETLField findETLFieldByColumnName(String etlColumnName) {
 		ETLField etlFieldFound = null;
 		for (ETLField etlField : etlFields) {
-			// ToDo: We are doing a case-insensitive comparison here. 
 			if (etlField.getColumnName().toUpperCase().equals(etlColumnName.toUpperCase())) {etlFieldFound = etlField; break;}
 		}
 		return etlFieldFound;
