@@ -43,10 +43,11 @@ public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
 		return foundIt;
 		
 	}
+	
 	public Boolean contains(ETLField etlFieldToLookFor) {
 		Boolean foundIt = false;
 		for (ETLField etlField : etlFields) {
-			if (ETLField.compare(etlFieldToLookFor, etlField) == true) {foundIt = true; break;}
+			if (ETLField.compareByColumnStream(etlFieldToLookFor, etlField) == true) {foundIt = true; break;}
 		}
 		return foundIt;
 	}
@@ -63,14 +64,33 @@ public class ETLFields implements Iterable<ETLField>, java.io.Serializable {
 		return etlFieldFound;
 	}
 	/**
-	 * Search for an ETL Field by column name only (Case-insensitive)
+	 * Search for an ETL Field by table name and column name (Case-insensitive)
+	 * @param etlTableName The table name to search for
 	 * @param etlColumnName The column name to search for
 	 * @return a reference to the ETLField object if found, null otherwise
 	 */
-	public ETLField findETLFieldByColumnName(String etlColumnName) {
+	public ETLField findETLFieldByTableAndColumn(String etlTableName, String etlColumnName) {
 		ETLField etlFieldFound = null;
 		for (ETLField etlField : etlFields) {
-			if (etlField.getColumnName().toUpperCase().equals(etlColumnName.toUpperCase())) {etlFieldFound = etlField; break;}
+			if ((Config.getConfig().compareTableNames(etlField.getContainerName(), etlTableName)) &&
+			    (etlField.getColumnName().toUpperCase().equals(etlColumnName.toUpperCase()))) {
+				etlFieldFound = etlField; break;}
+		}
+		return etlFieldFound;
+	}
+	/**
+	 * Search for an ETL Field by table name and column name (Case-insensitive)
+	 * @param etlTableName The table name to search for
+	 * @param etlColumnName The column name to search for
+	 * @return a reference to the ETLField object if found, null otherwise
+	 */
+	public ETLField findETLFieldBySchemaTableColumn(String etlSchemaName, String etlTableName, String etlColumnName) {
+		ETLField etlFieldFound = null;
+		for (ETLField etlField : etlFields) {
+			if ((Config.getConfig().compareSchemaNames(etlField.getSchemaName(), etlSchemaName)) &&
+				(Config.getConfig().compareTableNames(etlField.getContainerName(), etlTableName)) &&
+			    (Config.getConfig().compareAttributeNames(etlField.getColumnName(), etlColumnName))) {
+				etlFieldFound = etlField; break;}
 		}
 		return etlFieldFound;
 	}

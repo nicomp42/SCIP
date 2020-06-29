@@ -188,9 +188,12 @@ public class SchemaGraph {
 			for (ETLKJBFile etlKJBFile: scip.getEtlProcess().getEtlKJBFiles()) {
 				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
 					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
+//						if (etlStep.getFileName().toUpperCase().contains("Load_actor.ktr".toUpperCase())) {
+//							System.out.println("Poof");
+//						}
 						// Look in the list of fields, if any
 						if (etlStep.getETLFields() != null) {
-							if (etlStep.getETLFields().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
+							if (etlStep.getETLFields().findETLFieldBySchemaTableColumn(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName()) != null) {
 								// This step is affected by the table attribute in question
 								etlStep.setAddToImpactGraph(true);
 								// Add an edge from Table Attribute to ETL Step

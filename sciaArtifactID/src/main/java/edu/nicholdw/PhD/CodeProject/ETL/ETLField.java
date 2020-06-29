@@ -109,14 +109,40 @@ public class ETLField extends ImpactGraphNode implements java.io.Serializable, A
 	public String toString() {return etlFieldType.toString() + ": " + getColumnName() + ":" + getStreamName();}
 	
 	/**
-	 * Compare two ETLField objects
+	 * Compare two ETLField objects column and stream names
 	 * @param etlField1
 	 * @param etlField2
-	 * @return True if they contain all the same properties, false otherwise
+	 * @return True if they contain the same column and stream names, false otherwise
 	 */
-	public static Boolean compare(ETLField etlField1, ETLField etlField2) {
+	public static Boolean compareByColumnStream(ETLField etlField1, ETLField etlField2) {
 		if (etlField1.getColumnName().compareTo(etlField2.getColumnName()) == 0 &&
 			etlField1.getStreamName().compareTo(etlField2.getStreamName()) == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	/**
+	 * Compare two ETLField objects stream names
+	 * @param etlField1
+	 * @param etlField2
+	 * @return True if they contain the same stream names, false otherwise
+	 */
+	public static Boolean compareByStream(ETLField etlField1, ETLField etlField2) {
+		if (etlField1.getStreamName().compareTo(etlField2.getStreamName()) == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	/**
+	 * Compare two ETLField objects column names
+	 * @param etlField1
+	 * @param etlField2
+	 * @return True if they contain the same column name, false otherwise
+	 */
+	public static Boolean compareByColumn(ETLField etlField1, ETLField etlField2) {
+		if (etlField1.getColumnName().compareTo(etlField2.getColumnName()) == 0) {
 			return true;
 		} else {
 			return false;

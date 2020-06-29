@@ -76,7 +76,8 @@ public class ETLKTRFile implements java.io.Serializable{
 	 * @param etlStep The step to start with
 	 * @param qa The query attribute in question
 	 */
-	public void traverseFromAttribute(ETLStep etlStep, Attributable qa) {
+	public void traverseFromAttribute(ETLStep etlStepStart, Attributable qa) {
+		ETLStep etlStep = etlStepStart; 
 		Log.logProgress("ETLKTRFile.traverseFromAttribute(): " + ", " + etlStep.toString() + ", " + qa.toString());
 		String fileName = etlStep.getFileName();
 		ETLHop etlHopStart = getEtlHops().getETLHopWithStartStep(etlStep);
@@ -118,11 +119,13 @@ public class ETLKTRFile implements java.io.Serializable{
 					attributeFoundInETLFieldCollection.setGraphNodeAnnotation(graphNodeAnnotation);					
 					etlStepNext.setAddToImpactGraph(true);
 					etlStepNext.setAddAllETLFieldsTableFieldsToImpactGraph(true);
-					String keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
+//					String keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
+					String keyAndValue = etlStep.getKey();
 					etlStepNext.getRelationshipKeys().put(keyAndValue, keyAndValue);
 				} else {
 					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
 				}
+				etlStep = etlStepNext;
 				etlHopStart = getEtlHops().getETLHopWithStartStep(etlStepNext);
 			}
 		} else {
