@@ -185,7 +185,7 @@ public class SchemaGraph {
 	private void applySchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact) {
  		for (TableAttribute ta : schemaImpact.getTableAttributes()) {
 			ta.setAddToImpactGraph(true);	// it's impacted, it goes on the graph!
-			for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
+			for (ETLKJBFile etlKJBFile: scip.getEtlProcess().getEtlKJBFiles()) {
 				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
 					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
 						// Look in the list of fields, if any
@@ -193,8 +193,9 @@ public class SchemaGraph {
 							if (etlStep.getETLFields().containsBySchemaTableAttribute(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName())) {
 								// This step is affected by the table attribute in question
 								etlStep.setAddToImpactGraph(true);
+								// Add an edge from Table Attribute to ETL Step
 								etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
-								// This step is broken. What steps does it hop to?
+								// This step is broken by the action query. What steps does it hop to?
 								etlKTRFile.traverseFromAttribute(etlStep, ta);
 							}
 						}
@@ -204,7 +205,7 @@ public class SchemaGraph {
 								// This step is affected by the table attribute in question
 								etlStep.setAddToImpactGraph(true);
 								etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
-								// This step is broken. What steps does it hop to?
+								// This step is broken by the action query. What steps does it hop to?
 								etlKTRFile.traverseFromAttribute(etlStep, ta);
 							}
 						}
@@ -315,12 +316,31 @@ public class SchemaGraph {
 			// Look at every node in every container in the scip object. Add edges as indicated. Oh my goodness
 			for (Schema schema: scip.getSchemas()) {
 				for (QueryDefinition qd: schema.getQueryDefinitions()) {
-					for (Map.Entry<String, String> key: qd.getRelationshipKeys().entrySet()) {
+					for (Map.Entry<String, String> entry: qd.getRelationshipKeys().entrySet()) {
 						// Draw the relationship between the ETL step and the attribute
+//						Neo4jDB.submitNeo4jQuery("MATCH "
+//						        +       "(f:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(key.getKey(), "\"") + "}),"
+//						        + "      (t:" + viewNodeLabel + "{key:" + Utils.wrapInDelimiter(qd.getKey(), "\"") + "}) "
+//							    + "MERGE (f)-[:" + impacts +"]->(t)");
+						// A node label is not needed. The keys are unique so we always get only one edge. 
 						Neo4jDB.submitNeo4jQuery("MATCH "
-						        +       "(f:" + attributeNodeLabel + "{key:" + Utils.wrapInDelimiter(key.getKey(), "\"") + "}),"
-						        + "      (t:" + viewNodeLabel + "{key:" + Utils.wrapInDelimiter(qd.getKey(), "\"") + "}) "
+						        +       "(f" + "{key:" + Utils.wrapInDelimiter(entry.getKey(), "\"") + "}),"
+						        + "      (t" + "{key:" + Utils.wrapInDelimiter(qd.getKey(), "\"") + "}) "
 							    + "MERGE (f)-[:" + impacts +"]->(t)"); 
+					}
+				}
+			}
+			for (ETLKJBFile etlKJBFile : scip.getEtlProcess().getEtlKJBFiles()) {
+				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
+					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
+						if (etlStep.getAddToImpactGraph() == true) {
+							for (Map.Entry<String, String> entry: etlStep.getRelationshipKeys().entrySet()) {
+								Neo4jDB.submitNeo4jQuery("MATCH "
+								        +       "(f" + "{key:" + Utils.wrapInDelimiter(entry.getKey(), "\"") + "}),"
+								        + "      (t" + "{key:" + Utils.wrapInDelimiter(etlStep.getKey(), "\"") + "}) "
+									    + "MERGE (f)-[:" + impacts +"]->(t)"); 
+							}	
+						}
 					}
 				}
 			}

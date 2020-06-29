@@ -87,7 +87,7 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 	 */
 	private void shotgunTheDefaults() {
 		this.nullable = "no";
-		this.setKey("no");
+		this.setKey("");
 		this.theDefault = "";
 		this.extra = "";
 		this.length = 11;		// This number comes from the length that mySQL uses for an attribute that is of type int.
@@ -244,12 +244,19 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 	 */
 	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
 	public String getKey() {
-		if (key.trim().length() == 0) {
-			setKey(Utils.cleanForGraph(getSchemaName())
-	                + "." 
-	                + Utils.cleanForGraph(getContainerName())
-	                + "." 
-	                + Utils.cleanForGraph(getAttributeName()));
+		if (key == null || key.trim().length() == 0) {
+			if ((getSchemaName() == null || getSchemaName().trim().length() == 0) ||
+				(getContainerName() == null || getContainerName().trim().length() == 0) || 
+				(getAttributeName() == null || getAttributeName().trim().length() == 0)) {
+				Log.logError("TableAttribute.getKey(): Cannot build key due to missing data");
+				setKey("KEY MISSING");
+			} else {
+				setKey(Utils.cleanForGraph(getSchemaName())
+		                + "." 
+		                + Utils.cleanForGraph(getContainerName())
+		                + "." 
+		                + Utils.cleanForGraph(getAttributeName()));
+			}
 		}
 		return key;
 	}

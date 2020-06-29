@@ -76,19 +76,16 @@ public class ETLKTRFile implements java.io.Serializable{
 	 * @param qa The query attribute in question
 	 */
 	public void traverseFromAttribute(ETLStep etlStep, Attributable qa) {
-		System.out.println("ETLKTRFile.traverseFromAttribute(): Starting step = " + etlStep.toString() + ", attribute = " + qa.toString());
 		Log.logProgress("ETLKTRFile.traverseFromAttribute(): " + ", " + etlStep.toString() + ", " + qa.toString());
 		String fileName = etlStep.getFileName();
 		ETLHop etlHopStart = getEtlHops().getETLHopWithStartStep(etlStep);
 		if (etlHopStart != null) {
 			while (etlHopStart != null) {
-				System.out.println("ETLKTRFile.traverseFromAttribute(): Hop Start = " + etlHopStart.toString());
 				Log.logProgress("ETLKTRFile.traverseFromAttribute(): Hop Start = " + etlHopStart.toString());
 				ETLSteps etlSteps; etlSteps = getETLSteps();
 				String toStepName; toStepName = etlHopStart.getToStepName();
 				ETLStep etlStepNext; etlStepNext = etlSteps.getETLStep(toStepName, fileName);
 //              .getETLStep(etlProcess.getEtlHops().getETLHop(etlHopStart.getToStepName()).getToStepName(), fileName);
-				System.out.println("ETLKTRFile.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
 				Log.logProgress("ETLKTRFile.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
 				QueryAttribute attributeFoundInAttributeCollection; ETLField attributeFoundInETLFieldCollection;
 				attributeFoundInAttributeCollection = null; attributeFoundInETLFieldCollection = null;
@@ -103,26 +100,26 @@ public class ETLKTRFile implements java.io.Serializable{
 					attributeFoundInETLFieldCollection = etlStepNext.getETLFields().findETLFieldByStreamName(qa.getAttributeName());
 				} catch (Exception ex) {}	// There may not be any attributes, that's OK
 				if (attributeFoundInAttributeCollection != null) {
-					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
 					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
 					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
 					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 					attributeFoundInAttributeCollection.setGraphNodeAnnotation(graphNodeAnnotation);
 					etlStepNext.setAddToImpactGraph(true);
+					String keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
+					etlStepNext.getRelationshipKeys().put(keyAndValue, keyAndValue);
 				} else {
-					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
 					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
 				}
 				if (attributeFoundInETLFieldCollection != null) {
-					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
 					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
 					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
 					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 					attributeFoundInETLFieldCollection.setGraphNodeAnnotation(graphNodeAnnotation);					
 					etlStepNext.setAddToImpactGraph(true);
 					etlStepNext.setAddAllETLFieldsTableFieldsToImpactGraph(true);
+					String keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
+					etlStepNext.getRelationshipKeys().put(keyAndValue, keyAndValue);
 				} else {
-					System.out.println("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
 					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
 				}
 				etlHopStart = getEtlHops().getETLHopWithStartStep(etlStepNext);
