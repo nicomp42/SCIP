@@ -184,7 +184,7 @@ public class SchemaGraph {
 	}
 	private void applySchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact) {
  		for (TableAttribute ta : schemaImpact.getTableAttributes()) {
-			ta.setAddToImpactGraph(true);	// it's impacted, it goes on the graph!
+//			ta.setAddToImpactGraph(true);	// Nodes in the schemaImpact object are not added to the graph
 			for (ETLKJBFile etlKJBFile: scip.getEtlProcess().getEtlKJBFiles()) {
 				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
 					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {

@@ -700,7 +700,9 @@ public class QueryDefinition extends ImpactGraphNode implements java.io.Serializ
 	public String getHostName() {return hostName;}
 	public void setHostName(String hostName) {this.hostName = hostName;}
 	public String getloginName() {return loginName;}
-	public void setloginName(String userName) {this.loginName = userName;}
+	public void setloginName(String userName) {
+		this.loginName = userName;
+		}
 	public String getPassword() {return password;}
 	public void setPassword(String password) {this.password = password;}
 	public QueryDefinition getParent() {return parent;}

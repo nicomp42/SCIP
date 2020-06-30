@@ -69,7 +69,9 @@ import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 						}
 					}
 				}
-			} catch (Exception ex) {Log.logError("QueryTables.lookUpBySchemaAndTable(): " + ex.getLocalizedMessage());}
+			} catch (Exception ex) {
+				Log.logError("QueryTables.lookUpBySchemaAndTable(): " + ex.getLocalizedMessage());
+			}
 			Log.logProgress("QueryTables.lookUpBySchemaAndTable(): " + ((queryTableResult != null) ? "Table found: " + queryTableResult.toString(): "Table not found"));
 			return queryTableResult;
 		}

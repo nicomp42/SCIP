@@ -157,11 +157,18 @@ public class DatabaseGraphController {
 		cheat();
 	}
 	private void cheat() {
-		taActionQuery.setText("ALTER TABLE `sakila_ids`.`actor` CHANGE COLUMN `first_name` `first_nameX` VARCHAR(45) NOT NULL ;");
+		// Figures in Dippys Dissertation Case Studies
+		String figureC9 = "ALTER TABLE `sakila_ids`.`actor` CHANGE COLUMN `first_name` `first_nameX` VARCHAR(45) NOT NULL ;";
+		String figureC1 = "ALTER TABLE `sakila_op1`.`staff` DROP COLUMN `first_name`;";
+		taActionQuery.setText(figureC1);
 		lvKJBFiles.getItems().clear();
     	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");    
     	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\load_dim_actor.kjb");    
-		
+    	cbSchema.getItems().clear();
+    	cbSchema.getItems().add("sakila_op1");
+		cbSchema.getItems().add("sakila_op2");
+		cbSchema.getItems().add("sakila_ids");
+		cbSchema.getItems().add("sakila_dwh");
 	}
     private void checkToCloseWindow(WindowEvent event) {
 		if (checkToDiscardData()) {

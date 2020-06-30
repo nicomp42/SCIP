@@ -87,43 +87,49 @@ public class ETLKTRFile implements java.io.Serializable{
 				ETLSteps etlSteps; etlSteps = getETLSteps();
 				String toStepName; toStepName = etlHopStart.getToStepName();
 				ETLStep etlStepNext; etlStepNext = etlSteps.getETLStep(toStepName, fileName);
-//              .getETLStep(etlProcess.getEtlHops().getETLHop(etlHopStart.getToStepName()).getToStepName(), fileName);
-				Log.logProgress("ETLKTRFile.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
-				QueryAttribute attributeFoundInAttributeCollection; ETLField attributeFoundInETLFieldCollection;
-				attributeFoundInAttributeCollection = null; attributeFoundInETLFieldCollection = null;
-				try {
-					QueryDefinition qd = etlStepNext.getQueryDefinition();
-					QueryAttributes qas = qd.getQueryAttributes();
-					attributeFoundInAttributeCollection = qas.findAttributeByNameOnly(qa);
-				} catch (Exception ex) {
-					Log.logError("ETLKTRFile.traverseFromAttribute(): checking for queryAttribute " , ex);
-				}	// There may not be any attributes, that's OK
-				try {
-					attributeFoundInETLFieldCollection = etlStepNext.getETLFields().findETLFieldByStreamName(qa.getAttributeName());
-				} catch (Exception ex) {}	// There may not be any attributes, that's OK
-				if (attributeFoundInAttributeCollection != null) {
-					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
-					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
-					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
-					attributeFoundInAttributeCollection.setGraphNodeAnnotation(graphNodeAnnotation);
-					etlStepNext.setAddToImpactGraph(true);
-					String keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
-					etlStepNext.getRelationshipKeys().put(keyAndValue, keyAndValue);
+				if (!etlStepNext.isPassThroughStep()) {
+					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
+					QueryAttribute attributeFoundInAttributeCollection; ETLField attributeFoundInETLFieldCollection;
+					attributeFoundInAttributeCollection = null; attributeFoundInETLFieldCollection = null;
+					try {
+						QueryDefinition qd = etlStepNext.getQueryDefinition();
+						if (qd != null) {
+							QueryAttributes qas = qd.getQueryAttributes();
+							attributeFoundInAttributeCollection = qas.findAttributeByNameOnly(qa);
+						} else {
+							Log.logProgress("ETLKTRFile.traverseFromAttribute(): No query definition object.");
+						}
+					} catch (Exception ex) {
+						Log.logError("ETLKTRFile.traverseFromAttribute(): checking for queryAttribute " , ex);
+					}	// There may not be any attributes, that's OK
+					try {
+						attributeFoundInETLFieldCollection = etlStepNext.getETLFields().findETLFieldByStreamName(qa.getAttributeName());
+					} catch (Exception ex) {}	// There may not be any attributes, that's OK
+					if (attributeFoundInAttributeCollection != null) {
+						Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (Query Attribute Collection).");
+						GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
+						graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
+						attributeFoundInAttributeCollection.setGraphNodeAnnotation(graphNodeAnnotation);
+						etlStepNext.setAddToImpactGraph(true);
+						String keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
+						etlStepNext.getRelationshipKeys().put(keyAndValue, keyAndValue);
+					} else {
+						Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
+					}
+					if (attributeFoundInETLFieldCollection != null) {
+						Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
+						GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
+						graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
+						attributeFoundInETLFieldCollection.setGraphNodeAnnotation(graphNodeAnnotation);					
+						etlStepNext.setAddToImpactGraph(true);
+						etlStepNext.setAddAllETLFieldsTableFieldsToImpactGraph(true);
+						String keyAndValue = etlStep.getKey();
+						etlStepNext.getRelationshipKeys().put(keyAndValue, keyAndValue);
+					} else {
+						Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
+					}
 				} else {
-					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
-				}
-				if (attributeFoundInETLFieldCollection != null) {
-					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute found in this ETL Step (ETL Field Collection).");
-					GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
-					graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
-					attributeFoundInETLFieldCollection.setGraphNodeAnnotation(graphNodeAnnotation);					
-					etlStepNext.setAddToImpactGraph(true);
-					etlStepNext.setAddAllETLFieldsTableFieldsToImpactGraph(true);
-//					String keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
-					String keyAndValue = etlStep.getKey();
-					etlStepNext.getRelationshipKeys().put(keyAndValue, keyAndValue);
-				} else {
-					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
+					Log.logProgress("ETLKTRFile.traverseFromAttribute(): skipping step of type " + etlStep.getStepType() + ", " + etlStep.toString() + ", " + qa.toString());
 				}
 				etlStep = etlStepNext;
 				etlHopStart = getEtlHops().getETLHopWithStartStep(etlStepNext);

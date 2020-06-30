@@ -6,6 +6,7 @@ package edu.nicholdw.PhD.CodeProject.ETL;
 
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.ImpactGraphNode;
+import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
@@ -73,6 +74,39 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 		setFileName(fileName);
 		setSchemaName(schemaName);
 		graphNodeAnnotation = new GraphNodeAnnotation();
+	}
+	public boolean isPassThroughStep() {
+		Boolean passThroughStep = true;
+		try {
+			switch (stepType.toLowerCase()) {
+			case "constant":
+				passThroughStep = true;
+				break;
+			case "append":
+				passThroughStep = true;
+				break;
+			case "insertupdate":
+				passThroughStep = false;
+				break;
+			case "tableinput":
+				passThroughStep = false;
+				break;
+			case "filterrows":
+				passThroughStep = true;
+				break;
+			case "dblookup":
+				passThroughStep = true;
+				break;
+			case "selectvalues":
+				passThroughStep = true;
+				break;
+			default:
+				Log.logError("ETLStep.isPassThroughStep(): Unrecognized step type (" + stepType + ")" );
+			}
+		} catch (Exception ex) {
+			Log.logError("ETLStep.isPassThroughStep(): ", ex);		
+		}
+		return passThroughStep;
 	}
 	public String toString() {
 		return getStepName() + ", " + getStepType() + ", " + getFileName() ;
