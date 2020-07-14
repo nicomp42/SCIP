@@ -20,7 +20,7 @@ import javafx.scene.control.TableView;
 public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 	public static final String type_TableInput = "TableInput";
 //	private String key;
-	private String stepType;
+	private ETLStepType etlStepType;
 	private String stepName;
 	private String sql;
 	private String tableName;
@@ -39,7 +39,7 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 	 */
 	public ETLStep(ETLStep etlStep) {
 		setStepName(etlStep.getStepName());
-		setStepType(etlStep.getStepType());
+		setStepType(new ETLStepType(etlStep.getEtlStepType()));
 		setSql(etlStep.getSql());
 		setTableName(etlStep.getTableName());
 		setConnection(etlStep.getConnection());
@@ -64,7 +64,7 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 	} */
 	public ETLStep(String stepName, String stepType, String sql, String table, String connection, String procedure, int etlStageNumber, String fileName, String schemaName) {
 		setStepName(stepName);
-		setStepType(stepType);
+		setStepType(new ETLStepType(stepType));
 		setSql(sql);
 		setTableName(table);
 		setConnection(connection);
@@ -75,41 +75,8 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 		setSchemaName(schemaName);
 		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
-	public boolean isPassThroughStep() {
-		Boolean passThroughStep = true;
-		try {
-			switch (stepType.toLowerCase()) {
-			case "constant":
-				passThroughStep = true;
-				break;
-			case "append":
-				passThroughStep = true;
-				break;
-			case "insertupdate":
-				passThroughStep = false;
-				break;
-			case "tableinput":
-				passThroughStep = false;
-				break;
-			case "filterrows":
-				passThroughStep = true;
-				break;
-			case "dblookup":
-				passThroughStep = true;
-				break;
-			case "selectvalues":
-				passThroughStep = true;
-				break;
-			default:
-				Log.logError("ETLStep.isPassThroughStep(): Unrecognized step type (" + stepType + ")" );
-			}
-		} catch (Exception ex) {
-			Log.logError("ETLStep.isPassThroughStep(): ", ex);		
-		}
-		return passThroughStep;
-	}
 	public String toString() {
-		return getStepName() + ", " + getStepType() + ", " + getFileName() ;
+		return getStepName() + ", " + getEtlStepType() + ", " + getFileName() ;
 	}
 	public void addETLFields(ETLFields etlFields) {
 		for (ETLField etlField: etlFields) {
@@ -122,12 +89,12 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 		return connection;
 	}
 
-	public String getStepType() {
-		return stepType;
+	public ETLStepType getEtlStepType() {
+		return etlStepType;
 	}
 
-	public void setStepType(String stepType) {
-		this.stepType = stepType.trim();
+	public void setStepType(ETLStepType etlStepType) {
+		etlStepType = new ETLStepType(etlStepType);
 	}
 
 	public void setConnection(String connection) {
@@ -149,7 +116,7 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
         ObservableList<gui.GUIETLStep> data = tableView.getItems();
         data.clear();
         for (ETLStep etlStep : etlSteps) {
-   	        data.add(new gui.GUIETLStep(etlStep.getStepName(), etlStep.getStepType(), etlStep.getSql(), etlStep.getTableName(), etlStep.getConnection()));
+   	        data.add(new gui.GUIETLStep(etlStep.getStepName(), etlStep.getEtlStepType().getEtlStepType(), etlStep.getSql(), etlStep.getTableName(), etlStep.getConnection()));
    		}
     }
 	public String getSql() {

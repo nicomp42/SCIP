@@ -108,8 +108,8 @@ public class Main extends Application {
 	@FXML void mnuEditProjectManager_OnAction(ActionEvent event) {openProjectManagerWindow();}
 	@FXML void mnuEditReadDBLog_OnAction(ActionEvent event) {openTransactionLogFileReaderWindow();}
 	@FXML void mnuToolsProcessGraphDB_OnAction(ActionEvent event) {openProcessGraphDBWindow();}
-	@FXML void mnuToolsProcessETL_OnAction(ActionEvent event) {openProcessETLWindow();}
-	@FXML void mnuToolsCaseStudy1_OnAction(ActionEvent event) {runCaseStudy1();}
+//	@FXML void mnuToolsProcessETL_OnAction(ActionEvent event) {openProcessETLWindow();} Rolled into Process Graph DB
+ 	@FXML void mnuToolsCaseStudy1_OnAction(ActionEvent event) {runCaseStudy1();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
 		Log.logProgress("main.mnuFileSaveProject_OnAction(): Saving scip...");
@@ -281,7 +281,8 @@ public class Main extends Application {
 			Log.logError("Main.openProcessGraphDBWindow(): " + ex.getLocalizedMessage());
 		}
 	}
-	private void openProcessETLWindow() {
+	// Not used
+/*	private void openProcessETLWindow() {
 		try {
 			FXMLLoader fxmlLoader = null;
 			fxmlLoader = new FXMLLoader(getClass().getResource("ProcessETL.fxml"));
@@ -297,7 +298,7 @@ public class Main extends Application {
 		} catch (Exception ex) {
 			Log.logError("Main.openProcessETLWindow(): " + ex.getLocalizedMessage());
 		}
-	}
+	} */
 	private void openProcessQueryWindow() {
 //		ProcessAQuery processAQuery = new ProcessAQuery();
 		try {
