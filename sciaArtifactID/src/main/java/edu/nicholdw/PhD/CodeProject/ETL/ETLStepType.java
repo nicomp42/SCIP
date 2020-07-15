@@ -1,10 +1,11 @@
+/*
+ * Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * Characterize a type of step in a Pentaho transformation
@@ -15,6 +16,7 @@ public class ETLStepType {
 //	@SuppressWarnings("unchecked")
 	public static ArrayList<String> etlStepTypes;
 	static {
+		// If you add/edit a step type here you must update  ETLStepMovement.findTheMove()
 		etlStepTypes.add("constant"); 
 		etlStepTypes.add("append"); 
 		etlStepTypes.add("insertupdate"); 
@@ -35,7 +37,7 @@ public class ETLStepType {
 	}
 	
 	/**
-	 * Is the type of step valid? Does it appear in the know list of step types?
+	 * Is the type of step valid? Does it appear in the known list of step types?
 	 * @param etlStepType
 	 * @return True if the ETL Step Type is recognized, false otherwise
 	 */
@@ -58,8 +60,12 @@ public class ETLStepType {
 			Log.logError("ETLStepType.setEtlStepType(): Invalid Step Type (" + etlStepType.toLowerCase().trim());
 		}
 	}
+	/***
+	 * Is this a step we don't actually care about? 
+	 * @return True if this step is a nothing burger as far as we're concerned. False otherwise or on error.
+	 */
 	public boolean isPassThroughStep() {
-		Boolean passThroughStep = true;
+		Boolean passThroughStep = false;
 		try {
 			switch (etlStepType.toLowerCase()) {
 			case "constant":
