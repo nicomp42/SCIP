@@ -373,7 +373,7 @@ public class SchemaGraph {
 						if (etlStep.getAddToImpactGraph() == true) {
 							Neo4jDB.submitNeo4jQuery("CREATE (A:" + SchemaGraph.etlStepNodeLabel + 
 			                         " { stepname: " + "'" + etlStep.getStepName() + "'" + 
-			                         ",	steptype:'" + etlStep.getEtlStepType()	+ "'" +
+			                         ",	steptype:'" + etlStep.getEtlStepType().getEtlStepType()	+ "'" +
 			                         ",	key:'" + etlStep.getKey()	+ "'" +
 			                         ",	etlstage:'" + etlStep.getEtlStage()	+ "'" +
 			                         ", transformationfilename:'" + etlStep.getFileName() + "'" +
