@@ -145,14 +145,14 @@ public class ETLKTRFile implements java.io.Serializable{
 	} */
 	public void processTableInputStepQueries() {
 		for (ETLStep etlStep : etlSteps) {
-			if (etlStep.getEtlStepType().equals("TableInput")) {
+			if (etlStep.getEtlStepType().getEtlStepType().equals("TableInput")) {
 				processTableInputStepQuery(etlStep);
 			}
 		}
 	}
 	public void processExecuteSQLStepQueries() {
 		for (ETLStep etlStep : etlSteps) {
-			if (etlStep.getEtlStepType().equals("ExecSQL")) {
+			if (etlStep.getEtlStepType().getEtlStepType().equals("ExecSQL")) {
 				processExecuteSQLScriptStepQuery(etlStep);
 			}
 		}
@@ -529,7 +529,8 @@ public class ETLKTRFile implements java.io.Serializable{
 	
 /*********************************************************************************************/
 	/**
-	 * Take apart all the select transformation files
+	 * Take apart all the select transformation files.
+	 * Some ETL Steps don't have a schema name and that's OK
 	 */
 	private Boolean resolveSchemaNamesForETLSteps() {
 		Boolean status = true;// Hope for the best
@@ -537,8 +538,10 @@ public class ETLKTRFile implements java.io.Serializable{
 			for (ETLStep etlStep : getETLSteps()) {
 				String schemaName, connection;
 				connection = etlStep.getConnection();
-				schemaName = getETLConnections().getConnection(connection).getDatabase();
-				etlStep.setSchemaName(schemaName);
+				if (connection.trim().length() > 0) {
+					schemaName = getETLConnections().getConnection(connection).getDatabase();
+					etlStep.setSchemaName(schemaName);
+				}
 			}
 		} catch (Exception ex) {
 			Log.logError("DatabaseGraphController.resolveSchemaNamesForETLSteps: " + ex.getLocalizedMessage());
@@ -584,8 +587,7 @@ public class ETLKTRFile implements java.io.Serializable{
 				doc = builder.parse(stepName.getFileName());
 				XPathFactory xpathFactory = XPathFactory.newInstance();
 				xpath = xpathFactory.newXPath();
-				String tmp, stepType, sql, table, connectionName, schemaName;
-				tmp = "";
+				String stepType, sql, table, connectionName;
 				// Not all the types of steps will have all these artifacts.
 				stepType = myXMLParser.getStepTypeAsString(xpath, doc, stepName.getStepName());
 				sql = myXMLParser.getSQL(xpath, doc, stepName.getStepName());
@@ -598,15 +600,17 @@ public class ETLKTRFile implements java.io.Serializable{
 				// Add this new step to the collection of steps. We don't know the schema name, yet.
 				getETLSteps().addETLStep(new ETLStep(stepName.getStepName(), stepType, sql, table, connectionName, procedure, stepName.getEtlStageNumber(), stepName.getFileName(), "SchemaUnknown"));
 				//for (String connectionName: connectionNames) {
-				getETLConnections()
-				    .addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
-						                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
-						                                // "database" is the schema in MySQL. 
-						                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
-						                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
-						                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
-						                                ));
+				if (connectionName.trim().length() > 0) {
+					getETLConnections()
+					    .addETLConnection(new ETLConnection(connectionName, // These thing names are case-sensitive in the .XML file
+							                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "server"),
+							                                // "database" is the schema in MySQL. 
+							                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "database"),
+							                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "username"),
+							                                myXMLParser.getSomethingInAConnection(xpath, doc, connectionName, "type")
+							                                ));
 				
+				}
 			}
 			// Resolve the schema name for all the ETL steps we just added
 			resolveSchemaNamesForETLSteps();
@@ -621,7 +625,7 @@ public class ETLKTRFile implements java.io.Serializable{
 			setEtlHops(etlHops);
 			processExecuteSQLStepQueries();
 		} catch (Exception ex) {
-			Log.logError("DatabaseGraphController.loadETL().task.setOnSucceeded: " + ex.getLocalizedMessage());
+			Log.logError("ETLKTRFile.processETLKTRFile(): " + ex.getLocalizedMessage());
 		}
     }
 	public String toString() {

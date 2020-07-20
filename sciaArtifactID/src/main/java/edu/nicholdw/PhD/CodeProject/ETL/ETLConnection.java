@@ -4,6 +4,7 @@
  */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
+import edu.UC.PhD.CodeProject.nicholdw.Config;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 
@@ -23,7 +24,7 @@ public class ETLConnection {
 		this.setServer(server);
 		this.setUserName(userName);
 		this.setType(type);
-		setPasswordDefinedExternally("Danger42");
+		setPasswordDefinedExternally(Config.getConfig().getMySQLDefaultPassword());
 	}
 	public ETLConnection(ETLConnection etlConnection) {
 		this.setName(etlConnection.getName());

@@ -18,7 +18,7 @@ import javafx.scene.control.TableView;
  *
  */
 public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
-	public static final String type_TableInput = "TableInput";
+//	public static final String type_TableInput = "TableInput";
 //	private String key;
 	private ETLStepType etlStepType;
 	private String stepName;
@@ -94,7 +94,7 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 	}
 
 	public void setStepType(ETLStepType etlStepType) {
-		etlStepType = new ETLStepType(etlStepType);
+		this.etlStepType = new ETLStepType(etlStepType);
 	}
 
 	public void setConnection(String connection) {

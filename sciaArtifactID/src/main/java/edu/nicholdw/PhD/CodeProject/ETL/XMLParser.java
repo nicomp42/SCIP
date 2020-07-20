@@ -48,7 +48,7 @@ import java.io.*;
 public class XMLParser {
 	public static Document dom;
 //	private String xmlDirectory;
-
+/*
 	public static void main(String[] args) {
 		Log.logProgress("XMLParser.main(): ");
 		try {
@@ -62,15 +62,15 @@ public class XMLParser {
 			ETLHops etlHops = new ETLHops();
 			myXMLParser.getETLHopsFromPentahoKJBFile("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb", etlHops);
 			
-/*			List<OutputStep> os = myXNMLParser.parseXMLForOutputSteps("c:\\temp\\foop.xml");
-			List<TableInputStep> is = myXNMLParser.parseXMLForInputSteps("c:\\temp\\foop.xml");
-			List<DBJoinStep> js = myXNMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml");
-			Log.logProgress("XMLParser.main(): parsing complete.");*/
+//			List<OutputStep> os = myXNMLParser.parseXMLForOutputSteps("c:\\temp\\foop.xml");
+//			List<TableInputStep> is = myXNMLParser.parseXMLForInputSteps("c:\\temp\\foop.xml");
+//			List<DBJoinStep> js = myXNMLParser.parseXMLForDBJoinSteps("c:\\temp\\foop.xml");
+//			Log.logProgress("XMLParser.main(): parsing complete.");
 		} catch (Exception ex) {
 			System.err.println("XMLParser.main(): " + ex.getLocalizedMessage());
 			Log.logError("XMLParser.main(): " + ex.getLocalizedMessage());
 		}
-	}
+	} */
 	/***
 	 * Lop off the file name from the end of a fully qualified path or a relative path 
 	 * @param filePath

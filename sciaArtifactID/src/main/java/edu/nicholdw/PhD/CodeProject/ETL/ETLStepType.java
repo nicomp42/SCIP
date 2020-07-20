@@ -17,6 +17,7 @@ public class ETLStepType {
 	public static ArrayList<String> etlStepTypes;
 	static {
 		// If you add/edit a step type here you must update  ETLStepMovement.findTheMove()
+		etlStepTypes = new ArrayList<String>();
 		etlStepTypes.add("constant"); 
 		etlStepTypes.add("append"); 
 		etlStepTypes.add("insertupdate"); 
@@ -24,6 +25,7 @@ public class ETLStepType {
 		etlStepTypes.add("filterrows");
 		etlStepTypes.add("dblookup");
 		etlStepTypes.add("selectvalues");
+		etlStepTypes.add("ifnull");
 	}
 	
 	private String etlStepType;
@@ -33,7 +35,7 @@ public class ETLStepType {
 	 * @param etlStepType
 	 */
 	public ETLStepType(ETLStepType etlStepType) {
-		this.etlStepType = etlStepType.getEtlStepType(); 
+		setEtlStepType(etlStepType.getEtlStepType()); 
 	}
 	
 	/**
@@ -43,7 +45,7 @@ public class ETLStepType {
 	 */
 	public static Boolean isValid(String etlStepType) {
 		Boolean result = true;
-		if (!etlStepTypes.contains(etlStepType)) {result = false;}
+		if (!etlStepTypes.contains(etlStepType.toLowerCase().trim())) {result = false;}
 		return result;
 	}
 	public ETLStepType(String etlStepType) {
@@ -57,7 +59,7 @@ public class ETLStepType {
 		if (isValid(etlStepType)) {
 			this.etlStepType = etlStepType;
 		} else {
-			Log.logError("ETLStepType.setEtlStepType(): Invalid Step Type (" + etlStepType.toLowerCase().trim());
+			Log.logError("ETLStepType.setEtlStepType(): Invalid Step Type (" + etlStepType.toLowerCase().trim() + ")");
 		}
 	}
 	/***
