@@ -4,31 +4,10 @@
  */
 package edu.UC.PhD.CodeProject.nicholdw.caseStudy;
 
-import java.util.ArrayList;
-
 import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
-import edu.UC.PhD.CodeProject.nicholdw.TableAttributes;
-import edu.UC.PhD.CodeProject.nicholdw.Config;
-import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
-import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
-import edu.UC.PhD.CodeProject.nicholdw.query.View;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTable;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTableChangeColumn;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeAlterTableDropColumn;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeCreateOrReplaceView;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropForeignKey;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropSchema;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropTable;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropView;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeRenameTable;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
-import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
 import edu.UC.PhD.CodeProject.nicholdw.schemaChangeImpactProject.ActionQueryProcessor;
 import javafx.scene.control.TextArea;
 

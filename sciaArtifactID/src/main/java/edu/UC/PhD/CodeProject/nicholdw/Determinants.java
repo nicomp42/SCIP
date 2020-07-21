@@ -1,15 +1,12 @@
 package edu.UC.PhD.CodeProject.nicholdw;
 
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
 import lib.MySQL;
 
 import java.util.Iterator;
-
-import lib.SQLUtils;
 
 public class Determinants implements Iterable<Determinant> {
 	private ArrayList<Determinant> determinants;

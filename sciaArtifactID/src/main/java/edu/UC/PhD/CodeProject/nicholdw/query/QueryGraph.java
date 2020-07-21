@@ -25,21 +25,12 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.schemaTopology.SchemaGraph;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
 
 public class QueryGraph {
 	

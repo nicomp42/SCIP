@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;

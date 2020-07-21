@@ -12,7 +12,6 @@ import org.w3c.dom.Document;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.nicholdw.PhD.CodeProject.ETL.ETLKTRFile;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLTransformationFile;
 
 public class TableInputStepParser {
 	public static TableInputStep parseXMLByStepName(Document doc, XPath xpath, String stepname, String xmlFilename, ETLKTRFile etlTransformationFile) {

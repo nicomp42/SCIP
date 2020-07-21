@@ -76,7 +76,7 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 		graphNodeAnnotation = new GraphNodeAnnotation();
 	}
 	public String toString() {
-		return getStepName() + ", " + getEtlStepType() + ", " + getFileName() ;
+		return getStepName() + ", " + getEtlStepType().getEtlStepType() + ", " + getFileName() ;
 	}
 	public void addETLFields(ETLFields etlFields) {
 		for (ETLField etlField: etlFields) {

@@ -5,6 +5,7 @@
 // ":style reset" to reset the colors in an existing graph
 
 package gui;
+/*
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -65,7 +66,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.TableView;
+import javafx.scene.control.TableView; */
 /**
  * Not used.
  * Combined this code into DatabaseGraphController.

@@ -1,14 +1,12 @@
 package gui;
 
 import java.io.File;
-import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Optional;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation;
-import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.SystemDatabaseConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,12 +21,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;

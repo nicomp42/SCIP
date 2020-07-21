@@ -8,13 +8,10 @@ package edu.UC.PhD.CodeProject.nicholdw.TransactionLogReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-import com.mysql.jdbc.PreparedStatement;
-
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.ConnectionInformation;
 import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngine;
-import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.MySQLDatabaseEngine;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;

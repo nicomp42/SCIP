@@ -8,7 +8,6 @@ import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.ImpactGraphNode;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLField.ETLFIELDTYPE;
 
 /**
  * A field in an ETL TableOutput Step or some other kind of step

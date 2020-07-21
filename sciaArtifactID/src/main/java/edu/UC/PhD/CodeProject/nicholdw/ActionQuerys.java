@@ -7,18 +7,10 @@ package edu.UC.PhD.CodeProject.nicholdw;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Scanner;
-
 import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.DatabaseEngine;
-import edu.UC.PhD.CodeProject.nicholdw.databaseEngine.MySQLDatabaseEngine;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import sun.misc.ClassLoaderUtil;
 /***
  * A collection of ActionQuery objects. Yes, the plural of query is not querys. However, appending an s is my standard.
  * @author nicomp

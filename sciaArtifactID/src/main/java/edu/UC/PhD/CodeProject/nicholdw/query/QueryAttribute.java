@@ -6,8 +6,6 @@ package edu.UC.PhD.CodeProject.nicholdw.query;
 
 import java.util.UUID;
 
-import com.sun.org.apache.bcel.internal.generic.Select;
-
 import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;

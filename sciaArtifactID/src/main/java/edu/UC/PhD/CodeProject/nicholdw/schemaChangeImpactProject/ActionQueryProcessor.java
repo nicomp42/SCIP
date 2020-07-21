@@ -12,7 +12,6 @@ import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
 import edu.UC.PhD.CodeProject.nicholdw.Table;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.TableAttributes;
-import edu.UC.PhD.CodeProject.nicholdw.caseStudy.CaseStudyRunner;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttributes;
@@ -30,7 +29,6 @@ import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeDropView;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeRenameTable;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeUnknown;
-import javafx.scene.control.TextArea;
 
 public class ActionQueryProcessor {
 	public static void processActionQuery(String sql, SchemaImpact schemaImpact) {

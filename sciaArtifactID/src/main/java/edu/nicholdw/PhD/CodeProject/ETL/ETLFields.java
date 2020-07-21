@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import edu.UC.PhD.CodeProject.nicholdw.Config;
-import edu.nicholdw.PhD.CodeProject.ETL.ETLField.ETLFIELDTYPE;
 
 /**
  * A collection of fields that belong to an ETL step

@@ -8,8 +8,6 @@ package sciaArtifactID;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import com.mysql.jdbc.ResultSetMetaData;
-
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import lib.MySQL;
 

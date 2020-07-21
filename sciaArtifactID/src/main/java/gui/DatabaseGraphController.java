@@ -162,7 +162,7 @@ public class DatabaseGraphController {
 		String figureC1 = "ALTER TABLE `sakila_op1`.`staff` DROP COLUMN `first_name`;";
 		taActionQuery.setText(figureC1);
 		lvKJBFiles.getItems().clear();
-    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");    
+    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");
     	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\load_dim_actor.kjb");    
     	cbSchema.getItems().clear();
     	cbSchema.getItems().add("sakila_op1");

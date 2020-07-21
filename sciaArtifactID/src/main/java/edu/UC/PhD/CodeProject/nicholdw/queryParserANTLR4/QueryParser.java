@@ -1,26 +1,18 @@
 package edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import org.Antlr4MySQLFromANTLRRepo.CaseInsensitiveInputStream;
 import org.Antlr4MySQLFromANTLRRepo.MySqlLexer;
 import org.Antlr4MySQLFromANTLRRepo.MySqlParser;
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
-import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
 
 public class QueryParser {
 	private static ArrayList<String> keywords;

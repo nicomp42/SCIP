@@ -7,17 +7,12 @@
 package gui;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Optional;
-
 import edu.UC.PhD.CodeProject.nicholdw.Config;
 import edu.UC.PhD.CodeProject.nicholdw.Schema;
 import edu.UC.PhD.CodeProject.nicholdw.Schemas;
-import edu.UC.PhD.CodeProject.nicholdw.Utils;
 import edu.UC.PhD.CodeProject.nicholdw.browser.Browser;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
-import edu.UC.PhD.CodeProject.nicholdw.neo4j.Main;
 import edu.UC.PhD.CodeProject.nicholdw.neo4j.Neo4jDB;
 import edu.UC.PhD.CodeProject.nicholdw.query.CompoundAlias;
 import edu.UC.PhD.CodeProject.nicholdw.query.Name;
@@ -30,9 +25,7 @@ import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchema;
 import edu.UC.PhD.CodeProject.nicholdw.query.QuerySchemas;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTable;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryTables;
-import edu.UC.PhD.CodeProject.nicholdw.queryParserANTLR4.QueryParser;
 import edu.UC.PhD.CodeProject.nicholdw.queryType.QueryTypeSelect;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,7 +34,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -61,7 +53,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class ProcessQueryController /* extends Application */ {
 
