@@ -78,7 +78,7 @@ public class ETLKTRFile implements java.io.Serializable{
 	 */
 	public void traverseFromAttribute(ETLStep etlStepStart, Attributable qa) {
 		ETLStep etlStep = etlStepStart; 
-		Log.logProgress("ETLKTRFile.traverseFromAttribute(): " + ", " + etlStep.toString() + ", " + qa.toString());
+		Log.logProgress("ETLKTRFile.traverseFromAttribute(): " + ", " + etlStep.toString() + ", " + qa.toString() + " Step Type: " + etlStep.getEtlStepType().getEtlStepType());
 		String fileName = etlStep.getFileName();
 		ETLHop etlHopStart = getEtlHops().getETLHopWithStartStep(etlStep);
 		if (etlHopStart != null) {
@@ -87,6 +87,8 @@ public class ETLKTRFile implements java.io.Serializable{
 				ETLSteps etlSteps; etlSteps = getETLSteps();
 				String toStepName; toStepName = etlHopStart.getToStepName();
 				ETLStep etlStepNext; etlStepNext = etlSteps.getETLStep(toStepName, fileName);
+				ETLStepMovementToNextStep.FindTheMove(etlStep, etlStepNext);
+				Log.logProgress("ETLKTRFile.traverseFromAttribute(): hopping to step " + ", " + etlStepNext.toString() + ", Step Type: " + etlStepNext.getEtlStepType().getEtlStepType());
 				if (!etlStepNext.getEtlStepType().isPassThroughStep()) {
 					Log.logProgress("ETLKTRFile.traverseFromAttribute(): Next Step = " + etlStepNext.toString());
 					QueryAttribute attributeFoundInAttributeCollection; ETLField attributeFoundInETLFieldCollection;
@@ -129,7 +131,7 @@ public class ETLKTRFile implements java.io.Serializable{
 						Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (ETL Field Collection).");
 					}
 				} else {
-					Log.logProgress("ETLKTRFile.traverseFromAttribute(): skipping step of type " + etlStep.getEtlStepType() + ", " + etlStep.toString() + ", " + qa.toString());
+					Log.logProgress("ETLKTRFile.traverseFromAttribute(): It's a pass-through step. Skipping step of type " + etlStep.getEtlStepType() + ", " + etlStep.toString() + ", " + qa.toString());
 				}
 				etlStep = etlStepNext;
 				etlHopStart = getEtlHops().getETLHopWithStartStep(etlStepNext);
