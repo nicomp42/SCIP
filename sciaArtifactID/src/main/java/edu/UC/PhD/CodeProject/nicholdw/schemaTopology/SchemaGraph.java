@@ -188,9 +188,10 @@ public class SchemaGraph {
 			for (ETLKJBFile etlKJBFile: scip.getEtlProcess().getEtlKJBFiles()) {
 				for (ETLKTRFile etlKTRFile: etlKJBFile.getEtlKTRFiles()) {
 					for (ETLStep etlStep: etlKTRFile.getETLSteps()) {
-//						if (etlStep.getFileName().toUpperCase().contains("Load_actor.ktr".toUpperCase())) {
-//							System.out.println("Poof");
-//						}
+						if (etlStep.getFileName().toUpperCase().contains("/load staff.ktr".toUpperCase())
+						 && etlStep.getStepName().contains("Insert / Update")) {
+							System.out.println("Poof");
+						}
 						// Look in the list of fields, if any
 						if (etlStep.getETLFields() != null) {
 							if (etlStep.getETLFields().findETLFieldBySchemaTableColumn(ta.getSchemaName(), ta.getContainerName(), ta.getAttributeName()) != null) {

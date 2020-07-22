@@ -101,8 +101,9 @@ public class ETLKTRFile implements java.io.Serializable{
 							Log.logProgress("ETLKTRFile.traverseFromAttribute(): No query definition object.");
 						}
 					} catch (Exception ex) {
+//						There may not be any attributes, that's OK
 						Log.logError("ETLKTRFile.traverseFromAttribute(): checking for queryAttribute " , ex);
-					}	// There may not be any attributes, that's OK
+					}
 					try {
 						attributeFoundInETLFieldCollection = etlStepNext.getETLFields().findETLFieldByStreamName(qa.getAttributeName());
 					} catch (Exception ex) {}	// There may not be any attributes, that's OK
@@ -111,9 +112,11 @@ public class ETLKTRFile implements java.io.Serializable{
 						GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
 						graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 						attributeFoundInAttributeCollection.setGraphNodeAnnotation(graphNodeAnnotation);
-						etlStepStart.setAddToImpactGraph(true);
+						etlStepNext.setAddToImpactGraph(true);
 						String keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
 						etlStepStart.getRelationshipKeys().put(keyAndValue, keyAndValue);
+						// Now we need to look for ETL Steps that also reference this attribute
+						// traverseFromAttribute(etlStepNext, qa);	/* Cross your fingers */
 					} else {
 						Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
 					}
