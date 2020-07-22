@@ -1,3 +1,6 @@
+/* Bill Nicholson
+ * nicholdw@ucmail.uc.edu
+ */
 package edu.nicholdw.PhD.CodeProject.ETL;
 
 import java.util.ArrayList;
