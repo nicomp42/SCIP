@@ -38,6 +38,7 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 	private enumNullableCheck nullableCheck;
 	private int length;
 	private boolean isPrimaryKey;
+	private String attributeKey;
 	protected String tableName;		// This is redundant if the attribute is contained in the Attributes collection contained in a table object.
 	private Aliases aliases;		// A table attribute won't have aliases but a query attribute will
 	private Boolean affectedByActionQuery;		// Defaults to false until an action query is applied to the query where this attribute lives
@@ -107,17 +108,17 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 	 * @param isPrimaryKey True is attribute is the primary key, false otherwise
 	 * @param type data type
 	 * @param nullable is nullable
-	 * @param key key
+	 * @param attributeKey attribute key participation, if any
 	 * @param theDefault default
 	 * @param extra extra
 	 */
 	public TableAttribute(String name, String tableName, Boolean isPrimaryKey, 
-			             String type, String nullable, String key, String theDefault, 
+			             String type, String nullable, String attributeKey, String theDefault, 
 			             String extra, int length, Aliases aliases, String schemaName ) {
 		this.attributeName = name;
 		this.type = type;
 		this.nullable = nullable;
-		this.setKey(key);
+		this.setAttributeKey(attributeKey);
 		this.theDefault = theDefault;
 		this.extra = extra;
 		this.length = length;
@@ -130,6 +131,7 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 		setAffectedByActionQuery(false);
 		setDefaultGraphNodeAnnotation();
 		setSchemaName(schemaName);
+		setKey("");
 	}
 	private void setDefaultGraphNodeAnnotation() {
 		GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
@@ -262,6 +264,9 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 	}
 	public void setKey(String key) {
 		this.key = key;
+		if (key.trim().equals("MUL")) {
+			System.out.println("Poof");
+		}
 	}
 	@Override
 	public String getSchemaName() {
@@ -274,6 +279,12 @@ public class TableAttribute extends ImpactGraphNode implements Attributable, jav
 	public void setAttributeName(String attributeName) {
 		this.attributeName = attributeName;
 		
+	}
+	public String getAttributeKey() {
+		return attributeKey;
+	}
+	public void setAttributeKey(String attributeKey) {
+		this.attributeKey = attributeKey;
 	}
 
 
