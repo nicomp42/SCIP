@@ -1123,6 +1123,22 @@ public class AntlrMySQLListener extends org.Antlr4MySQLFromANTLRRepo.MySqlParser
 		Log.logQueryParseProgress("AntlrMySQLListener.DropTableContext(): " + ctx.getText());
 		queryDefinition.setQueryType(new QueryTypeDropTable());
 		for (int i = 0; i < ctx.getChildCount(); i++) {
+			if (ctx.getChild(i) instanceof MySqlParser.TablesContext) {
+				StringBuilder s = new StringBuilder();
+				StringBuilder t = new StringBuilder();
+				processTableNameContext(s, t, ctx.getChild(i).getChild(0), "EnterDropTable");
+				String mySchemaName = s.toString(); 
+				String myTableName = t.toString();
+				queryDefinition.setTableToDrop(new Table(myTableName, mySchemaName));
+			}
+			if (ctx.getChild(i) instanceof MySqlParser.TableNameContext) {
+				StringBuilder s = new StringBuilder();
+				StringBuilder t = new StringBuilder();
+				processTableNameContext(s, t, ctx.getChild(i).getChild(0), "EnterDropTable");
+				String mySchemaName = s.toString(); 
+				String myTableName = t.toString();
+				queryDefinition.setTableToDrop(new Table(myTableName, mySchemaName));
+			}
 			if (ctx.getChild(i) instanceof MySqlParser.FullIdContext) {
 				MySqlParser.FullIdContext fullIdContext = (MySqlParser.FullIdContext)ctx.getChild(i);
 				queryDefinition.setTableToDrop(new Table(ctx.getChild(i).getChild(0).getText(), ctx.getChild(i).getChild(2).getText()));
