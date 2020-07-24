@@ -160,6 +160,8 @@ public class DatabaseGraphController {
 		// Figures in Dippys Dissertation Case Studies
 		String figureC9 = "ALTER TABLE `sakila_ids`.`actor` CHANGE COLUMN `first_name` `first_nameX` VARCHAR(45) NOT NULL ;";
 		String figureC1 = "ALTER TABLE `sakila_op1`.`staff` DROP COLUMN `first_name`;";
+		String dropATable = "DROP TABLE `mediawiki-1.27`.`category`;";
+		String dropAView = "DROP VIEW `mediawiki-1.27`.`vcategory`;";
 		taActionQuery.setText(figureC1);
 		lvKJBFiles.getItems().clear();
     	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");
@@ -170,6 +172,7 @@ public class DatabaseGraphController {
 		cbSchema.getItems().add("sakila_op2");
 		cbSchema.getItems().add("sakila_ids");
 		cbSchema.getItems().add("sakila_dwh");
+		cbSchema.getSelectionModel().select(0);
 	}
     private void checkToCloseWindow(WindowEvent event) {
 		if (checkToDiscardData()) {

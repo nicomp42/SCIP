@@ -45,11 +45,43 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 					     (AliasNameClassOLD)null, new QueryClauseSelect(), "", ATTRIBUTE_DISPOSITION.Select));
 		}
 	}
-
+	/**
+	 * No deep copy is performed.
+	 * @param queryAttribute
+	 * @param containgSchemaName
+	 * @param containingViewName
+	 */
+	public void addAttribute(QueryAttribute queryAttribute, String containgSchemaName, String containingViewName) {
+		// Don't allow duplicates in the attribute collection
+		boolean matchFound = false;
+		for (QueryAttribute qa: queryAttributes) {
+			if (qa.getAttributeName().trim().toLowerCase().equals(queryAttribute.getAttributeName().trim().toLowerCase()) &&
+				qa.getSchemaName().trim().toLowerCase().equals(queryAttribute.getSchemaName().trim().toLowerCase()) &&
+				qa.getContainerName().trim().toLowerCase().equals(queryAttribute.getContainerName().trim().toLowerCase())) {
+				// We found a match. If the alias doesn't already exist, add that to the matching Query Attribute. Otherwise we're done.
+				for (AliasNameClassOLD aliasName: queryAttribute.getAliasNames()) {
+					if (!qa.getAliasNames().contains(aliasName)) {
+						qa.addAliasName(aliasName);
+					}
+				}
+				matchFound = true;
+				break;
+			}
+		}
+		if (!matchFound) {
+			queryAttributes.add(queryAttribute);
+			queryAttribute.setContainingSchemaName(containgSchemaName); 
+			queryAttribute.setContainingViewName(containingViewName);
+		}
+	}
+	/**
+	 * No deep copy is performed
+	 * @param queryAttribute
+	 */
 	public void addAttribute(QueryAttribute queryAttribute) {
 		// Don't allow duplicates in the attribute collection
 		boolean matchFound = false;
-		for (QueryAttribute qa : queryAttributes) {
+		for (QueryAttribute qa: queryAttributes) {
 			if (qa.getAttributeName().trim().toLowerCase().equals(queryAttribute.getAttributeName().trim().toLowerCase()) &&
 				qa.getSchemaName().trim().toLowerCase().equals(queryAttribute.getSchemaName().trim().toLowerCase()) &&
 				qa.getContainerName().trim().toLowerCase().equals(queryAttribute.getContainerName().trim().toLowerCase())) {
@@ -178,6 +210,43 @@ public class QueryAttributes implements Iterable<QueryAttribute>, java.io.Serial
 			}
 		}
 		return queryFound;
+	}
+	/***
+	 * Search for a query attribute by schema, table, and attribute name
+	 * View name matches table name and (attribute name , schema name match)
+	 * @param queryAttribute The query attribute to search for
+	 * @return The attribute if found, null otherwise
+	 */
+	public QueryAttribute findImpactedAttributeAndReturnIt(QueryAttribute queryAttribute) {
+		// This seems to be about the same as contains() in this class. 
+		QueryAttribute queryAttributeFound = null;
+		for (QueryAttribute qa : queryAttributes) {
+			if (Config.getConfig().compareSchemaNames(qa.getContainingSchemaName(), queryAttribute.getSchemaName()) &&
+				Config.getConfig().compareTableNames(qa.getContainingViewName(),    queryAttribute.getContainerName()) &&	
+				Config.getConfig().compareAttributeNames(qa.getAttributeName(),     queryAttribute.getAttributeName())) {
+				queryAttributeFound = qa;
+				break;
+			}
+		}
+		return queryAttributeFound;
+	}
+	/***
+	 * Search for a query attribute by schema, table, and attribute name
+	 * @param queryAttribute The query attribute to search for
+	 * @return The attribute if found, null otherwise
+	 */
+	public QueryAttribute findAttributeAndReturnIt(QueryAttribute queryAttribute) {
+		// This seems to be about the same as contains() in this class. 
+		QueryAttribute queryAttributeFound = null;
+		for (QueryAttribute qa : queryAttributes) {
+			if (Config.getConfig().compareSchemaNames(qa.getSchemaName(),       queryAttribute.getSchemaName()) &&
+				Config.getConfig().compareTableNames(qa.getContainerName(),         queryAttribute.getContainerName()) &&	
+				Config.getConfig().compareAttributeNames(qa.getAttributeName(), queryAttribute.getAttributeName())) {
+				queryAttributeFound = qa;
+				break;
+			}
+		}
+		return queryAttributeFound;
 	}
 	/***
 	 * Search for a query attribute by attribute name **only**

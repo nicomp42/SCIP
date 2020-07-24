@@ -88,7 +88,8 @@ public class ActionQueryProcessor {
 													  new QueryTypeUnknown(), "", sqlStart, "");
 		qdStart.crunchIt();
 		for (QueryAttribute qa : qdStart.getQueryAttributes()) {
-			schemaImpact.getQueryAttributes().addAttribute(qa);
+//			All these attributes are affected because they are in the view that is being deleted
+			schemaImpact.getQueryAttributes().addAttribute(qa, viewToDrop.getSchemaName(), viewToDrop.getViewName());
 		}
 	}
 	private static void processQueryTypeDropForiegnKey(SchemaImpact schemaImpact) {
@@ -165,7 +166,7 @@ public class ActionQueryProcessor {
 		qdStart.crunchIt();
 		QueryAttributes qas = QueryDefinition.findMissingQueryAttributes(qdStart, schemaImpact.getQueryDefinition());
 		for (QueryAttribute queryAttribute : qas) {
-			schemaImpact.getQueryAttributes().addAttribute(queryAttribute);
+			schemaImpact.getQueryAttributes().addAttribute(queryAttribute, viewStart.getSchemaName(), viewStart.getViewName());
 		}
 	}
 	private static void processQueryTypeDropSchema(SchemaImpact schemaImpact) {
@@ -195,7 +196,7 @@ public class ActionQueryProcessor {
 			qd1.crunchIt();
 			queryAttributes = qd1.getQueryAttributes();
 			for (QueryAttribute qa : queryAttributes) {
-				schemaImpact.getQueryAttributes().addAttribute(qa);
+				schemaImpact.getQueryAttributes().addAttribute(qa, schema.getSchemaName(), viewName );
 			}
 		}
 		for (Table table : schema.getTables()) {

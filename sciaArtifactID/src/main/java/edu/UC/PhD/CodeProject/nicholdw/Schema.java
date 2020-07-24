@@ -437,4 +437,7 @@ public class Schema extends ImpactGraphNode implements Attributable {
 	public void setIndirectlyAffectedByActionQuery(Boolean indirectlyAffectedByActionQuery) {
 		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
 	}
+	public String toString() {
+		return schemaName;
+	}
 }

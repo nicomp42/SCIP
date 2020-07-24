@@ -113,7 +113,7 @@ public class SchemaGraph {
 		}
 		scip.getEtlProcess().processData(scip);
 		if (scip.getDatabaseGraphConfig().isBuildImpactGraphOnly()) {
-			applySchemaImpactsForImpactGraphOnly(scip.getSchemaImpacts());
+			applyEtlSchemaImpactsForImpactGraphOnly(scip.getSchemaImpacts());
 		}
 		return status;		
 	}
@@ -177,12 +177,12 @@ public class SchemaGraph {
 	 * Apply an action query to the schema to see what views would be affected
 	 * @param actionQueryDefinition The action query
 	 */
-	private void applySchemaImpactsForImpactGraphOnly(SchemaImpacts schemaImpacts) {
+	private void applyEtlSchemaImpactsForImpactGraphOnly(SchemaImpacts schemaImpacts) {
 		for (SchemaImpact schemaImpact: schemaImpacts) {
-			applySchemaImpactForImpactGraphOnly(schemaImpact);
+			applyEtlSchemaImpactForImpactGraphOnly(schemaImpact);
 		}
 	}
-	private void applySchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact) {
+	private void applyEtlSchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact) {
  		for (TableAttribute ta : schemaImpact.getTableAttributes()) {
 //			ta.setAddToImpactGraph(true);	// Nodes in the schemaImpact object are not added to the graph
 			for (ETLKJBFile etlKJBFile: scip.getEtlProcess().getEtlKJBFiles()) {
@@ -235,19 +235,38 @@ public class SchemaGraph {
 		try {
 			for (QueryDefinition qd: schema.getQueryDefinitions()) {	// All the views in this schema
 				if (schemaImpact.getViews().findViewBySchemaNameAndViewName(qd.getSchemaName(), qd.getQueryName()) != null) {
+					// This view was renamed or deleted so it needs to be on the impact graph
 					qd.setAddToImpactGraph(true);
-				}
-				// Look for an impacted query attribute that the query uses
-				for (QueryAttribute qa : qd.getQueryAttributes()) {	// All the attributes in the view
-					if (schemaImpact.getQueryAttributes().findAttribute(qa)) {
-						// The query attribute is referenced in the action query. We need to note that so when we draw the graph we can draw the attribute differently.
+					for (QueryAttribute qa: qd.getQueryAttributes()) {
 						qa.setAffectedByActionQuery(true);
-						qd.getQueryTables().setAffectedByActionQuery(qa, true);
-						schema.getTables().setAffectedByActionQuery(qa, true);
+						qa.setAddToImpactGraph(true);
+						String keyAndValue;
+						keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
+						qd.getRelationshipKeys().put(keyAndValue, keyAndValue);
+					}
+				}
+				// Look for an impacted query attribute that this query uses
+				for (QueryAttribute qa : qd.getQueryAttributes()) {	// All the attributes in the view
+					QueryAttribute queryAttributeFound = null;
+					if ((queryAttributeFound = schemaImpact.getQueryAttributes().findImpactedAttributeAndReturnIt(qa)) != null) {
+						// The query attribute is impacted by the action query. We need to note that so when we draw the graph we can draw the attribute differently.
+						qa.setAffectedByActionQuery(true);
+						qa.setAddToImpactGraph(true);
 						qa.setGraphNodeAnnotation(graphNodeAnnotation);
 						scip.getGraphResults().incrementTotalAffectedAttributes();
+
 						qd.setAddToImpactGraph(true);
 						qd.setAffectedByActionQuery(true);
+						scip.getGraphResults().incrementTotalAffectedAttributes();
+						
+						queryAttributeFound.setAddToImpactGraph(true);
+						queryAttributeFound.setAffectedByActionQuery(true);
+						scip.getGraphResults().incrementTotalAffectedAttributes();
+
+						// Connect the impacted query with the attribute in the SchemaImpact object
+						String keyAndValue;
+						keyAndValue = Utils.buildKey(queryAttributeFound.getSchemaName(), queryAttributeFound.getContainerName(), queryAttributeFound.getAttributeName());
+						qa.getRelationshipKeys().put(keyAndValue, keyAndValue);
 					}
 				}
 				// Look for an impacted table attribute that the query (view) uses. This will break the query
@@ -331,6 +350,31 @@ public class SchemaGraph {
 						        +       "(f" + "{key:" + Utils.wrapInDelimiter(entry.getKey(), "\"") + "}),"
 						        + "      (t" + "{key:" + Utils.wrapInDelimiter(qd.getKey(), "\"") + "}) "
 							    + "MERGE (f)-[:" + impacts +"]->(t)"); 
+					}
+					for (QueryAttribute qa: qd.getQueryAttributes()) {
+						for (Map.Entry<String, String> entry: qa.getRelationshipKeys().entrySet()) {
+							Neo4jDB.submitNeo4jQuery("MATCH "
+							        +       "(f" + "{key:" + Utils.wrapInDelimiter(entry.getKey(), "\"") + "}),"
+							        + "      (t" + "{key:" + Utils.wrapInDelimiter(qa.getKey(), "\"") + "}) "
+								    + "MERGE (f)-[:" + impacts +"]->(t)"); 
+						}
+					}
+					for (Table table: qd.getQueryTables()) {
+						for (Map.Entry<String, String> entry: table.getRelationshipKeys().entrySet()) {
+							Neo4jDB.submitNeo4jQuery("MATCH "
+							        +       "(f" + "{key:" + Utils.wrapInDelimiter(entry.getKey(), "\"") + "}),"
+							        + "      (t" + "{key:" + Utils.wrapInDelimiter(table.getKey(), "\"") + "}) "
+								    + "MERGE (f)-[:" + impacts +"]->(t)"); 
+						}
+						for (TableAttribute ta: table.getTableAttributes()) {
+							for (Map.Entry<String, String> entry: ta.getRelationshipKeys().entrySet()) {
+								Neo4jDB.submitNeo4jQuery("MATCH "
+								        +       "(f" + "{key:" + Utils.wrapInDelimiter(entry.getKey(), "\"") + "}),"
+								        + "      (t" + "{key:" + Utils.wrapInDelimiter(ta.getKey(), "\"") + "}) "
+									    + "MERGE (f)-[:" + impacts +"]->(t)"); 
+							}
+							
+						}
 					}
 				}
 			}
@@ -428,6 +472,15 @@ public class SchemaGraph {
 				for (QueryDefinition qd: schema.getQueryDefinitions()) {
 					if (qd.getAddToImpactGraph() == true) {
 						addQueryNode(qd.getSchemaName(), qd.getQueryName());
+					}
+					for (QueryAttribute queryAttribute : qd.getQueryAttributes()) {
+						if (queryAttribute.getAddToImpactGraph()) {
+							addQueryAttribute(queryAttribute, 
+				                      		  queryAttribute.getSchemaName(), 
+				                      		  qd.getQueryName(),			/* queryAttribute.getTableName(), */ 
+				                      		  queryAttribute.getFirstAlias(),	/* queryAttribute.getAttributeName(),*/ 
+				                      		  qd.getQueryAttributeDataType(queryAttribute));
+						}
 					}
 				}
 			}

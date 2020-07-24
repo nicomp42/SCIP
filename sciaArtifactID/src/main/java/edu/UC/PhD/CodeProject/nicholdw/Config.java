@@ -335,12 +335,15 @@ public class Config implements Serializable {
 
 	public boolean compareQueryNames(String queryName1, String queryName2) {
 		boolean result = false;
+		String tmp1, tmp2;
+		tmp1 = Utils.removeBackQuotes(queryName1);
+		tmp2 = Utils.removeBackQuotes(queryName2);
 		if (Config.getConfig().getUseCaseSensitiveQueryNameComparison() == true) {
-			if (queryName1.trim().equals(queryName2.trim())) {
+			if (tmp1.trim().equals(tmp2.trim())) {
 				result = true;
 			}
 		} else {
-			if (queryName1.trim().toLowerCase().equals(queryName2.trim().toLowerCase())) {
+			if (tmp1.trim().toLowerCase().equals(tmp2.trim().toLowerCase())) {
 				result = true;
 			}
 		}

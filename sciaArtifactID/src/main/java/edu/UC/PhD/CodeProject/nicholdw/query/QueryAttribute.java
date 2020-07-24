@@ -26,7 +26,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	private String schemaName;		// Not necessarily redundant. A query can span multiple schemas
 	private QueryClause queryClause;
 	private String attributeName;
-	private String tableName;			// The table/query that the attribute lives in. 
+	private String tableName;			// The table/query that the attribute refers to. Not the query that it lives in. 
 	private String tableAliasName;		// If the attribute as it appeared in the query referenced a table alias, we will store it here
 	private String expression;
 	private String ID;
@@ -36,6 +36,11 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	public enum ATTRIBUTE_DISPOSITION {Select, Add, Drop, Alter};
 	private GraphNodeAnnotation graphNodeAnnotation;
 	private boolean indirectlyAffectedByActionQuery;
+	
+	// These containing names are used when a query attribute is part of a 
+	// SchemaImpact QueryAttribute collection and there is no way to trace what view owns the attribute
+	private String containingSchemaName, containingViewName;
+	
 	public Boolean getIndirectlyAffectedByActionQuery() {return indirectlyAffectedByActionQuery;}
 	public void setIndirectlyAffectedByActionQuery(Boolean indirectlyAffectedByActionQuery) {
 		this.indirectlyAffectedByActionQuery = indirectlyAffectedByActionQuery;
@@ -50,6 +55,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 		setAliasNames(qa.getAliasNames());
 		setAttributeDisposition(qa.getAttributeDisposition());
 		setQueryClause(qa.getQueryClause());
+		containingSchemaName = qa.getContainingSchemaName(); containingViewName = qa.getContainingViewName();
 	}
 	/***
 	 * Duplicate a list of alias names into this QueryAttributes object. Deep copy.
@@ -91,6 +97,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 		this.setAttributeDisposition(attributeDisposition);
 		affectedByActionQuery = false;
 		graphNodeAnnotation = new GraphNodeAnnotation();
+		containingSchemaName = ""; containingViewName = "";
 	}
 	/**
 	 * Create a QueryAttribute object
@@ -117,6 +124,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 		this.setAttributeDisposition(ATTRIBUTE_DISPOSITION.Select);
 		affectedByActionQuery = false;
 		graphNodeAnnotation = new GraphNodeAnnotation();
+		containingSchemaName = ""; containingViewName = "";
 	}
 	/**
 	 * Create a new QueryAttribute object
@@ -127,7 +135,8 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	 * @param aliasNames If you already have an AliasNames object for this QueryAttribute object
 	 * @param queryClause
 	 */
-	public QueryAttribute(String schemaName, String tableName, String attributeName, AliasNamesOLD aliasNames, QueryClause queryClause, String tableAliasName) {
+	public QueryAttribute(String schemaName, String tableName, String attributeName, 
+			              AliasNamesOLD aliasNames, QueryClause queryClause, String tableAliasName) {
 		this.setContainerName(tableName);
 		this.aliasNames = new AliasNamesOLD();
 		this.aliasNames.addAliasNames(aliasNames);
@@ -140,6 +149,7 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 		this.setAttributeDisposition(ATTRIBUTE_DISPOSITION.Select);
 		affectedByActionQuery = false;
 		graphNodeAnnotation = new GraphNodeAnnotation();
+		containingSchemaName = ""; containingViewName = "";
 	}
 	public String getFirstAlias() {
 		return aliasNames.getFirstAlias();
@@ -337,5 +347,17 @@ public class QueryAttribute extends QueryComponent implements Name, java.io.Seri
 	@Override
 	public void setKey(String key) {
 		this.key = key;
+	}
+	public String getContainingSchemaName() {
+		return containingSchemaName;
+	}
+	public void setContainingSchemaName(String containingSchemaName) {
+		this.containingSchemaName = containingSchemaName;
+	}
+	public String getContainingViewName() {
+		return containingViewName;
+	}
+	public void setContainingViewName(String containingViewName) {
+		this.containingViewName = containingViewName;
 	}
 }
