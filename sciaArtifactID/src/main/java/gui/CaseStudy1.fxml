@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
@@ -19,6 +20,7 @@
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
    <children>
+      <ComboBox fx:id="cbCaseStudy" layoutX="114.0" layoutY="37.0" onAction="#cbCaseStudy_OnAction" prefHeight="25.0" prefWidth="212.0" />
       <MenuBar fx:id="mbrMainMenu" prefHeight="32.0" prefWidth="290.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
@@ -32,9 +34,11 @@
           <Menu mnemonicParsing="false" text="Edit" />
         </menus>
       </MenuBar>
-      <TabPane fx:id="tpnProject" layoutY="26.0" prefHeight="543.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="26.0">
+      <Label layoutX="5.0" layoutY="40.0" text="Select a Case Study" />
+      
+      <TabPane fx:id="tpnProject" layoutX="1.0" layoutY="69.0" prefHeight="743.0" prefWidth="978.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="31.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="69.0">
         <tabs>
-          <Tab fx:id="tabCaseStudy1" text="Case Study 1">
+          <Tab fx:id="tabCaseStudy" text="Case Study">
             <content>
               <AnchorPane minHeight="514.0" minWidth="747.0" prefHeight="573.0" prefWidth="784.0">
                      <children>

@@ -11,6 +11,8 @@ package edu.UC.PhD.CodeProject.nicholdw.caseStudy;
  */
 public class CaseStudy {
 	private String title;
+	private CaseStudyEnvironment caseStudyEnvironment;
+	
 	public CaseStudy(String title) {
 		setTitle(title);
 	}
@@ -19,5 +21,11 @@ public class CaseStudy {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public CaseStudyEnvironment getCaseStudyEnvironment() {
+		return caseStudyEnvironment;
+	}
+	public void setCaseStudyEnvironment(CaseStudyEnvironment caseStudyEnvironment) {
+		this.caseStudyEnvironment = caseStudyEnvironment;
 	}
 }

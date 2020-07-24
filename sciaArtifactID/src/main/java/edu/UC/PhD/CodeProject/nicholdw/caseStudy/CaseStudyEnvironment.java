@@ -17,6 +17,15 @@ public class CaseStudyEnvironment {
 	 */
 	public CaseStudyEnvironment() {
 		setCaseStudyQuerys(new CaseStudyQuerys());
+	}
+	public void SetUpCaseStudy02() {
+		caseStudyQuerys.getCaseStudyQuerys().clear();
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a column in a table.",
+																	"ALTER TABLE `sakila_ids`.`actor` DROP COLUMN `first_name`;\r\n"
+																	));
+	}
+	public void SetUpCaseStudy01() {
+		caseStudyQuerys.getCaseStudyQuerys().clear();
 		/* Rename a schema: there's no single SQL command to do this. 
 		 * You have to create a new one and copy artifacts into it.
 		 */
@@ -63,8 +72,6 @@ public class CaseStudyEnvironment {
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a view",
 																	"DROP VIEW `dw`.`vweeklystoreinspectionsbyemployee`;"));
 																	
-//		Alter a view in MySQL is running "CREATE OR REPLACE VIEW" with the same name as an existing view
-		// Took out the Sunday column:	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Sunday` AS `Sunday`" + 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (with \"OR REPLACE\")",
 																	"CREATE OR REPLACE " + 
 																	"VIEW " +
@@ -82,7 +89,6 @@ public class CaseStudyEnvironment {
 																	"        `dw`.`weeklyinspectionsbyemployeeandstore`;" 
 																	));
 
-		// Took out the Sunday column:	"        `dw`.`weeklyinspectionsbyemployeeandstore`.`Sunday` AS `Sunday`" + 
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Alter a view (without \"OR REPLACE\")",
 																	"CREATE " + 
 																	"    ALGORITHM = UNDEFINED " + 

@@ -5,6 +5,7 @@
  */
 package gui;
 
+import edu.UC.PhD.CodeProject.nicholdw.caseStudy.CaseStudy;
 import edu.UC.PhD.CodeProject.nicholdw.caseStudy.CaseStudyEnvironment;
 import edu.UC.PhD.CodeProject.nicholdw.caseStudy.CaseStudyQuery;
 import edu.UC.PhD.CodeProject.nicholdw.caseStudy.CaseStudyQuerys;
@@ -18,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -34,13 +36,37 @@ public class CaseStudy1Controller {
 	@FXML private Button btnStart, btnCopyAll, btnClearSelectedTests;
 	@FXML private TextArea txaProgress;
 	@FXML private TextField txtStatus;
-	@FXML private Tab tabCaseStudy1;
+	@FXML private Tab tabCaseStudy;
+	@FXML private ComboBox<String> cbCaseStudy;
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileExit;
 	@FXML void btnStart_OnAction(ActionEvent event) {runTest();}
 	@FXML void btnCopyAll_OnAction(ActionEvent event) {copyAll();}
 	@FXML void btnClearSelectedTests_OnAction(ActionEvent event) {clearSelectedTests();}
+	@FXML void cbCaseStudy_OnAction(ActionEvent event) {changeCaseStudy();}
+	private CaseStudy caseStudy;
 	private CaseStudyEnvironment caseStudyEnvironment;
+	
+	/**
+	 * User selected a case study from the combo box
+	 */
+	private void changeCaseStudy() {
+		String caseStudyTitle = cbCaseStudy.getValue();
+		switch (caseStudyTitle) {
+			case "Case Study 1":
+				clearSelectedTests();
+				caseStudy.setTitle(caseStudyTitle);
+				caseStudy.getCaseStudyEnvironment().SetUpCaseStudy01();
+				loadTestCasesIntoListBox();
+			break;
+			case "Case Study 2":
+				clearSelectedTests();
+				caseStudy.setTitle(caseStudyTitle);
+				caseStudy.getCaseStudyEnvironment().SetUpCaseStudy02();
+				loadTestCasesIntoListBox();
+			break;
+		}
+	}
 	
 	private void clearSelectedTests() {
 		lvTestCaseSelected.getItems().clear();
@@ -55,7 +81,6 @@ public class CaseStudy1Controller {
 			lvTestCaseSelected.getItems().add(description);
 		}
 	}
-	
 	
 	/***
 	 * Run the tests...
@@ -76,7 +101,7 @@ public class CaseStudy1Controller {
 			caseStudyEnvironment.getCaseStudyQuerys().setEnabled(description, true);
 		}
 		CaseStudyRunner caseStudyRunner = new CaseStudyRunner();
-		caseStudyRunner.run(caseStudyEnvironment, txaProgress);
+		caseStudyRunner.run(caseStudy, txaProgress);
 		txtStatus.setText("Tests complete");
 	}
 	public void loadTestCasesIntoListBox() {
@@ -99,10 +124,16 @@ public class CaseStudy1Controller {
 	 * @param scip The reference to the SchemaChangeImpactProject object
 	 */
 	private void gather() {
+		
 	}
+	/**
+	 * Set up the GUI when it opens
+	 */
 	private void setTheScene() {
+		caseStudy = new CaseStudy("Case Study");
 		caseStudyEnvironment = new CaseStudyEnvironment();
-		loadTestCasesIntoListBox();
+		caseStudy.setCaseStudyEnvironment(caseStudyEnvironment);
+		loadCaseStudyComboBox();
 		lvTestCase.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 		    @Override
@@ -119,7 +150,10 @@ public class CaseStudy1Controller {
 		    }
 		});
 	}
-		
+	private void loadCaseStudyComboBox() {
+		cbCaseStudy.getItems().add("Case Study 1");
+		cbCaseStudy.getItems().add("Case Study 2");
+	}
 	@FXML void mnuFileExit_OnAction(ActionEvent event) {
 		myStage.close();		
 	}

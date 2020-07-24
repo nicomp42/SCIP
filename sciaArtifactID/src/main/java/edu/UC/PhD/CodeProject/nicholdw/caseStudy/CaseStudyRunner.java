@@ -13,11 +13,11 @@ import javafx.scene.control.TextArea;
 
 public class CaseStudyRunner {
 	private TextArea txaProgress;
-	public void run(CaseStudyEnvironment caseStudyEnvironment, TextArea txaProgress) {
+	public void run(CaseStudy caseStudy, TextArea txaProgress) {
 		this.txaProgress = txaProgress;
 		Log.logProgress("CaseStudyClassRunner.run()");
 		try {
-			for (CaseStudyQuery csq : caseStudyEnvironment.getCaseStudyQuerys()) {
+			for (CaseStudyQuery csq : caseStudy.getCaseStudyEnvironment().getCaseStudyQuerys()) {
 				if (csq.getEnabled() == true) {
 					try {
 						Log.logProgress("CaseStudyClassRunner.run(): processing " + csq.getDescription());
