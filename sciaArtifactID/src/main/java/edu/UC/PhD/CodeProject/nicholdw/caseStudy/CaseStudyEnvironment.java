@@ -18,11 +18,18 @@ public class CaseStudyEnvironment {
 	public CaseStudyEnvironment() {
 		setCaseStudyQuerys(new CaseStudyQuerys());
 	}
-	public void SetUpCaseStudy02() {
+	public void SetUpCaseStudy03() {
 		caseStudyQuerys.getCaseStudyQuerys().clear();
 		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a column in a table.",
 																	"ALTER TABLE `sakila_ids`.`actor` DROP COLUMN `first_name`;\r\n"
 																	));
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Rename a column in a table",
+																	"ALTER TABLE `sakila_dwh`.`dim_staff` CHANGE COLUMN `staff_first_name` `staff_first_names` VARCHAR(45) NULL DEFAULT NULL ;"));
+	}
+	public void SetUpCaseStudy02() {
+		caseStudyQuerys.getCaseStudyQuerys().clear();
+		caseStudyQuerys.getCaseStudyQuerys().add(new CaseStudyQuery("Drop a view",
+																	"DROP VIEW `mediawiki-1.27`.`vcategory`;"));	
 	}
 	public void SetUpCaseStudy01() {
 		caseStudyQuerys.getCaseStudyQuerys().clear();

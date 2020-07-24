@@ -65,6 +65,12 @@ public class CaseStudy1Controller {
 				caseStudy.getCaseStudyEnvironment().SetUpCaseStudy02();
 				loadTestCasesIntoListBox();
 			break;
+			case "Case Study 3":
+				clearSelectedTests();
+				caseStudy.setTitle(caseStudyTitle);
+				caseStudy.getCaseStudyEnvironment().SetUpCaseStudy03();
+				loadTestCasesIntoListBox();
+			break;
 		}
 	}
 	
@@ -153,6 +159,7 @@ public class CaseStudy1Controller {
 	private void loadCaseStudyComboBox() {
 		cbCaseStudy.getItems().add("Case Study 1");
 		cbCaseStudy.getItems().add("Case Study 2");
+		cbCaseStudy.getItems().add("Case Study 3");
 	}
 	@FXML void mnuFileExit_OnAction(ActionEvent event) {
 		myStage.close();		
