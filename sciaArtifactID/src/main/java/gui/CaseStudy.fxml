@@ -15,7 +15,7 @@
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="apTestCase1Window" fx:id="apTestCase1Window" prefHeight="833.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.CaseStudy1Controller">
+<AnchorPane id="apTestCase1Window" fx:id="apTestCase1Window" prefHeight="833.0" prefWidth="988.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.CaseStudyController">
    <padding>
       <Insets bottom="5.0" right="5.0" top="5.0" />
    </padding>
@@ -47,12 +47,12 @@
                         <Button fx:id="btnStart" layoutX="320.0" layoutY="593.0" mnemonicParsing="false" onAction="#btnStart_OnAction" text="Run Selected" />
                         <TextArea fx:id="txaProgress" layoutX="433.0" layoutY="31.0" prefHeight="606.0" prefWidth="500.0" />
                         <TextField fx:id="txtStatus" layoutX="220.0" layoutY="625.0" prefHeight="25.0" prefWidth="198.0" />
-                        <Button fx:id="btnCopyAll" layoutX="14.0" layoutY="593.0" mnemonicParsing="false" onAction="#btnCopyAll_OnAction" text="Copy All" />
+                        <Button fx:id="btnCopyAll" layoutX="14.0" layoutY="593.0" mnemonicParsing="false" onAction="#btnCopyAll_OnAction" text="Select All" />
                         <Button fx:id="btnClearSelectedTests" layoutX="220.0" layoutY="593.0" mnemonicParsing="false" onAction="#btnClearSelectedTests_OnAction" prefHeight="25.0" prefWidth="95.0" text="Clear Selected" />
                         <Label layoutX="220.0" layoutY="9.0" prefHeight="17.0" prefWidth="95.0" text="Selected Tests" />
                         <Label layoutX="14.0" layoutY="9.0" text="Available Tests" />
                         <Label layoutX="433.0" layoutY="9.0" text="Results of Selected Tests" />
-                        <Label fx:id="lblSQL" layoutX="13.0" layoutY="655.0" prefHeight="62.0" prefWidth="921.0" />
+                        <TextArea fx:id="txaSQL" editable="false" layoutX="13.0" layoutY="655.0" prefHeight="62.0" prefWidth="921.0" wrapText="true" />
                      </children>
                   </AnchorPane>
             </content>

@@ -102,7 +102,7 @@
                         <KeyCodeCombination alt="UP" code="G" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                 </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#mnuToolsCaseStudy1_OnAction" text="Case Study 1" />
+                  <MenuItem mnemonicParsing="false" onAction="#mnuToolsCaseStudy_OnAction" text="Case Studies" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">

@@ -86,7 +86,7 @@ public class Main extends Application {
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileNewProject, mnuFileOpenProject, mnuFileSaveProject, mnuFileExit, mnuEditDebug, mnuEditProcessAQuery, mnuHelpAbout;
 	@FXML private MenuItem mnuEditClearNeo4jDB, mnuFileConfig, mnuToolsGenerateSchemaTopology, mnuSubmitSQL, mnuEditProjectManager, mnuReadDBLog, mnuProcessGraphDB, mnuProcessETL;
-	@FXML private MenuItem mnuToolsCaseStudy1;
+	@FXML private MenuItem mnuToolsCaseStudy;
 	@FXML private WebView wbNeo4j;
 	@FXML private ImageView imgNeo4jReminder;
 	@FXML void lvOperationalSchemaNames_OnClicked(MouseEvent event) {txtOperationalSchemaName.setText(lvOperationalSchemaNames.getSelectionModel().getSelectedItem());}
@@ -102,7 +102,7 @@ public class Main extends Application {
 	@FXML void mnuEditReadDBLog_OnAction(ActionEvent event) {openTransactionLogFileReaderWindow();}
 	@FXML void mnuToolsProcessGraphDB_OnAction(ActionEvent event) {openProcessGraphDBWindow();}
 //	@FXML void mnuToolsProcessETL_OnAction(ActionEvent event) {openProcessETLWindow();} Rolled into Process Graph DB
- 	@FXML void mnuToolsCaseStudy1_OnAction(ActionEvent event) {runCaseStudy1();}
+ 	@FXML void mnuToolsCaseStudy_OnAction(ActionEvent event) {runCaseStudy();}
 	@FXML
 	void mnuFileSaveProject_OnAction(ActionEvent event) {
 		Log.logProgress("main.mnuFileSaveProject_OnAction(): Saving scip...");
@@ -172,11 +172,11 @@ public class Main extends Application {
 		}
 	}
 	/***
-	 * Launch Case Study 1
+	 * Launch Case Study GUI
 	 */
-	private void runCaseStudy1() {
-		Log.logProgress("Main.runCaseStudy1()");
-		openCaseStudy1Window();
+	private void runCaseStudy() {
+		Log.logProgress("Main.runCaseStudy()");
+		openCaseStudyWindow();
 	}
 	/***
 	 * Copy from SchemaChangeImpactProject object to controls on the form
@@ -660,24 +660,24 @@ public class Main extends Application {
 			Log.logError("Main.openConfigWindow():" + ex.getLocalizedMessage());
 		}
 	}
-	private void openCaseStudy1Window() {
-		Log.logProgress("Main.openCaseStudy1Window()");
+	private void openCaseStudyWindow() {
+		Log.logProgress("Main.openCaseStudyWindow()");
 		try {
 			FXMLLoader fxmlLoader = null;
-			fxmlLoader = new FXMLLoader(getClass().getResource("CaseStudy1.fxml"));
+			fxmlLoader = new FXMLLoader(getClass().getResource("CaseStudy.fxml"));
 			Parent root = fxmlLoader.load();
 			Stage stage = new Stage();
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.setOpacity(1);
-			stage.setTitle("Case Study 1");
+			stage.setTitle("Case Studies");
 			Scene scene = new Scene(root);
 			stage.setResizable(false);
 			stage.setScene(scene);
-			CaseStudy1Controller caseStudy1Controller = fxmlLoader.getController();
-			caseStudy1Controller.setStage(stage);
+			CaseStudyController caseStudyController = fxmlLoader.getController();
+			caseStudyController.setStage(stage);
 			stage.show();
 		} catch (Exception ex) {
-			Log.logError("Main.openCaseStudy1Window():" + ex.getLocalizedMessage());
+			Log.logError("Main.openCaseStudyWindow():" + ex.getLocalizedMessage());
 		}
 	}
 	@FXML

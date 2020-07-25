@@ -1,5 +1,5 @@
 /*
- * Entry point for the Case Study 1 GUI
+ * Entry point for the Case Studies GUI
  * Bill Nicholson
  * nicholdw@ucmail.uc.edu
  */
@@ -30,7 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
-public class CaseStudy1Controller {
+public class CaseStudyController {
 	private Stage myStage;
 	@FXML private AnchorPane apMainWindow;
 	@FXML private ListView<String> lvTestCase, lvTestCaseSelected;
@@ -41,7 +41,7 @@ public class CaseStudy1Controller {
 	@FXML private ComboBox<String> cbCaseStudy;
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileExit;
-	@FXML private Label lblSQL;
+	@FXML private TextArea txaSQL;
 	@FXML void btnStart_OnAction(ActionEvent event) {runTest();}
 	@FXML void btnCopyAll_OnAction(ActionEvent event) {copyAll();}
 	@FXML void btnClearSelectedTests_OnAction(ActionEvent event) {clearSelectedTests();}
@@ -50,11 +50,6 @@ public class CaseStudy1Controller {
 	private CaseStudy caseStudy;
 	private CaseStudyEnvironment caseStudyEnvironment;
 	
-	private void displaySelectedSQL() {
-		String sql = "";
-		String testCase = "";
-		testCase = lvTestCase.getSelectionModel().getSelectedItem();
-	}
 	/**
 	 * User selected a case study from the combo box
 	 */
@@ -130,7 +125,7 @@ public class CaseStudy1Controller {
 	private void scatter() {
 		try {
 		} catch (Exception ex) {
-			Log.logError("CaseStudy1.scatter(): " + ex.getLocalizedMessage(), ex.getStackTrace());
+			Log.logError("CaseStudy.scatter(): " + ex.getLocalizedMessage(), ex.getStackTrace());
 		}
 	}
 	/***
@@ -164,7 +159,7 @@ public class CaseStudy1Controller {
 			        	String description, sql;
 			        	description = lvTestCase.getSelectionModel().getSelectedItem();
 						sql = caseStudyEnvironment.getCaseStudyQuerys().getSQL(description);
-						lblSQL.setText(sql);
+						txaSQL.setText(sql);
 			        }
 		    	} catch(Exception ex) {}
 		    }
