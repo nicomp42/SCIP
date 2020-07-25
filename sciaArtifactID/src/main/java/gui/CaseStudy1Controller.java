@@ -16,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -40,13 +41,20 @@ public class CaseStudy1Controller {
 	@FXML private ComboBox<String> cbCaseStudy;
 	@FXML private MenuBar mbrMainMenu;
 	@FXML private MenuItem mnuFileExit;
+	@FXML private Label lblSQL;
 	@FXML void btnStart_OnAction(ActionEvent event) {runTest();}
 	@FXML void btnCopyAll_OnAction(ActionEvent event) {copyAll();}
 	@FXML void btnClearSelectedTests_OnAction(ActionEvent event) {clearSelectedTests();}
 	@FXML void cbCaseStudy_OnAction(ActionEvent event) {changeCaseStudy();}
+//	@FXML void lvTestCase_OnAction(ActionEvent event) {displaySelectedSQL();}
 	private CaseStudy caseStudy;
 	private CaseStudyEnvironment caseStudyEnvironment;
 	
+	private void displaySelectedSQL() {
+		String sql = "";
+		String testCase = "";
+		testCase = lvTestCase.getSelectionModel().getSelectedItem();
+	}
 	/**
 	 * User selected a case study from the combo box
 	 */
@@ -151,6 +159,12 @@ public class CaseStudy1Controller {
 			        	if (!lvTestCaseSelected.getItems().contains(description)) {
 			        		lvTestCaseSelected.getItems().add(description);
 			        	}
+			        }
+			        if (click.getClickCount() == 1) {
+			        	String description, sql;
+			        	description = lvTestCase.getSelectionModel().getSelectedItem();
+						sql = caseStudyEnvironment.getCaseStudyQuerys().getSQL(description);
+						lblSQL.setText(sql);
 			        }
 		    	} catch(Exception ex) {}
 		    }

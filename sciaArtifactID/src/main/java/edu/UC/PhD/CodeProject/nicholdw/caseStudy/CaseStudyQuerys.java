@@ -31,4 +31,14 @@ public class CaseStudyQuerys implements Iterable<CaseStudyQuery> {
 			}
 		}
 	}
+	public String getSQL(String description) {
+		String sql = "";
+		for (CaseStudyQuery csq: caseStudyQuerys) {
+			if (description.equals(csq.getDescription())) {
+				sql = csq.getSQL();
+				break;
+			}
+		}
+		return sql;
+	}
 }
