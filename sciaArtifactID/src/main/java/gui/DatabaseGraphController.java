@@ -164,10 +164,10 @@ public class DatabaseGraphController {
 		String dropAView = "DROP VIEW `mediawiki-1.27`.`vcategory`;";
 		taActionQuery.setText(figureC1);
 		lvKJBFiles.getItems().clear();
-    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");
-    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\staff-store-staff.kjb");
-    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\load_dim_actor.kjb");    
-//    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\load_dim_staff.kjb");    
+//    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");
+ //   	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\staff-store-staff.kjb");
+//    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\load_dim_actor.kjb");    
+    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\load_dim_staff.kjb");    
     	cbSchema.getItems().clear();
     	cbSchema.getItems().add("sakila_op1");
 		cbSchema.getItems().add("sakila_op2");

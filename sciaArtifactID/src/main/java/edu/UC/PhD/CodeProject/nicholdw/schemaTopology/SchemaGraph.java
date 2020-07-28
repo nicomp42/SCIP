@@ -181,8 +181,8 @@ public class SchemaGraph {
 	private void applyEtlSchemaImpactsForImpactGraphOnly(SchemaImpacts schemaImpacts) {
 		ConcurrentHashMap<SchemaImpact, SchemaImpact> foo;
 		foo = schemaImpacts.getSchemaImpacts();
-		foo.forEach((k, v) -> 
-			applyEtlSchemaImpactForImpactGraphOnly(v, schemaImpacts));
+		foo.forEach((k, schemaImpact) -> 
+			applyEtlSchemaImpactForImpactGraphOnly(schemaImpact, schemaImpacts));
 	}
 	private void applyEtlSchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact, SchemaImpacts schemaImpacts) {
  		for (TableAttribute ta : schemaImpact.getTableAttributes()) {

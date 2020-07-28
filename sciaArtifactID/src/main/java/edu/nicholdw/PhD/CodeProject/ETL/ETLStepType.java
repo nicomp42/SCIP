@@ -26,6 +26,8 @@ public class ETLStepType {
 		etlStepTypes.add("dblookup");
 		etlStepTypes.add("selectvalues");
 		etlStepTypes.add("ifnull");
+		etlStepTypes.add("dimensionlookup");
+		etlStepTypes.add("valuemapper");
 	}
 	
 	private String etlStepType;
@@ -45,7 +47,10 @@ public class ETLStepType {
 	 */
 	public static Boolean isValid(String etlStepType) {
 		Boolean result = true;
-		if (!etlStepTypes.contains(etlStepType.toLowerCase().trim())) {result = false;}
+		if (!etlStepTypes.contains(etlStepType.toLowerCase().trim())) {
+			result = false;
+			Log.logError("ETLStepType.isValid(etlStepType): Unrecognized ETL Step Type: " + etlStepType);
+		}
 		return result;
 	}
 	public ETLStepType(String etlStepType) {
@@ -89,6 +94,15 @@ public class ETLStepType {
 				passThroughStep = true;
 				break;
 			case "selectvalues":
+				passThroughStep = true;
+				break;
+			case "ifnull":
+				passThroughStep = true;
+				break;
+			case "dimensionlookup":
+				passThroughStep = true;
+				break;
+			case "valuemapper":
 				passThroughStep = true;
 				break;
 			default:
