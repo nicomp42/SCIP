@@ -17,6 +17,7 @@ import edu.UC.PhD.CodeProject.nicholdw.Attributable;
 import edu.UC.PhD.CodeProject.nicholdw.DBJoinStep;
 import edu.UC.PhD.CodeProject.nicholdw.ExecuteSQLScriptStep;
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
+import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
 import edu.UC.PhD.CodeProject.nicholdw.StepName;
 import edu.UC.PhD.CodeProject.nicholdw.TableInputStep;
 import edu.UC.PhD.CodeProject.nicholdw.TableOutputStep;
@@ -75,8 +76,9 @@ public class ETLKTRFile implements java.io.Serializable{
 	 * @param etlStep The step to start with
 	 * @param qa The query attribute in question
 	 */
-	public void traverseFromAttribute(ETLStep etlStepStart, Attributable qa) {
+	public SchemaImpact traverseFromAttribute(ETLStep etlStepStart, Attributable qa) {
 		ETLStep etlStep = etlStepStart; 
+		SchemaImpact newSchemaImpact = null;
 		Log.logProgress("ETLKTRFile.traverseFromAttribute(): " + ", " + etlStep.toString() + ", " + qa.toString() + " Step Type: " + etlStep.getEtlStepType().getEtlStepType());
 		String fileName = etlStep.getFileName();
 		ETLHop etlHopStart = getEtlHops().getETLHopWithStartStep(etlStep);
@@ -112,11 +114,17 @@ public class ETLKTRFile implements java.io.Serializable{
 						GraphNodeAnnotation graphNodeAnnotation = new GraphNodeAnnotation();
 						graphNodeAnnotation.setGraphNodeAnnotation(GraphNodeAnnotation.GRAPH_NODE_ANNOTATION.Changed);
 						attributeFoundInAttributeCollection.setGraphNodeAnnotation(graphNodeAnnotation);
+
+						// Now this attribute needs to be checked against all the other artifacts in the ETL and the schema(s)
+						newSchemaImpact = new SchemaImpact();
+//						newSchemaImpact.getTableAttributes().addAttribute(attributeFoundInAttributeCollection);
+						
+						
 						etlStepNext.setAddToImpactGraph(true);
 						String keyAndValue = Utils.buildKey(qa.getSchemaName(), qa.getContainerName(), qa.getAttributeName());
 						etlStepStart.getRelationshipKeys().put(keyAndValue, keyAndValue);
 						// Now we need to look for ETL Steps that also reference this attribute
-						// traverseFromAttribute(etlStepNext, qa);	/* Cross your fingers */
+//						traverseFromAttribute(etlStepNext, qa);	/* Cross your fingers */
 					} else {
 						Log.logProgress("ETLKTRFile.traverseFromAttribute(): Attribute NOT found in this ETL Step (Query Attribute Collection).");
 					}
@@ -127,6 +135,8 @@ public class ETLKTRFile implements java.io.Serializable{
 						attributeFoundInETLFieldCollection.setGraphNodeAnnotation(graphNodeAnnotation);					
 						etlStepNext.setAddToImpactGraph(true);
 						etlStepNext.setAddAllETLFieldsTableFieldsToImpactGraph(true);
+						newSchemaImpact = new SchemaImpact();
+						etlStepNext.addAllETLFieldsToSchemaImpact(newSchemaImpact);
 						String keyAndValue = etlStepNext.getKey();
 						etlStepStart.getRelationshipKeys().put(keyAndValue, keyAndValue);
 					} else {
@@ -141,6 +151,7 @@ public class ETLKTRFile implements java.io.Serializable{
 		} else {
 			Log.logProgress("ETLKTRFile.traverseFromAttribute(): No initial Hop Start found with this ETL step.");			
 		}
+		return newSchemaImpact;
 	}
 /*	public void loadETLTransformationFiles() {
 		if (this.transformationFileDirectory != null) {

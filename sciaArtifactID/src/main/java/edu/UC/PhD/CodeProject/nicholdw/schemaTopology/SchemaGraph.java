@@ -6,6 +6,7 @@ package edu.UC.PhD.CodeProject.nicholdw.schemaTopology;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import edu.UC.PhD.CodeProject.nicholdw.ActionQuery;
 import edu.UC.PhD.CodeProject.nicholdw.Attributable;
@@ -178,11 +179,12 @@ public class SchemaGraph {
 	 * @param actionQueryDefinition The action query
 	 */
 	private void applyEtlSchemaImpactsForImpactGraphOnly(SchemaImpacts schemaImpacts) {
-		for (SchemaImpact schemaImpact: schemaImpacts) {
-			applyEtlSchemaImpactForImpactGraphOnly(schemaImpact);
-		}
+		ConcurrentHashMap<SchemaImpact, SchemaImpact> foo;
+		foo = schemaImpacts.getSchemaImpacts();
+		foo.forEach((k, v) -> 
+			applyEtlSchemaImpactForImpactGraphOnly(v, schemaImpacts));
 	}
-	private void applyEtlSchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact) {
+	private void applyEtlSchemaImpactForImpactGraphOnly(SchemaImpact schemaImpact, SchemaImpacts schemaImpacts) {
  		for (TableAttribute ta : schemaImpact.getTableAttributes()) {
 //			ta.setAddToImpactGraph(true);	// Nodes in the schemaImpact object are not added to the graph
 			for (ETLKJBFile etlKJBFile: scip.getEtlProcess().getEtlKJBFiles()) {
@@ -200,7 +202,11 @@ public class SchemaGraph {
 								// Add an edge from Table Attribute to ETL Step
 								etlStep.getRelationshipKeys().put(ta.getKey(),  ta.getKey());
 								// This step is broken by the action query. What steps does it hop to?
-								etlKTRFile.traverseFromAttribute(etlStep, ta);
+								SchemaImpact newSchemaImpact = null;
+								newSchemaImpact = etlKTRFile.traverseFromAttribute(etlStep, ta);
+								if (newSchemaImpact != null) {
+									schemaImpacts.addSchemaImpact(newSchemaImpact);
+								}
 							}
 						}
 						// Look in the list of query attributes, if any
@@ -223,9 +229,12 @@ public class SchemaGraph {
 	 * @param actionQueryDefinition The action query
 	 */
 	private void applySchemaImpacts(SchemaImpacts schemaImpacts, Schema schema) {
-		for (SchemaImpact schemaImpact: schemaImpacts) {
-			applySchemaImpact(schemaImpact, schema);
-		}
+		ConcurrentHashMap<SchemaImpact, SchemaImpact> foo;
+		foo = schemaImpacts.getSchemaImpacts();
+		foo.forEach((k, v) -> applySchemaImpact(v, schema));
+//		for (SchemaImpact schemaImpact: schemaImpacts) {
+//			applySchemaImpact(schemaImpact, schema);
+//		}
 	}
 	private void applySchemaImpact(SchemaImpact schemaImpact, Schema schema) {
 		Log.logProgress("SchemaGraph.applySchemaImpact()");
@@ -258,7 +267,7 @@ public class SchemaGraph {
 						qd.setAddToImpactGraph(true);
 						qd.setAffectedByActionQuery(true);
 						scip.getGraphResults().incrementTotalAffectedAttributes();
-						
+
 						queryAttributeFound.setAddToImpactGraph(true);
 						queryAttributeFound.setAffectedByActionQuery(true);
 						scip.getGraphResults().incrementTotalAffectedAttributes();

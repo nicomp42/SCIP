@@ -76,13 +76,15 @@ public class CaseStudyController {
 			break;
 		}
 	}
-	
+	/**
+	 * Remove all selected tests from the selected tests list box
+	 */
 	private void clearSelectedTests() {
 		lvTestCaseSelected.getItems().clear();
 	}
 	
 	/***
-	 * Copy all the tests to the selected list box
+	 * Copy all the tests to the selected tests list box
 	 */
 	private void copyAll() {
 		lvTestCaseSelected.getItems().clear();

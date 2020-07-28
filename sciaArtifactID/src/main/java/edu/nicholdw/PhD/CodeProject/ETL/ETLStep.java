@@ -6,6 +6,8 @@ package edu.nicholdw.PhD.CodeProject.ETL;
 
 import edu.UC.PhD.CodeProject.nicholdw.GraphNodeAnnotation;
 import edu.UC.PhD.CodeProject.nicholdw.ImpactGraphNode;
+import edu.UC.PhD.CodeProject.nicholdw.SchemaImpact;
+import edu.UC.PhD.CodeProject.nicholdw.TableAttribute;
 import edu.UC.PhD.CodeProject.nicholdw.log.Log;
 import edu.UC.PhD.CodeProject.nicholdw.query.QueryDefinition;
 import javafx.collections.ObservableList;
@@ -174,4 +176,11 @@ public class ETLStep extends ImpactGraphNode implements java.io.Serializable {
 	 * @return A copy of the GraphNodeAnnotation for the current object
 	 */
 	public GraphNodeAnnotation getGraphNodeAnnotation() {return new GraphNodeAnnotation(graphNodeAnnotation);}
+	public void addAllETLFieldsToSchemaImpact(SchemaImpact schemaImpact) {
+		if (etlFields != null) {
+			for (ETLField etlField: etlFields) {
+				schemaImpact.getTableAttributes().addAttribute(new TableAttribute(etlField.getStreamName(), etlField.getContainerName(), etlField.getColumnName()));
+			}
+		}
+	}
 }

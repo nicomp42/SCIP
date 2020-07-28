@@ -40,8 +40,9 @@ public class TableAttributes implements Iterable<TableAttribute> {
 	}
 	@Override
 	public Iterator<TableAttribute> iterator() {
-		Iterator<TableAttribute> myIterator = tableAttributes.iterator();
-        return myIterator;
+		return tableAttributes.iterator();
+//		Iterator<TableAttribute> myIterator = tableAttributes.iterator();
+//        return myIterator;
     }
 	/***
 	 * Add a foreign key to the attribute

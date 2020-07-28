@@ -167,6 +167,7 @@ public class DatabaseGraphController {
     	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\complete-op-ids-etl.kjb");
     	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\staff-store-staff.kjb");
     	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\load_dim_actor.kjb");    
+//    	lvKJBFiles.getItems().add("C:\\Users\\nicomp\\SCIP Projects\\Test Case 02\\Pentaho\\load_dim_staff.kjb");    
     	cbSchema.getItems().clear();
     	cbSchema.getItems().add("sakila_op1");
 		cbSchema.getItems().add("sakila_op2");
